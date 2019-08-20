@@ -6,12 +6,16 @@ use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Logger\Monolog as Logger;
 use Magento\Customer\Model\Session;
+use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Framework\App\ObjectManager;
+use Magento\Sales\Api\Data\OrderInterface as OrderInterface;
 
 class OrderUpdate implements ObserverInterface
 {
     protected $_request;
     protected $_customerSession;
     protected $_logger;
+    protected $_order;
     /**
      * Observer construct method
      *
@@ -19,11 +23,12 @@ class OrderUpdate implements ObserverInterface
      * @param Session $session
      * @param Logger $logger
      */
-    public function __construct(Http $request, Session $session, Logger $logger)
+    public function __construct(Http $request, Session $session, Logger $logger, OrderInterface $order)
     {
         $this->_customerSession = $session;
         $this->_logger = $logger;
         $this->_request = $request;
+        $this->_order = $order;
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -31,14 +36,14 @@ class OrderUpdate implements ObserverInterface
         #TODO: make this configurable
         $uri = 'http://cfro-magento.ngrok.io/';
         $httpClient = new \Zend\Http\Client();
-        $httpClient->setUri($uri);
+        $httpClient->setUri($uri); #->setMethod(Zend\Http\Request::METHOD_POST);
         $httpClient->setOptions(array('timeout' => 30));
-
-        try {
-            $order = $observer->getEvent()->getOrder();
-        } catch (\Exception $e) {
-        }
-
+        $order = $observer->getEvent()->getOrder()->getData();
+        #$orderId = $observer->getEvent()->getOrderIds();
+        #$order = $this->_order->load($orderId);
+        $httpClient->setMethod(\Zend_Http_Client::POST);
+        $orderJson = json_encode($order);
+        $httpClient->setRawBody($orderJson);
         try {
             #TODO: send the $order
             $response = \Zend\Json\Decoder::decode($httpClient->send()->getBody());
