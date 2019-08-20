@@ -1,6 +1,6 @@
 <?php
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'NS8_Ns8Csp',
+    'NS8_CSP2',
     __DIR__
 );
