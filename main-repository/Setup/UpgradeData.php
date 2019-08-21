@@ -1,5 +1,5 @@
 <?php
- namespace NS8\Ns8Csp\Setup;
+ namespace NS8\CSP2\Setup;
 
  use Magento\Framework\Setup\ModuleContextInterface;
  use Magento\Framework\Setup\ModuleDataSetupInterface;
