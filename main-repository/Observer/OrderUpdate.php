@@ -52,7 +52,7 @@ class OrderUpdate implements ObserverInterface
     {
         try {
             $order = $observer->getEvent()->getOrder()->getData();
-            $response = $httpClient->post($order);
+            $response = $this->httpClient->post('order', $order);
         } catch (\Exception $e) {
             $this->logger->error($e);
         }
