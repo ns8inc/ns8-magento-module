@@ -1,0 +1,7 @@
+<integrations>
+   <integration name="testIntegration">
+       <email>chris.carrier@ns8.com</email>
+       <endpoint_url>https://www.google.com</endpoint_url>
+       <identity_link_url>https://www.google.com</identity_link_url>
+   </integration>
+</integrations>
