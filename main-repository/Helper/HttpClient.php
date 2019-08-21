@@ -15,6 +15,12 @@ class HttpClient extends AbstractHelper
     private $configHelper;
     private $logger;
 
+    /**
+     * Default constructor
+     *
+     * @param Config $configHelper
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         Config $configHelper,
         LoggerInterface $logger
@@ -24,7 +30,7 @@ class HttpClient extends AbstractHelper
     }
 
     /**
-     * Undocumented function
+     * Makes an HTTP POST request
      *
      * @param string $url URL to target.
      * @param mixed $data Data to include in the request body.
@@ -38,6 +44,17 @@ class HttpClient extends AbstractHelper
         return $this->execute($url, $data, "POST", $parameters, $headers, $timeout);
     }
 
+    /**
+     * Internal method to handle the logic of making the HTTP request
+     *
+     * @param [type] $url
+     * @param [type] $data
+     * @param string $method
+     * @param array $parameters
+     * @param array $headers
+     * @param integer $timeout
+     * @return mixed the XHR reponse object.
+     */
     private function execute($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30)
     {
         try {

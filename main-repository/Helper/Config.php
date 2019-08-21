@@ -22,8 +22,7 @@ class Config extends AbstractHelper
     /*
      * Placeholders for future functionality
     */
-
-    protected $scopeConfig;
+    private $scopeConfig;
     private $scopeWriter;
     private $encryptor;
     private $backendUrl;
@@ -33,9 +32,23 @@ class Config extends AbstractHelper
     private $state;
     private $cacheTypeList;
     private $request;
-    protected $cookieManager;
+    private $cookieManager;
 
-
+    /**
+     * Default constructor
+     *
+     * @param State $state
+     * @param ScopeConfigInterface $scopeConfig
+     * @param WriterInterface $scopeWriter
+     * @param EncryptorInterface $encryptor
+     * @param StoreManagerInterface $storeManager
+     * @param UrlInterface $backendUrl
+     * @param ProductMetadataInterface $productMetadata
+     * @param ModuleList $moduleList
+     * @param TypeListInterface $cacheTypeList
+     * @param RequestInterface $request
+     * @param CookieManagerInterface $cookieManager
+     */
     public function __construct(
         State $state,
         ScopeConfigInterface $scopeConfig,

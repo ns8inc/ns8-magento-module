@@ -21,7 +21,7 @@ class OrderUpdate implements ObserverInterface
     protected $httpClient;
     
     /**
-     * Observer construct method
+     * Default constructor
      *
      * @param Http $request
      * @param Session $session
