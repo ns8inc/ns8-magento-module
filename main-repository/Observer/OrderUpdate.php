@@ -33,19 +33,15 @@ class OrderUpdate implements ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        #TODO: make this configurable
-        $uri = 'http://cfro-magento.ngrok.io/';
-        $httpClient = new \Zend\Http\Client();
-        $httpClient->setUri($uri); #->setMethod(Zend\Http\Request::METHOD_POST);
-        $httpClient->setOptions(array('timeout' => 30));
-        $order = $observer->getEvent()->getOrder()->getData();
-        #$orderId = $observer->getEvent()->getOrderIds();
-        #$order = $this->_order->load($orderId);
-        $httpClient->setMethod(\Zend_Http_Client::POST);
-        $orderJson = json_encode($order);
-        $httpClient->setRawBody($orderJson);
         try {
-            #TODO: send the $order
+            $uri = getenv('NS8_PROTECT_URL', true) ?: getenv('NS8_PROTECT_URL') ?: 'https://protect.ns8.com/';
+            $httpClient = new \Zend\Http\Client();
+            $httpClient->setUri($uri);
+            $httpClient->setOptions(array('timeout' => 30));
+            $order = $observer->getEvent()->getOrder()->getData();
+            $httpClient->setMethod(\Zend_Http_Client::POST);
+            $orderJson = json_encode($order);
+            $httpClient->setRawBody($orderJson);
             $response = \Zend\Json\Decoder::decode($httpClient->send()->getBody());
             $this->_customerSession->setLocationData($response);
             $this->_customerSession->setLocated(true);
