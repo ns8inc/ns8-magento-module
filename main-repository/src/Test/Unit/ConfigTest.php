@@ -1,8 +1,11 @@
 <?php
 
-namespace NS8\CSP2\Tests\Helper;
+namespace NS8\CSP2\Test\Unit;
 
-class TestConfig extends \PHPUnit_Framework_TestCase
+/**
+ * Sample Unit Test. NOTE: the naming convention is critical. The word "Test" must come last.
+ */
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
