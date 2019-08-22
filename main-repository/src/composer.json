@@ -1,27 +1,39 @@
 {
-    "name": "ns8/module-csp2",
-    "description": "",
-    "version": "1.0.1",
-    "type": "magento2-module",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Mage2Gen",
-            "email": "info@mage2gen.com"
-        }
+  "name": "ns8/csp2",
+  "description": "",
+  "version": "1.0.1",
+  "type": "magento2-module",
+  "license": "MIT",
+  "authors": [{
+    "name": "NS8",
+    "email": "app@ns8.com"
+  }],
+  "minimum-stability": "dev",
+  "require": {
+    "php": "~7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "suggest": {
+  },
+  "autoload": {
+    "files": [
+      "registration.php"
     ],
-    "minimum-stability": "dev",
-    "require": {
-        "php": "~5.5.0|~5.6.0|~7.0.0",
-        "magento/framework": "2.0.0",
-        "magento/module-integration": "100.3.2"
-    },
-    "autoload": {
-        "files": [
-            "registration.php"
-        ],
-        "psr-4": {
-            "NS8\\Ns8Csp\\": ""
-        }
+    "psr-4": {
+      "NS8\\CSP2\\": ""
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "NS8\\CSP2\\Test\\": ""
+    }
+  },
+  "scripts": {
+    "test": [
+      "parallel-lint . --exclude vendor",
+      "phpunit"
+    ]
+  }
 }
