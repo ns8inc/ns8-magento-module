@@ -10,6 +10,7 @@
             <resource name="Magento_Sales::sales_order" />
             <resource name="Magento_Sales::actions" />
             <resource name="Magento_Sales::reorder" />
+            <resource name="Magento_Sales::edit" />
         </resources>
     </integration>
 </integrations>
