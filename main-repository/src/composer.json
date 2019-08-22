@@ -10,13 +10,39 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "php": ">=7.1.0",
+        "psr/log": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.5",
+        "aws/aws-sdk-php": "^2.4.9 || ^3.0",
+        "php-amqplib/php-amqplib": "~2.4",
+        "php-console/php-console": "^3.1.3",
+        "phpunit/phpunit-mock-objects": "2.3.0",
+        "jakub-onderka/php-parallel-lint": "0.9"
+    },
+    "suggest": {
+        "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+        "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+        "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+        "php-console/php-console": "Allow sending log messages to Google Chrome"
+    },
     "autoload": {
         "files": [
             "registration.php"
         ],
         "psr-4": {
-            "NS8\\Ns8Csp\\": ""
+            "NS8\\CSP2\\": ""
         }
+    },
+    "autoload-dev": {
+        "psr-4": {"NS8\\CSP2\\Tests": "tests/NS8"}
+    },
+    "scripts": {
+        "test": [
+            "parallel-lint . --exclude vendor",
+            "phpunit"
+        ]
     }
 }
