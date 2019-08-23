@@ -22,17 +22,17 @@ class Config extends AbstractHelper
     /*
      * Placeholders for future functionality
     */
-    private $scopeConfig;
-    private $scopeWriter;
-    private $encryptor;
-    private $backendUrl;
-    private $productMetadata;
-    private $moduleList;
-    private $storeManager;
-    private $state;
-    private $cacheTypeList;
-    private $request;
-    private $cookieManager;
+    protected $scopeConfig;
+    protected $scopeWriter;
+    protected $encryptor;
+    protected $backendUrl;
+    protected $productMetadata;
+    protected $moduleList;
+    protected $storeManager;
+    protected $state;
+    protected $cacheTypeList;
+    protected $request;
+    protected $cookieManager;
 
     /**
      * Default constructor

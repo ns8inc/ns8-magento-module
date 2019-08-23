@@ -2,11 +2,12 @@
 
 namespace NS8\CSP2\Test\Unit;
 
-/**
- * Sample Unit Test. NOTE: the naming convention is critical. The word "Test" must come last.
- */
+use NS8\CSP2\Helper\Logger;
+
 class ConfigTest extends \PHPUnit\Framework\TestCase
 {
+    protected $objectManager;
+    protected $logger;
 
     /**
      * Is called once before running all test in class
@@ -27,6 +28,8 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->logger = $this->objectManager->getObject("NS8\CSP2\Helper\Logger");
     }
 
     /**
@@ -41,6 +44,6 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      */
     public function testTest()
     {
-        $this->assertTrue(false);
+        $this->assertTrue($this->logger->debug('message'));
     }
 }
