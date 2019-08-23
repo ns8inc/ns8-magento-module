@@ -1,0 +1,17 @@
+{
+	// Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
+	"recommendations": [
+		"felixfbecker.php-debug",
+		"junstyle.php-cs-fixer",
+		"neilbrayfield.php-docblocker",
+		"felixfbecker.php-intellisense",
+		"ikappas.phpcs",
+		"ms-vscode-remote.vscode-remote-extensionpack",
+		"dotjoshjohnson.xml",
+		"yzhang.markdown-all-in-one",
+		"ms-vsliveshare.vsliveshare-pack",
+		"eamodio.gitlens",
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig"
+	]
+}
