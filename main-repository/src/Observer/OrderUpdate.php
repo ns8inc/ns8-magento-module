@@ -9,8 +9,8 @@ use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Sales\Api\Data\OrderInterface;
 
-use NS8\CSP2\Logger;
-use NS8\CSP2\HttpClient;
+use NS8\CSP2\Helper\Logger;
+use NS8\CSP2\Helper\HttpClient;
 
 class OrderUpdate implements ObserverInterface
 {

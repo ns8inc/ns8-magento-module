@@ -12,8 +12,8 @@ use NS8\CSP2\Helper\Config;
  */
 class HttpClient extends AbstractHelper
 {
-    private $configHelper;
-    private $logger;
+    protected $configHelper;
+    protected $logger;
 
     /**
      * Default constructor
