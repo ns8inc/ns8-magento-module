@@ -2,7 +2,7 @@
 
 ## Set Variables!! You MUST set these!!
 NS8_PROTECT_URL= #http://<YOUR DEV URL>.ngrok.io, e.g. http://dev-jdoe-magento.ngrok.io
-DEV_LIGHTSAIL_SUBDOMAIN= #<YOUR DEV SUBDOMAIN>, e.g. dev-jdoe-Magento-2.3.2
+DEV_LIGHTSAIL_DOMAIN= #<YOUR DEV DOMAIN>, e.g. http://dev-jdoe-Magento-2.3.2.ns8demos.com/
 
 ## BEGIN--SCRIPT ##
 # Magento
@@ -44,8 +44,8 @@ sed -i '151s/None/All/' /etc/httpd/conf/httpd.conf
 # Set Composer path
 echo "COMPOSER_HOME=/var/www/html/var/composer_home" | sudo tee -a /etc/environment
 # You should replace these with the correct value for your environment!
-echo 'NS8_PROTECT_URL='"$NS8_PROTECT_URL"' | sudo tee -a /etc/environment​'
-echo 'SetEnv NS8_PROTECT_URL '"$NS8_PROTECT_URL"' | sudo tee -a /var/www/html/.htaccess'
+echo "NS8_PROTECT_URL=$NS8_PROTECT_URL | sudo tee -a /etc/environment​"
+echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL | sudo tee -a /var/www/html/.htaccess"
 
 # Set file permissions (Force the group apache on all files and give RWX permissions)
 chown -R apache:apache /var/www/html
@@ -95,7 +95,7 @@ sudo -u apache php /var/www/html/bin/magento setup:install \
 --admin-email=dev@ns8demos.com \
 --admin-user=development \
 --admin-password=YzbLenbGRGN6fxqNsz.ti \
---base-url=http://"$DEV_LIGHTSAIL_SUBDOMAIN".ns8demos.com/
+--base-url=$DEV_LIGHTSAIL_DOMAIN
 ​
 ​
 # Setup Magento CRON jobs
