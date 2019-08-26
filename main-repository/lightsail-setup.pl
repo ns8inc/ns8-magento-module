@@ -1,4 +1,9 @@
 #### Use with 'Launch Script' when creating instance in AWS LightSail
+
+## Set Variables!! You MUST set these!!
+NS8_PROTECT_URL= #http://<YOUR DEV URL>.ngrok.io, e.g. http://dev-jdoe-magento.ngrok.io
+DEV_LIGHTSAIL_DOMAIN= #<YOUR DEV DOMAIN>, e.g. http://dev-jdoe-Magento-2.3.2.ns8demos.com/
+
 ## BEGIN--SCRIPT ##
 # Magento
 ​
@@ -24,13 +29,13 @@ php71-mcrypt \
 php71-mysqlnd \
 php71-soap \
 php71-zip \
-mysql57-server 
+mysql57-server
 ​
 # Configure Web and DB servers to start on boot
 chkconfig httpd on
 chkconfig mysqld on
 ​
-# Change PHP memory limit // Magento wants 2GB, 
+# Change PHP memory limit // Magento wants 2GB,
 sed -i 's/memory_limit = 128M/memory_limit = 2048M/g' /etc/php-*.ini
 ​
 # Change Apache to allow Overrides
@@ -39,15 +44,15 @@ sed -i '151s/None/All/' /etc/httpd/conf/httpd.conf
 # Set Composer path
 echo "COMPOSER_HOME=/var/www/html/var/composer_home" | sudo tee -a /etc/environment
 # You should replace these with the correct value for your environment!
-echo "NS8_PROTECT_URL=http://<dev-space>.ngrok.io" | sudo tee -a /etc/environment​
-echo "SetEnv NS8_PROTECT_URL http://<dev-space>.ngrok.io" | sudo tee -a /var/www/html/.htaccess
+echo "NS8_PROTECT_URL=$NS8_PROTECT_URL | sudo tee -a /etc/environment​"
+echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL | sudo tee -a /var/www/html/.htaccess"
 
 # Set file permissions (Force the group apache on all files and give RWX permissions)
 chown -R apache:apache /var/www/html
 chmod -R 2775 /var/www/html
 setfacl -Rdm g:apache:rwx /var/www/html
 ​
-# Start Web and DB server 
+# Start Web and DB server
 service httpd start
 service mysqld start
 ​
@@ -56,7 +61,7 @@ mysql -u root -e "CREATE DATABASE magento2"
 mysql -u root -e "CREATE USER 'magento_db_user'@'localhost' IDENTIFIED BY 'magento_db_password'"
 mysql -u root -e "GRANT ALL PRIVILEGES ON magento2.* TO 'magento_db_user'@'localhost'"
 mysql -u root -e "FLUSH PRIVILEGES"
- 
+
 ## Mage ID
 # MAG005397149
 ## Mage Token
@@ -90,7 +95,7 @@ sudo -u apache php /var/www/html/bin/magento setup:install \
 --admin-email=dev@ns8demos.com \
 --admin-user=development \
 --admin-password=YzbLenbGRGN6fxqNsz.ti \
---base-url=http://dev-ccarrier.ns8demos.com/
+--base-url=$DEV_LIGHTSAIL_DOMAIN
 ​
 ​
 # Setup Magento CRON jobs
@@ -113,7 +118,7 @@ sed -i 's/<public-key>/1b8325eb6d792fe22c0fb83f65150281/' /var/www/html/auth.jso
 sed -i 's/<private-key>/d68ff7618b2f3118a0342d7f914848c8/' /var/www/html/auth.json
 ​
 # Add Protect (CSP) Module
-cd /var/www/html
+# cd /var/www/html
 ## Following command will run php with no memory limit (not necessary if set high enough in a php.ini file)
 #sudo -u apache php -d memory_limit=-1 /var/www/html/vendor/composer/composer/bin/composer require ns8/csp
 ​
@@ -123,12 +128,12 @@ cd /var/www/html
 #sudo -u apache php /var/www/html/bin/magento setup:upgrade
 ​
 ## The following lines will download and install a Magento Module manually
-sudo -u apache mkdir -p /var/www/html/app/code/NS8/CSP
-sudo -u apache wget -O /var/www/html/app/ns8-module.zip https://ns8.s3.amazonaws.com/builds/magento-temp/ns8-magento-csp-module.zip
+# sudo -u apache mkdir -p /var/www/html/app/code/NS8/CSP
+# sudo -u apache wget -O /var/www/html/app/ns8-module.zip https://ns8.s3.amazonaws.com/builds/magento-temp/ns8-magento-csp-module.zip
 # This assumes the module root is at the root of the zip file. If they are in a subfolder, you'll need to handle that
-sudo -u apache unzip /var/www/html/app/ns8-module.zip -d /var/www/html/app/code/NS8/CSP
-sudo -u apache php /var/www/html/bin/magento setup:upgrade
-rm /var/www/html/app/ns8-module.zip
+# sudo -u apache unzip /var/www/html/app/ns8-module.zip -d /var/www/html/app/code/NS8/CSP
+# sudo -u apache php /var/www/html/bin/magento setup:upgrade
+# rm /var/www/html/app/ns8-module.zip
 ​
 # Remove Composer Auth
 #rm /var/www/html/auth.json.sample
