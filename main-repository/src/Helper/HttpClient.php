@@ -58,7 +58,7 @@ class HttpClient extends AbstractHelper
     private function execute($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30)
     {
         try {
-            $uri = $this->configHelper->getApiBaseUrl().'/'.$url;
+            $uri = $this->configHelper->getApiBaseUrl().$url;
             $httpClient = new \Zend\Http\Client();
             $httpClient->setUri($uri);
             #TODO: support the parameters/headers passed in
