@@ -2,23 +2,25 @@
 
 namespace NS8\CSP2\Controller\Adminhtml\Settings;
 
-class Index extends \Magento\Backend\App\Action
+use \Magento\Backend\App\Action;
+use \Magento\Backend\App\Action\Context;
+use \Magento\Framework\View\Result\PageFactory;
+
+class Index extends Action
 {
     /**
-     * @var \Magento\Framework\View\Result\PageFactory
+     * @var PageFactory
      */
     protected $resultPageFactory;
 
     /**
      * Constructor
      *
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
      */
-    public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
-    ) {
+    public function __construct(Context $context, PageFactory $resultPageFactory)
+    {
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
     }
@@ -30,6 +32,6 @@ class Index extends \Magento\Backend\App\Action
      */
     public function execute()
     {
-        return $resultPage = $this->resultPageFactory->create();
+        return $this->resultPageFactory->create();
     }
 }
