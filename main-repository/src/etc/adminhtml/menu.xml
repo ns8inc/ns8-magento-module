@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="NS8_CSP2::ns8_settings_menu" title="NS8 Protect" module="NS8_CSP2" sortOrder="10" dependsOnModule="NS8_CSP2" resource="NS8_CSP2::admin" parent="Magento_Backend::system"/>
+        <add id="NS8_CSP2::ns8_settings" title="Settings" module="NS8_CSP2" sortOrder="10" dependsOnModule="NS8_CSP2" action="ns8csp2admin/settings/index" resource="NS8_CSP2::admin" parent="NS8_CSP2::ns8_settings_menu"/>
+    </menu>
+</config>
