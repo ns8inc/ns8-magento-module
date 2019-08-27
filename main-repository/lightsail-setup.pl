@@ -122,16 +122,18 @@ sed -i 's/<private-key>/d68ff7618b2f3118a0342d7f914848c8/' /var/www/html/auth.js
 ## Following command will run php with no memory limit (not necessary if set high enough in a php.ini file)
 #sudo -u apache php -d memory_limit=-1 /var/www/html/vendor/composer/composer/bin/composer require ns8/csp
 ​
-## The following 3 lines will install CSP via the Magento Marketplace
-#sudo -u apache php /var/www/html/vendor/composer/composer/bin/composer require ns8/csp
-#sudo -u apache php /var/www/html/bin/magento module:enable NS8_CSP
+#Create the directory where we will test the CSP2 extension
+sudo -u apache mkdir -p /var/www/html/app/code/NS8/CSP2
+
+## The following 3 lines will (eventually) install CSP2 via the Magento Marketplace
+#sudo -u apache php /var/www/html/vendor/composer/composer/bin/composer require ns8/csp2
+#sudo -u apache php /var/www/html/bin/magento module:enable NS8_CSP2
 #sudo -u apache php /var/www/html/bin/magento setup:upgrade
 ​
-## The following lines will download and install a Magento Module manually
-# sudo -u apache mkdir -p /var/www/html/app/code/NS8/CSP
-# sudo -u apache wget -O /var/www/html/app/ns8-module.zip https://ns8.s3.amazonaws.com/builds/magento-temp/ns8-magento-csp-module.zip
+## The following lines will (eventually) download and install a Magento Module manually
+# sudo -u apache wget -O /var/www/html/app/ns8-module.zip https://ns8.s3.amazonaws.com/builds/TBD
 # This assumes the module root is at the root of the zip file. If they are in a subfolder, you'll need to handle that
-# sudo -u apache unzip /var/www/html/app/ns8-module.zip -d /var/www/html/app/code/NS8/CSP
+# sudo -u apache unzip /var/www/html/app/ns8-module.zip -d /var/www/html/app/code/NS8/CSP2
 # sudo -u apache php /var/www/html/bin/magento setup:upgrade
 # rm /var/www/html/app/ns8-module.zip
 ​
