@@ -100,7 +100,7 @@ class Config extends AbstractHelper
     {
         $token = getenv('DEV_ACCESS_TOKEN', true) ?: getenv('DEV_ACCESS_TOKEN');
 
-        if (isset($token) && $token !== "") {
+        if (isset($token) && (bool) $token &&  $token !== "") {
             return $token;
         } else {
             # TODO: replace this with logic to get the access token from OAuth
