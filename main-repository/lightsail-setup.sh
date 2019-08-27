@@ -2,11 +2,11 @@
 
 ## Set Variables!! You MUST set these!!
 
-#http://<YOUR DEV URL>.ngrok.io, e.g. http://dev-jdoe-magento.ngrok.io
+# http://<YOUR DEV URL>.ngrok.io, e.g. http://dev-jdoe-magento.ngrok.io
 NS8_PROTECT_URL=
-#<YOUR DEV DOMAIN>, e.g. http://dev-jdoe-Magento-2.3.2.ns8demos.com/
+# <YOUR DEV DOMAIN>, e.g. http://dev-jdoe-Magento-2.3.2.ns8demos.com/
 DEV_LIGHTSAIL_DOMAIN=
-#Any valid access token
+# Any valid access token
 DEV_ACCESS_TOKEN=ee411d1d-7ca1-4a45-90d8-5011f55430d9
 
 ## BEGIN--SCRIPT ##
