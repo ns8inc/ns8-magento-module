@@ -90,4 +90,21 @@ class Config extends AbstractHelper
             return 'https://protect.ns8.com';
         }
     }
+
+    /**
+     * Gets an access token.
+     *
+     * @return string The NS8 Protect Access Token.
+     */
+    public function getAccessToken()
+    {
+        $token = getenv('DEV_ACCESS_TOKEN', true) ?: getenv('DEV_ACCESS_TOKEN');
+
+        if (isset($token) && (bool) $token &&  $token !== "") {
+            return $token;
+        } else {
+            # TODO: replace this with logic to get the access token from OAuth
+            return 'ee411d1d-7ca1-4a45-90d8-5011f55430d9';
+        }
+    }
 }

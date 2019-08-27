@@ -15,22 +15,22 @@ class Logger extends AbstractHelper
 {
     protected $logger;
     protected $httpClient;
-    protected $configHelper;
+    protected $config;
 
     /**
      * Default constructor
      *
      * @param LoggerInterface $loggerInterface
-     * @param Config $configHelper
+     * @param Config $config
      * @param HttpClient $httpClient
      */
     public function __construct(
         LoggerInterface $loggerInterface,
-        Config $configHelper,
+        Config $config,
         HttpClient $httpClient
     ) {
         $this->logger = $loggerInterface;
-        $this->configHelper = $configHelper;
+        $this->config = $config;
         $this->httpClient = $httpClient;
     }
 
@@ -46,7 +46,7 @@ class Logger extends AbstractHelper
     {
         return $this->log('ERROR', $message, $data, $function);
     }
-    
+
     /**
      * Logs a debug
      *
@@ -100,7 +100,7 @@ class Logger extends AbstractHelper
         try {
             //Log to Magento
             $this->logger->log($level, $message, array('data'=>$data));
-            
+
             //Structure some data for our API to consume later
             $data = [
                 'level' => $level,

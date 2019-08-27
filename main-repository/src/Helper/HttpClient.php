@@ -4,6 +4,8 @@ namespace NS8\CSP2\Helper;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\HTTP\ZendClientFactory;
 use Psr\Log\LoggerInterface;
+use Zend\Http\Client;
+use Zend\Json\Decoder;
 
 use NS8\CSP2\Helper\Config;
 
@@ -12,21 +14,36 @@ use NS8\CSP2\Helper\Config;
  */
 class HttpClient extends AbstractHelper
 {
-    protected $configHelper;
+    protected $config;
     protected $logger;
 
     /**
      * Default constructor
      *
-     * @param Config $configHelper
+     * @param Config $config
      * @param LoggerInterface $logger
      */
     public function __construct(
-        Config $configHelper,
+        Config $config,
         LoggerInterface $logger
     ) {
-        $this->configHelper = $configHelper;
+        $this->config = $config;
         $this->logger = $logger;
+    }
+
+    /**
+     * Makes an HTTP GET request
+     *
+     * @param string $url URL to target.
+     * @param mixed $data Data to include in the request body.
+     * @param array $parameters Optional array of request parameters.
+     * @param array $headers Optional array of request headers.
+     * @param integer $timeout Optional timeout value. Default 30.
+     * @return mixed the XHR reponse object.
+     */
+    public function get($url, $data, $parameters = [], $headers = [], $timeout = 30)
+    {
+        return $this->execute($url, $data, "GET", $parameters, $headers, $timeout);
     }
 
     /**
@@ -58,18 +75,23 @@ class HttpClient extends AbstractHelper
     private function execute($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30)
     {
         try {
-            $uri = $this->configHelper->getApiBaseUrl().$url;
-            $httpClient = new \Zend\Http\Client();
+            $uri = $this->config->getApiBaseUrl().$url;
+            $httpClient = new Client();
             $httpClient->setUri($uri);
             #TODO: support the parameters/headers passed in
             $httpClient->setOptions(array('timeout' => $timeout));
             $httpClient->setMethod($method);
+
+            $headers['oauth_consumer_key'] = $this->config->getAccessToken();
+            if (!empty($headers)) {
+                $httpClient->setHeaders($headers);
+            }
             #TODO: make this more robust; nothing everything can be converted to JSON
             $json = json_encode($data);
             #TODO: this is a KLUDGE. There must be a better way!
             $httpClient->setRawBody($json);
             #TODO: decompose this into more discrete steps.
-            $response = \Zend\Json\Decoder::decode($httpClient->send()->getBody());
+            $response = Decoder::decode($httpClient->send()->getBody());
         } catch (\Exception $e) {
             $this->logger->log.error('Failed to execute API call', $e);
         }
