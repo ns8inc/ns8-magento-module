@@ -1,0 +1,11 @@
+dist
+node_modules
+.idea/
+yarn-error.log
+*.orig
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# nyc test coverage
+.nyc_output
