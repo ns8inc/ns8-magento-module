@@ -10,7 +10,6 @@
     "dist": "node ./build/release.js"
   },
   "dependencies": {
-    "fs": "0.0.1-security",
     "typescript": "~3.5.3"
   },
   "devDependencies": {
