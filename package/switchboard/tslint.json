@@ -1,0 +1,7 @@
+{
+  "extends": "ns8-tslint",
+  "rules": {
+    "only-arrow-functions": [true, "allow-named-functions"],
+    "semicolon": [true, "always", "strict-bound-class-methods"]
+  }
+}
