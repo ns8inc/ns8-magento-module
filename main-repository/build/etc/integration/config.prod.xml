@@ -1,0 +1,7 @@
+<integrations>
+   <integration name="NS8_Integration">
+       <email>apps@ns8.com</email>
+       <endpoint_url>https://protect.ns8.com/protect/magento/callback</endpoint_url>
+       <identity_link_url>https://protect.ns8.com/protect/magento/identity</identity_link_url>
+   </integration>
+</integrations>
