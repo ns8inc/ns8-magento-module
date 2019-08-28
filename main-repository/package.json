@@ -5,7 +5,9 @@
   "author": "ns8inc",
   "license": "MIT",
   "scripts": {
-    "lint:ts": "eslint --ext=ts src"
+    "lint:ts": "eslint --ext=ts src",
+    "dev": "node ./build/dev.js",
+    "dist": "node ./build/release.js"
   },
   "dependencies": {
     "typescript": "~3.5.3"

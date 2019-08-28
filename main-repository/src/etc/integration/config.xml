@@ -1,7 +1,0 @@
-<integrations>
-   <integration name="testIntegration">
-       <email>chris.carrier@ns8.com</email>
-       <endpoint_url>https://chris-local-api.ngrok.io/protect/magento/finish</endpoint_url>
-       <identity_link_url>https://chris-local-api.ngrok.io/protect/magento/identity</identity_link_url>
-   </integration>
-</integrations>
