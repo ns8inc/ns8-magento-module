@@ -31,33 +31,9 @@ package:
     - switchboard.json
 
 functions:
-  onInstallEvent:
-    name: ${self:custom.integrationName}-onInstallEvent
-    handler: dist/app.onInstallEventHandler
-  updateCustVerifyStatusEvent:
-    name: ${self:custom.integrationName}-updateCustVerifyStatusEvent
-    handler: dist/app.updateCustVerifyStatusEventHandler
-  updateEQ8ScoreEvent:
-    name: ${self:custom.integrationName}-updateEQ8ScoreEvent
-    handler: dist/app.updateEQ8ScoreEventHandler
-  updateOrderRiskEvent:
-    name: ${self:custom.integrationName}-updateOrderRiskEvent
-    handler: dist/app.updateOrderRiskEventHandler
-  updateOrderStatusEvent:
-    name: ${self:custom.integrationName}-updateOrderStatusEvent
-    handler: dist/app.updateOrderStatusEventHandler
-  uninstallAction:
-    name: ${self:custom.integrationName}-uninstallAction
-    handler: dist/app.uninstallActionHandler
   createOrderAction:
     name: ${self:custom.integrationName}-createOrderAction
     handler: dist/app.createOrderActionHandler
-  updateMerchantAction:
-    name: ${self:custom.integrationName}-updateMerchantAction
-    handler: dist/app.updateMerchantActionHandler
-  updateOrderStatusAction:
-    name: ${self:custom.integrationName}-updateOrderStatusAction
-    handler: dist/app.updateOrderStatusActionHandler
 
 RetryDefault: &retryDefault
   Retry:
@@ -69,66 +45,6 @@ RetryDefault: &retryDefault
 
 stepFunctions:
   stateMachines:
-    onInstallEvent:
-      name: "${self:custom.integrationName}-onInstallEvent"
-      definition:
-        StartAt: onInstallEventStart
-        States:
-          onInstallEventStart:
-            <<: *retryDefault
-            Type: Task
-            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-onInstallEvent"
-            End: true
-    updateCustVerifyStatusEvent:
-      name: "${self:custom.integrationName}-updateCustVerifyStatusEvent"
-      definition:
-        StartAt: updateCustVerifyStatusEventStart
-        States:
-          updateCustVerifyStatusEventStart:
-            <<: *retryDefault
-            Type: Task
-            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateCustVerifyStatusEvent"
-            End: true
-    updateEQ8ScoreEvent:
-      name: "${self:custom.integrationName}-updateEQ8ScoreEvent"
-      definition:
-        StartAt: updateEQ8ScoreEventStart
-        States:
-          updateEQ8ScoreEventStart:
-            <<: *retryDefault
-            Type: Task
-            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateEQ8ScoreEvent"
-            End: true
-    updateOrderRiskEvent:
-      name: "${self:custom.integrationName}-updateOrderRiskEvent"
-      definition:
-        StartAt: updateOrderRiskEventStart
-        States:
-          updateOrderRiskEventStart:
-            <<: *retryDefault
-            Type: Task
-            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderRiskEvent"
-            End: true
-    updateOrderStatusEvent:
-      name: "${self:custom.integrationName}-updateOrderStatusEvent"
-      definition:
-        StartAt: updateOrderStatusEventStart
-        States:
-          updateOrderStatusEventStart:
-            <<: *retryDefault
-            Type: Task
-            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderStatusEvent"
-            End: true
-    uninstallAction:
-      name: "${self:custom.integrationName}-uninstallAction"
-      definition:
-        StartAt: uninstallActionStart
-        States:
-          uninstallActionStart:
-            Type: Task
-            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-uninstallAction"
-            <<: *retryDefault
-            End: true
     createOrderAction:
       name: "${self:custom.integrationName}-createOrderAction"
       definition:
@@ -137,26 +53,6 @@ stepFunctions:
           createOrderActionStart:
             Type: Task
             Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-createOrderAction"
-            <<: *retryDefault
-            End: true
-    updateMerchantAction:
-      name: "${self:custom.integrationName}-updateMerchantAction"
-      definition:
-        StartAt: updateMerchantActionStart
-        States:
-          updateMerchantActionStart:
-            Type: Task
-            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateMerchantAction"
-            <<: *retryDefault
-            End: true
-    updateOrderStatusAction:
-      name: "${self:custom.integrationName}-updateOrderStatusAction"
-      definition:
-        StartAt: updateOrderStatusActionStart
-        States:
-          updateOrderStatusActionStart:
-            Type: Task
-            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderStatusAction"
             <<: *retryDefault
             End: true
 
