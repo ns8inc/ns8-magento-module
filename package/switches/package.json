@@ -1,5 +1,5 @@
 {
-  "name": "@ns8/ns8-shopify-switches",
+  "name": "@ns8/ns8-magento2-switches",
   "version": "1.0.175",
   "description": "Custom switches for the shopify integration",
   "main": "dist/index.js",
@@ -10,7 +10,7 @@
   "author": "ns8inc",
   "license": "MIT",
   "scripts": {
-    "init:dev": "yarn && yarn build && yarn link",
+    "init:dev": "yarn && yarn build && yaryarn link",
     "build": "rm -rf dist && tsc && rm -rf node_modules && yarn install --production=true",
     "lint": "tslint --project .",
     "test": "nyc mocha --colors"

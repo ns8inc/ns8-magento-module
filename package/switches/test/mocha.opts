@@ -1,3 +1,0 @@
---require test/TsNodeOptions.js
---timeout 10000
-test/**/*Test.ts
