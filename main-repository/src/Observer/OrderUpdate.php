@@ -19,7 +19,7 @@ class OrderUpdate implements ObserverInterface
     protected $logger;
     protected $order;
     protected $httpClient;
-    
+
     /**
      * Default constructor
      *
@@ -52,7 +52,7 @@ class OrderUpdate implements ObserverInterface
     {
         try {
             $order = $observer->getEvent()->getOrder()->getData();
-            $response = $this->httpClient->post('order', $order);
+            $response = $this->httpClient->post('protect/executor', $order);
         } catch (\Exception $e) {
             $this->logger->error($e);
         }

@@ -75,25 +75,33 @@ class HttpClient extends AbstractHelper
     private function execute($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30)
     {
         try {
-            $uri = $this->config->getApiBaseUrl().$url;
+            $uri = $this->config->getApiBaseUrl().$url.'?Authorization='.$this->config->getAccessToken();
             $httpClient = new Client();
             $httpClient->setUri($uri);
             #TODO: support the parameters/headers passed in
             $httpClient->setOptions(array('timeout' => $timeout));
             $httpClient->setMethod($method);
 
-            $headers['oauth_consumer_key'] = $this->config->getAccessToken();
-            if (!empty($headers)) {
-                $httpClient->setHeaders($headers);
-            }
             #TODO: make this more robust; nothing everything can be converted to JSON
             $json = json_encode($data);
             #TODO: this is a KLUDGE. There must be a better way!
             $httpClient->setRawBody($json);
+
+            if (!empty($parameters)) {
+                    switch($method) {
+                    case 'GET':
+                        $httpClient->setParameterGet($parameters);
+                        break;
+                    default:
+                        $httpClient->setParameterPost($parameters);
+                        break;
+                }
+                //$httpClient->setHeaders($headers);
+            }
             #TODO: decompose this into more discrete steps.
             $response = Decoder::decode($httpClient->send()->getBody());
         } catch (\Exception $e) {
-            $this->logger->log.error('Failed to execute API call', $e);
+            $this->logger->error('Failed to execute API call', $e);
         }
         #TODO: consumers probably want more control over the response
         return $response;
