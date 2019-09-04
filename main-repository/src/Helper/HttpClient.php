@@ -41,9 +41,9 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout Optional timeout value. Default 30.
      * @return mixed the XHR reponse object.
      */
-    public function get($url, $data, $parameters = [], $headers = [], $timeout = 30)
+    public function get($url, $data = [], $action = 'CREATE_ORDER_ACTION', $timeout = 30)
     {
-        return $this->execute($url, $data, "GET", $parameters, $headers, $timeout);
+        return $this->execute($url, $data, "GET", $action, $timeout);
     }
 
     /**
@@ -56,9 +56,9 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout Optional timeout value. Default 30.
      * @return mixed the XHR reponse object.
      */
-    public function post($url, $data, $parameters = [], $headers = [], $timeout = 30)
+    public function post($url, $data = [], $action = 'CREATE_ORDER_ACTION', $timeout = 30)
     {
-        return $this->execute($url, $data, "POST", $parameters, $headers, $timeout);
+        return $this->execute($url, $data, "POST", $action, $timeout);
     }
 
     /**
@@ -72,32 +72,24 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout
      * @return mixed the XHR reponse object.
      */
-    private function execute($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30)
+    private function execute($url, $data = [], $method = "POST", $action = 'CREATE_ORDER_ACTION', $timeout = 30)
     {
         try {
-            $uri = $this->config->getApiBaseUrl().$url.'?Authorization='.$this->config->getAccessToken().'&action=CREATE_ORDER_ACTION';
+            $uri = $this->config->getApiBaseUrl().$url.'&action='.$action;
             $httpClient = new Client();
             $httpClient->setUri($uri);
             #TODO: support the parameters/headers passed in
             $httpClient->setOptions(array('timeout' => $timeout));
             $httpClient->setMethod($method);
-
-            #TODO: make this more robust; nothing everything can be converted to JSON
-            $json = json_encode($data);
-            #TODO: this is a KLUDGE. There must be a better way!
-            $httpClient->setRawBody($json);
-
-            if (!empty($parameters)) {
-                    switch($method) {
-                    case 'GET':
-                        $httpClient->setParameterGet($parameters);
-                        break;
-                    default:
-                        $httpClient->setParameterPost($parameters);
-                        break;
-                }
-                //$httpClient->setHeaders($headers);
+            switch($method) {
+                case 'GET':
+                    $httpClient->setParameterGet($data);
+                    break;
+                default:
+                    $httpClient->setParameterPost($data);
+                    break;
             }
+
             #TODO: decompose this into more discrete steps.
             $response = Decoder::decode($httpClient->send()->getBody());
         } catch (\Exception $e) {

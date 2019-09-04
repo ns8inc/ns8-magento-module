@@ -85,10 +85,10 @@ class Config extends AbstractHelper
         $url = getenv('NS8_PROTECT_URL', true) ?: getenv('NS8_PROTECT_URL');
 
         if (isset($url) && $url !== "") {
-            return $url;
         } else {
-            return 'https://protect.ns8.com';
+            $url = 'https://protect.ns8.com';
         }
+        return $url.'?Authorization='.$this->config->getAccessToken();
     }
 
     /**
