@@ -1,12 +1,12 @@
 {
   "name": "@ns8/ns8-magento2-switches",
   "version": "1.0.175",
-  "description": "Custom switches for the shopify integration",
+  "description": "Custom switches for the magento2 integration",
   "main": "dist/index.js",
   "files": [
     "dist"
   ],
-  "repository": "https://github.com/ns8inc/ns8-shopify-switches.git",
+  "repository": "https://github.com/ns8inc/ns8-magento2-switches.git",
   "author": "ns8inc",
   "license": "MIT",
   "scripts": {
