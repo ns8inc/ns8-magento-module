@@ -54,7 +54,7 @@ class OrderUpdate implements ObserverInterface
             $order = $observer->getEvent()->getOrder()->getData();
             $response = $this->httpClient->post('protect/executor', $order);
         } catch (\Exception $e) {
-            $this->logger->error($e);
+            $this->logger->error('The order update could not be processed', $e);
         }
     }
 }

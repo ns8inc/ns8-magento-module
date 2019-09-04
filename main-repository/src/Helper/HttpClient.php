@@ -75,7 +75,7 @@ class HttpClient extends AbstractHelper
     private function execute($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30)
     {
         try {
-            $uri = $this->config->getApiBaseUrl().$url.'?Authorization='.$this->config->getAccessToken();
+            $uri = $this->config->getApiBaseUrl().$url.'?Authorization='.$this->config->getAccessToken().'&action=CREATE_ORDER_ACTION';
             $httpClient = new Client();
             $httpClient->setUri($uri);
             #TODO: support the parameters/headers passed in
@@ -101,7 +101,7 @@ class HttpClient extends AbstractHelper
             #TODO: decompose this into more discrete steps.
             $response = Decoder::decode($httpClient->send()->getBody());
         } catch (\Exception $e) {
-            $this->logger->error('Failed to execute API call', $e);
+            $this->logger->error('Failed to execute API call', array('error'=>$e));
         }
         #TODO: consumers probably want more control over the response
         return $response;
