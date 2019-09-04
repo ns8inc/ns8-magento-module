@@ -80,7 +80,7 @@ class Config extends AbstractHelper
      *
      * @return string The NS8 Protect URL in use for this instance.
      */
-    public function getApiBaseUrl()
+    private function getApiBaseUrl()
     {
         $url = getenv('NS8_PROTECT_URL', true) ?: getenv('NS8_PROTECT_URL');
 
@@ -88,7 +88,18 @@ class Config extends AbstractHelper
         } else {
             $url = 'https://protect.ns8.com';
         }
-        return $url.'?Authorization='.$this->config->getAccessToken();
+        return $url;
+    }
+
+    /**
+     * Gets the current protect URL based on the environment variables; defaults to Production.
+     *
+     * @return string The NS8 Protect URL in use for this instance.
+     */
+    public function getApiUrl($route = '')
+    {
+        $url = $this->getApiBaseUrl();
+        return $url.$route.'?Authorization='.$this->getAccessToken();
     }
 
     /**

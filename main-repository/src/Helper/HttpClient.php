@@ -72,10 +72,10 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout
      * @return mixed the XHR reponse object.
      */
-    private function execute($url, $data = [], $method = "POST", $action = 'CREATE_ORDER_ACTION', $timeout = 30)
+    private function execute($route, $data = [], $method = "POST", $action = 'CREATE_ORDER_ACTION', $timeout = 30)
     {
         try {
-            $uri = $this->config->getApiBaseUrl().$url.'&action='.$action;
+            $uri = $this->config->getApiUrl($route).'&action='.$action;
             $httpClient = new Client();
             $httpClient->setUri($uri);
             #TODO: support the parameters/headers passed in
