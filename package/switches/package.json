@@ -11,7 +11,7 @@
   "license": "MIT",
   "scripts": {
     "init:dev": "yarn && yarn build && yarn link",
-    "build": "rm -rf dist && tsc && rm -rf node_modules && yarn install --production=true",
+    "build": "rimraf dist && tsc && rimraf node_modules && yarn install --production=true",
     "lint": "tslint --project .",
     "test": "nyc mocha --colors"
   },
