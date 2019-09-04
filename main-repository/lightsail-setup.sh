@@ -4,6 +4,8 @@
 
 # http://<YOUR DEV URL>.ngrok.io, e.g. http://dev-jdoe-magento.ngrok.io
 NS8_PROTECT_URL=
+# http://<YOUR NS8 PROTECT CLIENT APP DEV URL>.ngrok.io, e.g. https://david-local-protect.ngrok.io/#
+NS8_CLIENT_URL=
 # <YOUR DEV DOMAIN>, e.g. http://dev-jdoe-Magento-2.3.2.ns8demos.com/
 DEV_LIGHTSAIL_DOMAIN=
 # Any valid access token
@@ -51,6 +53,9 @@ echo "COMPOSER_HOME=/var/www/html/var/composer_home" | sudo tee -a /etc/environm
 # Set NS8_PROTECT_URL environment variable
 echo "NS8_PROTECT_URL=$NS8_PROTECT_URL | sudo tee -a /etc/environment​"
 echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL | sudo tee -a /var/www/html/.htaccess"
+# Set NS8_CLIENT_URL environment variable
+echo "NS8_CLIENT_URL=$NS8_CLIENT_URL | sudo tee -a /etc/environment​"
+echo "SetEnv NS8_CLIENT_URL $NS8_CLIENT_URL | sudo tee -a /var/www/html/.htaccess"
 # Set DEV_ACCESS_TOKEN
 echo "DEV_ACCESS_TOKEN=$DEV_ACCESS_TOKEN | sudo tee -a /etc/environment​"
 echo "SetEnv DEV_ACCESS_TOKEN $DEV_ACCESS_TOKEN | sudo tee -a /var/www/html/.htaccess"

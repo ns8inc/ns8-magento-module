@@ -6,7 +6,7 @@
   </head>
   <body>
     <referenceContainer name="content">
-      <block class="Magento\Backend\Block\Template" template="NS8_CSP2::settings.phtml"/>
+      <block class="NS8\CSP2\Block\Adminhtml\Container" template="NS8_CSP2::settings.phtml"/>
     </referenceContainer>
   </body>
 </page>
