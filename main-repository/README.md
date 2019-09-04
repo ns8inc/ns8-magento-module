@@ -1,3 +1,3 @@
 # Getting Started
 
-* Read the [wiki](https://github.com/ns8inc/ns8-magento-csp-module-v2/wiki)
+* Read the [docs](https://internal-dev-docs.readme.io/docs/magento)
