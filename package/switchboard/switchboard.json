@@ -13,7 +13,7 @@
         "arn": "...",
         "sources": [{
             "moduleName": "@ns8/ns8-magento2-switches",
-            "fileName": "Magento2CreateOrderActionSwitch"
+            "fileName": "CreateOrderActionSwitch"
         }]
     }]
 }
