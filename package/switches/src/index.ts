@@ -1,1 +1,1 @@
-export * from './Magento2CreateOrderActionSwitch';
+export * from './CreateOrderActionSwitch';
