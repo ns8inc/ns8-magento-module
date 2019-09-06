@@ -3,11 +3,5 @@
   <menu>
     <add id="NS8_CSP2::ns8_sales_menu" title="NS8 Protect" module="NS8_CSP2" sortOrder="10" dependsOnModule="NS8_CSP2" resource="NS8_CSP2::admin" parent="Magento_Sales::sales" />
     <add id="NS8_CSP2::ns8_dashboard" title="Dashboard" module="NS8_CSP2" sortOrder="10" dependsOnModule="NS8_CSP2" action="ns8csp2admin/sales/dashboard" resource="NS8_CSP2::admin" parent="NS8_CSP2::ns8_sales_menu" />
-    <add id="NS8_CSP2::ns8_suspicious_orders" title="Suspicious Orders" module="NS8_CSP2" sortOrder="11" dependsOnModule="NS8_CSP2" action="ns8csp2admin/sales/suspiciousorders" resource="NS8_CSP2::admin" parent="NS8_CSP2::ns8_sales_menu" />
-    <add id="NS8_CSP2::ns8_orderrules" title="Order Rules" module="NS8_CSP2" sortOrder="12" dependsOnModule="NS8_CSP2" action="ns8csp2admin/sales/orderrules" resource="NS8_CSP2::admin" parent="NS8_CSP2::ns8_sales_menu" />
-
-    <add id="NS8_CSP2::ns8_settings_menu" title="NS8 Protect" module="NS8_CSP2" sortOrder="10" dependsOnModule="NS8_CSP2" resource="NS8_CSP2::admin" parent="Magento_Backend::system" />
-    <add id="NS8_CSP2::ns8_settings" title="Settings" module="NS8_CSP2" sortOrder="10" dependsOnModule="NS8_CSP2" action="ns8csp2admin/system/settings" resource="NS8_CSP2::admin" parent="NS8_CSP2::ns8_settings_menu" />
-    <add id="NS8_CSP2::ns8_monitors" title="Monitors" module="NS8_CSP2" sortOrder="11" dependsOnModule="NS8_CSP2" action="ns8csp2admin/system/monitors" resource="NS8_CSP2::admin" parent="NS8_CSP2::ns8_settings_menu" />
   </menu>
 </config>
