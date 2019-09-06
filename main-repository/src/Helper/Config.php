@@ -14,6 +14,7 @@ use Magento\Framework\Module\ModuleList as ModuleList;
 use Magento\Framework\App\Cache\TypeListInterface as TypeListInterface;
 use Magento\Framework\App\RequestInterface as RequestInterface;
 use Magento\Framework\Stdlib\CookieManagerInterface as CookieManagerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Generic Helper/Utility class with convenience methods for common ops
@@ -61,7 +62,8 @@ class Config extends AbstractHelper
         ModuleList $moduleList,
         TypeListInterface $cacheTypeList,
         RequestInterface $request,
-        CookieManagerInterface $cookieManager
+        CookieManagerInterface $cookieManager,        
+        LoggerInterface $loggerInterface
     ) {
         $this->state = $state;
         $this->scopeConfig = $scopeConfig;
@@ -73,7 +75,8 @@ class Config extends AbstractHelper
         $this->moduleList = $moduleList;
         $this->cacheTypeList = $cacheTypeList;
         $this->request = $request;
-        $this->cookieManager = $cookieManager;
+        $this->cookieManager = $cookieManager;        
+        $this->logger = $loggerInterface;
     }
 
     /**
@@ -81,7 +84,7 @@ class Config extends AbstractHelper
      *
      * @return string The NS8 Protect URL in use for this instance.
      */
-    private function getApiBaseUrl()
+    public function getApiBaseUrl()
     {
         $url = getenv('NS8_PROTECT_URL', true) ?: getenv('NS8_PROTECT_URL');
 
@@ -90,17 +93,6 @@ class Config extends AbstractHelper
             $url = 'https://protect.ns8.com';
         }
         return $url;
-    }
-
-    /**
-     * Gets the current protect URL based on the environment variables; defaults to Production.
-     *
-     * @return string The NS8 Protect URL in use for this instance.
-     */
-    public function getApiUrl($route = '')
-    {
-        $url = $this->getApiBaseUrl();
-        return $url.$route.'?Authorization='.$this->getAccessToken();
     }
 
     /**
@@ -126,18 +118,30 @@ class Config extends AbstractHelper
 
     /**
      * Gets an access token.
-     *
+     *     
+     * 
      * @return string The NS8 Protect Access Token.
      */
     public function getAccessToken()
     {
-        $token = getenv('DEV_ACCESS_TOKEN', true) ?: getenv('DEV_ACCESS_TOKEN');
+        $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/csp2/token'));
+        return $storedToken;        
+    }     
 
-        if (isset($token) && (bool) $token &&  $token !== "") {
-            return $token;
-        } else {
-            # TODO: replace this with logic to get the access token from OAuth
-            return 'ee411d1d-7ca1-4a45-90d8-5011f55430d9';
-        }
+    /**
+     * Save an access token.
+     *     
+     * 
+     * @return string The NS8 Protect Access Token.
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->scopeWriter->save('ns8/csp2/token', $this->encryptor->encrypt($accessToken));
+        $this->flushConfigCache();       
+    }  
+
+    public function flushConfigCache()
+    {
+        $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
     }
 }

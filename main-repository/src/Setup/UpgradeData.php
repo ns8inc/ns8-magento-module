@@ -4,7 +4,10 @@
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Integration\Model\ConfigBasedIntegrationManager;
+use Magento\Integration\Model\Config;
 use Magento\Framework\Setup\UpgradeDataInterface;
+use NS8\CSP2\Helper\HttpClient;
+use NS8\CSP2\Helper\Logger;
 
 class UpgradeData implements UpgradeDataInterface
 {
@@ -16,7 +19,7 @@ class UpgradeData implements UpgradeDataInterface
     /**
      * @param ConfigBasedIntegrationManager $integrationManager
      */
-    public function __construct(ConfigBasedIntegrationManager $integrationManager, \Psr\Log\LoggerInterface $logger)
+    public function __construct(ConfigBasedIntegrationManager $integrationManager, Logger $logger)
     {
         $this->integrationManager = $integrationManager;
         $this->logger = $logger;

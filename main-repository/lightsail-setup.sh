@@ -51,14 +51,11 @@ sed -i '151s/None/All/' /etc/httpd/conf/httpd.conf
 # Set Composer path
 echo "COMPOSER_HOME=/var/www/html/var/composer_home" | sudo tee -a /etc/environment
 # Set NS8_PROTECT_URL environment variable
-echo "NS8_PROTECT_URL=$NS8_PROTECT_URL | sudo tee -a /etc/environment​"
-echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL | sudo tee -a /var/www/html/.htaccess"
-# Set NS8_CLIENT_URL environment variable
-echo "NS8_CLIENT_URL=$NS8_CLIENT_URL | sudo tee -a /etc/environment​"
-echo "SetEnv NS8_CLIENT_URL $NS8_CLIENT_URL | sudo tee -a /var/www/html/.htaccess"
+#echo "NS8_PROTECT_URL=$NS8_PROTECT_URL" | sudo tee -a /etc/environment​
+echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL" | sudo tee -a /var/www/html/.htaccess
 # Set DEV_ACCESS_TOKEN
-echo "DEV_ACCESS_TOKEN=$DEV_ACCESS_TOKEN | sudo tee -a /etc/environment​"
-echo "SetEnv DEV_ACCESS_TOKEN $DEV_ACCESS_TOKEN | sudo tee -a /var/www/html/.htaccess"
+#echo "DEV_ACCESS_TOKEN=$DEV_ACCESS_TOKEN" | sudo tee -a /etc/environment​
+#echo "SetEnv DEV_ACCESS_TOKEN $DEV_ACCESS_TOKEN" | sudo tee -a /var/www/html/.htaccess
 
 # Set file permissions (Force the group apache on all files and give RWX permissions)
 chown -R apache:apache /var/www/html
