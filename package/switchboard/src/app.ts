@@ -18,24 +18,8 @@ const instantiateHandler = (name: string) => {
   return operator['handle'];
 };
 
-const onInstallEventHandler = instantiateHandler('onInstallEvent');
-const updateCustVerifyStatusEventHandler = instantiateHandler('updateCustVerifyStatusEvent');
-const updateEQ8ScoreEventHandler = instantiateHandler('updateEQ8ScoreEvent');
-const updateOrderRiskEventHandler = instantiateHandler('updateOrderRiskEvent');
-const updateOrderStatusEventHandler = instantiateHandler('updateOrderStatusEvent');
-const uninstallActionHandler = instantiateHandler('uninstallAction');
 const createOrderActionHandler = instantiateHandler('createOrderAction');
-const updateMerchantActionHandler = instantiateHandler('updateMerchantAction');
-const updateOrderStatusActionHandler = instantiateHandler('updateOrderStatusAction');
 
 export {
-  onInstallEventHandler,
-  updateCustVerifyStatusEventHandler,
-  updateEQ8ScoreEventHandler,
-  updateOrderRiskEventHandler,
-  updateOrderStatusEventHandler,
-  uninstallActionHandler,
-  createOrderActionHandler,
-  updateMerchantActionHandler,
-  updateOrderStatusActionHandler,
+  createOrderActionHandler
 };

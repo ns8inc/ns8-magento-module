@@ -1,126 +1,19 @@
 {
-    "integrationId": "shopify",
+    "integrationId": "magento2",
     "version": "1.0",
-    "modules": [
-        { "name": "@ns8/ns8-shopify-switches", "version": "1.0.175" }
-    ],
-    "switches": [
-        {
-            "type": "event",
-            "name": "onInstallEvent",
-            "operator": "EventOperator",
-            "executorType": "step-function",
-            "arn": "...",
-            "sources": [
-                {
-                    "moduleName": "@ns8/ns8-shopify-switches",
-                    "fileName": "ShopifyInstallEventSwitch"
-                }
-            ]
-        },
-        {
-            "type": "event",
-            "name": "updateCustVerifyStatusEvent",
-            "operator": "EventOperator",
-            "executorType": "step-function",
-            "arn": "...",
-            "sources": [
-                {
-                    "moduleName": "@ns8/ns8-shopify-switches",
-                    "fileName": "ShopifyUpdateCustomerVerificationStatusEventSwitch"
-                }
-            ]
-        },
-        {
-            "type": "event",
-            "name": "updateEQ8ScoreEvent",
-            "operator": "EventOperator",
-            "executorType": "step-function",
-            "arn": "...",
-            "sources": [
-                {
-                    "moduleName": "@ns8/ns8-shopify-switches",
-                    "fileName": "ShopifyUpdateEQ8ScoreEventSwitch"
-                }
-            ]
-        },
-        {
-            "type": "event",
-            "name": "updateOrderRiskEvent",
-            "operator": "EventOperator",
-            "executorType": "step-function",
-            "arn": "...",
-            "sources": [
-                {
-                    "moduleName": "@ns8/ns8-shopify-switches",
-                    "fileName": "ShopifyUpdateOrderRiskEventSwitch"
-                }
-            ]
-        },
-        {
-            "type": "event",
-            "name": "updateOrderStatusEvent",
-            "operator": "EventOperator",
-            "executorType": "step-function",
-            "arn": "...",
-            "sources": [
-                {
-                    "moduleName": "@ns8/ns8-shopify-switches",
-                    "fileName": "ShopifyUpdateOrderStatusEventSwitch"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "name": "uninstallAction",
-            "operator": "UninstallActionOperator",
-            "executorType": "step-function",
-            "arn": "...",
-            "sources": [
-                {
-                    "moduleName": "@ns8/ns8-shopify-switches",
-                    "fileName": "ShopifyUninstallActionSwitch"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "name": "createOrderAction",
-            "operator": "CreateOrderActionOperator",
-            "executorType": "step-function",
-            "arn": "...",
-            "sources": [
-                {
-                    "moduleName": "@ns8/ns8-shopify-switches",
-                    "fileName": "ShopifyCreateOrderActionSwitch"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "name": "updateMerchantAction",
-            "operator": "UpdateMerchantActionOperator",
-            "executorType": "step-function",
-            "arn": "...",
-            "sources": [
-                {
-                    "moduleName": "@ns8/ns8-shopify-switches",
-                    "fileName": "ShopifyUpdateMerchantActionSwitch"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "name": "updateOrderStatusAction",
-            "operator": "UpdateOrderStatusActionOperator",
-            "executorType": "step-function",
-            "arn": "...",
-            "sources": [
-                {
-                    "moduleName": "@ns8/ns8-shopify-switches",
-                    "fileName": "ShopifyUpdateOrderStatusActionSwitch"
-                }
-            ]
-        }
-    ]
+    "modules": [{
+        "name": "@ns8/ns8-magento2-switches",
+        "version": "link"
+    }],
+    "switches": [{
+        "type": "action",
+        "name": "createOrderAction",
+        "operator": "CreateOrderActionOperator",
+        "executorType": "step-function",
+        "arn": "...",
+        "sources": [{
+            "moduleName": "@ns8/ns8-magento2-switches",
+            "fileName": "CreateOrderActionSwitch"
+        }]
+    }]
 }
