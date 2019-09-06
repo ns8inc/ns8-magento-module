@@ -19,7 +19,7 @@ class OrderUpdate implements ObserverInterface
     protected $logger;
     protected $order;
     protected $httpClient;
-    
+
     /**
      * Default constructor
      *
@@ -52,9 +52,10 @@ class OrderUpdate implements ObserverInterface
     {
         try {
             $order = $observer->getEvent()->getOrder()->getData();
-            $response = $this->httpClient->post('order', $order);
+            $data = array('order'=>$order);
+            $response = $this->httpClient->post('protect/executor', $data, 'CREATE_ORDER_ACTION');
         } catch (\Exception $e) {
-            $this->logger->error($e);
+            $this->logger->error('The order update could not be processed', $e);
         }
     }
 }

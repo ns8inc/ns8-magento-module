@@ -115,7 +115,7 @@ class Logger extends AbstractHelper
                 ]
             ];
             //Log to our own API
-            $this->httpClient->post('logs', $data);
+            $this->httpClient->get('protect/diagnostic', $data);
         } catch (\Exception $e) {
             $this->logger->log('ERROR', 'NS8_CSP2.log: '.$e->getMessage(), $e);
         } finally {
