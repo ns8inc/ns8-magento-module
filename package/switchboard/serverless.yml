@@ -40,7 +40,6 @@ RetryDefault: &retryDefault
   - ErrorEquals:
     - States.ALL
     IntervalSeconds: 1
-    MaxAttempts: 0
     BackoffRate: 2
 
 stepFunctions:
