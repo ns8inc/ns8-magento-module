@@ -1,4 +1,5 @@
 <?php
+
 namespace NS8\CSP2\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
@@ -100,6 +101,23 @@ class Config extends AbstractHelper
     {
         $url = $this->getApiBaseUrl();
         return $url.$route.'?Authorization='.$this->getAccessToken();
+    }
+
+    /**
+     * Gets the current protect URL based on the environment variables; defaults to Production.
+     *
+     * @return string The NS8 Protect Client URL in use for this instance.
+     */
+    public function getNS8ClientUrl()
+    {
+        $url = getenv('NS8_CLIENT_URL') ?: getenv('NS8_CLIENT_URL');
+        $url = trim($url);
+
+        if (isset($url) && $url !== "") {
+            return $url;
+        } else {
+            return 'https://protect.ns8.com';
+        }
     }
 
     /**
