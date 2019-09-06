@@ -1,4 +1,6 @@
-import { CreateOrderActionSwitch, SwitchContext } from 'ns8-switchboard-interfaces';
+import {
+  SwitchContext as ISwitchContext
+} from 'ns8-switchboard-interfaces';
 import {
   Address,
   AddressType,
@@ -12,13 +14,11 @@ import {
   TransactionMethod,
   TransactionStatus,
 } from 'ns8-protect-models';
-import * as Shopify from 'shopify-api-node';
 import {
   parsePhoneNumberFromString,
   CountryCode,
   PhoneNumber,
 } from 'libphonenumber-js';
-import getShopifyClient from './getShopifyClient';
 
 const formatPhoneNumber = (phoneNumberString: string, countryCode?: string): string | undefined => {
   let phoneNumber: PhoneNumber | undefined;
@@ -37,7 +37,7 @@ const formatPhoneNumber = (phoneNumberString: string, countryCode?: string): str
   return e164PhoneNumberString;
 };
 
-const mapCustomer = (customer: Shopify.IOrderCustomer, billingAddress: Shopify.ICustomerAddress): Customer => {
+const mapCustomer = (customer: any, billingAddress: any): Customer => {
   const {
     id,
     first_name = '',
@@ -73,7 +73,7 @@ const mapCustomer = (customer: Shopify.IOrderCustomer, billingAddress: Shopify.I
   });
 };
 
-const mapAddress = (address: Shopify.ICustomerAddress, type: string): Address => {
+const mapAddress = (address: any, type: string): Address => {
   const {
     name,
     company,
@@ -106,7 +106,7 @@ const mapAddress = (address: Shopify.ICustomerAddress, type: string): Address =>
   });
 };
 
-const mapLineItems = (lineItems: Shopify.IOrderLineItem[]): LineItem[] => {
+const mapLineItems = (lineItems: any[]): LineItem[] => {
   return (lineItems.map((lineItem): LineItem => {
     const {
       title,
@@ -150,12 +150,12 @@ const mapLineItems = (lineItems: Shopify.IOrderLineItem[]): LineItem[] => {
   }));
 };
 
-const hasGiftCard = (lineItems: Shopify.IOrderLineItem[]): boolean => (
+const hasGiftCard = (lineItems: any[]): boolean => (
   lineItems.some((item) => item.gift_card)
 );
 
 const mapCreditCard =
-  (paymentDetails: Shopify.IPaymentDetails, kind: Shopify.TransactionKind, gateway: string): CreditCard => {
+  (paymentDetails: any, kind: string, gateway: string): CreditCard => {
     const {
       avs_result_code,
       credit_card_bin,
@@ -172,7 +172,7 @@ const mapCreditCard =
 
     return new CreditCard({
       gateway,
-      transactionType: kind ? CreditCardTransactionType[kind.toUpperCase()] : undefined,
+      transactionType: CreditCardTransactionType[kind.toUpperCase()],
       creditCardNumber: credit_card_number ? credit_card_number.split(' ').pop() : undefined,
       creditCardCompany: credit_card_company,
       avsResultCode: avs_result_code,
@@ -181,8 +181,8 @@ const mapCreditCard =
     });
   };
 
-const mapTransactions = (transactionList: Shopify.ITransaction[]): Transaction[] => (
-  transactionList.map((transaction: Shopify.ITransaction): Transaction => {
+const mapTransactions = (transactionList: any[]): Transaction[] => (
+  transactionList.map((transaction: any): Transaction => {
     const {
       id,
       amount,
@@ -197,11 +197,11 @@ const mapTransactions = (transactionList: Shopify.ITransaction[]): Transaction[]
       id: number,
       amount: string,
       currency: string,
-      kind: Shopify.TransactionKind,
+      kind: string,
       gateway: string,
-      status: Shopify.TransactionStatus,
+      status: string,
       message: string,
-      payment_details: Shopify.IPaymentDetails,
+      payment_details: any,
       processed_at: string,
     } = transaction;
 
@@ -238,7 +238,7 @@ const mapTransactions = (transactionList: Shopify.ITransaction[]): Transaction[]
   })
 );
 
-const makeTestClientDetails = (): Shopify.IOrderClientDetails => ({
+const makeTestClientDetails = (): any => ({
   accept_language: 'en-us',
   browser_height: null,
   browser_ip: '23.117.48.221',
@@ -248,7 +248,7 @@ const makeTestClientDetails = (): Shopify.IOrderClientDetails => ({
     'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Safari/605.1.15',
 });
 
-const parseDemoNoteAttributes = (noteAttributes: Shopify.IOrderLineItemNote[] = []): Shopify.IOrderClientDetails => {
+const parseDemoNoteAttributes = (noteAttributes: any[] = []): any => {
   const ip = noteAttributes
     .filter((note) => note.name === 'ip')
     .map((note) => note.value)
@@ -274,7 +274,7 @@ const parseDemoNoteAttributes = (noteAttributes: Shopify.IOrderLineItemNote[] = 
   };
 };
 
-const mapSession = (clientDetails: Shopify.IOrderClientDetails): Session => {
+const mapSession = (clientDetails: any): Session => {
   const {
     accept_language,
     browser_ip,
@@ -288,7 +288,7 @@ const mapSession = (clientDetails: Shopify.IOrderClientDetails): Session => {
   });
 };
 
-const getClientDetails = (order: Shopify.IOrder): Shopify.IOrderClientDetails | Error => {
+const getClientDetails = (order: any): any | Error => {
   const minimumIpAddressLength = 7;
   const {
     client_details,
@@ -297,7 +297,7 @@ const getClientDetails = (order: Shopify.IOrder): Shopify.IOrderClientDetails | 
     test,
   } = order;
 
-  let clientDetails: Shopify.IOrderClientDetails | Error;
+  let clientDetails = Object;
 
   if (source_name === 'demo' && (!client_details || Object.keys(client_details).length === 0)) {
     // Generated golfer gifts demo orders need to have their client data parsed from the note_attributes
@@ -308,137 +308,89 @@ const getClientDetails = (order: Shopify.IOrder): Shopify.IOrderClientDetails | 
   } else if (client_details && Object.keys(client_details).length > 0) {
     // Only proceed with creating the order if the client_details exist.
     clientDetails = client_details;
-  } else {
-    clientDetails = new Error(`Client details cannot be derived from this order.`);
-  }
-
-  if (!(clientDetails instanceof Error)) {
-    if (!clientDetails.browser_ip || clientDetails.browser_ip.length < minimumIpAddressLength) {
-      clientDetails = new Error('Invalid Client Details object: IP Address.');
-    }
-  }
-
-  if (clientDetails instanceof Error) {
-    clientDetails.message = `${clientDetails.message} ${JSON.stringify(order)}`;
   }
 
   return clientDetails;
 };
 
-const shouldOrderBeProcessed = (transaction: Shopify.ITransaction): boolean => {
-  const {
-    kind,
-    payment_details,
-    status,
-    source_name,
-  }: {
-    kind: Shopify.TransactionKind,
-    payment_details: Shopify.IPaymentDetails,
-    status: Shopify.TransactionStatus,
-    source_name: Shopify.TransactionSourceName,
-  } = transaction;
-
-  let shouldProcessOrder: boolean = false;
+const shouldOrderBeProcessed = (transaction: any): boolean => {
+  const shouldProcessOrder: boolean = false;
 
   // Non-credit-card transactions and 3rd party credit card processors (paypal, amazon pay, etc) without payment_details
-  if (!payment_details &&
-    kind !== 'void' && kind !== 'refund' && kind !== 'capture' &&
-    (status === 'pending' || status === 'success')) {
-    shouldProcessOrder = true;
-  }
+  // if (!payment_details &&
+  //     kind !== 'void' && kind !== 'refund' && kind !== 'capture' &&
+  //     (status === 'pending' || status === 'success')) {
+  //     shouldProcessOrder = true;
+  // }
 
   // Credit card transactions
-  if (payment_details && status === 'success' && (kind === 'sale' || kind === 'authorization')) {
-    shouldProcessOrder = true;
-  }
+  // if (payment_details && status === 'success' && (kind === 'sale' || kind === 'authorization')) {
+  //     shouldProcessOrder = true;
+  // }
 
   // Skip all Point-of-Sale transactions
-  if (source_name === 'pos') {
-    shouldProcessOrder = false;
-  }
+  // if (source_name === 'pos') {
+  //     shouldProcessOrder = false;
+  // }
 
   return shouldProcessOrder;
 };
 
-export class ShopifyCreateOrderActionSwitch implements CreateOrderActionSwitch {
-  async create(switchContext: SwitchContext): Promise<Order> {
-    const { order_id }: { order_id: number } = switchContext.data;
+const processOrder = (switchContext: ISwitchContext): any => {
+  const { order_id }: { order_id: number } = switchContext.data;
 
-    console.log(switchContext.merchant.domain, order_id);
+  console.log(switchContext.merchant.domain, order_id);
 
-    if (shouldOrderBeProcessed(switchContext.data)) {
-      const client: Shopify = getShopifyClient(switchContext);
-      const shopifyOrder: Shopify.IOrder = await client.order.get(order_id);
-      const shopifyTransactionList: Shopify.ITransaction[] = await client.transaction.list(order_id);
-      const { id: merchantId }: { id: string } = switchContext.merchant;
-      const addresses: Address[] = [];
-      const clientDetails = getClientDetails(shopifyOrder);
-      const {
-        id,
-        name,
-        currency,
-        billing_address,
-        shipping_address,
-        customer,
-        total_price,
-        line_items = [],
-        created_at,
-      } = shopifyOrder;
+  if (shouldOrderBeProcessed(switchContext.data)) {
+    const { id: merchantId }: { id: string } = switchContext.merchant;
+    const addresses: Address[] = [];
+    const clientDetails = getClientDetails(switchContext.data);
+    const {
+      id,
+      name,
+      currency,
+      billing_address,
+      shipping_address,
+      customer,
+      total_price,
+      line_items = [],
+      created_at,
+    } = switchContext.data;
 
-      // Temporary logging to better understand transaction shapes.
-      if (switchContext.data.kind === 'capture' &&
-        shopifyTransactionList.every((transaction) => transaction.kind !== 'authorization')) {
-        console.log('capture without authorization', JSON.stringify({
-          orderId: id,
-          orderName: name,
-          domain: switchContext.merchant.domain,
-          contextData: switchContext.data,
-          transactions: shopifyTransactionList,
-        }));
-      }
+    const session: Session = mapSession(clientDetails);
 
-      if (clientDetails instanceof Error) {
-        console.log(clientDetails);
-      } else {
-        const session: Session = mapSession(clientDetails);
-
-        if (billing_address) {
-          addresses.push(mapAddress(billing_address, 'BILLING'));
-        }
-
-        if (shipping_address) {
-          addresses.push(mapAddress(shipping_address, 'SHIPPING'));
-        }
-
-        let protectCustomer: Customer;
-
-        if (customer) {
-          protectCustomer = mapCustomer(customer, billing_address);
-        }
-
-        return new Order({
-          name,
-          currency,
-          merchantId,
-          addresses,
-          session,
-          platformId: id.toString(),
-          customer: protectCustomer,
-          platformCreatedAt: new Date(created_at),
-          totalPrice: parseFloat(total_price),
-          transactions: mapTransactions(shopifyTransactionList),
-          lineItems: mapLineItems(line_items),
-          hasGiftCard: hasGiftCard(line_items),
-          platformStatus: 'Active',
-        });
-      }
-    } else {
-      console.log('Order transaction not qualified to create a new order. ' +
-        `Domain: ${switchContext.merchant.domain} ` +
-        `Shopify Order ID: ${order_id}`);
+    if (billing_address) {
+      addresses.push(mapAddress(billing_address, 'BILLING'));
     }
+
+    if (shipping_address) {
+      addresses.push(mapAddress(shipping_address, 'SHIPPING'));
+    }
+
+    let protectCustomer: Customer;
+
+    if (customer) {
+      protectCustomer = mapCustomer(customer, billing_address);
+    }
+
+    // return new Order({
+    //   name,
+    //   currency,
+    //   merchantId,
+    //   addresses,
+    //   session,
+    //   platformId: id.toString(),
+    //   customer: protectCustomer,
+    //   platformCreatedAt: new Date(created_at),
+    //   totalPrice: parseFloat(total_price),
+    //   transactions: mapTransactions(shopifyTransactionList),
+    //   lineItems: mapLineItems(line_items),
+    //   hasGiftCard: hasGiftCard(line_items),
+    //   platformStatus: 'Active',
+    // });
   }
-}
+
+};
 
 export {
   formatPhoneNumber,
@@ -450,4 +402,5 @@ export {
   mapTransactions,
   parseDemoNoteAttributes,
   shouldOrderBeProcessed,
+  processOrder
 };
