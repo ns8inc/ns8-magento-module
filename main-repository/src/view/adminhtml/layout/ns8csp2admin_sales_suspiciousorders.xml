@@ -6,7 +6,11 @@
   </head>
   <body>
     <referenceContainer name="content">
-      <block class="NS8\CSP2\Block\Adminhtml\Container" template="NS8_CSP2::settings.phtml"/>
+      <block class="NS8\CSP2\Block\Adminhtml\Container" template="NS8_CSP2::clientIframe.phtml">
+        <arguments>
+          <argument name="path" xsi:type="string">/report/suspicious-orders</argument>
+        </arguments>
+      </block>
     </referenceContainer>
   </body>
 </page>
