@@ -109,14 +109,7 @@ class HttpClient extends AbstractHelper
 
             $httpClient->setOptions(array('timeout' => $timeout));
             $httpClient->setMethod($method);
-            switch($method) {
-                case 'GET':
-                    $httpClient->setParameterGet($parameters);
-                    break;
-                default:
-                    $httpClient->setParameterPost($parameters);
-                    break;
-            }
+            $httpClient->setParameterGet($parameters);
 
             $httpClient->setMethod($method);   
             if (!empty($headers)) {
