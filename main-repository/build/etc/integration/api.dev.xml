@@ -1,0 +1,11 @@
+<integrations>
+  <integration name="NS8 Integration">
+    <resources>
+      <resource name="Resource_Access::all" />
+      <resource name="Magento_Company::index" />
+      <resource name="Magento_Sales::all" />
+      <resource name="Magento_Customer::all" />
+      <resource name="Magento_Log::all" />
+    </resources>
+  </integration>
+</integrations>

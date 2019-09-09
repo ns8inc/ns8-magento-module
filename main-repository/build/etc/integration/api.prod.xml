@@ -1,0 +1,27 @@
+<integrations>
+  <integration name="NS8 Integration">
+    <resources>
+      <resource name="Resource_Access::all" />
+      <resource name="Magento_Company::index" />
+      <resource name="Magento_Sales::all" />
+      <resource name="Magento_Customer::all" />
+      <resource name="Magento_Log::all" />
+      <!-- To grant permission to Magento_Log::online, its parent Magento_Customer::customer needs to be declared as well-->
+      <resource name="Magento_Customer::customer" />
+      <resource name="Magento_Log::online" />
+      <!-- To grant permission to Magento_Sales::reorder, all its parent resources need to be declared-->
+      <resource name="Magento_Sales::sales" />
+      <resource name="Magento_Sales::sales_operation" />
+      <resource name="Magento_Sales::sales_order" />
+      <resource name="Magento_Sales::actions" />
+      <resource name="Magento_Sales::reorder" />
+      <resource name="Magento_Sales::edit" />
+      <resource name="Magento_Sales::view" />
+      <resource name="Magento_Sales::cancel" />
+      <resource name="Magento_Sales::edit" />
+      <resource name="Magento_Sales::hold" />
+      <resource name="Magento_Sales::unhold" />
+      <resource name="Magento_Sales::payment_amount_authorization" />
+    </resources>
+  </integration>
+</integrations>

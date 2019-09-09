@@ -27,6 +27,6 @@ class UpgradeData implements UpgradeDataInterface
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
         $this->logger->debug('Running Data Upgrade');
-        $this->integrationManager->processIntegrationConfig(['testIntegration']);
+        $this->integrationManager->processIntegrationConfig(['NS8 Integration']);
     }
 }
