@@ -113,6 +113,10 @@ class Config extends AbstractHelper
         $url = getenv('NS8_CLIENT_URL') ?: getenv('NS8_CLIENT_URL');
         $url = trim($url);
 
+        if (substr($url, -1) === '/') {
+            $url = substr($url, 0, -1);
+        }
+
         if (isset($url) && $url !== "") {
             return $url;
         } else {

@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
   <head>
-    <title>NS8 Protect Settings</title>
+    <title>NS8 Protect</title>
     <css src="NS8_CSP2::css/styles.css" />
   </head>
   <body>
     <referenceContainer name="content">
-      <block class="NS8\CSP2\Block\Adminhtml\Container" template="NS8_CSP2::settings.phtml"/>
+      <block class="NS8\CSP2\Block\Adminhtml\Container" template="NS8_CSP2::clientIframe.phtml" />
     </referenceContainer>
   </body>
 </page>

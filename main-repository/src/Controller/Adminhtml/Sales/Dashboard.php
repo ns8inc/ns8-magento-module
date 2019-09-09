@@ -1,12 +1,12 @@
 <?php
 
-namespace NS8\CSP2\Controller\Adminhtml\Settings;
+namespace NS8\CSP2\Controller\Adminhtml\Sales;
 
 use \Magento\Backend\App\Action;
 use \Magento\Backend\App\Action\Context;
 use \Magento\Framework\View\Result\PageFactory;
 
-class Index extends Action
+class Dashboard extends Action
 {
     /**
      * @var PageFactory
@@ -26,7 +26,7 @@ class Index extends Action
     }
 
     /**
-     * Load the page defined in view/adminhtml/layout/ns8csp2admin_settings_index.xml
+     * Load the page defined in view/adminhtml/layout/ns8csp2admin_sales_dashboard.xml
      *
      * @return \Magento\Framework\View\Result\Page
      */
