@@ -51,6 +51,7 @@ sed -i '151s/None/All/' /etc/httpd/conf/httpd.conf
 # Set Composer path
 echo "COMPOSER_HOME=/var/www/html/var/composer_home" | sudo tee -a /etc/environment
 # Set NS8_PROTECT_URL environment variable
+echo "SetEnv NS8_CLIENT_URL $NS8_CLIENT_URL" | sudo tee -a /var/www/html/.htaccess
 #echo "NS8_PROTECT_URL=$NS8_PROTECT_URL" | sudo tee -a /etc/environment​
 echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL" | sudo tee -a /var/www/html/.htaccess
 # Set DEV_ACCESS_TOKEN

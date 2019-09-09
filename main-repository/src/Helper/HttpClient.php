@@ -145,15 +145,14 @@ class HttpClient extends AbstractHelper
      * 
      * @return string Oauth access token.
      */
-    private function extractOauthTokenFromAuthString($accessTokenString) {        
-        $accessTokenAndSecret = explode('&', $accessTokenString);
-        $accessToken = explode('=', $accessTokenAndSecret[0]);
-        return $accessToken[1];
+    private function extractOauthTokenFromAuthString($accessTokenString) {
+        parse_str($accessTokenString, $parsedToken);
+        return $parsedToken['oauth_token'];                
     }   
 
     private function getAccessToken() {
         $storedToken = $this->config->getAccessToken();
-        if (isset($storedToken) && (bool) $storedToken &&  $storedToken !== "") {
+        if (!empty($storedToken)) {
             return $storedToken;
         } else {
             $integration = $this->integrationServiceInterface->findByName('testIntegration');
