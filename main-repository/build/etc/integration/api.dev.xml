@@ -9,6 +9,11 @@
       <resource name="Magento_Log::all" />
       <!-- To grant permission to Magento_Log::online, its parent Magento_Customer::customer needs to be declared as well-->
       <resource name="Magento_Customer::customer" />
+      <resource name="Magento_Customer::manage" />
+      <resource name="Magento_Customer::online" />
+      <resource name="Magento_Sales::capture" />
+      <resource name="Magento_SalesRule::quote" />
+
       <resource name="Magento_Log::online" />
       <!-- To grant permission to Magento_Sales::reorder, all its parent resources need to be declared-->
       <resource name="Magento_Sales::sales" />
