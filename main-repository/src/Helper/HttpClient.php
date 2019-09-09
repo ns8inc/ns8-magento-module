@@ -6,6 +6,8 @@ use Magento\Framework\HTTP\ZendClientFactory;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
+use Magento\Integration\Api\IntegrationServiceInterface;
+use Magento\Integration\Api\OauthServiceInterface;
 
 use NS8\CSP2\Helper\Config;
 
@@ -25,10 +27,14 @@ class HttpClient extends AbstractHelper
      */
     public function __construct(
         Config $config,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        OauthServiceInterface $oauthServiceInterface,
+        IntegrationServiceInterface $integrationServiceInterface
     ) {
         $this->config = $config;
         $this->logger = $logger;
+        $this->integrationServiceInterface = $integrationServiceInterface;
+        $this->oauthServiceInterface = $oauthServiceInterface;
     }
 
     /**
@@ -41,9 +47,9 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout Optional timeout value. Default 30.
      * @return mixed the XHR reponse object.
      */
-    public function get($url, $data = [], $action = 'CREATE_ORDER_ACTION', $timeout = 30)
+    public function get($url, $data = [], $parameters = [], $headers = [], $timeout = 30)
     {
-        return $this->execute($url, $data, "GET", $action, $timeout);
+        return $this->executeWithAuth($url, $data, "GET", $parameters, $headers, $timeout);
     }
 
     /**
@@ -56,9 +62,9 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout Optional timeout value. Default 30.
      * @return mixed the XHR reponse object.
      */
-    public function post($url, $data = [], $action = 'CREATE_ORDER_ACTION', $timeout = 30)
+    public function post($url, $data = [], $parameters = [], $headers = [], $timeout = 30)
     {
-        return $this->execute($url, $data, "POST", $action, $timeout);
+        return $this->executeWithAuth($url, $data, "POST", $parameters, $headers, $timeout);
     }
 
     /**
@@ -72,30 +78,104 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout
      * @return mixed the XHR reponse object.
      */
-    private function execute($route, $data = [], $method = "POST", $action = 'CREATE_ORDER_ACTION', $timeout = 30)
+    private function executeWithAuth($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30)
+    {
+        $accessToken = $this->getAccessToken();
+
+        $authHeaderString = 'Bearer ' . $accessToken;
+
+        $authHeader = array('Authorization' => $authHeaderString);
+        $allHeaders = array_merge($headers, $authHeader);        
+        return $this->execute($url, $data, $method, $parameters, $allHeaders, $timeout);
+    }
+
+    /**
+     * Internal method to handle the logic of making the HTTP request
+     *
+     * @param [type] $url
+     * @param [type] $data
+     * @param string $method
+     * @param array $parameters
+     * @param array $headers
+     * @param integer $timeout
+     * @return mixed the XHR reponse object.
+     */
+    private function execute($route, $data = [], $method = "POST", $parameters = [], $headers = [], $timeout = 30)
     {
         try {
-            $uri = $this->config->getApiUrl($route).'&action='.$action;
+            $uri = $this->config->getApiBaseUrl().$route;
             $httpClient = new Client();
             $httpClient->setUri($uri);
-            #TODO: support the parameters/headers passed in
+
             $httpClient->setOptions(array('timeout' => $timeout));
             $httpClient->setMethod($method);
-            switch($method) {
-                case 'GET':
-                    $httpClient->setParameterGet($data);
-                    break;
-                default:
-                    $httpClient->setParameterPost($data);
-                    break;
-            }
+            $httpClient->setParameterGet($parameters);
 
+            $httpClient->setMethod($method);   
+            if (!empty($headers)) {
+                $httpClient->setHeaders($headers);
+            }
+            #TODO: make this more robust; nothing everything can be converted to JSON
+            $json = json_encode($data);
+            #TODO: this is a KLUDGE. There must be a better way!
+            $httpClient->setRawBody($json);
             #TODO: decompose this into more discrete steps.
-            $response = Decoder::decode($httpClient->send()->getBody());
+            $body = $httpClient->send()->getBody();
+            
+            $response = Decoder::decode($body);
+            return $response;
         } catch (\Exception $e) {
             $this->logger->error('Failed to execute API call', array('error'=>$e));
         }
-        #TODO: consumers probably want more control over the response
-        return $response;
+        #TODO: consumers probably want more control over the response        
     }
+
+    /**
+     * Auth string has a format of oauth_token=ABC&oauth_token_secret=XYZ. This method 
+     * extracts the oauth_token string.
+     *
+     * @param string $authString
+     * 
+     * @return string Oauth access token.
+     */
+    private function extractOauthTokenFromAuthString($accessTokenString) {
+        parse_str($accessTokenString, $parsedToken);
+        return $parsedToken['oauth_token'];                
+    }   
+
+    private function getAccessToken() {
+        $storedToken = $this->config->getAccessToken();
+        if (!empty($storedToken)) {
+            return $storedToken;
+        } else {
+            $integration = $this->integrationServiceInterface->findByName('testIntegration');
+            $consumerId = $integration->getConsumerId();
+            $consumer = $this->oauthServiceInterface->loadConsumer($consumerId);
+            $accessTokenString = $this->oauthServiceInterface->getAccessToken($consumerId);
+            $accessToken = $this->extractOauthTokenFromAuthString($accessTokenString);
+            
+            $protectAccessToken = $this->getProtectAccessToken($consumer->getKey(), $accessToken);
+            $this->config->setAccessToken($protectAccessToken);
+            $storedToken = $protectAccessToken;
+        }
+        
+        return $storedToken;
+    }
+
+    /**
+     * Call protect endpoint to exchange Magento creds for a protect access token.
+     *
+     * @param string $consumerId
+     * @param string $accessToken
+     * 
+     * @return string Protect access token.
+     */
+    private function getProtectAccessToken($consumerId, $accessToken) {
+        $getParams = array(
+            'oauth_consumer_key' => $consumerId,
+            'access_token' => $accessToken
+        );
+        $response = $this->execute('/protect/magento/accessTokens', '', 'GET', $getParams);
+        return $response->token;
+    }   
 }
