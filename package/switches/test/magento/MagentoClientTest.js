@@ -8,6 +8,15 @@ let options = {
   accessTokenSecret: '5rbez5wpc52utcxvun5ps4u2zcnhzcga'
 };
 let client = Magento2Client(options);
+
+client.addMethods('orders', function (restClient) {
+  var module = {};
+  module.list = function () {
+    return restClient.get('/orders');
+  }
+  return module;
+})
+
 client.orders.list()
   .then(function (categories) {
     console.log(categories)
