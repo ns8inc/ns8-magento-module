@@ -150,7 +150,7 @@ class HttpClient extends AbstractHelper
         if (!empty($storedToken)) {
             return $storedToken;
         } else {
-            $integration = $this->integrationServiceInterface->findByName('testIntegration');
+            $integration = $this->integrationServiceInterface->findByName('NS8 Integration');
             $consumerId = $integration->getConsumerId();
             $consumer = $this->oauthServiceInterface->loadConsumer($consumerId);
             $accessTokenString = $this->oauthServiceInterface->getAccessToken($consumerId);
