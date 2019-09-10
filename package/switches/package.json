@@ -32,6 +32,7 @@
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
     "libphonenumber-js": "^1.7.20",
+    "magento2-rest-client": "github:ns8inc/magento2-rest-client",
     "ns8-protect-models": "^1.0.192",
     "ns8-switchboard-interfaces": "^1.0.76",
     "shopify-api-node": "2.20.1"
