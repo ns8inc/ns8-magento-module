@@ -31,12 +31,22 @@ class Container extends \Magento\Backend\Block\Template
     }
 
     /**
-     * Get the NS8 Client URl
+     * Get the NS8 Client URL
      *
      * @return string
      */
     public function getNS8ClientUrl()
     {
         return $this->configHelper->getNS8ClientUrl();
+    }
+
+    /**
+     * Get the NS8 Protect Client Access Token
+     *
+     * @return string
+     */
+    public function getAccessToken()
+    {
+        return $this->configHelper->getAccessToken();
     }
 }
