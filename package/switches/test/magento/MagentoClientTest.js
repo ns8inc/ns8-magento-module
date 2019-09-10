@@ -1,4 +1,4 @@
-let Magento2Client = require('magento2-rest-client').Magento2Client;
+let Magento2Client = require('@ns8/magento2-rest-client').Magento2Client;
 
 let options = {
   url: 'http://dev-cfroehlich.ns8demos.com/rest',
@@ -8,14 +8,6 @@ let options = {
   accessTokenSecret: '5rbez5wpc52utcxvun5ps4u2zcnhzcga'
 };
 let client = Magento2Client(options);
-
-client.addMethods('orders', function (restClient) {
-  var module = {};
-  module.list = function () {
-    return restClient.get('/orders');
-  }
-  return module;
-})
 
 client.orders.list()
   .then(function (categories) {
