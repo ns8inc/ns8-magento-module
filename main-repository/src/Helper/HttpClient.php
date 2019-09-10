@@ -85,7 +85,7 @@ class HttpClient extends AbstractHelper
         $authHeaderString = 'Bearer ' . $accessToken;
 
         $authHeader = array('Authorization' => $authHeaderString);
-        $allHeaders = array_merge($headers, $authHeader);        
+        $allHeaders = array_merge($headers, $authHeader);
         return $this->execute($url, $data, $method, $parameters, $allHeaders, $timeout);
     }
 
@@ -111,7 +111,7 @@ class HttpClient extends AbstractHelper
             $httpClient->setMethod($method);
             $httpClient->setParameterGet($parameters);
 
-            $httpClient->setMethod($method);   
+            $httpClient->setMethod($method);
             if (!empty($headers)) {
                 $httpClient->setHeaders($headers);
             }
@@ -121,29 +121,31 @@ class HttpClient extends AbstractHelper
             $httpClient->setRawBody($json);
             #TODO: decompose this into more discrete steps.
             $body = $httpClient->send()->getBody();
-            
+
             $response = Decoder::decode($body);
             return $response;
         } catch (\Exception $e) {
             $this->logger->error('Failed to execute API call', array('error'=>$e));
         }
-        #TODO: consumers probably want more control over the response        
+        #TODO: consumers probably want more control over the response
     }
 
     /**
-     * Auth string has a format of oauth_token=ABC&oauth_token_secret=XYZ. This method 
+     * Auth string has a format of oauth_token=ABC&oauth_token_secret=XYZ. This method
      * extracts the oauth_token string.
      *
      * @param string $authString
-     * 
+     *
      * @return string Oauth access token.
      */
-    private function extractOauthTokenFromAuthString($accessTokenString) {
+    private function extractOauthTokenFromAuthString($accessTokenString)
+    {
         parse_str($accessTokenString, $parsedToken);
-        return $parsedToken['oauth_token'];                
-    }   
+        return $parsedToken['oauth_token'];
+    }
 
-    private function getAccessToken() {
+    private function getAccessToken()
+    {
         $storedToken = $this->config->getAccessToken();
         if (!empty($storedToken)) {
             return $storedToken;
@@ -153,12 +155,12 @@ class HttpClient extends AbstractHelper
             $consumer = $this->oauthServiceInterface->loadConsumer($consumerId);
             $accessTokenString = $this->oauthServiceInterface->getAccessToken($consumerId);
             $accessToken = $this->extractOauthTokenFromAuthString($accessTokenString);
-            
+
             $protectAccessToken = $this->getProtectAccessToken($consumer->getKey(), $accessToken);
             $this->config->setAccessToken($protectAccessToken);
             $storedToken = $protectAccessToken;
         }
-        
+
         return $storedToken;
     }
 
@@ -167,15 +169,16 @@ class HttpClient extends AbstractHelper
      *
      * @param string $consumerId
      * @param string $accessToken
-     * 
+     *
      * @return string Protect access token.
      */
-    private function getProtectAccessToken($consumerId, $accessToken) {
+    private function getProtectAccessToken($consumerId, $accessToken)
+    {
         $getParams = array(
             'oauth_consumer_key' => $consumerId,
             'access_token' => $accessToken
         );
         $response = $this->execute('/protect/magento/accessTokens', '', 'GET', $getParams);
         return $response->token;
-    }   
+    }
 }

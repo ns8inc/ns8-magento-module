@@ -62,7 +62,7 @@ class Config extends AbstractHelper
         ModuleList $moduleList,
         TypeListInterface $cacheTypeList,
         RequestInterface $request,
-        CookieManagerInterface $cookieManager,        
+        CookieManagerInterface $cookieManager,
         LoggerInterface $loggerInterface
     ) {
         $this->state = $state;
@@ -75,7 +75,7 @@ class Config extends AbstractHelper
         $this->moduleList = $moduleList;
         $this->cacheTypeList = $cacheTypeList;
         $this->request = $request;
-        $this->cookieManager = $cookieManager;        
+        $this->cookieManager = $cookieManager;
         $this->logger = $loggerInterface;
     }
 
@@ -118,27 +118,27 @@ class Config extends AbstractHelper
 
     /**
      * Gets an access token.
-     *     
-     * 
+     *
+     *
      * @return string The NS8 Protect Access Token.
      */
     public function getAccessToken()
     {
         $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/csp2/token'));
-        return $storedToken;        
-    }     
+        return $storedToken;
+    }
 
     /**
      * Save an access token.
-     *     
-     * 
+     *
+     *
      * @return string The NS8 Protect Access Token.
      */
     public function setAccessToken($accessToken)
     {
         $this->scopeWriter->save('ns8/csp2/token', $this->encryptor->encrypt($accessToken));
-        $this->flushConfigCache();       
-    }  
+        $this->flushConfigCache();
+    }
 
     public function flushConfigCache()
     {
