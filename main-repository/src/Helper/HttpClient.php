@@ -47,9 +47,9 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout Optional timeout value. Default 30.
      * @return mixed the XHR reponse object.
      */
-    public function get($url, $data = [], $parameters = [], $headers = [], $timeout = 30)
+    public function get($url, $data = [], $parameters = [], $headers = [], $query = '', $timeout = 30)
     {
-        return $this->executeWithAuth($url, $data, "GET", $parameters, $headers, $timeout);
+        return $this->executeWithAuth($url, $data, "GET", $parameters, $headers, $query, $timeout);
     }
 
     /**
@@ -62,9 +62,9 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout Optional timeout value. Default 30.
      * @return mixed the XHR reponse object.
      */
-    public function post($url, $data = [], $parameters = [], $headers = [], $timeout = 30)
+    public function post($url, $parameters = [], $headers = [], $query = '', $timeout = 30)
     {
-        return $this->executeWithAuth($url, $data, "POST", $parameters, $headers, $timeout);
+        return $this->executeWithAuth($url, null, "POST", $parameters, $headers, $query, $timeout);
     }
 
     /**
@@ -78,7 +78,7 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout
      * @return mixed the XHR reponse object.
      */
-    private function executeWithAuth($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30)
+    private function executeWithAuth($url, $data, $method = "POST", $parameters = [], $headers = [], $query = '', $timeout = 30)
     {
         $accessToken = $this->getAccessToken();
 
@@ -86,7 +86,7 @@ class HttpClient extends AbstractHelper
 
         $authHeader = array('Authorization' => $authHeaderString);
         $allHeaders = array_merge($headers, $authHeader);
-        return $this->execute($url, $data, $method, $parameters, $allHeaders, $timeout);
+        return $this->execute($url, $data, $method, $parameters, $allHeaders, $query, $timeout);
     }
 
     /**
@@ -100,10 +100,14 @@ class HttpClient extends AbstractHelper
      * @param integer $timeout
      * @return mixed the XHR reponse object.
      */
-    private function execute($route, $data = [], $method = "POST", $parameters = [], $headers = [], $timeout = 30)
+    private function execute($route, $data = [], $method = "POST", $parameters = [], $headers = [], $query = '', $timeout = 30)
     {
         try {
             $uri = $this->config->getApiBaseUrl().$route;
+            if (!empty($query)) {
+                $uri = $uri.'?'.$query;
+            }
+
             $httpClient = new Client();
             $httpClient->setUri($uri);
 
