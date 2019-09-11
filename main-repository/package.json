@@ -6,10 +6,11 @@
   "license": "MIT",
   "scripts": {
     "lint:ts": "eslint --ext=ts src",
-    "dev": "node ./build/dev.js",
-    "dist": "node ./build/release.js"
+    "dev": "node ./build/config.js --env=dev",
+    "dist": "node ./build/config.js --env=prod"
   },
   "dependencies": {
+    "minimist": "^1.2.0",
     "typescript": "~3.5.3"
   },
   "devDependencies": {
