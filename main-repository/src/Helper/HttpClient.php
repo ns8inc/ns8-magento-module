@@ -182,7 +182,7 @@ class HttpClient extends AbstractHelper
             'oauth_consumer_key' => $consumerId,
             'access_token' => $accessToken
         );
-        $response = $this->execute('/protect/magento/accessTokens', '', 'GET', $getParams);
+        $response = $this->execute('protect/magento/accessTokens', '', 'GET', $getParams);
         return $response->token;
     }
 }
