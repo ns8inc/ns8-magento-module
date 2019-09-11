@@ -30,6 +30,7 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
+    "dotenv": "^8.1.0",
     "isomorphic-fetch": "^2.2.1",
     "libphonenumber-js": "^1.7.20",
     "magento2-rest-client": "github:ns8inc/magento2-rest-client",
