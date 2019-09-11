@@ -79,6 +79,14 @@ class Config extends AbstractHelper
         $this->logger = $loggerInterface;
     }
 
+    /**
+     * Assembles the URL using environment variables and handles parsing extra `/`
+     *
+     * @param string $envVarName
+     * @param string $defaultUrl
+     * @param string $route
+     * @return string The final URL
+     */
     private function getApiUrl($envVarName, $defaultUrl, $route = '')
     {
         $url = getenv($envVarName, true) ?: getenv($envVarName) ?: '';
@@ -104,8 +112,9 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Gets the current protect URL based on the environment variables; defaults to Production.
+     * Gets the current protect API URL based on the environment variables; defaults to Production.
      *
+     * @param string $route
      * @return string The NS8 Protect URL in use for this instance.
      */
     public function getApiBaseUrl($route)
@@ -114,8 +123,9 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Gets the current protect URL based on the environment variables; defaults to Production.
+     * Gets the current protect Client URL based on the environment variables; defaults to Production.
      *
+     * @param string $route
      * @return string The NS8 Protect Client URL in use for this instance.
      */
     public function getNS8ClientUrl($route)

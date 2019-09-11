@@ -92,8 +92,8 @@ class HttpClient extends AbstractHelper
     /**
      * Internal method to handle the logic of making the HTTP request
      *
-     * @param [type] $url
-     * @param [type] $data
+     * @param string $route
+     * @param array $data
      * @param string $method
      * @param array $parameters
      * @param array $headers
