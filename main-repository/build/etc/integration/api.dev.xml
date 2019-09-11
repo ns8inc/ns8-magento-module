@@ -7,6 +7,7 @@
       <resource name="Magento_Sales::all" />
       <resource name="Magento_Customer::all" />
       <resource name="Magento_Log::all" />
+
       <!-- To grant permission to Magento_Log::online, its parent Magento_Customer::customer needs to be declared as well-->
       <resource name="Magento_Customer::customer" />
       <resource name="Magento_Customer::manage" />
