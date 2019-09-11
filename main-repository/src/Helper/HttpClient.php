@@ -92,8 +92,8 @@ class HttpClient extends AbstractHelper
     /**
      * Internal method to handle the logic of making the HTTP request
      *
-     * @param [type] $url
-     * @param [type] $data
+     * @param string $route
+     * @param array $data
      * @param string $method
      * @param array $parameters
      * @param array $headers
@@ -103,7 +103,8 @@ class HttpClient extends AbstractHelper
     private function execute($route, $data = [], $method = "POST", $parameters = [], $headers = [], $timeout = 30)
     {
         try {
-            $uri = $this->config->getApiBaseUrl().$route;
+            $uri = $this->config->getApiBaseUrl($route);
+
             $httpClient = new Client();
             $httpClient->setUri($uri);
 
@@ -115,10 +116,13 @@ class HttpClient extends AbstractHelper
             if (!empty($headers)) {
                 $httpClient->setHeaders($headers);
             }
-            #TODO: make this more robust; nothing everything can be converted to JSON
-            $json = json_encode($data);
-            #TODO: this is a KLUDGE. There must be a better way!
-            $httpClient->setRawBody($json);
+
+            if (!empty($data)) {
+                $httpClient->setParameterPost($data);
+                // #TODO: do we still need this?
+                // $json = json_encode($data);
+                // $httpClient->setRawBody($json);
+            }
             #TODO: decompose this into more discrete steps.
             $body = $httpClient->send()->getBody();
 
@@ -178,7 +182,7 @@ class HttpClient extends AbstractHelper
             'oauth_consumer_key' => $consumerId,
             'access_token' => $accessToken
         );
-        $response = $this->execute('/protect/magento/accessTokens', '', 'GET', $getParams);
+        $response = $this->execute('protect/magento/accessTokens', '', 'GET', $getParams);
         return $response->token;
     }
 }

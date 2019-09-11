@@ -80,40 +80,57 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Gets the current protect URL based on the environment variables; defaults to Production.
+     * Assembles the URL using environment variables and handles parsing extra `/`
      *
-     * @return string The NS8 Protect URL in use for this instance.
+     * @param string $envVarName
+     * @param string $defaultUrl
+     * @param string $route
+     * @return string The final URL
      */
-    public function getApiBaseUrl()
+    private function getApiUrl($envVarName, $defaultUrl, $route = '')
     {
-        $url = getenv('NS8_PROTECT_URL', true) ?: getenv('NS8_PROTECT_URL');
-
-        if (isset($url) && $url !== "") {
-        } else {
-            $url = 'https://protect.ns8.com';
-        }
-        return $url;
-    }
-
-    /**
-     * Gets the current protect URL based on the environment variables; defaults to Production.
-     *
-     * @return string The NS8 Protect Client URL in use for this instance.
-     */
-    public function getNS8ClientUrl()
-    {
-        $url = getenv('NS8_CLIENT_URL') ?: getenv('NS8_CLIENT_URL');
+        $url = getenv($envVarName, true) ?: getenv($envVarName) ?: '';
         $url = trim($url);
 
         if (substr($url, -1) === '/') {
             $url = substr($url, 0, -1);
         }
-
-        if (isset($url) && $url !== "") {
-            return $url;
-        } else {
-            return 'https://protect.ns8.com';
+        if (empty($url)) {
+            $url = $defaultUrl;
         }
+        if (!empty($route)) {
+            $route = trim($route);
+            if (substr($route, -1) === '/') {
+                $route = substr($route, 0, -1);
+            }
+            if(substr($route, 0, 1) === '/') {
+                $route = substr($route, 1);
+            }
+            $url = $url.'/'.$route;
+        }
+        return $url;
+    }
+
+    /**
+     * Gets the current protect API URL based on the environment variables; defaults to Production.
+     *
+     * @param string $route
+     * @return string The NS8 Protect URL in use for this instance.
+     */
+    public function getApiBaseUrl($route)
+    {
+        return $this->getApiUrl('NS8_PROTECT_URL', 'https://protect.ns8.com', $route);
+    }
+
+    /**
+     * Gets the current protect Client URL based on the environment variables; defaults to Production.
+     *
+     * @param string $route
+     * @return string The NS8 Protect Client URL in use for this instance.
+     */
+    public function getNS8ClientUrl($route)
+    {
+        return $this->getApiUrl('NS8_CLIENT_URL', 'https://client.ns8.com', $route);
     }
 
     /**
