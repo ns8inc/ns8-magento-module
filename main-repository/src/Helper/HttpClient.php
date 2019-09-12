@@ -45,11 +45,12 @@ class HttpClient extends AbstractHelper
      * @param array $parameters Optional array of request parameters.
      * @param array $headers Optional array of request headers.
      * @param integer $timeout Optional timeout value. Default 30.
+     * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    public function get($url, $data = [], $parameters = [], $headers = [], $timeout = 30)
+    public function get($url, $data = [], $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
     {
-        return $this->executeWithAuth($url, $data, "GET", $parameters, $headers, $timeout);
+        return $this->executeWithAuth($url, $data, "GET", $parameters, $headers, $timeout, $decodeJson);
     }
 
     /**
@@ -60,9 +61,10 @@ class HttpClient extends AbstractHelper
      * @param array $parameters Optional array of request parameters.
      * @param array $headers Optional array of request headers.
      * @param integer $timeout Optional timeout value. Default 30.
+     * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    public function post($url, $data = [], $parameters = [], $headers = [], $timeout = 30)
+    public function post($url, $data = [], $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
     {
         return $this->executeWithAuth($url, $data, "POST", $parameters, $headers, $timeout);
     }
@@ -76,9 +78,10 @@ class HttpClient extends AbstractHelper
      * @param array $parameters
      * @param array $headers
      * @param integer $timeout
+     * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    private function executeWithAuth($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30)
+    private function executeWithAuth($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
     {
         $accessToken = $this->getAccessToken();
 
@@ -86,7 +89,7 @@ class HttpClient extends AbstractHelper
 
         $authHeader = array('Authorization' => $authHeaderString);
         $allHeaders = array_merge($headers, $authHeader);
-        return $this->execute($url, $data, $method, $parameters, $allHeaders, $timeout);
+        return $this->execute($url, $data, $method, $parameters, $allHeaders, $timeout, $decodeJson);
     }
 
     /**
@@ -98,9 +101,10 @@ class HttpClient extends AbstractHelper
      * @param array $parameters
      * @param array $headers
      * @param integer $timeout
+     * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    private function execute($route, $data = [], $method = "POST", $parameters = [], $headers = [], $timeout = 30)
+    private function execute($route, $data = [], $method = "POST", $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
     {
         try {
             $uri = $this->config->getApiBaseUrl().$route;
@@ -122,7 +126,7 @@ class HttpClient extends AbstractHelper
             #TODO: decompose this into more discrete steps.
             $body = $httpClient->send()->getBody();
 
-            $response = Decoder::decode($body);
+            $response = $decodeJson ? Decoder::decode($body) : $body;
             return $response;
         } catch (\Exception $e) {
             $this->logger->error('Failed to execute API call', array('error'=>$e));
