@@ -1,8 +1,11 @@
-# ns8-shopify-switches #
-Contains all shopify customizations.  Dependant on ns8-switchboard-operator and ns8-switchboard-lambda
+# ns8-magento-switches
 
-## Install ##
+Contains all magento customizations. Dependant on ns8-switchboard-operator and ns8-switchboard-lambda
+
+## Install
+
 - `yarn`
 
-## Build ##
+## Build
+
 - `yarn build`
