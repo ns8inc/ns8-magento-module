@@ -11,7 +11,9 @@
   "license": "MIT",
   "scripts": {
     "init:dev": "yarn && yarn build && yarn link",
-    "build": "rimraf dist && tsc && rimraf node_modules && yarn install --production=true",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "build": "tsc",
     "lint": "tslint --project .",
     "test": "nyc mocha --colors"
   },
