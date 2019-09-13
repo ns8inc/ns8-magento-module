@@ -117,7 +117,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect URL in use for this instance.
      */
-    public function getApiBaseUrl($route)
+    public function getApiBaseUrl($route = '')
     {
         return $this->getApiUrl('NS8_PROTECT_URL', 'https://protect.ns8.com', $route);
     }
@@ -128,7 +128,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect Client URL in use for this instance.
      */
-    public function getNS8ClientUrl($route)
+    public function getNS8ClientUrl($route = '')
     {
         return $this->getApiUrl('NS8_CLIENT_URL', 'https://client.ns8.com', $route);
     }
