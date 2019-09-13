@@ -88,7 +88,7 @@ cd /var/www && curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6ba
 ​
 ​
 # Unzip Magento files to web root
-sudo -u apache unzip /var/www/Magento-* -d /var/www/html
+sudo -u apache unzip -qq /var/www/Magento-* -d /var/www/html
 ​
 # Install Magento via CLI
 # NOTE: You MUST modify `base-url` to point to your own subdomain
