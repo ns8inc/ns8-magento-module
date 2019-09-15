@@ -32,10 +32,10 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
-    "@ns8/magento2-rest-client": "^0.1.2",
     "dotenv": "^8.1.0",
     "isomorphic-fetch": "^2.2.1",
     "libphonenumber-js": "^1.7.24",
+    "@ns8/magento2-rest-client": "^0.1.8",
     "ns8-protect-models": "^1.0.204",
     "ns8-switchboard-interfaces": "^1.0.77"
   }
