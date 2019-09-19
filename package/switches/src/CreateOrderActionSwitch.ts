@@ -1,17 +1,16 @@
 import {
   CreateOrderActionSwitch as ICreateOrderActionSwitch,
-  SwitchContext as ISwitchContext,
-
+  SwitchContext as ISwitchContext
 } from 'ns8-switchboard-interfaces';
 import { Order, Customer, Address, Session, AddressType } from 'ns8-protect-models';
-import { RestClient, Order as MagentOrder } from '@ns8/magento2-rest-client';
+import { RestClient, Order as MagentoOrder } from '@ns8/magento2-rest-client';
 
 export class CreateOrderActionSwitch implements ICreateOrderActionSwitch {
   async create(switchContext: ISwitchContext): Promise<Order> {
     console.log(switchContext);
     if (switchContext.data.order.status != 'pending' && switchContext.data.order.state != 'new') return;
 
-    const order: MagentOrder = switchContext.data.order as MagentOrder;
+    const order: MagentoOrder = switchContext.data.order as MagentoOrder;
 
     return new Order({
       name: `#${order.entity_id}`,
@@ -31,7 +30,7 @@ export class CreateOrderActionSwitch implements ICreateOrderActionSwitch {
       transactions: [],
       lineItems: [],
       hasGiftCard: false,
-      platformStatus: 'Active',
+      platformStatus: 'Active'
     });
   }
 }
