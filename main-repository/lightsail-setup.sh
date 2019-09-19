@@ -135,6 +135,9 @@ sed -i 's/<private-key>/d68ff7618b2f3118a0342d7f914848c8/' /var/www/html/auth.js
 #Create the directory where we will test the CSP2 extension
 sudo -u apache mkdir -p /var/www/html/app/code/NS8/CSP2
 
+#Make the magento command executable
+sudo chmod +x /var/www/html/bin/magento
+
 ## The following 3 lines will (eventually) install CSP2 via the Magento Marketplace
 #sudo -u apache php /var/www/html/vendor/composer/composer/bin/composer require ns8/csp2
 #sudo -u apache php /var/www/html/bin/magento module:enable NS8_CSP2
