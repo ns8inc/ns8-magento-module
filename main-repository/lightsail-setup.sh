@@ -26,6 +26,7 @@ yum update -y
 ​
 # Install LAMP
 yum install -y \
+git \
 httpd24 \
 php71 \
 php71-bcmath \
