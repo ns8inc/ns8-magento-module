@@ -20,6 +20,9 @@ mkswap /swapfile
 chmod 600 /swapfile
 swapon /swapfile
 echo "swap /swapfile swap defaults 0 0" | sudo tee -a /etc/fstab
+
+# Add nodejs repository
+curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash -
 ​
 # Update packages
 yum update -y
@@ -28,6 +31,7 @@ yum update -y
 yum install -y \
 git \
 httpd24 \
+nodejs \
 php71 \
 php71-bcmath \
 php71-gd \
