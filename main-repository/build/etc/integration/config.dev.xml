@@ -1,0 +1,7 @@
+<integrations>
+   <integration name="NS8 Integration">
+       <email>christopher.froehlich@ns8.com</email>
+       <endpoint_url>https://cfro-magento.ngrok.io/protect/magento/callback</endpoint_url>
+       <identity_link_url>https://cfro-magento.ngrok.io/protect/magento/identity</identity_link_url>
+   </integration>
+</integrations>

@@ -1,0 +1,60 @@
+service: ns8-switchboard-${file(./switchboard.json):integrationId}
+
+custom:
+  integrationName: ${self:service}-${self:provider.stage}
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, env:DEV_NAME}
+  region: us-west-2
+  timeout: 30
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action: "s3:GetObject"
+      Resource: "arn:aws:s3:::protect-api-switch-data-${self:provider.stage}/*"
+
+package:
+  exclude:
+    - src/**
+    - test/**
+    - .circleci/**
+    - scripts/**
+    - .idea/**
+    - .vscode/**
+    - README.md
+    - ?*/**.map
+    - ?*.json
+    - ?*.lock
+    - ?*.log
+  include:
+    - switchboard.json
+
+functions:
+  createOrderAction:
+    name: ${self:custom.integrationName}-createOrderAction
+    handler: dist/app.createOrderActionHandler
+
+RetryDefault: &retryDefault
+  Retry:
+  - ErrorEquals:
+    - States.ALL
+    IntervalSeconds: 1
+    BackoffRate: 2
+
+stepFunctions:
+  stateMachines:
+    createOrderAction:
+      name: "${self:custom.integrationName}-createOrderAction"
+      definition:
+        StartAt: createOrderActionStart
+        States:
+          createOrderActionStart:
+            Type: Task
+            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-createOrderAction"
+            <<: *retryDefault
+            End: true
+
+plugins:
+  - serverless-step-functions
+  - serverless-pseudo-parameters

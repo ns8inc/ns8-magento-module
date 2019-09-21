@@ -1,0 +1,13 @@
+{
+    "eslint.lintTask.enable": true,
+    "gitlens.advanced.messages": {
+        "suppressShowKeyBindingsNotice": true
+    },
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "files.autoSave": "afterDelay",
+    "php.suggest.basic": false,
+    "php-cs-fixer.executablePath": "${extensionPath}\\php-cs-fixer.phar",
+    "php-cs-fixer.autoFixBySemicolon": true,
+    "phpcs.standard": "PSR2",
+    "php-cs-fixer.rules": "@PSR2",
+}

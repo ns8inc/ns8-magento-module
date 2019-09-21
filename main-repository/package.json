@@ -1,0 +1,23 @@
+{
+  "name": "ns8-magento-csp-module-v2",
+  "version": "0.0.0",
+  "description": "magento extension project",
+  "author": "ns8inc",
+  "license": "MIT",
+  "scripts": {
+    "lint:ts": "eslint --ext=ts src",
+    "dev": "node ./build/config.js --env=dev",
+    "dist": "node ./build/config.js --env=prod"
+  },
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "typescript": "~3.5.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.0.0",
+    "@typescript-eslint/parser": "^2.0.0",
+    "eslint": "^6.2.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2"
+  }
+}
