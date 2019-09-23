@@ -47,8 +47,8 @@ mysql57-server
 chkconfig httpd on
 chkconfig mysqld on
 ​
-# Change PHP memory limit // Magento wants 2GB,
-sed -i 's/memory_limit = 128M/memory_limit = 2048M/g' /etc/php-*.ini
+# Change PHP memory limit // Magento wants > 2GB
+sed -i 's/memory_limit = 128M/memory_limit = 4096M/g' /etc/php-*.ini
 ​
 # Change Apache to allow Overrides
 sed -i '151s/None/All/' /etc/httpd/conf/httpd.conf
