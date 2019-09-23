@@ -33,12 +33,12 @@ class Dashboard extends Action
      * @param PageFactory $resultPageFactory
      */
     public function __construct(
-        Context $context, 
-        PageFactory $resultPageFactory, 
+        Context $context,
+        PageFactory $resultPageFactory,
         HttpClient $httpClient,
         Logger $logger,
-        Config $config)
-    {
+        Config $config
+    ) {
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
         $this->httpClient = $httpClient;
@@ -52,9 +52,13 @@ class Dashboard extends Action
      * @return \Magento\Framework\View\Result\Page
      */
     public function execute()
-    {        
+    {
         $merchant = $this->httpClient->get('/protect/merchants/current', '');
-        $this->logger->debug('MERCHANT ==> ' . $merchant->name);
+        if (empty($merchant->error)) {
+            $this->logger->debug('MERCHANT ==> ' . $merchant->name);
+        } else {
+            $this->logger->error($merchant->statusCode . ' ' . $merchant->error);
+        }
         return $this->resultPageFactory->create();
     }
 }
