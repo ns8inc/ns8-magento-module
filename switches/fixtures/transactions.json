@@ -1,115 +1,135 @@
 [
   {
-    "transaction_id": 0,
-    "parent_id": 0,
-    "order_id": 0,
-    "payment_id": 0,
-    "txn_id": "string",
-    "parent_txn_id": "string",
-    "txn_type": "payment",
-    "is_closed": 1,
     "additional_information": null,
-    "created_at": "string",
     "child_transactions": [],
-    "extension_attributes": null
+    "created_at": "string",
+    "extension_attributes": null,
+    "is_closed": 1,
+    "order_id": 0,
+    "parent_id": 0,
+    "parent_txn_id": "string",
+    "payment_id": 0,
+    "transaction_id": 0,
+    "txn_id": "string",
+    "txn_type": "payment"
   },
   {
-    "transaction_id": 0,
-    "parent_id": 0,
-    "order_id": 0,
-    "payment_id": 0,
-    "txn_id": "string",
-    "parent_txn_id": "string",
-    "txn_type": "order",
-    "is_closed": 0,
-    "additional_information": ["string1", "string2", "string3"],
-    "created_at": "string",
+    "additional_information": [
+      "string1",
+      "string2",
+      "string3"
+    ],
     "child_transactions": [
       {
-        "transaction_id": 0,
-        "parent_id": 0,
-        "order_id": 0,
-        "payment_id": 0,
-        "txn_id": "string",
-        "parent_txn_id": "string",
-        "txn_type": "order",
-        "is_closed": 0,
-        "additional_information": ["string1", "string2", "string3"],
-        "created_at": "string",
+        "additional_information": [
+          "string1",
+          "string2",
+          "string3"
+        ],
         "child_transactions": [],
-        "extension_attributes": {}
+        "created_at": "string",
+        "extension_attributes": {},
+        "is_closed": 0,
+        "order_id": 0,
+        "parent_id": 0,
+        "parent_txn_id": "string",
+        "payment_id": 0,
+        "transaction_id": 0,
+        "txn_id": "string",
+        "txn_type": "order"
       },
       {
-        "transaction_id": 0,
-        "parent_id": 0,
-        "order_id": 0,
-        "payment_id": 0,
-        "txn_id": "string",
-        "parent_txn_id": "string",
-        "txn_type": "order",
-        "is_closed": 0,
-        "additional_information": ["string1", "string2", "string3"],
-        "created_at": "string",
+        "additional_information": [
+          "string1",
+          "string2",
+          "string3"
+        ],
         "child_transactions": [],
-        "extension_attributes": {}
+        "created_at": "string",
+        "extension_attributes": {},
+        "is_closed": 0,
+        "order_id": 0,
+        "parent_id": 0,
+        "parent_txn_id": "string",
+        "payment_id": 0,
+        "transaction_id": 0,
+        "txn_id": "string",
+        "txn_type": "order"
       }
     ],
-    "extension_attributes": {}
-  },
-  {
-    "transaction_id": 0,
-    "parent_id": null,
-    "order_id": 0,
-    "payment_id": 0,
-    "txn_id": "string",
-    "parent_txn_id": "string",
-    "txn_type": "authorization",
-    "is_closed": 0,
-    "additional_information": ["string"],
     "created_at": "string",
-    "child_transactions": [],
-    "extension_attributes": {}
+    "extension_attributes": {},
+    "is_closed": 0,
+    "order_id": 0,
+    "parent_id": 0,
+    "parent_txn_id": "string",
+    "payment_id": 0,
+    "transaction_id": 0,
+    "txn_id": "string",
+    "txn_type": "order"
   },
   {
-    "transaction_id": 0,
-    "parent_id": 0,
+    "additional_information": [
+      "string"
+    ],
+    "child_transactions": [],
+    "created_at": "string",
+    "extension_attributes": {},
+    "is_closed": 0,
     "order_id": 0,
-    "payment_id": 0,
-    "txn_id": "string",
+    "parent_id": null,
     "parent_txn_id": "string",
-    "txn_type": "capture",
+    "payment_id": 0,
+    "transaction_id": 0,
+    "txn_id": "string",
+    "txn_type": "authorization"
+  },
+  {
+    "additional_information": [
+      "string"
+    ],
+    "child_transactions": [],
+    "created_at": "string",
+    "extension_attributes": null,
     "is_closed": 1,
-    "additional_information": ["string"],
-    "created_at": "string",
-    "child_transactions": [],
-    "extension_attributes": null
-  },
-  {
-    "transaction_id": 0,
-    "parent_id": null,
     "order_id": 0,
-    "payment_id": 0,
-    "txn_id": "string",
-    "parent_txn_id": "string",
-    "txn_type": "void",
-    "is_closed": 0,
-    "additional_information": ["string"],
-    "created_at": "string",
-    "child_transactions": [],
-    "extension_attributes": {}
-  },
-  {
-    "transaction_id": 0,
     "parent_id": 0,
-    "order_id": 0,
-    "payment_id": 0,
-    "txn_id": "string",
     "parent_txn_id": "string",
-    "txn_type": "refund",
-    "is_closed": 0,
-    "additional_information": ["string"],
-    "created_at": "string",
+    "payment_id": 0,
+    "transaction_id": 0,
+    "txn_id": "string",
+    "txn_type": "capture"
+  },
+  {
+    "additional_information": [
+      "string"
+    ],
     "child_transactions": [],
-    "extension_attributes": {}
+    "created_at": "string",
+    "extension_attributes": {},
+    "is_closed": 0,
+    "order_id": 0,
+    "parent_id": null,
+    "parent_txn_id": "string",
+    "payment_id": 0,
+    "transaction_id": 0,
+    "txn_id": "string",
+    "txn_type": "void"
+  },
+  {
+    "additional_information": [
+      "string"
+    ],
+    "child_transactions": [],
+    "created_at": "string",
+    "extension_attributes": {},
+    "is_closed": 0,
+    "order_id": 0,
+    "parent_id": 0,
+    "parent_txn_id": "string",
+    "payment_id": 0,
+    "transaction_id": 0,
+    "txn_id": "string",
+    "txn_type": "refund"
   }
 ]

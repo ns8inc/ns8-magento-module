@@ -12,10 +12,10 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "init:dev": "yarn && yarn build && yarn install-modules",
+    "build": "rimraf dist && tsc",
     "deploy": "sls deploy",
-    "undeploy": "sls remove",
+    "init:dev": "yarn && yarn build && yarn install-modules",
     "install-modules": "node scripts/install-modules.js",
-    "build": "rimraf dist && tsc"
+    "undeploy": "sls remove"
   }
 }

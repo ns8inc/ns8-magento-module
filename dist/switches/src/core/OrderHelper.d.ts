@@ -1,0 +1,13 @@
+import { SwitchContext as ISwitchContext } from 'ns8-switchboard-interfaces';
+import { CreditCard, Customer, LineItem, Transaction } from 'ns8-protect-models';
+declare const formatPhoneNumber: (phoneNumberString: string, countryCode?: string | undefined) => string | undefined;
+declare const mapCustomer: (customer: any, billingAddress: any) => Customer;
+declare const mapLineItems: (lineItems: any[]) => LineItem[];
+declare const mapCreditCard: (paymentDetails: any, kind: string, gateway: string) => CreditCard;
+declare const mapTransactions: (transactionList: any[]) => Transaction[];
+declare const makeTestClientDetails: () => any;
+declare const parseDemoNoteAttributes: (noteAttributes?: any[]) => any;
+declare const getClientDetails: (order: any) => any;
+declare const shouldOrderBeProcessed: (transaction: any) => boolean;
+declare const processOrder: (switchContext: ISwitchContext) => any;
+export { formatPhoneNumber, getClientDetails, makeTestClientDetails, mapCreditCard, mapCustomer, mapLineItems, mapTransactions, parseDemoNoteAttributes, shouldOrderBeProcessed, processOrder };

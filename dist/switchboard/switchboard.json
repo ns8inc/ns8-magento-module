@@ -1,0 +1,25 @@
+{
+        "integrationId": "magento2",
+        "modules": [
+                {
+                        "name": "@ns8/ns8-magento2-switches",
+                        "version": "link"
+                }
+        ],
+        "switches": [
+                {
+                        "arn": "...",
+                        "executorType": "step-function",
+                        "name": "createOrderAction",
+                        "operator": "CreateOrderActionOperator",
+                        "sources": [
+                                {
+                                        "fileName": "CreateOrderActionSwitch",
+                                        "moduleName": "@ns8/ns8-magento2-switches"
+                                }
+                        ],
+                        "type": "action"
+                }
+        ],
+        "version": "1.0"
+}

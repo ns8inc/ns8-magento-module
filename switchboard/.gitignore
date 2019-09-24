@@ -1,8 +1,0 @@
-node_modules
-yarn-error.log
-.vscode
-.idea/
-.serverless
-.npmrc
-dist
-*.orig

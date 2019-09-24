@@ -1,24 +1,11 @@
-import { readFileSync } from 'fs';
-import Switchboard, { Source, Switch } from './Switchboard';
+import { SwitchboardInit } from '@ns8/ns8-protect-sdk';
+import switchboardJson from '../switchboard.json';
+import { Switchboard } from 'ns8-switchboard-interfaces';
 
-const switchboard: Switchboard = JSON.parse(readFileSync('./switchboard.json', 'utf8'));
-const operatorModule = require('@ns8/ns8-switchboard-operator');
+const switchboard = switchboardJson as unknown as Switchboard
+SwitchboardInit.installModules(switchboard);
 
-const instantiateHandler = (name: string) => {
-  const switchboardSwitch: Switch = switchboard.switches
-    .find((currSwitch: Switch) => currSwitch.name === name);
-
-  const switches = switchboardSwitch.sources
-    .map((source: Source) => {
-      const module = require(source.moduleName);
-      return new module[source.fileName]();
-    });
-
-  const operator = new operatorModule[switchboardSwitch.operator](switches);
-  return operator['handle'];
-};
-
-const createOrderActionHandler = instantiateHandler('createOrderAction');
+const createOrderActionHandler = SwitchboardInit.instantiateHandler(switchboard, 'createOrderAction');
 
 export {
   createOrderActionHandler

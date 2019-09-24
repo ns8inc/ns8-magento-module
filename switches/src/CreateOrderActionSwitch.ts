@@ -7,8 +7,6 @@ import { RestClient, Order as MagentoOrder } from '@ns8/magento2-rest-client';
 
 export class CreateOrderActionSwitch implements ICreateOrderActionSwitch {
   async create(switchContext: ISwitchContext): Promise<Order> {
-    console.log(switchContext);
-    if (switchContext.data.order.status != 'pending' && switchContext.data.order.state != 'new') return;
 
     const order: MagentoOrder = switchContext.data.order as MagentoOrder;
 
