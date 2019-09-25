@@ -55,7 +55,7 @@ function transform(val: any, typ: any, getProps: any): any {
       var typ = typs[i];
       try {
         return transform(val, typ, getProps);
-      } catch (_) {}
+      } catch (_) { }
     }
     return invalidValue(typs, val);
   }
@@ -114,10 +114,10 @@ function transform(val: any, typ: any, getProps: any): any {
     return typ.hasOwnProperty('unionMembers')
       ? transformUnion(typ.unionMembers, val)
       : typ.hasOwnProperty('arrayItems')
-      ? transformArray(typ.arrayItems, val)
-      : typ.hasOwnProperty('props')
-      ? transformObject(getProps(typ), typ.additional, val)
-      : invalidValue(typ, val);
+        ? transformArray(typ.arrayItems, val)
+        : typ.hasOwnProperty('props')
+          ? transformObject(getProps(typ), typ.additional, val)
+          : invalidValue(typ, val);
   }
   // Numbers can be parsed by Date but shouldn't be.
   if (typ === Date && typeof val !== 'number') return transformDate(typ, val);
@@ -166,10 +166,10 @@ const typeMap: any = {
       { json: 'additional_information', js: 'additionalInformation', typ: u(a(''), null) },
       { json: 'created_at', js: 'createdAt', typ: '' },
       { json: 'child_transactions', js: 'childTransactions', typ: a(r('Transaction')) },
-      { json: 'extension_attributes', js: 'extensionAttributes', typ: u(r('ExtensionAttributes'), null) }
+      { json: 'extension_attributes', js: 'extensionAttributes', typ: u(r('TransactionExtensionAttributes'), null) }
     ],
     false
   ),
-  ExtensionAttributes: o([], false),
+  TransactionExtensionAttributes: o([], false),
   TxnType: ['payment', 'order', 'authorization', 'capture', 'void', 'refund']
 };
