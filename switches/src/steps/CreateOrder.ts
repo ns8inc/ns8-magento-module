@@ -1,12 +1,9 @@
-import {
-  CreateOrderActionSwitch as ICreateOrderActionSwitch,
-  SwitchContext as ISwitchContext
-} from 'ns8-switchboard-interfaces';
+import { CreateOrderActionSwitch, SwitchContext } from 'ns8-switchboard-interfaces';
 import { Order, Customer, Address, Session, AddressType } from 'ns8-protect-models';
 import { RestClient, Order as MagentoOrder } from '@ns8/magento2-rest-client';
 
-export class CreateOrderActionSwitch implements ICreateOrderActionSwitch {
-  async create(switchContext: ISwitchContext): Promise<Order> {
+export class CreateOrder implements CreateOrderActionSwitch {
+  async create(switchContext: SwitchContext): Promise<Order> {
 
     const order: MagentoOrder = switchContext.data.order as MagentoOrder;
 

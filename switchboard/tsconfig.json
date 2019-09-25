@@ -1,18 +1,22 @@
 {
-    "compilerOptions": {
-        "incremental": false,
-        "module": "commonjs",
-        "outDir": "dist",
-        "removeComments": true,
-        "sourceMap": true,
-        "target": "ES2017"
-    },
-    "exclude": [
-        "test/**/*",
-        "node_modules",
-        "dist"
-    ],
-    "include": [
-        "src/**/*"
-    ]
+  "compilerOptions": {
+    "incremental": false,
+    "module": "commonjs",
+    "outDir": "dist",
+    "target": "ES2017",
+    "esModuleInterop": true,
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strictNullChecks": true
+  },
+  "exclude": [
+    "test/**/*",
+    "node_modules",
+    "dist"
+  ],
+  "include": [
+    "src/**/*",
+    "index.ts"
+  ]
 }

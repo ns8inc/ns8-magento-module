@@ -1,25 +1,116 @@
 {
-    "integrationId": "magento2",
-    "modules": [
+  "id": "magento2",
+  "modules": [
+    {
+      "name": "@ns8/ns8-magento2-switches",
+      "version": "link"
+    }
+  ],
+  "switches": [
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "Install",
+      "operator": "EventOperator",
+      "sources": [
         {
-            "name": "@ns8/ns8-magento2-switches",
-            "version": "link"
+          "fileName": "Install",
+          "moduleName": "@ns8/ns8-magento2-switches"
         }
-    ],
-    "switches": [
+      ],
+      "type": "event"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateCustomerVerificationStatus",
+      "operator": "EventOperator",
+      "sources": [
         {
-            "arn": "...",
-            "executorType": "step-function",
-            "name": "createOrderAction",
-            "operator": "CreateOrderActionOperator",
-            "sources": [
-                {
-                    "fileName": "CreateOrderActionSwitch",
-                    "moduleName": "@ns8/ns8-magento2-switches"
-                }
-            ],
-            "type": "action"
+          "fileName": "UpdateCustomerVerificationStatus",
+          "moduleName": "@ns8/ns8-magento2-switches"
         }
-    ],
-    "version": "1.0"
+      ],
+      "type": "event"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateEQ8Score",
+      "operator": "EventOperator",
+      "sources": [
+        {
+          "fileName": "UpdateEQ8Score",
+          "moduleName": "@ns8/ns8-magento2-switches"
+        }
+      ],
+      "type": "event"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateOrderRisk",
+      "operator": "EventOperator",
+      "sources": [
+        {
+          "fileName": "UpdateOrderRisk",
+          "moduleName": "@ns8/ns8-magento2-switches"
+        }
+      ],
+      "type": "event"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "Uninstall",
+      "operator": "UninstallActionOperator",
+      "sources": [
+        {
+          "fileName": "Uninstall",
+          "moduleName": "@ns8/ns8-magento2-switches"
+        }
+      ],
+      "type": "action"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "CreateOrder",
+      "operator": "CreateOrderActionOperator",
+      "sources": [
+        {
+          "fileName": "CreateOrder",
+          "moduleName": "@ns8/ns8-magento2-switches"
+        }
+      ],
+      "type": "action"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateMerchant",
+      "operator": "UpdateMerchantActionOperator",
+      "sources": [
+        {
+          "fileName": "UpdateMerchant",
+          "moduleName": "@ns8/ns8-magento2-switches"
+        }
+      ],
+      "type": "action"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateOrderStatus",
+      "operator": "UpdateOrderStatusActionOperator",
+      "sources": [
+        {
+          "fileName": "UpdateOrderStatus",
+          "moduleName": "@ns8/ns8-magento2-switches"
+        }
+      ],
+      "type": "action"
+    }
+  ],
+  "version": "1.0"
 }

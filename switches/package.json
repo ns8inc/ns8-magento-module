@@ -33,10 +33,10 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
-    "init:dev": "yarn && yarn build && yarn link",
+    "build:dev": "yarn && yarn build && yarn link",
     "lint": "tslint --project .",
     "prebuild": "npm run clean",
     "test": "nyc mocha --colors"
   },
-  "version": "1.0.175"
+  "version": "1.0.176"
 }
