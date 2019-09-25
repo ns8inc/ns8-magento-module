@@ -9,5 +9,5 @@
   "php-cs-fixer.executablePath": "${extensionPath}\\php-cs-fixer.phar",
   "php-cs-fixer.autoFixBySemicolon": true,
   "phpcs.standard": "PSR2",
-  "php-cs-fixer.rules": "@PSR2",
+  "php-cs-fixer.rules": "@PSR2"
 }

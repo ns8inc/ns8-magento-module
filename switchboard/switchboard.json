@@ -1,19 +1,25 @@
 {
     "integrationId": "magento2",
-    "version": "1.0",
-    "modules": [{
-        "name": "@ns8/ns8-magento2-switches",
-        "version": "link"
-    }],
-    "switches": [{
-        "type": "action",
-        "name": "createOrderAction",
-        "operator": "CreateOrderActionOperator",
-        "executorType": "step-function",
-        "arn": "...",
-        "sources": [{
-            "moduleName": "@ns8/ns8-magento2-switches",
-            "fileName": "CreateOrderActionSwitch"
-        }]
-    }]
+    "modules": [
+        {
+            "name": "@ns8/ns8-magento2-switches",
+            "version": "link"
+        }
+    ],
+    "switches": [
+        {
+            "arn": "...",
+            "executorType": "step-function",
+            "name": "createOrderAction",
+            "operator": "CreateOrderActionOperator",
+            "sources": [
+                {
+                    "fileName": "CreateOrderActionSwitch",
+                    "moduleName": "@ns8/ns8-magento2-switches"
+                }
+            ],
+            "type": "action"
+        }
+    ],
+    "version": "1.0"
 }

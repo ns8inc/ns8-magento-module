@@ -1,7 +1,7 @@
-const fs = require('fs');
-const minimist = require('minimist');
+import { existsSync, mkdirSync, copyFileSync } from 'fs';
+import minimist from 'minimist';
 
-const destFolder = 'src/etc/integration';
+const destFolder = 'module/etc/integration';
 const configDest = `${destFolder}/config.xml`;
 const apiDest = `${destFolder}/api.xml`;
 
@@ -11,13 +11,13 @@ const placeConfig = (env) => {
     console.error(env);
     throw new Error('No matching env');
   }
-  if (!fs.existsSync(destFolder)) {
-    fs.mkdirSync(destFolder, {
+  if (!existsSync(destFolder)) {
+    mkdirSync(destFolder, {
       recursive: true,
     });
   }
-  fs.copyFileSync(`build/etc/integration/config.${env}.xml`, configDest);
-  fs.copyFileSync(`build/etc/integration/api.${env}.xml`, apiDest);
+  copyFileSync(`build/module/etc/integration/config.${env}.xml`, configDest);
+  copyFileSync(`build/module/etc/integration/api.${env}.xml`, apiDest);
 };
 
 const args = minimist(process.argv.slice(2));

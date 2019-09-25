@@ -3,3 +3,5 @@ src/vendor
 node_modules
 src/etc/integration/config.xml
 src/etc/integration/api.xml
+.env
+dist/

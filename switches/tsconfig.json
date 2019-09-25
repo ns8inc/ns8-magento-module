@@ -2,10 +2,10 @@
   "compilerOptions": {
     "incremental": false,
     "module": "commonjs",
-    "target": "ES2017",
-    "sourceMap": true,
+    "outDir": "dist",
     "removeComments": true,
-    "outDir": "dist"
+    "sourceMap": true,
+    "target": "ES2017"
   },
   "exclude": [
     "test/**/*",
@@ -13,6 +13,7 @@
     "dist"
   ],
   "include": [
-    "src/**/*", "test/magento/MagentoClientTest.js"
+    "src/**/*",
+    "test/magento/MagentoClientTest.js"
   ]
 }
