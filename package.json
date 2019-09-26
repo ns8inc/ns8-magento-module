@@ -8,7 +8,7 @@
     "libphonenumber-js": "^1.7.24",
     "minimist": "^1.2.0",
     "ns8-protect-models": "^1.0.205",
-    "ns8-switchboard-interfaces": "^1.0.77",
+    "ns8-switchboard-interfaces": "^1.0.81",
     "typescript": "~3.5.3"
   },
   "description": "magento extension project",
