@@ -1,8 +1,8 @@
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { MagentoClient } from '.';
-import { Session } from 'ns8-protect-models';
+import { Transaction } from 'ns8-protect-models';
 
-export class SessionHelper {
+export class TransactionHelper {
   private SwitchContext: SwitchContext;
   private MagentoClient: MagentoClient;
 
@@ -11,15 +11,7 @@ export class SessionHelper {
     this.MagentoClient = magentoClient;
   }
 
-  //TODO: ship this data from Magento
-  public toSession = (): Session => {
-    return new Session({
-      acceptLanguage: '',
-      id: '',
-      screenHeight: 0,
-      screenWidth: 0,
-      ip: '',
-      userAgent: ''
-    });
+  public toTransactions = (): Transaction[] => {
+    return [];
   }
 }
