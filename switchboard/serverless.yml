@@ -1,39 +1,30 @@
-service: ns8-switchboard-${file(./switchboard.json):integrationId}
-
 custom:
   integrationName: ${self:service}-${self:provider.stage}
-
-provider:
-  name: aws
-  runtime: nodejs8.10
-  stage: ${opt:stage, env:DEV_NAME}
-  region: us-west-2
-  timeout: 30
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action: "s3:GetObject"
-      Resource: "arn:aws:s3:::protect-api-switch-data-${self:provider.stage}/*"
-
-package:
-  exclude:
-    - src/**
-    - test/**
-    - .circleci/**
-    - scripts/**
-    - .idea/**
-    - .vscode/**
-    - README.md
-    - ?*/**.map
-    - ?*.json
-    - ?*.lock
-    - ?*.log
-  include:
-    - switchboard.json
-
 functions:
-  createOrderAction:
-    name: ${self:custom.integrationName}-createOrderAction
-    handler: dist/app.createOrderActionHandler
+  CreateOrder:
+    handler: dist/app.CreateOrder
+    name: '${self:custom.integrationName}-CreateOrder'
+  Install:
+    handler: dist/app.Install
+    name: '${self:custom.integrationName}-Install'
+  Uninstall:
+    handler: dist/app.Uninstall
+    name: '${self:custom.integrationName}-Uninstall'
+  UpdateCustomerVerificationStatus:
+    handler: dist/app.UpdateCustomerVerificationStatus
+    name: '${self:custom.integrationName}-UpdateCustomerVerificationStatus'
+  UpdateEQ8Score:
+    handler: dist/app.UpdateEQ8Score
+    name: '${self:custom.integrationName}-UpdateEQ8Score'
+  UpdateMerchant:
+    handler: dist/app.UpdateMerchant
+    name: '${self:custom.integrationName}-UpdateMerchant'
+  UpdateOrderRisk:
+    handler: dist/app.UpdateOrderRisk
+    name: '${self:custom.integrationName}-UpdateOrderRisk'
+  UpdateOrderStatus:
+    handler: dist/app.UpdateOrderStatus
+    name: '${self:custom.integrationName}-UpdateOrderStatus'
 
 RetryDefault: &retryDefault
   Retry:
@@ -42,19 +33,163 @@ RetryDefault: &retryDefault
     IntervalSeconds: 1
     BackoffRate: 2
 
-stepFunctions:
-  stateMachines:
-    createOrderAction:
-      name: "${self:custom.integrationName}-createOrderAction"
-      definition:
-        StartAt: createOrderActionStart
-        States:
-          createOrderActionStart:
-            Type: Task
-            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-createOrderAction"
-            <<: *retryDefault
-            End: true
-
+package:
+  exclude:
+    - 'src/**'
+    - 'test/**'
+    - '.circleci/**'
+    - 'scripts/**'
+    - '.idea/**'
+    - '.vscode/**'
+    - README.md
+    - '?*/**.map'
+    - '?*.json'
+    - '?*.lock'
+    - '?*.log'
+  include:
+    - switchboard.json
 plugins:
   - serverless-step-functions
   - serverless-pseudo-parameters
+provider:
+  iamRoleStatements:
+    -
+      Action: 's3:GetObject'
+      Effect: Allow
+      Resource: 'arn:aws:s3:::protect-api-switch-data-${self:provider.stage}/*'
+  name: aws
+  region: us-west-2
+  runtime: nodejs8.10
+  stage: '${opt:stage, env:DEV_NAME}'
+  timeout: 30
+service: 'ns8-switchboard-${file(./switchboard.json):id}'
+stepFunctions:
+  stateMachines:
+    CreateOrder:
+      definition:
+        StartAt: CreateOrderStart
+        States:
+          CreateOrderStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-CreateOrder'
+            Retry:
+              -
+                BackoffRate: 2
+                ErrorEquals:
+                  - States.ALL
+                IntervalSeconds: 1
+                MaxAttempts: 0
+            Type: Task
+      name: '${self:custom.integrationName}-CreateOrder'
+    Install:
+      definition:
+        StartAt: InstallStart
+        States:
+          InstallStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-Install'
+            Retry:
+              -
+                BackoffRate: 2
+                ErrorEquals:
+                  - States.ALL
+                IntervalSeconds: 1
+                MaxAttempts: 0
+            Type: Task
+      name: '${self:custom.integrationName}-Install'
+    Uninstall:
+      definition:
+        StartAt: UninstallStart
+        States:
+          UninstallStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-Uninstall'
+            Retry:
+              -
+                BackoffRate: 2
+                ErrorEquals:
+                  - States.ALL
+                IntervalSeconds: 1
+                MaxAttempts: 0
+            Type: Task
+      name: '${self:custom.integrationName}-Uninstall'
+    UpdateCustomerVerificationStatus:
+      definition:
+        StartAt: UpdateCustomerVerificationStatusStart
+        States:
+          UpdateCustomerVerificationStatusStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateCustomerVerificationStatus'
+            Retry:
+              -
+                BackoffRate: 2
+                ErrorEquals:
+                  - States.ALL
+                IntervalSeconds: 1
+                MaxAttempts: 0
+            Type: Task
+      name: '${self:custom.integrationName}-UpdateCustomerVerificationStatus'
+    UpdateEQ8Score:
+      definition:
+        StartAt: UpdateEQ8ScoreStart
+        States:
+          UpdateEQ8ScoreStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateEQ8Score'
+            Retry:
+              -
+                BackoffRate: 2
+                ErrorEquals:
+                  - States.ALL
+                IntervalSeconds: 1
+                MaxAttempts: 0
+            Type: Task
+      name: '${self:custom.integrationName}-UpdateEQ8Score'
+    UpdateMerchant:
+      definition:
+        StartAt: UpdateMerchantStart
+        States:
+          UpdateMerchantStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateMerchant'
+            Retry:
+              -
+                BackoffRate: 2
+                ErrorEquals:
+                  - States.ALL
+                IntervalSeconds: 1
+                MaxAttempts: 0
+            Type: Task
+      name: '${self:custom.integrationName}-updateMerchantAction'
+    UpdateOrderRisk:
+      definition:
+        StartAt: UpdateOrderRiskStart
+        States:
+          UpdateOrderRiskStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateOrderRisk'
+            Retry:
+              -
+                BackoffRate: 2
+                ErrorEquals:
+                  - States.ALL
+                IntervalSeconds: 1
+                MaxAttempts: 0
+            Type: Task
+      name: '${self:custom.integrationName}-UpdateOrderRisk'
+    UpdateOrderStatus:
+      definition:
+        StartAt: UpdateOrderStatus
+        States:
+          UpdateOrderStatus:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateOrderStatus'
+            Retry:
+              -
+                BackoffRate: 2
+                ErrorEquals:
+                  - States.ALL
+                IntervalSeconds: 1
+                MaxAttempts: 0
+            Type: Task
+      name: '${self:custom.integrationName}-UpdateOrderStatus'

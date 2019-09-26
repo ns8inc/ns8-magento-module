@@ -3,9 +3,12 @@
     "incremental": false,
     "module": "commonjs",
     "outDir": "dist",
-    "removeComments": true,
+    "target": "ES2017",
+    "esModuleInterop": true,
+    "removeComments": false,
+    "resolveJsonModule": true,
     "sourceMap": true,
-    "target": "ES2017"
+    "strictNullChecks": true
   },
   "exclude": [
     "test/**/*",
