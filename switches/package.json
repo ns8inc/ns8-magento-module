@@ -6,7 +6,7 @@
     "isomorphic-fetch": "^2.2.1",
     "libphonenumber-js": "^1.7.24",
     "ns8-protect-models": "^1.0.204",
-    "ns8-switchboard-interfaces": "^1.0.77"
+    "ns8-switchboard-interfaces": "^1.0.81",
   },
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
@@ -33,10 +33,10 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
-    "init:dev": "yarn && yarn build && yarn link",
+    "build:dev": "yarn && yarn build && yarn link",
     "lint": "tslint --project .",
     "prebuild": "npm run clean",
     "test": "nyc mocha --colors"
   },
-  "version": "1.0.175"
+  "version": "1.0.176"
 }
