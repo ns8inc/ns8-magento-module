@@ -5,15 +5,12 @@
     "dotenv": "^8.1.0",
     "isomorphic-fetch": "^2.2.1",
     "libphonenumber-js": "^1.7.24",
+    "lodash": "^4.17.15",
     "ns8-protect-models": "^1.0.205",
     "ns8-switchboard-interfaces": "^1.0.81"
   },
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
-    "@types/chai": "^4.2.2",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^12.7.5",
-    "@types/sinon": "^7.0.13",
     "chai": "^4.2.0",
     "mocha": "^6.2.0",
     "ns8-tslint": "^2.0.0",
@@ -29,11 +26,18 @@
   "license": "MIT",
   "main": "dist/index.js",
   "name": "@ns8/ns8-magento2-switches",
+  "optionalDependencies": {
+    "@types/chai": "^4.2.2",
+    "@types/lodash": "^4.14.141",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.5",
+    "@types/sinon": "^7.0.13"
+  },
   "repository": "https://github.com/ns8inc/ns8-magento2-switches.git",
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf dist",
     "build:dev": "yarn && yarn build && yarn link",
+    "clean": "rimraf dist",
     "lint": "tslint --project .",
     "prebuild": "npm run clean",
     "test": "nyc mocha --colors"

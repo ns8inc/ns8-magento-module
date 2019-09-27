@@ -2,7 +2,8 @@ import { SwitchContext } from "ns8-switchboard-interfaces";
 import { MagentoClient, SessionHelper } from ".";
 import { Address } from "ns8-protect-models";
 import { Order } from '@ns8/magento2-rest-client';
-import { toProtectAddressType, Safefly } from "./util";
+import { toProtectAddressType } from "./util";
+import { get } from 'lodash';
 
 export class AddressHelper {
   private SwitchContext: SwitchContext;
@@ -21,8 +22,8 @@ export class AddressHelper {
         type: toProtectAddressType(assignment.shipping.address.address_type)
 
       });
-      address.address1 = Safefly.get(assignment, 'shipping.address.street.0');
-      address.address2 = Safefly.get(assignment, 'shipping.address.street.1');
+      address.address1 = get(assignment, 'shipping.address.street[0]');
+      address.address2 = get(assignment, 'shipping.address.street[1]');
       ret.push(address);
     });
 
