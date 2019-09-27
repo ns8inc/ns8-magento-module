@@ -107,10 +107,10 @@
     reflect-metadata "^0.1.12"
     tslib "^1.8.1"
 
-"@ns8/magento2-rest-client@^0.1.8":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.1.9.tgz#93e5becd1a3193228b52e51c9c3f03a90fb079f2"
-  integrity sha512-+vS3rK4ucWw6vQZ1gufbOMrghbpIHhJYPh4Jh+JaWiEkNwF5KibWc7DGeduno9zZqiuKk31E8WUET95NJ+8bTg==
+"@ns8/magento2-rest-client@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.2.tgz#812ee7908ce23a530cf9fecb3d9d182479c4b548"
+  integrity sha512-CkDQVwkhqQyAFCk/j+r8d2S+aayXISwMiH/vn3Qsu7kXtQ82Omi2oJwmpG9ueczFG+u4y8dx1N2e+h9tQc9KUg==
   dependencies:
     oauth-1.0a "^1.0.1"
     request "^2.72.0"
@@ -1412,19 +1412,19 @@ ns8-billing-core@^1.0.128:
   resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.155.tgz#f15eeaca0aaf3c117c7317505ef3668b015d2cc5"
   integrity sha512-ygE4EvICR0mBachO0cD0ZhOp2dUfCtJDPIm8zq6T47nn7xvssspchWhCydjlokKOwcvr63S8tZeDUyq79QbSKA==
 
-ns8-protect-models@^1.0.204:
-  version "1.0.204"
-  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.204.tgz#8aa775be55050db9c726c2fb40c41cfda06b69bb"
-  integrity sha512-m8b+WVIHdB0+ZaBLjIeRk+iUYlE322mMqPM52RY6+uiOFAKcF3VBfxWq76AYs9+iQ68S+HGdEcK/xnZy/BNJGA==
+ns8-protect-models@^1.0.205:
+  version "1.0.205"
+  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.205.tgz#d0db9795d4fe8837f01e544c55c556c6df188aad"
+  integrity sha512-1ZotK+qjOCJUwv/Smo40aDsjNarlwOCat+YZ4qt0MGawRlLsLAfVWbpjZM9POcjGjX3m9T18Kjx7+BQ9lV7GhA==
   dependencies:
     ns8-billing-core "^1.0.128"
 
-ns8-switchboard-interfaces@^1.0.77:
-  version "1.0.79"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.79.tgz#f66ff8417dde68a1a0347dc7c6689f55cc667696"
-  integrity sha512-9X/pUNGhNWEHMHQq8aebz2t9HZsSc2qrqbBYawUjmtFB530liMlNFb/PtCjd6DYNxW14KNbhCUwhnUYlVX+tdw==
+ns8-switchboard-interfaces@^1.0.81:
+  version "1.0.81"
+  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.81.tgz#4ff9aec095da1fc52d5f601d7c86a7f1d63d2ce6"
+  integrity sha512-gGUkw6Q/m7k7VgllAz6WHkP8nz1y20szxteWNbfDDzEdiPA2fn0VcDILEpmwGOJbioClZsaRA5bUgNhS3URVRg==
   dependencies:
-    ns8-protect-models "^1.0.204"
+    ns8-protect-models "^1.0.205"
 
 ns8-tslint@^2.0.0:
   version "2.0.0"
