@@ -63,6 +63,16 @@
     ns8-protect-models "^1.0.205"
     ns8-switchboard-interfaces "^1.0.80"
 
+"@ns8/ns8-switchboard-operator@^1.0.95":
+  version "1.0.95"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.95.tgz#422b5efe279830931665b7ff265af5c6451f71e7"
+  integrity sha512-qhpR8BujXUR27oHTod+mbAo72PV8EmAuK0VXBpmh7weVP1xWZ/2zAMbnW3vBQVXv/1pe6gfBgs+2k5cFeWc1oQ==
+  dependencies:
+    aws-lambda "^0.1.2"
+    isomorphic-fetch "^2.2.1"
+    ns8-protect-models "^1.0.206"
+    ns8-switchboard-interfaces "^1.0.83"
+
 "@serverless/cli@^1.2.3":
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@serverless/cli/-/cli-1.2.3.tgz#1a3aec44214fe96c14d1f00cb9ce513d5835e991"
@@ -204,7 +214,7 @@
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
   integrity sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
 
-"@types/node@*", "@types/node@^12.7.5":
+"@types/node@*", "@types/node@^12.7.5", "@types/node@^12.7.8":
   version "12.7.8"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.8.tgz#cb1bf6800238898bc2ff6ffa5702c3cadd350708"
   integrity sha512-FMdVn84tJJdV+xe+53sYiZS4R5yn1mAIxfj+DVoNiQjTYz1+OYmjwEZr1ev9nU0axXwda0QDbYl06QHanRVH3A==
@@ -2652,6 +2662,15 @@ ns8-switchboard-interfaces@^1.0.81:
   integrity sha512-gGUkw6Q/m7k7VgllAz6WHkP8nz1y20szxteWNbfDDzEdiPA2fn0VcDILEpmwGOJbioClZsaRA5bUgNhS3URVRg==
   dependencies:
     ns8-protect-models "^1.0.205"
+
+ns8-switchboard-interfaces@^1.0.83:
+  version "1.0.83"
+  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.83.tgz#23d025c947f1fa65188b146854f446b5e31aac06"
+  integrity sha512-OAvX4gmwSYAMxau9lSyo0y4CmKVh+YYdNWcZmNb4kf2QvWktaPYvSPC3FF/r6g+1A4psTwFXwnnnoI6KhaUX0Q==
+  dependencies:
+    "@types/node" "^12.7.8"
+    ns8-protect-models "^1.0.206"
+    typescript "^3.6.3"
 
 number-is-nan@^1.0.0:
   version "1.0.1"
