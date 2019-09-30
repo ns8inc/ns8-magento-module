@@ -2,28 +2,28 @@ custom:
   integrationName: ${self:service}-${self:provider.stage}
 functions:
   CreateOrder:
-    handler: dist/app.CreateOrder
+    handler: dist/src/app.CreateOrder
     name: '${self:custom.integrationName}-CreateOrder'
   Install:
-    handler: dist/app.Install
+    handler: dist/src/app.Install
     name: '${self:custom.integrationName}-Install'
   Uninstall:
-    handler: dist/app.Uninstall
+    handler: dist/src/app.Uninstall
     name: '${self:custom.integrationName}-Uninstall'
   UpdateCustomerVerificationStatus:
-    handler: dist/app.UpdateCustomerVerificationStatus
+    handler: dist/src/app.UpdateCustomerVerificationStatus
     name: '${self:custom.integrationName}-UpdateCustomerVerificationStatus'
   UpdateEQ8Score:
-    handler: dist/app.UpdateEQ8Score
+    handler: dist/src/app.UpdateEQ8Score
     name: '${self:custom.integrationName}-UpdateEQ8Score'
   UpdateMerchant:
-    handler: dist/app.UpdateMerchant
+    handler: dist/src/app.UpdateMerchant
     name: '${self:custom.integrationName}-UpdateMerchant'
   UpdateOrderRisk:
-    handler: dist/app.UpdateOrderRisk
+    handler: dist/src/app.UpdateOrderRisk
     name: '${self:custom.integrationName}-UpdateOrderRisk'
   UpdateOrderStatus:
-    handler: dist/app.UpdateOrderStatus
+    handler: dist/src/app.UpdateOrderStatus
     name: '${self:custom.integrationName}-UpdateOrderStatus'
 
 RetryDefault: &retryDefault
