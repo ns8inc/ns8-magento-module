@@ -1,8 +1,8 @@
 {
   "author": "ns8inc",
   "dependencies": {
-    "@ns8/magento2-rest-client": "^0.1.9",
-    "@ns8/ns8-protect-sdk": "^0.1.1",
+    "@ns8/magento2-rest-client": "^0.2.2",
+    "@ns8/ns8-protect-sdk": "^0.1.8",
     "dotenv": "^8.1.0",
     "isomorphic-fetch": "^2.2.1",
     "libphonenumber-js": "^1.7.24",
@@ -21,10 +21,10 @@
     "eslint-plugin-import": "^2.18.2"
   },
   "license": "MIT",
-  "name": "ns8-magento-csp-module-v2",
+  "name": "ns8-magento-platform",
   "scripts": {
     "beautify": "node ./dist/build/build.js",
-    "build": "yarn && yarn install && yarn compile && yarn beautify",
+    "build": "yarn && yarn compile && yarn beautify",
     "build:dev": "yarn build && yarn link && node ./dist/build/module/config.js --env=dev",
     "build:prod": "yarn build && node ./dist/build/module/config.js --env=prod",
     "clean": "rimraf dist",
