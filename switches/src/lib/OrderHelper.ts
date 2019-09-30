@@ -71,7 +71,7 @@ export class OrderHelper {
       customerVerification: this.CustomerVerificationHelper.toCustomerVerification(),
       platformStatus: '',
       fraudAssessments: this.FraudAssessmentHelper.toFraudAssessment(),
-      totalPrice: 0,
+      totalPrice: magentoOrder.base_grand_total,
       updatedAt: new Date(magentoOrder.updated_at)
     });
 
