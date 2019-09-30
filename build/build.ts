@@ -1,5 +1,4 @@
 import { BuildTools } from '@ns8/ns8-protect-sdk';
-import { copyFileSync } from 'fs';
 
 //Sort all the JSON files to improve readability and reduce conflicts
 BuildTools.sortJsonFiles();

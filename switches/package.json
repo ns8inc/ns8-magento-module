@@ -2,22 +2,22 @@
   "author": "ns8inc",
   "dependencies": {
     "@ns8/magento2-rest-client": "^0.2.2",
+    "@ns8/ns8-protect-sdk": "^0.1.10",
+    "@types/node": "^12.7.5",
     "dotenv": "^8.1.0",
     "isomorphic-fetch": "^2.2.1",
     "libphonenumber-js": "^1.7.24",
     "lodash": "^4.17.15",
-    "ns8-protect-models": "^1.0.205",
-    "ns8-switchboard-interfaces": "^1.0.81"
+    "ns8-protect-models": "^1.0.206",
+    "ns8-switchboard-interfaces": "^1.0.83"
   },
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.2.0",
-    "ns8-tslint": "^2.0.0",
     "nyc": "^14.1.1",
     "sinon": "^7.4.2",
     "ts-node": "^8.3.0",
-    "tslint": "^5.20.0",
     "typescript": "^3.6.3"
   },
   "files": [
@@ -30,7 +30,6 @@
     "@types/chai": "^4.2.2",
     "@types/lodash": "^4.14.141",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.7.5",
     "@types/sinon": "^7.0.13"
   },
   "repository": "https://github.com/ns8inc/ns8-magento2-switches.git",

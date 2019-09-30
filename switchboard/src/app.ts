@@ -3,8 +3,6 @@ import { platformSwitchboard as switchboard } from '../Switchboard';
 import { Switch, Source, Switchboard } from 'ns8-switchboard-interfaces';
 import operatorModule from '@ns8/ns8-switchboard-operator';
 
-debugger;
-
 const instantiateHandler = (name: string) => {
   const switchboardSwitch: Switch | null = switchboard.switches
     .find((currSwitch: Switch) => currSwitch.name === name) || null;

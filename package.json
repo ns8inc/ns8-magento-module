@@ -2,21 +2,24 @@
   "author": "ns8inc",
   "dependencies": {
     "@ns8/magento2-rest-client": "^0.2.2",
-    "@ns8/ns8-protect-sdk": "^0.1.1",
+    "@ns8/ns8-protect-sdk": "^0.1.10",
+    "@ns8/ns8-switchboard-operator": "^1.0.95",
+    "@types/node": "^12.7.5",
+    "aws-lambda": "^0.1.2",
+    "aws-sdk": "^2.538.0",
     "dotenv": "^8.1.0",
     "isomorphic-fetch": "^2.2.1",
     "libphonenumber-js": "^1.7.24",
     "lodash": "^4.17.15",
     "minimist": "^1.2.0",
-    "ns8-protect-models": "^1.0.205",
-    "ns8-switchboard-interfaces": "^1.0.81",
+    "ns8-protect-models": "^1.0.206",
+    "ns8-switchboard-interfaces": "^1.0.83",
     "typescript": "^3.6.3"
   },
   "description": "magento extension project",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0",
-    "aws-sdk": "^2.538.0",
     "eslint": "^6.2.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2"
@@ -27,7 +30,6 @@
     "@types/chai": "^4.2.2",
     "@types/lodash": "^4.14.141",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.7.5",
     "@types/sinon": "^7.0.13"
   },
   "scripts": {
