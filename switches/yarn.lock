@@ -176,6 +176,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.5.tgz#e19436e7f8e9b4601005d73673b6dc4784ffcc2f"
   integrity sha512-9fq4jZVhPNW8r+UYKnxF1e2HkDWOWKM5bC2/7c9wPV835I0aOrVbS/Hw/pWPk2uKrNXQqg9Z959Kz+IYDd5p3w==
 
+"@types/node@^12.7.8":
+  version "12.7.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.8.tgz#cb1bf6800238898bc2ff6ffa5702c3cadd350708"
+  integrity sha512-FMdVn84tJJdV+xe+53sYiZS4R5yn1mAIxfj+DVoNiQjTYz1+OYmjwEZr1ev9nU0axXwda0QDbYl06QHanRVH3A==
+
 "@types/sinon@^7.0.13":
   version "7.0.13"
   resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-7.0.13.tgz#ca039c23a9e27ebea53e0901ef928ea2a1a6d313"
@@ -1412,26 +1417,21 @@ ns8-billing-core@^1.0.128:
   resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.155.tgz#f15eeaca0aaf3c117c7317505ef3668b015d2cc5"
   integrity sha512-ygE4EvICR0mBachO0cD0ZhOp2dUfCtJDPIm8zq6T47nn7xvssspchWhCydjlokKOwcvr63S8tZeDUyq79QbSKA==
 
-ns8-protect-models@^1.0.204:
-  version "1.0.204"
-  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.204.tgz#8aa775be55050db9c726c2fb40c41cfda06b69bb"
-  integrity sha512-m8b+WVIHdB0+ZaBLjIeRk+iUYlE322mMqPM52RY6+uiOFAKcF3VBfxWq76AYs9+iQ68S+HGdEcK/xnZy/BNJGA==
-  dependencies:
-    ns8-billing-core "^1.0.128"
-
-ns8-protect-models@^1.0.205:
+ns8-protect-models@^1.0.206:
   version "1.0.206"
   resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.206.tgz#4c1be61f40a43765dedab891cd7fd72b0fa221a6"
   integrity sha512-BtbZtSMRieRcpXJ5AadNvafYxSXluF9VbhwZCMdX4d4d5cSOUMXHfCJoQEix5io0WpfMAGQS6lpoOVCs/CMUYQ==
   dependencies:
     ns8-billing-core "^1.0.128"
 
-ns8-switchboard-interfaces@^1.0.81:
-  version "1.0.81"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.81.tgz#4ff9aec095da1fc52d5f601d7c86a7f1d63d2ce6"
-  integrity sha512-gGUkw6Q/m7k7VgllAz6WHkP8nz1y20szxteWNbfDDzEdiPA2fn0VcDILEpmwGOJbioClZsaRA5bUgNhS3URVRg==
+ns8-switchboard-interfaces@^1.0.83:
+  version "1.0.83"
+  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.83.tgz#23d025c947f1fa65188b146854f446b5e31aac06"
+  integrity sha512-OAvX4gmwSYAMxau9lSyo0y4CmKVh+YYdNWcZmNb4kf2QvWktaPYvSPC3FF/r6g+1A4psTwFXwnnnoI6KhaUX0Q==
   dependencies:
-    ns8-protect-models "^1.0.205"
+    "@types/node" "^12.7.8"
+    ns8-protect-models "^1.0.206"
+    typescript "^3.6.3"
 
 ns8-tslint@^2.0.0:
   version "2.0.0"

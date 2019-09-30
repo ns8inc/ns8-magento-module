@@ -14,7 +14,7 @@
   "scripts": {
     "build": "yarn compile && yarn install-modules",
     "build:debug": "yarn && yarn build && yarn link @ns8/ns8-magento2-switches && yarn install-modules:debug",
-    "build:dev": "yarn build && yarn link @ns8/ns8-magento2-switches",
+    "build:dev": "yarn && yarn build && yarn link @ns8/ns8-magento2-switches",
     "compile": "rimraf dist && yarn install && tsc -d",
     "deploy": "sls deploy",
     "install-modules": "node dist/src/init.js",

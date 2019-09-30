@@ -5,8 +5,8 @@
     "dotenv": "^8.1.0",
     "isomorphic-fetch": "^2.2.1",
     "libphonenumber-js": "^1.7.24",
-    "ns8-protect-models": "^1.0.204",
-    "ns8-switchboard-interfaces": "^1.0.81"
+    "ns8-protect-models": "^1.0.206",
+    "ns8-switchboard-interfaces": "^1.0.83"
   },
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
