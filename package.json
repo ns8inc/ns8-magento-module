@@ -25,7 +25,7 @@
     "eslint-plugin-import": "^2.18.2"
   },
   "license": "MIT",
-  "name": "ns8-magento-csp-module-v2",
+  "name": "ns8-magento-platform",
   "optionalDependencies": {
     "@types/chai": "^4.2.2",
     "@types/lodash": "^4.14.141",
@@ -34,7 +34,7 @@
   },
   "scripts": {
     "beautify": "node ./dist/build/build.js",
-    "build": "yarn && yarn install && yarn compile && yarn beautify",
+    "build": "yarn && yarn compile && yarn beautify",
     "build:dev": "yarn build && yarn link && node ./dist/build/module/config.js --env=dev",
     "build:prod": "yarn build && node ./dist/build/module/config.js --env=prod",
     "clean": "rimraf dist",
