@@ -62,7 +62,7 @@ export class OrderHelper {
       addresses: this.AddressHelper.toAddresses(),
       platformId: `${magentoOrder.entity_id}`,
       platformCreatedAt: new Date(magentoOrder.created_at),
-      transactions: this.TransactionHelper.toTransactions(),
+      transactions: await this.TransactionHelper.toTransactions(),
       lineItems: this.LineItemsHelper.toLineItems(),
       createdAt: new Date(magentoOrder.created_at),
       customer: this.CustomerHelper.toCustomer(),

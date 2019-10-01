@@ -31,6 +31,6 @@ export class MagentoClient {
   }
 
   public getTransaction = async (id: string): Promise<MagentoTransaction> => {
-    return await this.client.transactions.get(id);
+    return await this.client.transactions.getByTransactionId(id) || {} as MagentoTransaction;
   }
 }
