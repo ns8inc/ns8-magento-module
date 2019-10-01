@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "incremental": false,
     "module": "commonjs",
     "outDir": "dist",
-    "target": "ES2017",
-    "esModuleInterop": true,
     "removeComments": false,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "target": "ES2017"
   },
   "exclude": [
     "test/**/*",

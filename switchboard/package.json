@@ -1,22 +1,22 @@
 {
   "dependencies": {
-    "@ns8/ns8-switchboard-operator": "^1.0.88"
+    "@ns8/ns8-switchboard-operator": "^1.0.95"
   },
   "devDependencies": {
+    "@ns8/ns8-protect-sdk": "^0.1.8",
     "@types/node": "^12.7.7",
-    "@ns8/ns8-protect-sdk": "^0.1.3",
     "aws-lambda": "^0.1.2",
+    "rimraf": "^3.0.0",
     "serverless-pseudo-parameters": "^2.4.0",
     "serverless-step-functions": "^1.25.0",
-    "rimraf": "^3.0.0",
     "typescript": "^3.6.3"
   },
   "scripts": {
     "build": "yarn compile && yarn install-modules",
+    "build:debug": "yarn && yarn build && yarn link @ns8/ns8-magento2-switches && yarn install-modules:debug",
+    "build:dev": "yarn && yarn build && yarn link @ns8/ns8-magento2-switches",
     "compile": "rimraf dist && yarn install && tsc -d",
     "deploy": "sls deploy",
-    "build:dev": "yarn build && yarn link @ns8/ns8-magento2-switches",
-    "build:debug": "yarn && yarn build && yarn link @ns8/ns8-magento2-switches && yarn install-modules:debug",
     "install-modules": "node dist/src/init.js",
     "install-modules:debug": "node --inspect-brk=9228 dist/src/init.js",
     "undeploy": "sls remove"
