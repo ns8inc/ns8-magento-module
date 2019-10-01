@@ -18,19 +18,19 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@ns8/magento2-rest-client@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.2.tgz#812ee7908ce23a530cf9fecb3d9d182479c4b548"
-  integrity sha512-CkDQVwkhqQyAFCk/j+r8d2S+aayXISwMiH/vn3Qsu7kXtQ82Omi2oJwmpG9ueczFG+u4y8dx1N2e+h9tQc9KUg==
+"@ns8/magento2-rest-client@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.5.tgz#c286a2a44e858c70188e7847a60fbc01c59225a6"
+  integrity sha512-epZB+NSBa4mV4bNNcp0ugGAb+rVqyugfvgWNAbKE98V5okpMzUsVZDtusePhIfUcDWxvRnNWuS8+9u/r76ahYQ==
   dependencies:
     oauth-1.0a "^1.0.1"
     request "^2.72.0"
     winston "^3.2.1"
 
-"@ns8/ns8-protect-sdk@^0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.10.tgz#e215c3ba7a2d63b1c87503f4d32af653c7f003cb"
-  integrity sha512-Tt1lwpVL1M7Jgp+tWDxDFBw0EE6QHbCjVevcef/hGyjb09lKAB/3XpCKlsLbq8xnX7mIWWpdNq+SuZR/AyzWTw==
+"@ns8/ns8-protect-sdk@^0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.11.tgz#136c41a8a6978a69b91f3f7c6ba22966c7c33270"
+  integrity sha512-PNIQ328k8WMfsRxg9+sTTxQa8LCiKCgznZzWx6z7D87EqNvdFsx7NbeJMRO0zjIwyQSyraL+cfLjM9LAl3YWBA==
   dependencies:
     "@ns8/ns8-switchboard-operator" "^1.0.95"
     aws-sdk "^2.538.0"

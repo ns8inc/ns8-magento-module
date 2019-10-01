@@ -66,11 +66,10 @@ export class OrderHelper {
       lineItems: this.LineItemsHelper.toLineItems(),
       createdAt: new Date(magentoOrder.created_at),
       customer: this.CustomerHelper.toCustomer(),
-      id: '',
       hasGiftCard: false,
-      customerVerification: this.CustomerVerificationHelper.toCustomerVerification(),
-      platformStatus: '',
-      fraudAssessments: this.FraudAssessmentHelper.toFraudAssessment(),
+      //customerVerification: this.CustomerVerificationHelper.toCustomerVerification(),
+      platformStatus: '', //TODO: what is this?
+      //fraudAssessments: this.FraudAssessmentHelper.toFraudAssessment(),
       totalPrice: magentoOrder.base_grand_total,
       updatedAt: new Date(magentoOrder.updated_at)
     });

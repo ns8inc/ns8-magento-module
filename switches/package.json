@@ -1,8 +1,8 @@
 {
   "author": "ns8inc",
   "dependencies": {
-    "@ns8/magento2-rest-client": "^0.2.2",
-    "@ns8/ns8-protect-sdk": "^0.1.10",
+    "@ns8/magento2-rest-client": "^0.2.5",
+    "@ns8/ns8-protect-sdk": "^0.1.11",
     "@types/node": "^12.7.5",
     "dotenv": "^8.1.0",
     "isomorphic-fetch": "^2.2.1",

@@ -1,6 +1,6 @@
 import { SwitchContext } from "ns8-switchboard-interfaces";
-import { RestClient, Order } from '@ns8/magento2-rest-client';
-import { ServiceIntegration } from "ns8-protect-models";
+import { RestClient, Order, Customer, Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
+import { ServiceIntegration, Transaction } from "ns8-protect-models";
 export class MagentoClient {
 
   private SwitchContext: SwitchContext;
@@ -22,7 +22,15 @@ export class MagentoClient {
     })
   }
 
-  public getOrder = async (id: Number): Promise<Order> => {
-    return await this.client.orders.get(`${id}`);
+  public getOrder = async (id: number): Promise<Order> => {
+    return await this.client.orders.get(id);
+  }
+
+  public getCustomer = async (id: number): Promise<Customer> => {
+    return await this.client.customers.get(id);
+  }
+
+  public getTransaction = async (id: string): Promise<MagentoTransaction> => {
+    return await this.client.transactions.get(id);
   }
 }
