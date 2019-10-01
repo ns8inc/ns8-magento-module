@@ -27,10 +27,10 @@
     request "^2.72.0"
     winston "^3.2.1"
 
-"@ns8/ns8-protect-sdk@^0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.11.tgz#136c41a8a6978a69b91f3f7c6ba22966c7c33270"
-  integrity sha512-PNIQ328k8WMfsRxg9+sTTxQa8LCiKCgznZzWx6z7D87EqNvdFsx7NbeJMRO0zjIwyQSyraL+cfLjM9LAl3YWBA==
+"@ns8/ns8-protect-sdk@^0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.12.tgz#41ee2178a5b8881263d083bf77de2f83d6e90783"
+  integrity sha512-dcJBSsXdvvqCjmREfuNRCq8nNHGqyTrCnbaNupUGJbSXeumdpb2u40xnN0VH6O5Uxs+/ze+iHabkwrMNs44m2Q==
   dependencies:
     "@ns8/ns8-switchboard-operator" "^1.0.95"
     aws-sdk "^2.538.0"

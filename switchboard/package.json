@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@ns8/ns8-protect-sdk": "^0.1.11",
+    "@ns8/ns8-protect-sdk": "^0.1.12",
     "@ns8/ns8-switchboard-operator": "^1.0.95",
     "@types/node": "^12.7.7",
     "aws-lambda": "^0.1.2",
