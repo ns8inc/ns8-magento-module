@@ -66,7 +66,7 @@ export class OrderHelper {
         currency: magentoOrder.order_currency_code,
         merchantId: this.SwitchContext.merchant.id,
         session: this.SessionHelper.toSession(),
-        addresses: this.AddressHelper.toAddresses(),
+        addresses: this.AddressHelper.toOrderAddresses(),
         platformId: `${magentoOrder.entity_id}`,
         platformCreatedAt: new Date(magentoOrder.created_at),
         transactions: await this.TransactionHelper.toTransactions(),
