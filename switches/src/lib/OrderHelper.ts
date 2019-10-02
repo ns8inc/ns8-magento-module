@@ -7,7 +7,8 @@ import {
   AddressHelper,
   TransactionHelper,
   LineItemsHelper,
-  CustomerHelper
+  CustomerHelper,
+  log
 } from '.';
 
 /**
@@ -45,28 +46,34 @@ export class OrderHelper {
    * Converts a Magento Order into a Protect Order
    */
   public toOrder = async ():Promise<Order> => {
-    if (this.Order) return this.Order;
 
-    const magentoOrder: MagentoOrder = await this.MagentoClient.getOrder(this.MagentoOrder.entity_id);
-    this.Order = new Order({
-      name: `#${magentoOrder.entity_id}`,
-      currency: magentoOrder.order_currency_code,
-      merchantId: this.SwitchContext.merchant.id,
-      session: this.SessionHelper.toSession(),
-      addresses: this.AddressHelper.toAddresses(),
-      platformId: `${magentoOrder.entity_id}`,
-      platformCreatedAt: new Date(magentoOrder.created_at),
-      transactions: await this.TransactionHelper.toTransactions(),
-      lineItems: this.LineItemsHelper.toLineItems(),
-      createdAt: new Date(magentoOrder.created_at),
-      customer: this.CustomerHelper.toCustomer(),
-      hasGiftCard: false,
-      //customerVerification: this.CustomerVerificationHelper.toCustomerVerification(),
-      platformStatus: '', //TODO: what is this?
-      //fraudAssessments: this.FraudAssessmentHelper.toFraudAssessment(),
-      totalPrice: magentoOrder.base_grand_total,
-      updatedAt: new Date(magentoOrder.updated_at)
-    });
+    this.Order = new Order();
+    try {
+      const magentoOrder = await this.MagentoClient.getOrder(this.MagentoOrder.entity_id);
+      if (null !== magentoOrder) {
+        this.Order = new Order({
+          name: `#${magentoOrder.entity_id}`,
+          currency: magentoOrder.order_currency_code,
+          merchantId: this.SwitchContext.merchant.id,
+          session: this.SessionHelper.toSession(),
+          addresses: this.AddressHelper.toAddresses(),
+          platformId: `${magentoOrder.entity_id}`,
+          platformCreatedAt: new Date(magentoOrder.created_at),
+          transactions: await this.TransactionHelper.toTransactions(),
+          lineItems: this.LineItemsHelper.toLineItems(),
+          createdAt: new Date(magentoOrder.created_at),
+          customer: this.CustomerHelper.toCustomer(),
+          hasGiftCard: false,
+          //customerVerification: this.CustomerVerificationHelper.toCustomerVerification(),
+          platformStatus: '', //TODO: what is this?
+          //fraudAssessments: this.FraudAssessmentHelper.toFraudAssessment(),
+          totalPrice: magentoOrder.base_grand_total,
+          updatedAt: new Date(magentoOrder.updated_at)
+        });
+      }
+    } catch (e) {
+      log('Failed to create order', e);
+    }
 
     return this.Order;
   }

@@ -3,16 +3,18 @@
   "dependencies": {
     "@ns8/magento2-rest-client": "^0.2.8",
     "@ns8/ns8-protect-sdk": "^0.1.12",
+    "@types/stack-trace": "^0.0.29",
     "libphonenumber-js": "^1.7.24",
     "lodash": "^4.17.15",
     "ns8-protect-models": "^1.0.206",
-    "ns8-switchboard-interfaces": "^1.0.83"
+    "ns8-switchboard-interfaces": "^1.0.83",
+    "stack-trace": "^0.0.10"
   },
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
     "@types/node": "^12.7.5",
-    "dotenv": "^8.1.0",
     "chai": "^4.2.0",
+    "dotenv": "^8.1.0",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
     "sinon": "^7.4.2",
