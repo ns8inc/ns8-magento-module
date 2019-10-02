@@ -25,7 +25,7 @@ export class AddressHelper {
     const shipping_assignments = get(this.MagentoOrder, 'extension_attributes.shipping_assignments') || [];
     shipping_assignments.forEach((assignment) => {
       addresses.push(get(assignment, 'shipping.address') as ShippingAssignment);
-    })
+    });
     addresses.forEach((address) => {
       var addr = new Address({
         type: ModelTools.stringToProtectAddressType(get(address, 'address_type')),

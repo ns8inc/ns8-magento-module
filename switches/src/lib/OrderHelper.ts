@@ -7,9 +7,7 @@ import {
   AddressHelper,
   TransactionHelper,
   LineItemsHelper,
-  CustomerHelper,
-  CustomerVerificationHelper,
-  FraudAssessmentHelper
+  CustomerHelper
 } from '.';
 
 /**
@@ -25,8 +23,6 @@ export class OrderHelper {
   private TransactionHelper: TransactionHelper;
   private LineItemsHelper: LineItemsHelper;
   private CustomerHelper: CustomerHelper;
-  private CustomerVerificationHelper: CustomerVerificationHelper;
-  private FraudAssessmentHelper: FraudAssessmentHelper;
 
   constructor(switchContext: SwitchContext) {
     this.SwitchContext = switchContext;
@@ -35,8 +31,6 @@ export class OrderHelper {
     this.AddressHelper = new AddressHelper(this.SwitchContext, this.MagentoClient);
     this.TransactionHelper = new TransactionHelper(this.SwitchContext, this.MagentoClient);
     this.CustomerHelper = new CustomerHelper(this.SwitchContext, this.MagentoClient);
-    this.CustomerVerificationHelper = new CustomerVerificationHelper(this.SwitchContext, this.MagentoClient);
-    this.FraudAssessmentHelper = new FraudAssessmentHelper(this.SwitchContext, this.MagentoClient);
     this.MagentoOrder = switchContext.data.order as MagentoOrder;
   }
 
