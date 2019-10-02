@@ -16,7 +16,7 @@ export class MagentoClient {
       const si: ServiceIntegration = siTemp;
 
       this.client = new RestClient({
-        url: `${this.SwitchContext.merchant.storefrontUrl}\rest`,
+        url: `${this.SwitchContext.merchant.storefrontUrl}/index.php/rest`,
         consumerKey: si.identityToken,
         consumerSecret: si.identitySecret,
         accessToken: si.token,

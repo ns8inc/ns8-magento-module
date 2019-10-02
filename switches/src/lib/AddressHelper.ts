@@ -9,10 +9,10 @@ export class AddressHelper {
   private SwitchContext: SwitchContext;
   private MagentoClient: MagentoClient;
   private MagentoOrder: Order;
-  constructor(switchContext: SwitchContext, magentoClient: MagentoClient) {
+  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: Order) {
     this.SwitchContext = switchContext;
     this.MagentoClient = magentoClient;
-    this.MagentoOrder = switchContext.data.order as Order;
+    this.MagentoOrder = magentoOrder;
   }
 
   public toAddresses = (): Address[] => {

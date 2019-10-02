@@ -18,21 +18,18 @@ export class OrderHelper {
   private MagentoOrder: MagentoOrder;
   private Order: Order;
   private SwitchContext: SwitchContext;
+
+  //Helper classes
+  private AddressHelper: AddressHelper;
+  private CustomerHelper: CustomerHelper;
+  private LineItemsHelper: LineItemsHelper;
   private MagentoClient: MagentoClient;
   private SessionHelper: SessionHelper;
-  private AddressHelper: AddressHelper;
   private TransactionHelper: TransactionHelper;
-  private LineItemsHelper: LineItemsHelper;
-  private CustomerHelper: CustomerHelper;
 
   constructor(switchContext: SwitchContext) {
     this.SwitchContext = switchContext;
     this.MagentoClient = new MagentoClient(this.SwitchContext);
-    this.SessionHelper = new SessionHelper(this.SwitchContext, this.MagentoClient);
-    this.AddressHelper = new AddressHelper(this.SwitchContext, this.MagentoClient);
-    this.TransactionHelper = new TransactionHelper(this.SwitchContext, this.MagentoClient);
-    this.CustomerHelper = new CustomerHelper(this.SwitchContext, this.MagentoClient);
-    this.MagentoOrder = switchContext.data.order as MagentoOrder;
   }
 
   /**
@@ -42,35 +39,47 @@ export class OrderHelper {
     return true;
   }
 
+  private init = async (): Promise<MagentoOrder> => {
+    const order = await this.MagentoClient.getOrder(this.SwitchContext.data.order.entity_id);
+    if (null === order) throw new Error(`No Magento order could be loaded by order id ${this.SwitchContext.data.entity_id}`)
+    this.MagentoOrder = order;
+
+    this.AddressHelper = new AddressHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
+    this.CustomerHelper = new CustomerHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
+    this.LineItemsHelper = new LineItemsHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
+    this.SessionHelper = new SessionHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
+    this.TransactionHelper = new TransactionHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
+
+    return this.MagentoOrder;
+  }
+
   /**
    * Converts a Magento Order into a Protect Order
    */
-  public toOrder = async ():Promise<Order> => {
+  public toOrder = async (): Promise<Order> => {
 
     this.Order = new Order();
     try {
-      const magentoOrder = await this.MagentoClient.getOrder(this.MagentoOrder.entity_id);
-      if (null !== magentoOrder) {
-        this.Order = new Order({
-          name: `#${magentoOrder.entity_id}`,
-          currency: magentoOrder.order_currency_code,
-          merchantId: this.SwitchContext.merchant.id,
-          session: this.SessionHelper.toSession(),
-          addresses: this.AddressHelper.toAddresses(),
-          platformId: `${magentoOrder.entity_id}`,
-          platformCreatedAt: new Date(magentoOrder.created_at),
-          transactions: await this.TransactionHelper.toTransactions(),
-          lineItems: this.LineItemsHelper.toLineItems(),
-          createdAt: new Date(magentoOrder.created_at),
-          customer: this.CustomerHelper.toCustomer(),
-          hasGiftCard: false,
-          //customerVerification: this.CustomerVerificationHelper.toCustomerVerification(),
-          platformStatus: '', //TODO: what is this?
-          //fraudAssessments: this.FraudAssessmentHelper.toFraudAssessment(),
-          totalPrice: magentoOrder.base_grand_total,
-          updatedAt: new Date(magentoOrder.updated_at)
-        });
-      }
+      const magentoOrder = await this.init();
+      this.Order = new Order({
+        name: `#${magentoOrder.entity_id}`,
+        currency: magentoOrder.order_currency_code,
+        merchantId: this.SwitchContext.merchant.id,
+        session: this.SessionHelper.toSession(),
+        addresses: this.AddressHelper.toAddresses(),
+        platformId: `${magentoOrder.entity_id}`,
+        platformCreatedAt: new Date(magentoOrder.created_at),
+        transactions: await this.TransactionHelper.toTransactions(),
+        lineItems: this.LineItemsHelper.toLineItems(),
+        createdAt: new Date(magentoOrder.created_at),
+        customer: this.CustomerHelper.toCustomer(),
+        hasGiftCard: false,
+        //customerVerification: this.CustomerVerificationHelper.toCustomerVerification(),
+        platformStatus: '', //TODO: what is this?
+        //fraudAssessments: this.FraudAssessmentHelper.toFraudAssessment(),
+        totalPrice: magentoOrder.base_grand_total,
+        updatedAt: new Date(magentoOrder.updated_at)
+      });
     } catch (e) {
       log('Failed to create order', e);
     }
