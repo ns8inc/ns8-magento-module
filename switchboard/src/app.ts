@@ -34,7 +34,7 @@ const instantiateHandler = (name: string) => {
 
 const CreateOrder = instantiateHandler('CreateOrder');
 const Install = instantiateHandler('Install');
-const UpdateCustomerVerificationStatus = instantiateHandler('UpdateCustomerVerificationStatus');
+const UpdateCustomer = instantiateHandler('UpdateCustomer');
 const UpdateEQ8Score = instantiateHandler('UpdateEq8Score');
 const UpdateOrderRisk = instantiateHandler('UpdateOrderRisk');
 const Uninstall = instantiateHandler('Uninstall');
@@ -44,7 +44,7 @@ const UpdateOrderStatus = instantiateHandler('UpdateOrderStatus');
 export {
   CreateOrder,
   Install,
-  UpdateCustomerVerificationStatus,
+  UpdateCustomer,
   UpdateEQ8Score,
   UpdateOrderRisk,
   Uninstall,

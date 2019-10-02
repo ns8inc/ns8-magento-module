@@ -90,10 +90,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@ns8/magento2-rest-client@^0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.6.tgz#9bcdabd3c447030eed0ffdc435ea4d6058aadef0"
-  integrity sha512-ImuFS0myheYI+vszzboyjAU+jPAv12v/8ODdhpfkArwUKFBaVlfsi+kSLS7q/mVIN9Bp4+N6QHrsiHq4zv9Xlw==
+"@ns8/magento2-rest-client@^0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.8.tgz#41674309c4994afaa8dc8062ed123767f8d3a1ec"
+  integrity sha512-trLw//If85EZq2Lo4h1obR+0CeHHIWGygbZrzS/3Vp7Vj+qu/bXaa5akt3ootjYvdLI0n22ohcc2pBIrR+zJ2Q==
   dependencies:
     oauth-1.0a "^1.0.1"
     request "^2.72.0"

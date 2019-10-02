@@ -10,9 +10,9 @@ functions:
   Uninstall:
     handler: dist/app.Uninstall
     name: '${self:custom.integrationName}-Uninstall'
-  UpdateCustomerVerificationStatus:
-    handler: dist/app.UpdateCustomerVerificationStatus
-    name: '${self:custom.integrationName}-UpdateCustomerVerificationStatus'
+  UpdateCustomer:
+    handler: dist/app.UpdateCustomer
+    name: '${self:custom.integrationName}-UpdateCustomer'
   UpdateEQ8Score:
     handler: dist/app.UpdateEQ8Score
     name: '${self:custom.integrationName}-UpdateEQ8Score'
@@ -113,13 +113,13 @@ stepFunctions:
                 MaxAttempts: 0
             Type: Task
       name: '${self:custom.integrationName}-Uninstall'
-    UpdateCustomerVerificationStatus:
+    UpdateCustomer:
       definition:
-        StartAt: UpdateCustomerVerificationStatusStart
+        StartAt: UpdateCustomerStart
         States:
-          UpdateCustomerVerificationStatusStart:
+          UpdateCustomerStart:
             End: true
-            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateCustomerVerificationStatus'
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateCustomer'
             Retry:
               -
                 BackoffRate: 2
@@ -128,7 +128,7 @@ stepFunctions:
                 IntervalSeconds: 1
                 MaxAttempts: 0
             Type: Task
-      name: '${self:custom.integrationName}-UpdateCustomerVerificationStatus'
+      name: '${self:custom.integrationName}-UpdateCustomer'
     UpdateEQ8Score:
       definition:
         StartAt: UpdateEQ8ScoreStart
