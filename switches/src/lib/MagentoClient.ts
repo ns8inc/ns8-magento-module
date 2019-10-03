@@ -1,6 +1,6 @@
-import { SwitchContext } from "ns8-switchboard-interfaces";
+import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { RestClient, Order, Customer, Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
-import { ServiceIntegration, Transaction } from "ns8-protect-models";
+import { ServiceIntegration, Transaction } from 'ns8-protect-models';
 import { log } from '.';
 export class MagentoClient {
 

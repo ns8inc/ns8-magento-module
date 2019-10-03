@@ -72,11 +72,9 @@ export class OrderHelper {
         transactions: await this.TransactionHelper.toTransactions(),
         lineItems: this.LineItemsHelper.toLineItems(),
         createdAt: new Date(magentoOrder.created_at),
-        customer: this.CustomerHelper.toCustomer(),
+        customer: await this.CustomerHelper.toCustomer(),
         hasGiftCard: false,
-        //customerVerification: this.CustomerVerificationHelper.toCustomerVerification(),
         platformStatus: '', //TODO: what is this?
-        //fraudAssessments: this.FraudAssessmentHelper.toFraudAssessment(),
         totalPrice: magentoOrder.base_grand_total,
         updatedAt: new Date(magentoOrder.updated_at)
       });

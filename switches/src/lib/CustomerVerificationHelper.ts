@@ -1,6 +1,6 @@
-import { SwitchContext } from "ns8-switchboard-interfaces";
-import { MagentoClient, SessionHelper } from ".";
-import { CustomerVerification } from "ns8-protect-models";
+import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { MagentoClient, SessionHelper } from '.';
+import { CustomerVerification } from 'ns8-protect-models';
 
 export class CustomerVerificationHelper {
   private SwitchContext: SwitchContext;

@@ -7,10 +7,10 @@
     "@types/node": "^12.7.7",
     "aws-lambda": "^0.1.2",
     "lodash": "^4.17.15",
+    "rimraf": "^3.0.0",
     "serverless-pseudo-parameters": "^2.4.0",
     "serverless-step-functions": "^1.25.0",
-    "typescript": "^3.6.3",
-    "rimraf": "^3.0.0"
+    "typescript": "^3.6.3"
   },
   "optionalDependencies": {
     "@types/chai": "^4.2.2",

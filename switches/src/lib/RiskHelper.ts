@@ -1,6 +1,6 @@
-import { SwitchContext } from "ns8-switchboard-interfaces";
-import { MagentoClient, SessionHelper } from ".";
-import { Risk } from "ns8-protect-models";
+import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { MagentoClient, SessionHelper } from '.';
+import { Risk } from 'ns8-protect-models';
 
 export class RiskHelper {
   private SwitchContext: SwitchContext;

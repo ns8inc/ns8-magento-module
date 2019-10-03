@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@ns8/magento2-rest-client@^0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.6.tgz#9bcdabd3c447030eed0ffdc435ea4d6058aadef0"
-  integrity sha512-ImuFS0myheYI+vszzboyjAU+jPAv12v/8ODdhpfkArwUKFBaVlfsi+kSLS7q/mVIN9Bp4+N6QHrsiHq4zv9Xlw==
+"@ns8/magento2-rest-client@^0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.9.tgz#b8fa48c03dd548b7e73624871d2c3578b7ad4709"
+  integrity sha512-nIFApTFCiHK8jcEQwwM/OCNVk3BnZbiZwI7dkOrHb1MandJEMbHzRWXpWxDdXvkr5ann9vfZqgMbtS5oCOec9g==
   dependencies:
     oauth-1.0a "^1.0.1"
     request "^2.72.0"
@@ -119,6 +119,11 @@
   version "7.0.13"
   resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-7.0.13.tgz#ca039c23a9e27ebea53e0901ef928ea2a1a6d313"
   integrity sha512-d7c/C/+H/knZ3L8/cxhicHUiTDxdgap0b/aNJfsmLwFu/iOP17mdgbQsbHA3SJmrzsjD0l3UEE5SN4xxuz5ung==
+
+"@types/stack-trace@0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@types/stack-trace/-/stack-trace-0.0.29.tgz#eb7a7c60098edb35630ed900742a5ecb20cfcb4d"
+  integrity sha512-TgfOX+mGY/NyNxJLIbDWrO9DjGoVSW9+aB8H2yy1fy32jsvxijhmyJI9fDFgvz3YP4lvJaq9DzdR/M1bOgVc9g==
 
 "@typescript-eslint/eslint-plugin@^2.0.0":
   version "2.3.1"
@@ -1764,7 +1769,7 @@ sshpk@^1.7.0:
     safer-buffer "^2.0.2"
     tweetnacl "~0.14.0"
 
-stack-trace@0.0.x:
+stack-trace@0.0.10, stack-trace@0.0.x:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/stack-trace/-/stack-trace-0.0.10.tgz#547c70b347e8d32b4e108ea1a2a159e5fdde19c0"
   integrity sha1-VHxws0fo0ytOEI6hoqFZ5f3eGcA=

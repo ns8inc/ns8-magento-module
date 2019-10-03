@@ -1,6 +1,6 @@
-import { SwitchContext } from "ns8-switchboard-interfaces";
-import { MagentoClient, log } from ".";
-import { Address } from "ns8-protect-models";
+import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { MagentoClient, log } from '.';
+import { Address } from 'ns8-protect-models';
 import { Customer, Order, ShippingAssignment } from '@ns8/magento2-rest-client';
 import { get } from 'lodash';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
