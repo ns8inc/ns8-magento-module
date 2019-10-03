@@ -14,8 +14,31 @@ export class LineItemsHelper {
   }
 
   public toLineItems = (): LineItem[] => {
+    const ret: LineItem[] = [];
 
-    return [];
+    this.MagentoOrder.items.forEach((item) => {
+      const i = new LineItem({
+        ean13: '',
+        isGiftCard: false,
+        isbn: '',
+        manufacturer: '',
+        name: item.name,
+        platformId: `${item.item_id}`,
+        platformProductId: `${item.product_id}`,
+        price: item.price,
+        quantity: item.qty_ordered,
+        sku: item.sku,
+        title: item.description,
+        totalDiscount: item.discount_amount,
+        upc: '',
+        variantId: '',
+        variantTitle: '',
+        vendor: ''
+      });
+      ret.push(i);
+    });
+
+    return ret;
   }
 
 }
