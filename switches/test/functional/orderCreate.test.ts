@@ -1,7 +1,7 @@
 import 'jest';
 import { RestClient } from '@ns8/magento2-rest-client';
 import * as fs from 'fs';
-import { CreateOrder } from '../../dist/steps/CreateOrder';
+import { CreateOrderAction } from '../../dist/steps/CreateOrderAction';
 import expectExport = require('expect');
 const switchboardData = require('../mock_data/switchcontext.json');
 
@@ -43,8 +43,14 @@ beforeAll(() => {
 });
 
 describe('::testExecutionOfCreateOrderStep', () => {
-  it('does not throw when called with mock data', () => {
+  it('does not throw when called with mock data', done => {
 
-    new CreateOrder().create(switchboardData).then((data) => { expect.anything() });
+    var order = new CreateOrderAction().create(switchboardData).then(data => {
+      expect.anything();
+      done();
+    }).catch(reason => {
+      done();
+    });
+
   });
 });
