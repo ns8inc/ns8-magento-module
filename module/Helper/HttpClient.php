@@ -115,8 +115,11 @@ class HttpClient extends AbstractHelper
             $httpClient->setOptions(array('timeout' => $timeout));
             $httpClient->setMethod($method);
             $httpClient->setParameterGet($parameters);
-
             $httpClient->setMethod($method);
+
+            $headers['magento-version'] = $this->config->getMagentoVersion();
+            $headers['extension-version'] = $this->config->getExtensionVersion();
+
             if (!empty($headers)) {
                 $httpClient->setHeaders($headers);
             }

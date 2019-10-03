@@ -21,7 +21,7 @@ const installModules = async (switchboard: Switchboard): Promise<void> => {
       console.log(`running yarn link ${dependency}`);
       await exec(`yarn link ${dependency}`).catch(logAndExit);
     } else {
-      const dependency = mdl.name + "@" + mdl.version;
+      const dependency = mdl.name + '@' + mdl.version;
       console.log(`running yarn add ${dependency}`);
       await exec(`yarn add ${dependency}`).catch(logAndExit);
     }

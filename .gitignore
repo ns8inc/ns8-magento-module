@@ -6,3 +6,5 @@ src/etc/integration/api.xml
 .env
 dist/
 switchboard/.serverless/
+yarn-error.log
+switches/test/mock_data/
