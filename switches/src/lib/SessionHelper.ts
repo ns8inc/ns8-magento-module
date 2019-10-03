@@ -16,12 +16,7 @@ export class SessionHelper {
   //TODO: ship this data from Magento
   public toSession = (): Session => {
     return new Session({
-      acceptLanguage: '',
-      id: '',
-      screenHeight: 0,
-      screenWidth: 0,
-      ip: '',
-      userAgent: ''
+      ip: '127.0.0.1',
     });
   }
 }

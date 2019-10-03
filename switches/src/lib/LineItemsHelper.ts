@@ -18,10 +18,10 @@ export class LineItemsHelper {
 
     this.MagentoOrder.items.forEach((item) => {
       const i = new LineItem({
-        ean13: '',
+        //ean13: '',
         isGiftCard: false,
-        isbn: '',
-        manufacturer: '',
+        //isbn: '',
+        //manufacturer: '',
         name: item.name,
         platformId: `${item.item_id}`,
         platformProductId: `${item.product_id}`,
@@ -30,10 +30,10 @@ export class LineItemsHelper {
         sku: item.sku,
         title: item.description,
         totalDiscount: item.discount_amount,
-        upc: '',
-        variantId: '',
-        variantTitle: '',
-        vendor: ''
+        //upc: '',
+        //variantId: '',
+        //variantTitle: '',
+        //vendor: ''
       });
       ret.push(i);
     });

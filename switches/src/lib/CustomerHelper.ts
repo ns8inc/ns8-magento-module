@@ -44,7 +44,7 @@ export class CustomerHelper {
     return phoneNumber;
   }
 
-  public toCustomer = async(): Promise<Customer> => {
+  public toCustomer = async (): Promise<Customer> => {
     let customer = await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id);
     if (null === customer) {
       customer = {
@@ -59,12 +59,13 @@ export class CustomerHelper {
     }
 
     const ret = new Customer({
-      birthday: toDate(customer.dob),
+      //birthday: toDate(customer.dob),
       email: customer.email,
       firstName: customer.firstname,
       gender: this.getGender(customer.gender),
       lastName: customer.lastname,
-      phone: this.getPhoneNumber(customer)
+      phone: this.getPhoneNumber(customer),
+      platformId: `${customer.id}`
     });
 
     return ret;
