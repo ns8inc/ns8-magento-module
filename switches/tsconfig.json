@@ -16,7 +16,6 @@
     "dist"
   ],
   "include": [
-    "src/**/*",
-    "test/magento/MagentoClientTest.js"
+    "src/**/*"
   ]
 }

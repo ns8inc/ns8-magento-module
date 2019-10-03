@@ -12,12 +12,15 @@
   },
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
+    "@types/jest": "^24.0.18",
     "@types/node": "^12.7.5",
     "chai": "^4.2.0",
     "dotenv": "^8.1.0",
+    "jest": "^24.9.0",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
     "sinon": "^7.4.2",
+    "ts-jest": "^24.1.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.6.3"
   },
@@ -40,7 +43,7 @@
     "clean": "rimraf dist",
     "lint": "tslint --project .",
     "prebuild": "npm run clean",
-    "test": "nyc mocha --colors"
+    "test": "jest"
   },
   "version": "1.0.176"
 }
