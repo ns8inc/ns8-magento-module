@@ -14,7 +14,13 @@ const toDate = (date: string | undefined): Date | undefined => {
   return ret;
 }
 
+enum OrderState {
+  CREATED = 'created',
+  UPDATED = 'updated'
+}
+
 export {
   log,
-  toDate
+  toDate,
+  OrderState
 }

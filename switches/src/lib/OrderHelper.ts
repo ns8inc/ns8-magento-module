@@ -8,7 +8,8 @@ import {
   TransactionHelper,
   LineItemsHelper,
   CustomerHelper,
-  log
+  log,
+  OrderState
 } from '.';
 
 /**
@@ -35,8 +36,13 @@ export class OrderHelper {
   /**
    * Determines whether or not to process this order
    */
-  public process = (): Boolean => {
-    return true;
+  public process = (state: OrderState): Boolean => {
+    switch (state) {
+      case OrderState.CREATED:
+        return this.SwitchContext.data.order.status === 'pending' || this.SwitchContext.data.state === 'new';
+      default:
+        return true;
+    }
   }
 
   private init = async (): Promise<MagentoOrder> => {
@@ -56,8 +62,7 @@ export class OrderHelper {
   /**
    * Converts a Magento Order into a Protect Order
    */
-  public toOrder = async (): Promise<Order> => {
-
+  public createProtectOrder = async (): Promise<Order> => {
     this.Order = new Order();
     try {
       const magentoOrder = await this.init();
