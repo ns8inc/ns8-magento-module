@@ -13,10 +13,7 @@
     "typescript": "^3.6.3"
   },
   "optionalDependencies": {
-    "@types/chai": "^4.2.2",
-    "@types/lodash": "^4.14.141",
-    "@types/mocha": "^5.2.7",
-    "@types/sinon": "^7.0.13"
+    "@types/lodash": "^4.14.141"
   },
   "scripts": {
     "build": "yarn compile && yarn install-modules",
