@@ -32,22 +32,22 @@ const instantiateHandler = (name: string) => {
 };
 
 
-const CreateOrder = instantiateHandler('CreateOrder');
-const Install = instantiateHandler('Install');
-const UpdateCustomer = instantiateHandler('UpdateCustomer');
-const UpdateEQ8Score = instantiateHandler('UpdateEQ8Score');
-const UpdateOrderRisk = instantiateHandler('UpdateOrderRisk');
-const Uninstall = instantiateHandler('Uninstall');
-const UpdateMerchant = instantiateHandler('UpdateMerchant');
-const UpdateOrderStatus = instantiateHandler('UpdateOrderStatus');
+const CreateOrderAction = instantiateHandler('CreateOrderAction');
+const OnInstallEvent = instantiateHandler('OnInstallEvent');
+const UpdateCustVerifyStatusEvent = instantiateHandler('UpdateCustVerifyStatusEvent');
+const UpdateEQ8ScoreEvent = instantiateHandler('UpdateEQ8ScoreEvent');
+const UpdateOrderRiskEvent = instantiateHandler('UpdateOrderRiskEvent');
+const UninstallAction = instantiateHandler('UninstallAction');
+const UpdateMerchantAction = instantiateHandler('UpdateMerchantAction');
+const UpdateOrderStatusEvent = instantiateHandler('UpdateOrderStatusEvent');
 
 export {
-  CreateOrder,
-  Install,
-  UpdateCustomer,
-  UpdateEQ8Score,
-  UpdateOrderRisk,
-  Uninstall,
-  UpdateMerchant,
-  UpdateOrderStatus
+  CreateOrderAction,
+  OnInstallEvent,
+  UpdateCustVerifyStatusEvent,
+  UpdateEQ8ScoreEvent,
+  UpdateOrderRiskEvent,
+  UninstallAction,
+  UpdateMerchantAction,
+  UpdateOrderStatusEvent
 };

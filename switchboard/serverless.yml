@@ -1,30 +1,30 @@
 custom:
   integrationName: ${self:service}-${self:provider.stage}
 functions:
-  CreateOrder:
-    handler: dist/src/app.CreateOrder
-    name: '${self:custom.integrationName}-CreateOrder'
-  Install:
-    handler: dist/src/app.Install
-    name: '${self:custom.integrationName}-Install'
-  Uninstall:
-    handler: dist/src/app.Uninstall
-    name: '${self:custom.integrationName}-Uninstall'
-  UpdateCustomer:
-    handler: dist/src/app.UpdateCustomer
-    name: '${self:custom.integrationName}-UpdateCustomer'
-  UpdateEQ8Score:
-    handler: dist/src/app.UpdateEQ8Score
-    name: '${self:custom.integrationName}-UpdateEQ8Score'
-  UpdateMerchant:
-    handler: dist/src/app.UpdateMerchant
-    name: '${self:custom.integrationName}-UpdateMerchant'
-  UpdateOrderRisk:
-    handler: dist/src/app.UpdateOrderRisk
-    name: '${self:custom.integrationName}-UpdateOrderRisk'
-  UpdateOrderStatus:
-    handler: dist/src/app.UpdateOrderStatus
-    name: '${self:custom.integrationName}-UpdateOrderStatus'
+  CreateOrderAction:
+    handler: dist/src/app.CreateOrderAction
+    name: '${self:custom.integrationName}-createOrderAction'
+  OnInstallEvent:
+    handler: dist/src/app.OnInstallEvent
+    name: '${self:custom.integrationName}-onInstallEvent'
+  UninstallAction:
+    handler: dist/src/app.UninstallAction
+    name: '${self:custom.integrationName}-uninstallAction'
+  UpdateCustVerifyStatusEvent:
+    handler: dist/src/app.UpdateCustVerifyStatusEvent
+    name: '${self:custom.integrationName}-updateCustVerifyStatusEvent'
+  UpdateEQ8ScoreEvent:
+    handler: dist/src/app.UpdateEQ8ScoreEvent
+    name: '${self:custom.integrationName}-updateEQ8ScoreEvent'
+  UpdateMerchantAction:
+    handler: dist/src/app.UpdateMerchantAction
+    name: '${self:custom.integrationName}-updateMerchantAction'
+  UpdateOrderRiskEvent:
+    handler: dist/src/app.UpdateOrderRiskEvent
+    name: '${self:custom.integrationName}-updateOrderRiskEvent'
+  UpdateOrderStatusEvent:
+    handler: dist/src/app.UpdateOrderStatusEvent
+    name: '${self:custom.integrationName}-updateOrderStatusEvent'
 
 RetryDefault: &retryDefault
   Retry:
@@ -65,13 +65,13 @@ provider:
 service: 'ns8-switchboard-${file(./switchboard.json):id}'
 stepFunctions:
   stateMachines:
-    CreateOrder:
+    CreateOrderAction:
       definition:
-        StartAt: CreateOrderStart
+        StartAt: CreateOrderActionStart
         States:
-          CreateOrderStart:
+          CreateOrderActionStart:
             End: true
-            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-CreateOrder'
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-createOrderAction'
             Retry:
               -
                 BackoffRate: 2
@@ -80,14 +80,14 @@ stepFunctions:
                 IntervalSeconds: 1
                 MaxAttempts: 0
             Type: Task
-      name: '${self:custom.integrationName}-CreateOrder'
-    Install:
+      name: '${self:custom.integrationName}-createOrderAction'
+    OnInstallEvent:
       definition:
-        StartAt: InstallStart
+        StartAt: OnInstallEventStart
         States:
-          InstallStart:
+          OnInstallEventStart:
             End: true
-            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-Install'
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-onInstallEventStart'
             Retry:
               -
                 BackoffRate: 2
@@ -96,14 +96,14 @@ stepFunctions:
                 IntervalSeconds: 1
                 MaxAttempts: 0
             Type: Task
-      name: '${self:custom.integrationName}-Install'
-    Uninstall:
+      name: '${self:custom.integrationName}-onInstallEventStart'
+    UninstallAction:
       definition:
-        StartAt: UninstallStart
+        StartAt: UninstallActionStart
         States:
-          UninstallStart:
+          UninstallActionStart:
             End: true
-            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-Uninstall'
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-uninstallAction'
             Retry:
               -
                 BackoffRate: 2
@@ -112,14 +112,14 @@ stepFunctions:
                 IntervalSeconds: 1
                 MaxAttempts: 0
             Type: Task
-      name: '${self:custom.integrationName}-Uninstall'
-    UpdateCustomer:
+      name: '${self:custom.integrationName}-uninstallAction'
+    UpdateCustVerifyStatusEvent:
       definition:
-        StartAt: UpdateCustomerStart
+        StartAt: UpdateCustVerifyStatusEventStart
         States:
-          UpdateCustomerStart:
+          UpdateCustVerifyStatusEventStart:
             End: true
-            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateCustomer'
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateCustVerifyStatusEvent'
             Retry:
               -
                 BackoffRate: 2
@@ -128,14 +128,14 @@ stepFunctions:
                 IntervalSeconds: 1
                 MaxAttempts: 0
             Type: Task
-      name: '${self:custom.integrationName}-UpdateCustomer'
-    UpdateEQ8Score:
+      name: '${self:custom.integrationName}-updateCustVerifyStatusEvent'
+    UpdateEQ8ScoreEvent:
       definition:
-        StartAt: UpdateEQ8ScoreStart
+        StartAt: UpdateEQ8ScoreEventStart
         States:
-          UpdateEQ8ScoreStart:
+          UpdateEQ8ScoreEventStart:
             End: true
-            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateEQ8Score'
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateEQ8ScoreEvent'
             Retry:
               -
                 BackoffRate: 2
@@ -144,14 +144,14 @@ stepFunctions:
                 IntervalSeconds: 1
                 MaxAttempts: 0
             Type: Task
-      name: '${self:custom.integrationName}-UpdateEQ8Score'
-    UpdateMerchant:
+      name: '${self:custom.integrationName}-updateEQ8ScoreEvent'
+    UpdateMerchantAction:
       definition:
-        StartAt: UpdateMerchantStart
+        StartAt: UpdateMerchantActionStart
         States:
-          UpdateMerchantStart:
+          UpdateMerchantActionStart:
             End: true
-            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateMerchant'
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateMerchantAction'
             Retry:
               -
                 BackoffRate: 2
@@ -160,14 +160,14 @@ stepFunctions:
                 IntervalSeconds: 1
                 MaxAttempts: 0
             Type: Task
-      name: '${self:custom.integrationName}-UpdateMerchant'
-    UpdateOrderRisk:
+      name: '${self:custom.integrationName}-updateMerchantAction'
+    UpdateOrderRiskEvent:
       definition:
-        StartAt: UpdateOrderRiskStart
+        StartAt: UpdateOrderRiskEventStart
         States:
-          UpdateOrderRiskStart:
+          UpdateOrderRiskEventStart:
             End: true
-            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateOrderRisk'
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderRiskEvent'
             Retry:
               -
                 BackoffRate: 2
@@ -176,14 +176,14 @@ stepFunctions:
                 IntervalSeconds: 1
                 MaxAttempts: 0
             Type: Task
-      name: '${self:custom.integrationName}-UpdateOrderRisk'
-    UpdateOrderStatus:
+      name: '${self:custom.integrationName}-updateOrderRiskEvent'
+    UpdateOrderStatusEvent:
       definition:
-        StartAt: UpdateOrderStatus
+        StartAt: UpdateOrderStatusEventStart
         States:
-          UpdateOrderStatus:
+          UpdateOrderStatusEventStart:
             End: true
-            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-UpdateOrderStatus'
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderStatusEvent'
             Retry:
               -
                 BackoffRate: 2
@@ -192,4 +192,4 @@ stepFunctions:
                 IntervalSeconds: 1
                 MaxAttempts: 0
             Type: Task
-      name: '${self:custom.integrationName}-UpdateOrderStatus'
+      name: '${self:custom.integrationName}-updateOrderStatusEvent'

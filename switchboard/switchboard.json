@@ -10,11 +10,11 @@
     {
       "arn": "...",
       "executorType": "step-function",
-      "name": "Install",
+      "name": "OnInstallEvent",
       "operator": "EventOperator",
       "sources": [
         {
-          "fileName": "Install",
+          "fileName": "OnInstallEvent",
           "moduleName": "@ns8/ns8-magento2-switches"
         }
       ],
@@ -23,11 +23,11 @@
     {
       "arn": "...",
       "executorType": "step-function",
-      "name": "UpdateCustomer",
+      "name": "UpdateCustVerifyStatusEvent",
       "operator": "EventOperator",
       "sources": [
         {
-          "fileName": "UpdateCustomer",
+          "fileName": "UpdateCustVerifyStatusEvent",
           "moduleName": "@ns8/ns8-magento2-switches"
         }
       ],
@@ -36,11 +36,11 @@
     {
       "arn": "...",
       "executorType": "step-function",
-      "name": "UpdateEQ8Score",
+      "name": "UpdateEQ8ScoreEvent",
       "operator": "EventOperator",
       "sources": [
         {
-          "fileName": "UpdateEQ8Score",
+          "fileName": "UpdateEQ8ScoreEvent",
           "moduleName": "@ns8/ns8-magento2-switches"
         }
       ],
@@ -49,11 +49,11 @@
     {
       "arn": "...",
       "executorType": "step-function",
-      "name": "UpdateOrderRisk",
+      "name": "UpdateOrderRiskEvent",
       "operator": "EventOperator",
       "sources": [
         {
-          "fileName": "UpdateOrderRisk",
+          "fileName": "UpdateOrderRiskEvent",
           "moduleName": "@ns8/ns8-magento2-switches"
         }
       ],
@@ -62,11 +62,11 @@
     {
       "arn": "...",
       "executorType": "step-function",
-      "name": "Uninstall",
+      "name": "UninstallAction",
       "operator": "UninstallActionOperator",
       "sources": [
         {
-          "fileName": "Uninstall",
+          "fileName": "UninstallAction",
           "moduleName": "@ns8/ns8-magento2-switches"
         }
       ],
@@ -75,11 +75,11 @@
     {
       "arn": "...",
       "executorType": "step-function",
-      "name": "CreateOrder",
+      "name": "CreateOrderAction",
       "operator": "CreateOrderActionOperator",
       "sources": [
         {
-          "fileName": "CreateOrder",
+          "fileName": "CreateOrderAction",
           "moduleName": "@ns8/ns8-magento2-switches"
         }
       ],
@@ -88,11 +88,11 @@
     {
       "arn": "...",
       "executorType": "step-function",
-      "name": "UpdateMerchant",
+      "name": "UpdateMerchantAction",
       "operator": "UpdateMerchantActionOperator",
       "sources": [
         {
-          "fileName": "UpdateMerchant",
+          "fileName": "UpdateMerchantAction",
           "moduleName": "@ns8/ns8-magento2-switches"
         }
       ],
@@ -101,11 +101,11 @@
     {
       "arn": "...",
       "executorType": "step-function",
-      "name": "UpdateOrderStatus",
+      "name": "UpdateOrderStatusEvent",
       "operator": "UpdateOrderStatusActionOperator",
       "sources": [
         {
-          "fileName": "UpdateOrderStatus",
+          "fileName": "UpdateOrderStatusEvent",
           "moduleName": "@ns8/ns8-magento2-switches"
         }
       ],

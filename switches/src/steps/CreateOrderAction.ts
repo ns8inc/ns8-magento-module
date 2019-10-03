@@ -3,7 +3,7 @@ import { CreateOrderActionSwitch, SwitchContext } from 'ns8-switchboard-interfac
 import { OrderHelper } from '..'
 import { OrderState } from '../lib';
 
-export class CreateOrder implements CreateOrderActionSwitch {
+export class CreateOrderAction implements CreateOrderActionSwitch {
   async create(switchContext: SwitchContext): Promise<Order> {
     var converter = new OrderHelper(switchContext);
     if (converter.process(OrderState.CREATED)) {
