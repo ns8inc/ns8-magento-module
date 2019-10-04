@@ -2,7 +2,7 @@ import { SwitchContext, UpdateMerchantActionSwitch } from 'ns8-switchboard-inter
 import { MerchantUpdate } from 'ns8-protect-models';
 import { toProtectMerchantUpdate } from '../lib';
 
-export class UpdateMerchant implements UpdateMerchantActionSwitch {
+export class UpdateMerchantAction implements UpdateMerchantActionSwitch {
   async update(switchContext: SwitchContext): Promise<MerchantUpdate> {
     return toProtectMerchantUpdate(switchContext);
   }

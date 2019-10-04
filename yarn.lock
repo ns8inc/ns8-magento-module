@@ -18,27 +18,27 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@ns8/magento2-rest-client@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.2.tgz#812ee7908ce23a530cf9fecb3d9d182479c4b548"
-  integrity sha512-CkDQVwkhqQyAFCk/j+r8d2S+aayXISwMiH/vn3Qsu7kXtQ82Omi2oJwmpG9ueczFG+u4y8dx1N2e+h9tQc9KUg==
+"@ns8/magento2-rest-client@^0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.9.tgz#b8fa48c03dd548b7e73624871d2c3578b7ad4709"
+  integrity sha512-nIFApTFCiHK8jcEQwwM/OCNVk3BnZbiZwI7dkOrHb1MandJEMbHzRWXpWxDdXvkr5ann9vfZqgMbtS5oCOec9g==
   dependencies:
     oauth-1.0a "^1.0.1"
     request "^2.72.0"
     winston "^3.2.1"
 
-"@ns8/ns8-protect-sdk@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.8.tgz#2f43a76ee7b76e25663856cdac95935366516460"
-  integrity sha512-R0llkZpenCkpd762ogiLTc+jKioK9AtHDSzrwzJCKq3iLCyt7xTuvhiUmYWw3yYYHDtp/ipljBu/wyLROjNrTw==
+"@ns8/ns8-protect-sdk@^0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.12.tgz#41ee2178a5b8881263d083bf77de2f83d6e90783"
+  integrity sha512-dcJBSsXdvvqCjmREfuNRCq8nNHGqyTrCnbaNupUGJbSXeumdpb2u40xnN0VH6O5Uxs+/ze+iHabkwrMNs44m2Q==
   dependencies:
-    "@ns8/ns8-switchboard-operator" "^1.0.93"
+    "@ns8/ns8-switchboard-operator" "^1.0.95"
     aws-sdk "^2.538.0"
     glob "^7.1.4"
     libphonenumber-js "^1.7.25"
     minimist "^1.2.0"
     ns8-protect-models "^1.0.206"
-    ns8-switchboard-interfaces "^1.0.81"
+    ns8-switchboard-interfaces "^1.0.83"
     sort-json "^2.0.0"
     yamljs "^0.3.0"
   optionalDependencies:
@@ -46,15 +46,15 @@
     "@types/minimist" "^1.2.0"
     "@types/node" "^12.7.5"
 
-"@ns8/ns8-switchboard-operator@^1.0.93":
-  version "1.0.93"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.93.tgz#477478ce2a4e012f28c6a3042c4008874a7582f8"
-  integrity sha512-2+TXn7ig8DmxCH3eUpv+pDztOjBzmEBrhI/iXzEdWvMyUBr0jOLIBQ2zQS0bQs7qu26/VYWycTzCZ+qDnWzLPg==
+"@ns8/ns8-switchboard-operator@^1.0.95":
+  version "1.0.95"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.95.tgz#422b5efe279830931665b7ff265af5c6451f71e7"
+  integrity sha512-qhpR8BujXUR27oHTod+mbAo72PV8EmAuK0VXBpmh7weVP1xWZ/2zAMbnW3vBQVXv/1pe6gfBgs+2k5cFeWc1oQ==
   dependencies:
     aws-lambda "^0.1.2"
     isomorphic-fetch "^2.2.1"
-    ns8-protect-models "^1.0.205"
-    ns8-switchboard-interfaces "^1.0.80"
+    ns8-protect-models "^1.0.206"
+    ns8-switchboard-interfaces "^1.0.83"
 
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
@@ -80,6 +80,11 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.3.tgz#bdfd69d61e464dcc81b25159c270d75a73c1a636"
   integrity sha512-Il2DtDVRGDcqjDtE+rF8iqg1CArehSK84HZJCT7AMITlyXRBpuPhqGLDQMowraqqu1coEaimg4ZOqggt6L6L+A==
 
+"@types/lodash@^4.14.141":
+  version "4.14.141"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.141.tgz#d81f4d0c562abe28713406b571ffb27692a82ae6"
+  integrity sha512-v5NYIi9qEbFEUpCyikmnOYe4YlP8BMUdTcNCAquAKzu+FA7rZ1onj9x80mbnDdOW/K5bFf3Tv5kJplP33+gAbQ==
+
 "@types/minimatch@*":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
@@ -99,6 +104,11 @@
   version "12.7.5"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.5.tgz#e19436e7f8e9b4601005d73673b6dc4784ffcc2f"
   integrity sha512-9fq4jZVhPNW8r+UYKnxF1e2HkDWOWKM5bC2/7c9wPV835I0aOrVbS/Hw/pWPk2uKrNXQqg9Z959Kz+IYDd5p3w==
+
+"@types/stack-trace@0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@types/stack-trace/-/stack-trace-0.0.29.tgz#eb7a7c60098edb35630ed900742a5ecb20cfcb4d"
+  integrity sha512-TgfOX+mGY/NyNxJLIbDWrO9DjGoVSW9+aB8H2yy1fy32jsvxijhmyJI9fDFgvz3YP4lvJaq9DzdR/M1bOgVc9g==
 
 "@typescript-eslint/eslint-plugin@^2.0.0":
   version "2.3.1"
@@ -1171,7 +1181,7 @@ lodash.unescape@4.0.1:
   resolved "https://registry.yarnpkg.com/lodash.unescape/-/lodash.unescape-4.0.1.tgz#bf2249886ce514cda112fae9218cdc065211fc9c"
   integrity sha1-vyJJiGzlFM2hEvrpIYzcBlIR/Jw=
 
-lodash@^4.17.12, lodash@^4.17.14:
+lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.15:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -1276,33 +1286,12 @@ ns8-billing-core@^1.0.128:
   resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.667.tgz#5d03aecaf9e391a6638f0a2f15215c1e85b0ded5"
   integrity sha512-xdYxVtuZY4mnilcKL7FdEpnFFmEOSdYbq39QowC0Cbvzv+Vt4XFWlOvXwY2CkVgBUP0J2Xn6pbT+GM5Pa7+uvQ==
 
-ns8-protect-models@^1.0.205:
-  version "1.0.205"
-  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.205.tgz#d0db9795d4fe8837f01e544c55c556c6df188aad"
-  integrity sha512-1ZotK+qjOCJUwv/Smo40aDsjNarlwOCat+YZ4qt0MGawRlLsLAfVWbpjZM9POcjGjX3m9T18Kjx7+BQ9lV7GhA==
-  dependencies:
-    ns8-billing-core "^1.0.128"
-
 ns8-protect-models@^1.0.206:
   version "1.0.206"
   resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.206.tgz#4c1be61f40a43765dedab891cd7fd72b0fa221a6"
   integrity sha512-BtbZtSMRieRcpXJ5AadNvafYxSXluF9VbhwZCMdX4d4d5cSOUMXHfCJoQEix5io0WpfMAGQS6lpoOVCs/CMUYQ==
   dependencies:
     ns8-billing-core "^1.0.128"
-
-ns8-switchboard-interfaces@^1.0.80:
-  version "1.0.80"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.80.tgz#b748b751fd955baf5817509568744fc2f6efb1e5"
-  integrity sha512-ZqeIsBW+TBnfSQqdcBUP+aDPnOcyEccGw1xTpRAlqUUnwsNj70+71S6pPA6EfWiRDEdbMXaajc9fWfBNTQrRSA==
-  dependencies:
-    ns8-protect-models "^1.0.205"
-
-ns8-switchboard-interfaces@^1.0.81:
-  version "1.0.81"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.81.tgz#4ff9aec095da1fc52d5f601d7c86a7f1d63d2ce6"
-  integrity sha512-gGUkw6Q/m7k7VgllAz6WHkP8nz1y20szxteWNbfDDzEdiPA2fn0VcDILEpmwGOJbioClZsaRA5bUgNhS3URVRg==
-  dependencies:
-    ns8-protect-models "^1.0.205"
 
 ns8-switchboard-interfaces@^1.0.83:
   version "1.0.83"
@@ -1765,7 +1754,7 @@ sshpk@^1.7.0:
     safer-buffer "^2.0.2"
     tweetnacl "~0.14.0"
 
-stack-trace@0.0.x:
+stack-trace@0.0.10, stack-trace@0.0.x:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/stack-trace/-/stack-trace-0.0.10.tgz#547c70b347e8d32b4e108ea1a2a159e5fdde19c0"
   integrity sha1-VHxws0fo0ytOEI6hoqFZ5f3eGcA=
@@ -1928,11 +1917,6 @@ typescript@^3.6.3:
   version "3.6.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.6.3.tgz#fea942fabb20f7e1ca7164ff626f1a9f3f70b4da"
   integrity sha512-N7bceJL1CtRQ2RiG0AQME13ksR7DiuQh/QehubYcghzv20tnh+MQnQIuJddTmsbqYj+dztchykemz0zFzlvdQw==
-
-typescript@~3.5.3:
-  version "3.5.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.3.tgz#c830f657f93f1ea846819e929092f5fe5983e977"
-  integrity sha512-ACzBtm/PhXBDId6a6sDJfroT2pOWt/oOnk4/dElG5G33ZL776N3Y6/6bKZJBFpd+b05F3Ct9qDjMeJmRWtE2/g==
 
 uri-js@^4.2.2:
   version "4.2.2"

@@ -34,34 +34,24 @@
   dependencies:
     "@hapi/hoek" "8.x.x"
 
-"@ns8/ns8-protect-sdk@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.8.tgz#2f43a76ee7b76e25663856cdac95935366516460"
-  integrity sha512-R0llkZpenCkpd762ogiLTc+jKioK9AtHDSzrwzJCKq3iLCyt7xTuvhiUmYWw3yYYHDtp/ipljBu/wyLROjNrTw==
+"@ns8/ns8-protect-sdk@^0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.12.tgz#41ee2178a5b8881263d083bf77de2f83d6e90783"
+  integrity sha512-dcJBSsXdvvqCjmREfuNRCq8nNHGqyTrCnbaNupUGJbSXeumdpb2u40xnN0VH6O5Uxs+/ze+iHabkwrMNs44m2Q==
   dependencies:
-    "@ns8/ns8-switchboard-operator" "^1.0.93"
+    "@ns8/ns8-switchboard-operator" "^1.0.95"
     aws-sdk "^2.538.0"
     glob "^7.1.4"
     libphonenumber-js "^1.7.25"
     minimist "^1.2.0"
     ns8-protect-models "^1.0.206"
-    ns8-switchboard-interfaces "^1.0.81"
+    ns8-switchboard-interfaces "^1.0.83"
     sort-json "^2.0.0"
     yamljs "^0.3.0"
   optionalDependencies:
     "@types/glob" "^7.1.1"
     "@types/minimist" "^1.2.0"
     "@types/node" "^12.7.5"
-
-"@ns8/ns8-switchboard-operator@^1.0.93":
-  version "1.0.93"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.93.tgz#477478ce2a4e012f28c6a3042c4008874a7582f8"
-  integrity sha512-2+TXn7ig8DmxCH3eUpv+pDztOjBzmEBrhI/iXzEdWvMyUBr0jOLIBQ2zQS0bQs7qu26/VYWycTzCZ+qDnWzLPg==
-  dependencies:
-    aws-lambda "^0.1.2"
-    isomorphic-fetch "^2.2.1"
-    ns8-protect-models "^1.0.205"
-    ns8-switchboard-interfaces "^1.0.80"
 
 "@ns8/ns8-switchboard-operator@^1.0.95":
   version "1.0.95"
@@ -203,6 +193,11 @@
   version "4.14.139"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.139.tgz#b7b8a00d014a7debb29dc2dae4f91d3d3c6d5ab3"
   integrity sha512-Z6pbDYaWpluqcF8+6qgv6STPEl0jIlyQmpYGwTrzhgwqok8ltBh/p7GAmYnz81wUhxQRhEr8MBpQrB4fQ/hwIA==
+
+"@types/lodash@^4.14.141":
+  version "4.14.141"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.141.tgz#d81f4d0c562abe28713406b571ffb27692a82ae6"
+  integrity sha512-v5NYIi9qEbFEUpCyikmnOYe4YlP8BMUdTcNCAquAKzu+FA7rZ1onj9x80mbnDdOW/K5bFf3Tv5kJplP33+gAbQ==
 
 "@types/minimatch@*":
   version "3.0.3"
@@ -429,9 +424,9 @@ aws-sdk@^*, aws-sdk@^2.282.1, aws-sdk@^2.535.0:
     xml2js "0.4.19"
 
 aws-sdk@^2.538.0:
-  version "2.538.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.538.0.tgz#c2a6b482c191615457993d9cfb28a79d0847bb71"
-  integrity sha512-mQTo1eWoU8UB2Pp1PyBBSrFKfaFIVNKeLjJslrhHV5eW/orv2Lw07shnbY4cSt+n2oumw45WStWORyLekRvjyA==
+  version "2.541.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.541.0.tgz#dd9902ceb2b6b002893de9d35ae598b332019e0b"
+  integrity sha512-KDw2M4Df0KC6mguYWQm+r9A4dfijsnFKaJtrOtSeoIiHDmTdPzSpsrZXGCb9Mc+npGcMT1144sQNCUZWjG0JDA==
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -1143,9 +1138,9 @@ end-of-stream@^1.0.0, end-of-stream@^1.1.0:
     once "^1.4.0"
 
 es-abstract@^1.5.1:
-  version "1.14.2"
-  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.14.2.tgz#7ce108fad83068c8783c3cdf62e504e084d8c497"
-  integrity sha512-DgoQmbpFNOofkjJtKwr87Ma5EW4Dc8fWhD0R+ndq7Oc456ivUfGOOP6oAZTTKl5/CcNMP+EN+e3/iUzgE0veZg==
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.15.0.tgz#8884928ec7e40a79e3c9bc812d37d10c8b24cc57"
+  integrity sha512-bhkEqWJ2t2lMeaJDuk7okMkJWI/yqgH/EoGwpcvv0XW9RWQsRspI4wt6xuyuvMvvQE3gg/D9HXppgk21w78GyQ==
   dependencies:
     es-to-primitive "^1.2.0"
     function-bind "^1.1.1"
@@ -1155,8 +1150,8 @@ es-abstract@^1.5.1:
     is-regex "^1.0.4"
     object-inspect "^1.6.0"
     object-keys "^1.1.1"
-    string.prototype.trimleft "^2.0.0"
-    string.prototype.trimright "^2.0.0"
+    string.prototype.trimleft "^2.1.0"
+    string.prototype.trimright "^2.1.0"
 
 es-to-primitive@^1.2.0:
   version "1.2.0"
@@ -2635,33 +2630,12 @@ ns8-billing-core@^1.0.128:
   resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.667.tgz#5d03aecaf9e391a6638f0a2f15215c1e85b0ded5"
   integrity sha512-xdYxVtuZY4mnilcKL7FdEpnFFmEOSdYbq39QowC0Cbvzv+Vt4XFWlOvXwY2CkVgBUP0J2Xn6pbT+GM5Pa7+uvQ==
 
-ns8-protect-models@^1.0.205:
-  version "1.0.205"
-  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.205.tgz#d0db9795d4fe8837f01e544c55c556c6df188aad"
-  integrity sha512-1ZotK+qjOCJUwv/Smo40aDsjNarlwOCat+YZ4qt0MGawRlLsLAfVWbpjZM9POcjGjX3m9T18Kjx7+BQ9lV7GhA==
-  dependencies:
-    ns8-billing-core "^1.0.128"
-
 ns8-protect-models@^1.0.206:
   version "1.0.206"
   resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.206.tgz#4c1be61f40a43765dedab891cd7fd72b0fa221a6"
   integrity sha512-BtbZtSMRieRcpXJ5AadNvafYxSXluF9VbhwZCMdX4d4d5cSOUMXHfCJoQEix5io0WpfMAGQS6lpoOVCs/CMUYQ==
   dependencies:
     ns8-billing-core "^1.0.128"
-
-ns8-switchboard-interfaces@^1.0.80:
-  version "1.0.80"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.80.tgz#b748b751fd955baf5817509568744fc2f6efb1e5"
-  integrity sha512-ZqeIsBW+TBnfSQqdcBUP+aDPnOcyEccGw1xTpRAlqUUnwsNj70+71S6pPA6EfWiRDEdbMXaajc9fWfBNTQrRSA==
-  dependencies:
-    ns8-protect-models "^1.0.205"
-
-ns8-switchboard-interfaces@^1.0.81:
-  version "1.0.81"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.81.tgz#4ff9aec095da1fc52d5f601d7c86a7f1d63d2ce6"
-  integrity sha512-gGUkw6Q/m7k7VgllAz6WHkP8nz1y20szxteWNbfDDzEdiPA2fn0VcDILEpmwGOJbioClZsaRA5bUgNhS3URVRg==
-  dependencies:
-    ns8-protect-models "^1.0.205"
 
 ns8-switchboard-interfaces@^1.0.83:
   version "1.0.83"
@@ -3481,7 +3455,7 @@ string-width@^2.0.0, string-width@^2.1.0, string-width@^2.1.1:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^4.0.0"
 
-string.prototype.trimleft@^2.0.0:
+string.prototype.trimleft@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/string.prototype.trimleft/-/string.prototype.trimleft-2.1.0.tgz#6cc47f0d7eb8d62b0f3701611715a3954591d634"
   integrity sha512-FJ6b7EgdKxxbDxc79cOlok6Afd++TTs5szo+zJTUyow3ycrRfJVE2pq3vcN53XexvKZu/DJMDfeI/qMiZTrjTw==
@@ -3489,7 +3463,7 @@ string.prototype.trimleft@^2.0.0:
     define-properties "^1.1.3"
     function-bind "^1.1.1"
 
-string.prototype.trimright@^2.0.0:
+string.prototype.trimright@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/string.prototype.trimright/-/string.prototype.trimright-2.1.0.tgz#669d164be9df9b6f7559fa8e89945b168a5a6c58"
   integrity sha512-fXZTSV55dNBwv16uw+hh5jkghxSnc5oHq+5K/gXgizHwAvMetdAJlHqqoFC1FSDVPYWLkAKl2cxpUT41sV7nSg==

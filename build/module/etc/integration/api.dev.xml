@@ -30,6 +30,7 @@
       <resource name="Magento_Sales::hold" />
       <resource name="Magento_Sales::unhold" />
       <resource name="Magento_Sales::payment_amount_authorization" />
+      <resource name="Magento_Sales::transactions_fetch" />
     </resources>
   </integration>
 </integrations>
