@@ -1,15 +1,20 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "incremental": false,
+    "declaration": true,
+    "incremental": true,
     "module": "commonjs",
-    "outDir": "dist",
+    "outDir": "tmp_tsc_compile",
     "removeComments": false,
     "resolveJsonModule": true,
     "sourceMap": true,
     "strictNullChecks": true,
     "target": "ES2017",
-    "types": ["jest"]
+    "types": ["jest"],
+    "noLib": false,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "exclude": [
     "test/**/*",
