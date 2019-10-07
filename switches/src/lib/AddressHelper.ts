@@ -1,6 +1,6 @@
 import { Address } from 'ns8-protect-models';
 import { get } from 'lodash';
-import { log, MagentoClient } from '.';
+import { error, MagentoClient } from '.';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
@@ -47,7 +47,7 @@ export class AddressHelper {
         ret.push(addr);
       });
     } catch (e) {
-      log(`Failed to create Addresses`, e);
+      error(`Failed to create Addresses`, e);
     }
     return ret;
   }

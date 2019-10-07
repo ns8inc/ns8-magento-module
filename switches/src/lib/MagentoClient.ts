@@ -1,5 +1,5 @@
 import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
-import { log } from '.';
+import { error } from '.';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { RestClient } from '@ns8/magento2-rest-client';
 import { ServiceIntegration } from 'ns8-protect-models';
@@ -26,7 +26,7 @@ export class MagentoClient {
         accessTokenSecret: si.secret
       })
     } catch (e) {
-      log('Failed to construct RestClient', e);
+      error('Failed to construct RestClient', e);
     }
   }
 
@@ -34,7 +34,7 @@ export class MagentoClient {
     try {
       return await this.client.orders.get(id);
     } catch (e) {
-      log(`Failed to get Order Id:${id} from Magento`, e);
+      error(`Failed to get Order Id:${id} from Magento`, e);
     }
     return null;
   }
@@ -43,7 +43,7 @@ export class MagentoClient {
     try {
       return await this.client.customers.get(id);
     } catch (e) {
-      log(`Failed to get Customer Id:${id} from Magento`, e);
+      error(`Failed to get Customer Id:${id} from Magento`, e);
     }
     return null;
   }
@@ -52,7 +52,7 @@ export class MagentoClient {
     try {
       return await this.client.transactions.getByTransactionId(id) || null;
     } catch (e) {
-      log(`Failed to get Transaction Id:${id} from Magento`, e);
+      error(`Failed to get Transaction Id:${id} from Magento`, e);
     }
     return null;
   }

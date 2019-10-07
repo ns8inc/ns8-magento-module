@@ -2,7 +2,7 @@ import {
   AddressHelper,
   CustomerHelper,
   LineItemsHelper,
-  log,
+  error,
   MagentoClient,
   OrderState,
   SessionHelper,
@@ -84,7 +84,7 @@ export class OrderHelper {
         updatedAt: new Date(magentoOrder.updated_at)
       });
     } catch (e) {
-      log('Failed to create order', e);
+      error('Failed to create order', e);
     }
 
     return this.Order;

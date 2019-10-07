@@ -43,10 +43,10 @@
     request "^2.72.0"
     winston "^3.2.1"
 
-"@ns8/ns8-magento2-switches@1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-magento2-switches/-/ns8-magento2-switches-1.0.6.tgz#a41885c2d4551a85f99d596ab238c56833ba7b53"
-  integrity sha512-QIviI3nB4HDkSgDS9j2Ek/7btYg06Lmb77uYi7vYfKzRELw5MoCbBFMTE/UG5D+EkVw1ECn9qJV1ftU18ybEog==
+"@ns8/ns8-magento2-switches@1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-magento2-switches/-/ns8-magento2-switches-1.0.7.tgz#51ebf257fb0a2e6537656021766be955a6eef6e9"
+  integrity sha512-bvL1eKHErxStCAYG/w8CouXQuM1Nijkpg5vq+Mc3lvSPil1FhxEpBreTKPS69m8N/N+xNOgY45muTN7rMvSffw==
   dependencies:
     "@ns8/magento2-rest-client" "^0.2.9"
     "@ns8/ns8-protect-sdk" "^0.1.12"
