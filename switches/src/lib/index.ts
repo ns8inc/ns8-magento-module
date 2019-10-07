@@ -7,4 +7,5 @@ export * from './LineItemsHelper';
 export * from './CustomerHelper';
 export * from './CustomerVerificationHelper';
 export * from './FraudAssessmentHelper';
+export * from './StoreHelper';
 export * from './utils';
