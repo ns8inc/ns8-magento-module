@@ -3,8 +3,6 @@ import minimist from 'minimist';
 
 const destFolder = 'module/etc/integration';
 const configDest = `${destFolder}/config.xml`;
-const apiDest = `${destFolder}/api.xml`;
-
 
 const placeConfig = (env) => {
   if (env !== 'dev' && env !== 'prod') {
@@ -17,7 +15,6 @@ const placeConfig = (env) => {
     });
   }
   copyFileSync(`build/module/etc/integration/config.${env}.xml`, configDest);
-  copyFileSync(`build/module/etc/integration/api.${env}.xml`, apiDest);
 };
 
 const args = minimist(process.argv.slice(2));
