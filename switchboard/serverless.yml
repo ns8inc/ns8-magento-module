@@ -2,28 +2,28 @@ custom:
   integrationName: ${self:service}-${self:provider.stage}
 functions:
   CreateOrderAction:
-    handler: dist/src/app.CreateOrderAction
+    handler: dist/app.CreateOrderAction
     name: '${self:custom.integrationName}-createOrderAction'
   OnInstallEvent:
-    handler: dist/src/app.OnInstallEvent
+    handler: dist/app.OnInstallEvent
     name: '${self:custom.integrationName}-onInstallEvent'
   UninstallAction:
-    handler: dist/src/app.UninstallAction
+    handler: dist/app.UninstallAction
     name: '${self:custom.integrationName}-uninstallAction'
   UpdateCustVerifyStatusEvent:
-    handler: dist/src/app.UpdateCustVerifyStatusEvent
+    handler: dist/app.UpdateCustVerifyStatusEvent
     name: '${self:custom.integrationName}-updateCustVerifyStatusEvent'
   UpdateEQ8ScoreEvent:
-    handler: dist/src/app.UpdateEQ8ScoreEvent
+    handler: dist/app.UpdateEQ8ScoreEvent
     name: '${self:custom.integrationName}-updateEQ8ScoreEvent'
   UpdateMerchantAction:
-    handler: dist/src/app.UpdateMerchantAction
+    handler: dist/app.UpdateMerchantAction
     name: '${self:custom.integrationName}-updateMerchantAction'
   UpdateOrderRiskEvent:
-    handler: dist/src/app.UpdateOrderRiskEvent
+    handler: dist/app.UpdateOrderRiskEvent
     name: '${self:custom.integrationName}-updateOrderRiskEvent'
   UpdateOrderStatusEvent:
-    handler: dist/src/app.UpdateOrderStatusEvent
+    handler: dist/app.UpdateOrderStatusEvent
     name: '${self:custom.integrationName}-updateOrderStatusEvent'
 
 RetryDefault: &retryDefault
@@ -59,7 +59,7 @@ provider:
       Resource: 'arn:aws:s3:::protect-api-switch-data-${self:provider.stage}/*'
   name: aws
   region: us-west-2
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   stage: '${opt:stage, env:DEV_NAME}'
   timeout: 30
 service: 'ns8-switchboard-${file(./switchboard.json):id}'

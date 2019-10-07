@@ -1,7 +1,10 @@
+import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
+import { error } from '.';
+import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
+import { RestClient } from '@ns8/magento2-rest-client';
+import { ServiceIntegration } from 'ns8-protect-models';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
-import { RestClient, Order, Customer, Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
-import { ServiceIntegration, Transaction } from 'ns8-protect-models';
-import { log } from '.';
+import { Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
 export class MagentoClient {
 
   private SwitchContext: SwitchContext;
@@ -23,24 +26,24 @@ export class MagentoClient {
         accessTokenSecret: si.secret
       })
     } catch (e) {
-      log('Failed to construct RestClient', e);
+      error('Failed to construct RestClient', e);
     }
   }
 
-  public getOrder = async (id: number): Promise<Order | null> => {
+  public getOrder = async (id: number): Promise<MagentoOrder | null> => {
     try {
       return await this.client.orders.get(id);
     } catch (e) {
-      log(`Failed to get Order Id:${id} from Magento`, e);
+      error(`Failed to get Order Id:${id} from Magento`, e);
     }
     return null;
   }
 
-  public getCustomer = async (id: number): Promise<Customer | null> => {
+  public getCustomer = async (id: number): Promise<MagentoCustomer | null> => {
     try {
       return await this.client.customers.get(id);
     } catch (e) {
-      log(`Failed to get Customer Id:${id} from Magento`, e);
+      error(`Failed to get Customer Id:${id} from Magento`, e);
     }
     return null;
   }
@@ -49,7 +52,7 @@ export class MagentoClient {
     try {
       return await this.client.transactions.getByTransactionId(id) || null;
     } catch (e) {
-      log(`Failed to get Transaction Id:${id} from Magento`, e);
+      error(`Failed to get Transaction Id:${id} from Magento`, e);
     }
     return null;
   }

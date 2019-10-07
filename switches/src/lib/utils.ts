@@ -1,12 +1,21 @@
 import * as stackTrace from 'stack-trace';
 
-const log = (message: string, error: Error) => {
-  console.warn(message);
-  console.error(`${error.message}: ${error.name}: ${error.stack}`);
-  console.info(stackTrace.parse(error));
+export const error = (message: string, error: Error) => {
+  log(message, error);
+  throw new Error(`${message}: ${error.message}`);
 }
 
-const toDate = (date: string | undefined): Date | undefined => {
+export const log = (message: string, error: Error) => {
+  try {
+    console.warn(message);
+    console.error(`${error.message}: ${error.name}: ${error.stack}`);
+    console.info(stackTrace.parse(error));
+  } catch {
+    //Never fail in logging
+  }
+}
+
+export const toDate = (date: string | undefined): Date | undefined => {
   let ret: Date | undefined;
   if (date) {
     ret = new Date(date);
@@ -14,13 +23,7 @@ const toDate = (date: string | undefined): Date | undefined => {
   return ret;
 }
 
-enum OrderState {
+export enum OrderState {
   CREATED = 'created',
   UPDATED = 'updated'
-}
-
-export {
-  log,
-  toDate,
-  OrderState
 }

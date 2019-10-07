@@ -1,16 +1,16 @@
-import { Order, Status } from 'ns8-protect-models';
+import {
+  AddressHelper,
+  CustomerHelper,
+  LineItemsHelper,
+  error,
+  MagentoClient,
+  OrderState,
+  SessionHelper,
+  TransactionHelper
+  } from '.';
+import { Order } from 'ns8-protect-models';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
-import {
-  MagentoClient,
-  SessionHelper,
-  AddressHelper,
-  TransactionHelper,
-  LineItemsHelper,
-  CustomerHelper,
-  log,
-  OrderState
-} from '.';
 
 /**
  * Utility class for working with Magento Orders
@@ -84,7 +84,7 @@ export class OrderHelper {
         updatedAt: new Date(magentoOrder.updated_at)
       });
     } catch (e) {
-      log('Failed to create order', e);
+      error('Failed to create order', e);
     }
 
     return this.Order;

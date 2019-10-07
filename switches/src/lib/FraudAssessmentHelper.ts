@@ -1,6 +1,6 @@
-import { SwitchContext } from 'ns8-switchboard-interfaces';
-import { MagentoClient, SessionHelper } from '.';
 import { FraudAssessment } from 'ns8-protect-models';
+import { MagentoClient } from '.';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
 
 export class FraudAssessmentHelper {
   private SwitchContext: SwitchContext;

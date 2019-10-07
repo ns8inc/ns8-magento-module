@@ -1,4 +1,5 @@
-import { SwitchContext, UpdateMerchantActionSwitch } from 'ns8-switchboard-interfaces';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { UpdateMerchantActionSwitch } from 'ns8-switchboard-interfaces';
 import { MerchantUpdate } from 'ns8-protect-models';
 import { toProtectMerchantUpdate } from '../lib';
 

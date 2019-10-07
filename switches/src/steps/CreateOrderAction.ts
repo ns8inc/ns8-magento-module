@@ -1,7 +1,8 @@
+import { CreateOrderActionSwitch } from 'ns8-switchboard-interfaces';
 import { Order } from 'ns8-protect-models';
-import { CreateOrderActionSwitch, SwitchContext } from 'ns8-switchboard-interfaces';
-import { OrderHelper } from '..'
+import { OrderHelper } from '..';
 import { OrderState } from '../lib';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
 
 export class CreateOrderAction implements CreateOrderActionSwitch {
   async create(switchContext: SwitchContext): Promise<Order> {

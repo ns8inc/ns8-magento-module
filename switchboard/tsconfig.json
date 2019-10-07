@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "incremental": false,
+    "experimentalDecorators": true,
+    "incremental": true,
     "module": "commonjs",
+    "noLib": false,
     "outDir": "dist",
     "removeComments": false,
     "resolveJsonModule": true,
@@ -16,7 +21,6 @@
     "dist"
   ],
   "include": [
-    "src/**/*",
-    "index.ts"
+    "app.ts"
   ]
 }

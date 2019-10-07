@@ -1,7 +1,7 @@
 import 'jest';
 import { RestClient } from '@ns8/magento2-rest-client';
 import * as fs from 'fs';
-import { CreateOrderAction } from '../../dist/steps/CreateOrderAction';
+import { CreateOrderAction } from '../../dist';
 import expectExport = require('expect');
 const switchboardData = require('../mock_data/switchcontext.json');
 

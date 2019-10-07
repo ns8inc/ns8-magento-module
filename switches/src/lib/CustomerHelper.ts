@@ -1,16 +1,16 @@
-import { SwitchContext } from 'ns8-switchboard-interfaces';
-import { MagentoClient, log, toDate } from '.';
-import { Address, Customer } from 'ns8-protect-models';
-import { Order, Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
+import { Customer } from 'ns8-protect-models';
+import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
+import { MagentoClient, error } from '.';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
-import { get } from 'lodash';
+import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
 
 export class CustomerHelper {
   private SwitchContext: SwitchContext;
   private MagentoClient: MagentoClient;
-  private MagentoOrder: Order;
+  private MagentoOrder: MagentoOrder;
 
-  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: Order) {
+  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: MagentoOrder) {
     this.SwitchContext = switchContext;
     this.MagentoClient = magentoClient;
     this.MagentoOrder = magentoOrder;
@@ -45,28 +45,33 @@ export class CustomerHelper {
   }
 
   public toCustomer = async (): Promise<Customer> => {
-    let customer = await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id);
-    if (null === customer) {
-      customer = {
-        id: this.MagentoOrder.customer_id,
-        firstname: this.MagentoOrder.customer_firstname,
-        lastname: this.MagentoOrder.customer_lastname,
-        email: this.MagentoOrder.customer_email,
-        middlename: this.MagentoOrder.customer_middlename,
-        dob: this.MagentoOrder.customer_dob,
-        gender: this.MagentoOrder.customer_gender
-      } as MagentoCustomer;
-    }
+    let ret: Customer = new Customer();
+    try {
+      let customer = await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id);
+      if (null === customer) {
+        customer = {
+          id: this.MagentoOrder.customer_id,
+          firstname: this.MagentoOrder.customer_firstname,
+          lastname: this.MagentoOrder.customer_lastname,
+          email: this.MagentoOrder.customer_email,
+          middlename: this.MagentoOrder.customer_middlename,
+          dob: this.MagentoOrder.customer_dob,
+          gender: this.MagentoOrder.customer_gender
+        } as MagentoCustomer;
+      }
 
-    const ret = new Customer({
-      //birthday: toDate(customer.dob),
-      email: customer.email,
-      firstName: customer.firstname,
-      gender: this.getGender(customer.gender),
-      lastName: customer.lastname,
-      phone: this.getPhoneNumber(customer),
-      platformId: `${customer.id}`
-    });
+      ret = new Customer({
+        //birthday: toDate(customer.dob),
+        email: customer.email,
+        firstName: customer.firstname,
+        gender: this.getGender(customer.gender),
+        lastName: customer.lastname,
+        phone: this.getPhoneNumber(customer),
+        platformId: `${customer.id}`
+      });
+    } catch (e) {
+      error(`Failed to create Customer`, e);
+    }
 
     return ret;
   }

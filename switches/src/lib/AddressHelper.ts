@@ -1,15 +1,16 @@
-import { SwitchContext } from 'ns8-switchboard-interfaces';
-import { MagentoClient, log } from '.';
 import { Address } from 'ns8-protect-models';
-import { Customer, Order, ShippingAssignment } from '@ns8/magento2-rest-client';
 import { get } from 'lodash';
+import { error, MagentoClient } from '.';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
+import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { ShippingAssignment as MagentoShippingAssignment, } from '@ns8/magento2-rest-client';
 
 export class AddressHelper {
   private SwitchContext: SwitchContext;
   private MagentoClient: MagentoClient;
-  private MagentoOrder: Order;
-  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: Order) {
+  private MagentoOrder: MagentoOrder;
+  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: MagentoOrder) {
     this.SwitchContext = switchContext;
     this.MagentoClient = magentoClient;
     this.MagentoOrder = magentoOrder;
@@ -18,14 +19,14 @@ export class AddressHelper {
   public toOrderAddresses = (): Address[] => {
     const ret: Address[] = [];
     try {
-      const addresses: ShippingAssignment[] = [];
+      const addresses: MagentoShippingAssignment[] = [];
 
-      const billingAddress = this.MagentoOrder.billing_address as unknown as ShippingAssignment;
+      const billingAddress = this.MagentoOrder.billing_address as unknown as MagentoShippingAssignment;
       addresses.push(billingAddress);
 
       const shipping_assignments = get(this.MagentoOrder, 'extension_attributes.shipping_assignments') || [];
       shipping_assignments.forEach((assignment) => {
-        addresses.push(get(assignment, 'shipping.address') as ShippingAssignment);
+        addresses.push(get(assignment, 'shipping.address') as MagentoShippingAssignment);
       });
       addresses.forEach((address) => {
         var addr = new Address({
@@ -46,7 +47,7 @@ export class AddressHelper {
         ret.push(addr);
       });
     } catch (e) {
-      log(`Failed to create Addresses`, e);
+      error(`Failed to create Addresses`, e);
     }
     return ret;
   }
