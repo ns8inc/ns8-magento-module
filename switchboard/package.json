@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "@ns8/ns8-switchboard-operator": "^1.0.95"
+    "@ns8/ns8-magento2-switches": "1.0.6"
   },
   "devDependencies": {
-    "@ns8/ns8-protect-sdk": "^0.1.12",
+    "@types/lodash": "^4.14.141",
     "@types/node": "^12.7.7",
     "aws-lambda": "^0.1.2",
     "lodash": "^4.17.15",
@@ -12,17 +12,11 @@
     "serverless-step-functions": "^1.25.0",
     "typescript": "^3.6.3"
   },
-  "optionalDependencies": {
-    "@types/lodash": "^4.14.141"
-  },
   "scripts": {
-    "build": "yarn compile && yarn install-modules",
-    "build:debug": "yarn && yarn build && yarn link @ns8/ns8-magento2-switches && yarn install-modules:debug",
-    "build:dev": "yarn && yarn build && yarn link @ns8/ns8-magento2-switches",
+    "build": "yarn compile",
+    "build:dev": "yarn && yarn build",
     "compile": "rimraf dist && yarn install && tsc -d",
     "deploy": "sls deploy",
-    "install-modules": "node dist/src/init.js",
-    "install-modules:debug": "node --inspect-brk=9228 dist/src/init.js",
     "undeploy": "sls remove"
   }
 }

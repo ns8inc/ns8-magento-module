@@ -15,8 +15,8 @@
     "@types/node": "^12.7.5",
     "awesome-typescript-loader": "~5.2",
     "aws-lambda": "^0.1.2",
-    "dts-bundle": "^0.7.3",
     "dotenv": "^8.1.0",
+    "dts-bundle": "^0.7.3",
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.3.0",
@@ -40,12 +40,13 @@
   "repository": "https://github.com/ns8inc/ns8-magento2-switches.git",
   "scripts": {
     "build": "tsc",
-    "build:dev": "yarn && yarn build && yarn link",
-    "clean": "rimraf dist && rimraf tmp_tsc_compile",
+    "build:dev": "yarn && yarn build && yarn link && yarn bundle && yarn clean:tmp",
+    "bundle": "webpack",
+    "clean:dist": "rimraf dist",
+    "clean:tmp": "rimraf tmp_tsc_compile",
     "lint": "tslint --project .",
-    "prebuild": "npm run clean",
-    "test": "jest",
-    "bundle": "webpack"
+    "prebuild": "npm run clean:dist && npm run clean:tmp",
+    "test": "jest"
   },
-  "version": "1.0.0"
+  "version": "1.0.6"
 }

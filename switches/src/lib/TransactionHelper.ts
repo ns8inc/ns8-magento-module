@@ -1,29 +1,38 @@
-import { SwitchContext } from 'ns8-switchboard-interfaces';
-import { MagentoClient, log } from '.';
-import { Order, Payment, VaultPaymentToken, PaymentAdditionalInfo, Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
-import { Transaction, CreditCard, TransactionMethod, TransactionStatus, CreditCardTransactionType } from 'ns8-protect-models';
-import { ModelTools } from '@ns8/ns8-protect-sdk';
+import {
+  CreditCard,
+  CreditCardTransactionType,
+  Transaction,
+  TransactionMethod,
+  TransactionStatus
+  } from 'ns8-protect-models';
 import { get } from 'lodash';
+import { log, MagentoClient } from '.';
+import { ModelTools } from '@ns8/ns8-protect-sdk';
+import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
+import { Payment as MagentoPayment } from '@ns8/magento2-rest-client';
+import { PaymentAdditionalInfo as MagentoPaymentAdditionalInfo } from '@ns8/magento2-rest-client';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { VaultPaymentToken as MagentoVaultPaymentToken } from '@ns8/magento2-rest-client';
 
 export class TransactionHelper {
   private SwitchContext: SwitchContext;
   private MagentoClient: MagentoClient;
-  private MagentoOrder: Order;
-  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: Order) {
+  private MagentoOrder: MagentoOrder;
+  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: MagentoOrder) {
     this.SwitchContext = switchContext;
     this.MagentoClient = magentoClient;
     this.MagentoOrder = magentoOrder;
   }
 
-  private getTransactionMethod = (payment: Payment): TransactionMethod => {
+  private getTransactionMethod = (payment: MagentoPayment): TransactionMethod => {
     if (payment.cc_type && payment.cc_last4) {
       return TransactionMethod.CC;
     }
     return ModelTools.stringToTransactionMethod(payment.method);
   }
 
-  private getPlatformId = (payment: Payment): string => {
-    const vault: VaultPaymentToken | undefined = get(payment, 'extension_attributes.vault_payment_token') as VaultPaymentToken;
+  private getPlatformId = (payment: MagentoPayment): string => {
+    const vault: MagentoVaultPaymentToken | undefined = get(payment, 'extension_attributes.vault_payment_token') as MagentoVaultPaymentToken;
     if (!vault || !vault.entity_id) return `${payment.entity_id}`;
     else return `${vault.entity_id}`;
   }
@@ -46,7 +55,7 @@ export class TransactionHelper {
   public toTransactions = async (): Promise<Transaction[]> => {
     const ret: Transaction[] = [];
     try {
-      const payment: Payment = this.MagentoOrder.payment;
+      const payment: MagentoPayment = this.MagentoOrder.payment;
 
       const trans = new Transaction({
         amount: payment.amount_authorized || payment.amount_ordered,
@@ -68,7 +77,7 @@ export class TransactionHelper {
             gateway: get(payment, 'extension_attributes.vault_payment_token.gateway_token'),
             transactionType: ModelTools.stringToCreditCardTransactionType(magentoTrans.txn_type)
           });
-          const additionalInfo = get(this.MagentoOrder, 'extension_attributes.payment_additional_info') as PaymentAdditionalInfo[];
+          const additionalInfo = get(this.MagentoOrder, 'extension_attributes.payment_additional_info') as MagentoPaymentAdditionalInfo[];
 
           //Authorize.Net has a first class AVS status; other CC providers do not
           if (payment.cc_avs_status) {

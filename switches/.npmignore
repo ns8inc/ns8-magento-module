@@ -1,0 +1,9 @@
+node_modules/
+src/
+test/
+tmp_tsc_compile/
+webpack.config.js
+yarn-error.log
+.env
+.env.template
+jest.config.js

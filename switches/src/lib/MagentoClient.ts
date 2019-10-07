@@ -1,7 +1,10 @@
-import { SwitchContext } from 'ns8-switchboard-interfaces';
-import { RestClient, Order, Customer, Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
-import { ServiceIntegration, Transaction } from 'ns8-protect-models';
+import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
 import { log } from '.';
+import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
+import { RestClient } from '@ns8/magento2-rest-client';
+import { ServiceIntegration } from 'ns8-protect-models';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
 export class MagentoClient {
 
   private SwitchContext: SwitchContext;
@@ -27,7 +30,7 @@ export class MagentoClient {
     }
   }
 
-  public getOrder = async (id: number): Promise<Order | null> => {
+  public getOrder = async (id: number): Promise<MagentoOrder | null> => {
     try {
       return await this.client.orders.get(id);
     } catch (e) {
@@ -36,7 +39,7 @@ export class MagentoClient {
     return null;
   }
 
-  public getCustomer = async (id: number): Promise<Customer | null> => {
+  public getCustomer = async (id: number): Promise<MagentoCustomer | null> => {
     try {
       return await this.client.customers.get(id);
     } catch (e) {
