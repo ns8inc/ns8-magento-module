@@ -16,7 +16,7 @@ export class SessionHelper {
   //TODO: ship this data from Magento
   public toSession = (): Session => {
     return new Session({
-      ip: '127.0.0.1',
+      ip: '1.1.1.1',
     });
   }
 }
