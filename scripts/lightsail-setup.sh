@@ -49,8 +49,6 @@ echo "COMPOSER_HOME=/var/www/html/var/composer_home" | sudo tee -a /etc/environm
 # Set NS8_PROTECT_URL environment variable
 echo "SetEnv NS8_CLIENT_URL $NS8_CLIENT_URL" | sudo tee -a /var/www/html/.htaccess
 echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL" | sudo tee -a /var/www/html/.htaccess
-# Set DEV_ACCESS_TOKEN
-#echo "SetEnv DEV_ACCESS_TOKEN $DEV_ACCESS_TOKEN" | sudo tee -a /var/www/html/.htaccess
 
 # Set file permissions (Force the group apache on all files and give RWX permissions)
 chown -R apache:apache /var/www/html
