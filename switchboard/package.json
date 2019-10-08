@@ -10,6 +10,7 @@
     "rimraf": "^3.0.0",
     "serverless-pseudo-parameters": "^2.4.0",
     "serverless-step-functions": "^1.25.0",
+    "stacktracey": "^1.2.122",
     "typescript": "^3.6.3"
   },
   "scripts": {

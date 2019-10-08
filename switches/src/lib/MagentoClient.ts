@@ -1,6 +1,7 @@
 import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
 import { error } from '.';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
+import { RestApiError } from '@ns8/magento2-rest-client';
 import { RestClient } from '@ns8/magento2-rest-client';
 import { ServiceIntegration } from 'ns8-protect-models';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
@@ -30,11 +31,20 @@ export class MagentoClient {
     }
   }
 
-  public getOrder = async (id: number): Promise<MagentoOrder | null> => {
+  private sleep = async (ms: number) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  public getOrder = async (id: number, attempts: number = 0, maxRetry: number = 5): Promise<MagentoOrder | null> => {
     try {
       return await this.client.orders.get(id);
     } catch (e) {
-      error(`Failed to get Order Id:${id} from Magento`, e);
+      if (e.statusCode === 404 && attempts < maxRetry) {
+        await this.sleep(2000);
+        return this.getOrder(id, attempts += 1, maxRetry);
+      } else {
+        error(`Failed to get Order Id:${id} from Magento`, e);
+      }
     }
     return null;
   }
