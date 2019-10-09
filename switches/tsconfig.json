@@ -1,4 +1,8 @@
 {
+  "awesomeTypescriptLoaderOptions": {
+    "useCache": true,
+    "reportFiles": ["src/**/*.{ts,tsx}"]
+  },
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "declaration": true,

@@ -4,8 +4,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 const fs = require('fs');
 const path = require('path');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
-function DtsBundlePlugin() {};
+function DtsBundlePlugin() {}
 DtsBundlePlugin.prototype.apply = function (compiler) {
   const dts = require('dts-bundle');
   compiler.plugin('done', () => {
@@ -40,6 +41,7 @@ const config = {
   },
   resolve: {
     extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
+    modules: ['node_modules'],
   },
   devtool: 'source-map',
 
@@ -49,18 +51,19 @@ const config = {
       use: [{
         loader: 'awesome-typescript-loader',
       }],
-      exclude: /node_modules/,
     }],
   },
   plugins: [
     new DtsBundlePlugin(),
+    new HardSourceWebpackPlugin({
+
+    }),
   ],
   target: 'node',
   node: {
     __dirname: false,
     __filename: false,
   },
-  externals: nodeModules,
 };
 
 module.exports = config;
