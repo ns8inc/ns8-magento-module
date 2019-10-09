@@ -11,3 +11,5 @@ switches/test/mock_data/
 .tmp/
 *.log
 switches/.awcache/
+package-lock.json
+*.tgz
