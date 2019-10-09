@@ -8,6 +8,6 @@ dist/
 switchboard/.serverless/
 yarn-error.log
 switches/test/mock_data/
-tmp_tsc_compile/
+.tmp/
 *.log
 switches/.awcache/
