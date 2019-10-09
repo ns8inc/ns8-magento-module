@@ -2,10 +2,9 @@ import 'jest';
 import { RestClient } from '@ns8/magento2-rest-client';
 import * as fs from 'fs';
 import { CreateOrderAction } from '../../dist';
-import expectExport = require('expect');
 const switchboardData = require('../mock_data/switchcontext.json');
 
-beforeAll(() => {
+beforeAll( async() => {
   require('dotenv').config();
 
   const options = {
@@ -22,20 +21,20 @@ beforeAll(() => {
   if (!fs.existsSync('test/mock_data/orders')) fs.mkdirSync('test/mock_data/orders');
   if (!fs.existsSync('test/mock_data/transactions')) fs.mkdirSync('test/mock_data/transactions');
 
-  return client.orders.list()
+  return await client.orders.list()
     .then( (data) => {
       try {
         fs.writeFileSync('test/mock_data/orders/orders.json', JSON.stringify(data, null, 2))
-        data.items.forEach((item) => {
-          try {
-            client.orders.get(item.entity_id)
-              .then(function (data) {
-                fs.writeFileSync(`test/mock_data/orders/order_${item.entity_id}.json`, JSON.stringify(data, null, 2))
-              })
-          } catch (e) {
-            console.error(e);
-          }
-        })
+        // data.items.forEach((item) => {
+        //   try {
+        //     client.orders.get(item.entity_id)
+        //       .then(function (data) {
+        //         fs.writeFileSync(`test/mock_data/orders/order_${item.entity_id}.json`, JSON.stringify(data, null, 2))
+        //       })
+        //   } catch (e) {
+        //     console.error(e);
+        //   }
+        // })
       } catch (e) {
         console.error(e);
       }
