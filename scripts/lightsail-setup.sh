@@ -8,8 +8,6 @@ NS8_PROTECT_URL=
 NS8_CLIENT_URL=
 # <YOUR DEV DOMAIN>, e.g. http://dev-jdoe-Magento-2.3.2.ns8demos.com/
 DEV_LIGHTSAIL_DOMAIN=
-# Any valid access token
-DEV_ACCESS_TOKEN=ee411d1d-7ca1-4a45-90d8-5011f55430d9
 
 ## BEGIN--SCRIPT ##
 # Magento
@@ -51,8 +49,6 @@ echo "COMPOSER_HOME=/var/www/html/var/composer_home" | sudo tee -a /etc/environm
 # Set NS8_PROTECT_URL environment variable
 echo "SetEnv NS8_CLIENT_URL $NS8_CLIENT_URL" | sudo tee -a /var/www/html/.htaccess
 echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL" | sudo tee -a /var/www/html/.htaccess
-# Set DEV_ACCESS_TOKEN
-#echo "SetEnv DEV_ACCESS_TOKEN $DEV_ACCESS_TOKEN" | sudo tee -a /var/www/html/.htaccess
 
 # Set file permissions (Force the group apache on all files and give RWX permissions)
 chown -R apache:apache /var/www/html
