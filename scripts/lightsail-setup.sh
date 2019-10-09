@@ -134,4 +134,10 @@ sudo chmod -R ugo+rwx /var/www/html/
 # Remove Composer Auth
 #rm /var/www/html/auth.json.sample
 #rm /var/www/html/auth.json
+
+sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+sudo service sshd restart
+
 ## END--SCRIPT ##
+
+
