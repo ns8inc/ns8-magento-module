@@ -3,10 +3,10 @@
   "dependencies": {},
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
-    "@ns8/magento2-rest-client": "0.2.14",
+    "@ns8/magento2-rest-client": "0.2.15",
     "@ns8/ns8-protect-sdk": "0.1.12",
     "@types/jest": "24.0.18",
-    "@types/lodash": "4.14.142",
+    "@types/lodash": "4.14.144",
     "@types/node": "12.7.12",
     "awesome-typescript-loader": "5.2.1",
     "aws-lambda": "0.1.2",
@@ -45,5 +45,5 @@
     "test": "jest",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand"
   },
-  "version": "1.0.11"
+  "version": "1.0.12"
 }
