@@ -14,6 +14,7 @@ import { Order } from 'ns8-protect-models';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { Status } from 'ns8-protect-models';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { OrderHelper } from './OrderHelper';
 
 /**
  * Utility class for working with Protect Named Order Updates
@@ -21,6 +22,7 @@ import { SwitchContext } from 'ns8-switchboard-interfaces';
 export class NamedOrderHelper {
   private MagentoOrder: MagentoOrder;
   private Order: Order;
+  private OrderHelper: OrderHelper;
   private SwitchContext: SwitchContext;
 
   //Helper classes
@@ -29,18 +31,17 @@ export class NamedOrderHelper {
   constructor(switchContext: SwitchContext) {
     this.SwitchContext = switchContext;
     this.MagentoClient = new MagentoClient(this.SwitchContext);
+    this.OrderHelper = new OrderHelper(this.SwitchContext);
   }
 
-  public getNamedOrderUpdate = async (): Promise<NamedOrderUpdate> => {
+  public processOrderUpdate = async (): Promise<NamedOrderUpdate> => {
     let ret: NamedOrderUpdate = {} as NamedOrderUpdate;
     try {
+      const magentoOrder = await this.OrderHelper.getMagentoOrder();
       const {
         data: {
-          cancelled_at,
-          cancel_reason,
-          financial_status,
-          fulfillment_status,
           name,
+          status,
         },
         merchant: {
           profile: {
@@ -49,28 +50,23 @@ export class NamedOrderHelper {
         },
       } = this.SwitchContext;
 
-      if (interceptPaymentCapture === InterceptOption.BEFORE && financial_status === 'paid') {
-        ret = {
-          status: Status.APPROVED,
-          platformStatus: 'Approved',
-          orderName: name,
-        };
-      }
-
-      if (interceptPaymentCapture === InterceptOption.AFTER && fulfillment_status === 'fulfilled') {
-        ret = {
-          status: Status.APPROVED,
-          platformStatus: 'Approved',
-          orderName: name,
-        };
-      }
-
-      if (cancelled_at || cancel_reason) {
-        ret = {
-          status: Status.CANCELLED,
-          platformStatus: 'Canceled',
-          orderName: name,
-        };
+      switch (status.toLowerCase().trim()) {
+        case 'cancelled':
+          this.MagentoClient.cancelOrder(magentoOrder.entity_id);
+          ret = {
+            status: Status.CANCELLED,
+            platformStatus: 'Canceled',
+            orderName: name,
+          };
+          break;
+        default:
+          //TBD
+          ret = {
+            status: Status.APPROVED,
+            platformStatus: 'Approved',
+            orderName: name,
+          };
+          break;
       }
     } catch (e) {
       error('Failed to get named order', e);

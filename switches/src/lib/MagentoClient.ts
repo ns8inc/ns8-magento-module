@@ -57,6 +57,15 @@ export class MagentoClient {
     return null;
   }
 
+  public cancelOrder = async (id: number): Promise<any> => {
+    try {
+      return await this.client.orders.cancel(id);
+    } catch (e) {
+        error(`Failed to cancel Order Id:${id} in Magento API`, e);
+    }
+    return null;
+  }
+
   public getCustomer = async (id: number, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoCustomer | null> => {
     try {
       return await this.client.customers.get(id);

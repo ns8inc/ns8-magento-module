@@ -2,7 +2,7 @@ import 'jest';
 import { RestClient } from '@ns8/magento2-rest-client';
 import * as fs from 'fs';
 import { CreateOrderAction } from '../../dist';
-const switchboardData = require('../mock_data/switchcontext.json');
+const switchboardData = require('../mock_data/ordercreated_switchcontext.json');
 
 beforeAll( async() => {
   require('dotenv').config();
