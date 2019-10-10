@@ -5,6 +5,7 @@ src/etc/integration/config.xml
 src/etc/integration/api.xml
 .env
 dist/
+build/module/etc/integration/config.dev.xml
 switchboard/.serverless/
 yarn-error.log
 switches/test/mock_data/
@@ -13,3 +14,4 @@ switches/test/mock_data/
 switches/.awcache/
 package-lock.json
 *.tgz
+
