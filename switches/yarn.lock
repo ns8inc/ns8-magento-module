@@ -342,10 +342,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@ns8/magento2-rest-client@0.2.14":
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.14.tgz#7c59e89e1edd84ec4d7662df663982c65deb6963"
-  integrity sha512-h2KqVo9GnTumS2FKi8k3fXCpnZH7SMQWHDSvCkF021+yAAIXiW8sjKiYl2fXjm+SpMgQevR7Ip7fQQLkHZTsrw==
+"@ns8/magento2-rest-client@0.2.15":
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.15.tgz#e2dce5bf1eeccc28d1c00151f983f942b0d858f0"
+  integrity sha512-TxyKoB85nyy49GIlgFPqfI5Ps8wiYIFrdoJ5Zc7ctbpo5sPcwbKcgg6niX5ZRZwDy1DKisX3vgfTcmlUPKAH0w==
 
 "@ns8/ns8-protect-sdk@0.1.12":
   version "0.1.12"
@@ -468,10 +468,10 @@
   dependencies:
     "@types/jest-diff" "*"
 
-"@types/lodash@4.14.142":
-  version "4.14.142"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.142.tgz#52d5daff878e36e72e299bb9c5871fd6aee55829"
-  integrity sha512-ZhNS7c4D4WQ49Dr1FftQj7SwngRswOnPfxktmqSy5BettRCuum2q784jRwNTYfxH00r8+fEgRz6Da8j5DHNd1Q==
+"@types/lodash@4.14.144":
+  version "4.14.144"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.144.tgz#12e57fc99064bce45e5ab3c8bc4783feb75eab8e"
+  integrity sha512-ogI4g9W5qIQQUhXAclq6zhqgqNUr7UlFaqDHbch7WLSLeeM/7d3CRaw7GLajxvyFvhJqw4Rpcz5bhoaYtIx6Tg==
 
 "@types/minimatch@*":
   version "3.0.3"
@@ -5943,7 +5943,12 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@3.6.3, typescript@^3.6.3:
+typescript@3.6.4:
+  version "3.6.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.6.4.tgz#b18752bb3792bc1a0281335f7f6ebf1bbfc5b91d"
+  integrity sha512-unoCll1+l+YK4i4F8f22TaNVPRHcD9PA3yCuZ8g5e0qGqlVlJ/8FSateOLLSagn+Yg5+ZwuPkL8LFUc0Jcvksg==
+
+typescript@^3.6.3:
   version "3.6.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.6.3.tgz#fea942fabb20f7e1ca7164ff626f1a9f3f70b4da"
   integrity sha512-N7bceJL1CtRQ2RiG0AQME13ksR7DiuQh/QehubYcghzv20tnh+MQnQIuJddTmsbqYj+dztchykemz0zFzlvdQw==

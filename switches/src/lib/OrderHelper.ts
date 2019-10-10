@@ -1,13 +1,14 @@
 import {
   AddressHelper,
   CustomerHelper,
-  LineItemsHelper,
   error,
+  LineItemsHelper,
   MagentoClient,
   OrderState,
   SessionHelper,
   TransactionHelper
   } from '.';
+import { get } from 'lodash';
 import { Order } from 'ns8-protect-models';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
@@ -46,8 +47,9 @@ export class OrderHelper {
   }
 
   private init = async (): Promise<MagentoOrder> => {
-    const order = await this.MagentoClient.getOrder(this.SwitchContext.data.order.entity_id);
-    if (null === order) throw new Error(`No Magento order could be loaded by order id ${this.SwitchContext.data.entity_id}`)
+    const orderId = get(this.SwitchContext, 'data.order.entity_id') || get(this.SwitchContext, 'data.platformId');
+    const order: MagentoOrder | null = await this.MagentoClient.getOrder(orderId);
+    if (null === order) throw new Error(`No Magento order could be loaded by order id ${orderId}`)
     this.MagentoOrder = order;
 
     this.AddressHelper = new AddressHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
@@ -88,5 +90,15 @@ export class OrderHelper {
     }
 
     return this.Order;
+  }
+
+  public getMagentoOrder = async (): Promise<MagentoOrder> => {
+    let ret: MagentoOrder = {} as MagentoOrder;
+    try {
+      ret = await this.init();
+    } catch (e) {
+      error('Failed to get order', e);
+    }
+    return ret;
   }
 }
