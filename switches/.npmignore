@@ -1,9 +1,10 @@
+.awcache/
+.env
+.env.template
+.tmp/
+*.log
+jest.config.js
 node_modules/
 src/
 test/
-tmp_tsc_compile/
 webpack.config.js
-yarn-error.log
-.env
-.env.template
-jest.config.js

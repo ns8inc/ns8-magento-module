@@ -1,4 +1,11 @@
 {
+  "awesomeTypescriptLoaderOptions": {
+    "isolatedModules": true,
+    "reportFiles": [
+      "src/**/*.{ts,tsx}"
+    ],
+    "useCache": true
+  },
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "declaration": true,
@@ -8,7 +15,7 @@
     "incremental": true,
     "module": "commonjs",
     "noLib": false,
-    "outDir": "tmp_tsc_compile",
+    "outDir": ".tmp",
     "removeComments": false,
     "resolveJsonModule": true,
     "sourceMap": true,
