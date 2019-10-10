@@ -5,6 +5,7 @@ import { ModelTools } from '@ns8/ns8-protect-sdk';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { ShippingAssignment as MagentoShippingAssignment, } from '@ns8/magento2-rest-client';
+import { getName } from 'country-list';
 
 export class AddressHelper {
   private SwitchContext: SwitchContext;
@@ -35,7 +36,7 @@ export class AddressHelper {
           address2: get(address, 'street[1]'),
           city: get(address, 'city'),
           company: get(address, 'company'),
-          //country: '',
+          country: getName(get(address, 'country_id')),
           countryCode: get(address, 'country_id'),
           //latitude: 0,
           //longitude: 0,

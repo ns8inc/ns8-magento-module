@@ -10,6 +10,7 @@
     "@types/node": "12.7.12",
     "awesome-typescript-loader": "5.2.1",
     "aws-lambda": "0.1.2",
+    "country-list": "^2.2.0",
     "dotenv": "8.1.0",
     "dts-bundle": "0.7.3",
     "hard-source-webpack-plugin": "0.13.1",
