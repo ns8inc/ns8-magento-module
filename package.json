@@ -1,7 +1,7 @@
 {
   "author": "ns8inc",
   "dependencies": {
-    "@ns8/magento2-rest-client": "^0.2.9",
+    "@ns8/magento2-rest-client": "0.2.15",
     "@ns8/ns8-protect-sdk": "^0.1.12",
     "@ns8/ns8-switchboard-operator": "^1.0.95",
     "@types/node": "^12.7.5",
@@ -14,7 +14,7 @@
     "minimist": "^1.2.0",
     "ns8-protect-models": "^1.0.206",
     "ns8-switchboard-interfaces": "^1.0.83",
-    "stack-trace": "0.0.10",
+    "stacktracey": "1.2.122",
     "typescript": "^3.6.3"
   },
   "description": "magento extension project",

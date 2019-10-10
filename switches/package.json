@@ -1,8 +1,6 @@
 {
   "author": "ns8inc",
-  "dependencies": {
-    "stacktracey": "1.2.122"
-  },
+  "dependencies": {},
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
     "@ns8/magento2-rest-client": "0.2.15",
