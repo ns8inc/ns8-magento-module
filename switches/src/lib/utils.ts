@@ -5,6 +5,11 @@ export const error = (message: string, error: Error) => {
   throw new Error(`${message}: ${error.message}`);
 }
 
+/**
+ * TODO: use a 3rd party logger like Winston or PINO
+ * @param message
+ * @param error
+ */
 export const log = (message: string, error: Error) => {
   try {
     console.warn(message);
