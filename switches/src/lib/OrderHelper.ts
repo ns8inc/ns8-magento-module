@@ -29,13 +29,21 @@ export class OrderHelper {
   private SessionHelper: SessionHelper;
   private TransactionHelper: TransactionHelper;
 
+  private _ready: Promise<MagentoOrder>;
+
+  /**
+   * Constructor will call init() which sets a _ready Promise.
+   * Any methods on this instance which require access to the Magento Order should wait on _ready.
+   */
   constructor(switchContext: SwitchContext) {
     this.SwitchContext = switchContext;
     this.MagentoClient = new MagentoClient(this.SwitchContext);
+    this._ready = this.init();
   }
 
   /**
-   * Determines whether or not to process this order
+   * Determines whether or not to process this order.
+   * TODO: update this logic when we have a better understanding of status/state in Magento
    */
   public process = (state: OrderState): Boolean => {
     switch (state) {
@@ -46,7 +54,12 @@ export class OrderHelper {
     }
   }
 
+  /**
+   * Initialze this instance with the Magento Order returned from the platform API
+   */
   private init = async (): Promise<MagentoOrder> => {
+    if (this.MagentoOrder) return this.MagentoOrder;
+
     const orderId = get(this.SwitchContext, 'data.order.entity_id') || get(this.SwitchContext, 'data.platformId');
     const order: MagentoOrder | null = await this.MagentoClient.getOrder(orderId);
     if (null === order) throw new Error(`No Magento order could be loaded by order id ${orderId}`)
@@ -62,29 +75,33 @@ export class OrderHelper {
   }
 
   /**
-   * Converts a Magento Order into a Protect Order
+   * Converts a Magento Order into a Protect Order.
+   * This is purely a data model conversion of one DTO into another DTO.
+   * The actual creation of the Order will happen when Protect receives this data.
    */
   public createProtectOrder = async (): Promise<Order> => {
     this.Order = new Order();
     try {
-      const magentoOrder = await this.init();
-      this.Order = new Order({
-        name: `#${magentoOrder.entity_id}`,
-        currency: magentoOrder.order_currency_code,
-        merchantId: this.SwitchContext.merchant.id,
-        session: this.SessionHelper.toSession(),
-        addresses: this.AddressHelper.toOrderAddresses(),
-        platformId: `${magentoOrder.entity_id}`,
-        platformCreatedAt: new Date(magentoOrder.created_at),
-        transactions: await this.TransactionHelper.toTransactions(),
-        lineItems: this.LineItemsHelper.toLineItems(),
-        createdAt: new Date(magentoOrder.created_at),
-        customer: await this.CustomerHelper.toCustomer(),
-        hasGiftCard: false,
-        platformStatus: '', //TODO: what is this?
-        totalPrice: magentoOrder.base_grand_total,
-        updatedAt: new Date(magentoOrder.updated_at)
-      });
+      this._ready.then( async(magentoOrder: MagentoOrder) => {
+        this.Order = new Order({
+          name: `#${magentoOrder.entity_id}`,
+          currency: magentoOrder.order_currency_code,
+          merchantId: this.SwitchContext.merchant.id,
+          session: this.SessionHelper.toSession(),
+          addresses: this.AddressHelper.toOrderAddresses(),
+          platformId: `${magentoOrder.entity_id}`,
+          platformCreatedAt: new Date(magentoOrder.created_at),
+          transactions: await this.TransactionHelper.toTransactions(),
+          lineItems: this.LineItemsHelper.toLineItems(),
+          createdAt: new Date(magentoOrder.created_at),
+          customer: await this.CustomerHelper.toCustomer(),
+          hasGiftCard: false,
+          platformStatus: '', //TODO: what is this?
+          totalPrice: magentoOrder.base_grand_total,
+          updatedAt: new Date(magentoOrder.updated_at)
+        });
+      })
+
     } catch (e) {
       error('Failed to create order', e);
     }
@@ -92,10 +109,13 @@ export class OrderHelper {
     return this.Order;
   }
 
+  /**
+   * Get the Magento version of this Order
+   */
   public getMagentoOrder = async (): Promise<MagentoOrder> => {
     let ret: MagentoOrder = {} as MagentoOrder;
     try {
-      ret = await this.init();
+      ret = await this._ready;
     } catch (e) {
       error('Failed to get order', e);
     }

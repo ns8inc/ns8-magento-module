@@ -34,6 +34,9 @@ export class NamedOrderHelper {
     this.OrderHelper = new OrderHelper(this.SwitchContext);
   }
 
+  /**
+   * This will process the Switchboard Context for an Order Update event/action and then execute the necessary steps to handle the Order.
+   */
   public processOrderUpdate = async (): Promise<NamedOrderUpdate> => {
     let ret: NamedOrderUpdate = {} as NamedOrderUpdate;
     try {
