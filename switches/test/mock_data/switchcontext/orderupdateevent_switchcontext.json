@@ -1,0 +1,296 @@
+{
+  "apiBaseUrl": "https://cfro-magento.ngrok.io/",
+  "data": {
+    "addresses": [
+      {
+        "address1": "6146 Honey Bluff Parkway",
+        "address2": null,
+        "city": "Calder",
+        "company": null,
+        "country": null,
+        "countryCode": "US",
+        "id": "0b4c7c2b-40cd-4d31-91a4-1328c2543a12",
+        "latitude": 90,
+        "longitude": 90,
+        "name": null,
+        "region": "Michigan",
+        "regionCode": "MI",
+        "type": "BILLING",
+        "zip": "49628-7978"
+      },
+      {
+        "address1": "6146 Honey Bluff Parkway",
+        "address2": null,
+        "city": "Calder",
+        "company": null,
+        "country": null,
+        "countryCode": "US",
+        "id": "9b62bdf2-8049-4d45-9ca6-00089c1e4690",
+        "latitude": 90,
+        "longitude": 90,
+        "name": null,
+        "region": "Michigan",
+        "regionCode": "MI",
+        "type": "SHIPPING",
+        "zip": "49628-7978"
+      },
+      {
+        "country": "Australia",
+        "countryCode": "AU",
+        "id": "db881be1-5886-4832-9771-15fb0da03015",
+        "latitude": -33.494,
+        "longitude": 143.2104,
+        "type": "DEVICE"
+      }
+    ],
+    "createdAt": "2019-10-10T15:06:03.023Z",
+    "currency": "USD",
+    "customer": {
+      "birthday": null,
+      "company": null,
+      "email": "roni_cost@example.com",
+      "firstName": "Veronica",
+      "gender": "F",
+      "id": "5c630116-5fdd-49cd-a9e7-89f7ec73d5d5",
+      "isEmailVerified": null,
+      "isPayingCustomer": null,
+      "lastName": "Costello",
+      "phone": "",
+      "platformCreatedAt": null,
+      "platformId": "1",
+      "totalSpent": null
+    },
+    "customerVerification": null,
+    "fraudAssessments": [
+      {
+        "createdAt": "2019-10-10T15:06:04.664Z",
+        "factors": [
+          {
+            "category": "DEFAULT",
+            "description": "No issues found",
+            "id": "ea1db394-713e-48cb-a28a-766db9da7ea9",
+            "type": "NONE"
+          }
+        ],
+        "grade": "A",
+        "id": "8ab1cb3b-6796-46b8-822c-a7e3a64e6393",
+        "providerRawResponse": {
+          "session": {
+            "id": "10715944752381954",
+            "location": {
+              "continentCode": "OC",
+              "countryCode": "AU",
+              "countryName": "Australia",
+              "latitude": -33.494,
+              "longitude": 143.2104
+            }
+          }
+        },
+        "providerType": "EQ8",
+        "score": 808,
+        "updatedAt": "2019-10-10T15:06:06.460Z"
+      },
+      {
+        "createdAt": "2019-10-10T15:06:04.664Z",
+        "factors": [
+          {
+            "category": "SHIPPING",
+            "description": "Distance from shipping address to the device exceeds 100km",
+            "id": "6814ea35-84ec-4e68-9514-8898f77316b9",
+            "type": "ADDRESS_IP_PROXIMITY"
+          },
+          {
+            "category": "SHIPPING",
+            "description": "Shipping address is not in the country of the I.P. address the transaction originated from",
+            "id": "a9de4a6a-07fe-4c80-81fe-94177b8fe999",
+            "type": "ADDRESS_IP_COUNTRY_MISMATCH"
+          },
+          {
+            "category": "BILLING",
+            "description": "Distance from billing address to the device exceeds 100km",
+            "id": "93b58c47-90ca-4668-8739-0a56db23199b",
+            "type": "ADDRESS_IP_PROXIMITY"
+          },
+          {
+            "category": "BILLING",
+            "description": "Billing address is not in the country of the I.P. address the transaction originated from",
+            "id": "4bbf6f22-200a-46b6-8c16-4707129f2f60",
+            "type": "ADDRESS_IP_COUNTRY_MISMATCH"
+          }
+        ],
+        "id": "c8f30f07-37cb-4aaf-8575-7ce411a827fe",
+        "providerType": "MIN_FRAUD",
+        "score": 0.46
+      }
+    ],
+    "hasGiftCard": false,
+    "id": "6cfda015-f504-470d-be52-a68a20a1b721",
+    "lineItems": [
+      {
+        "ean13": null,
+        "id": "863df024-3f72-4e75-900d-afb664e93726",
+        "isGiftCard": false,
+        "isbn": null,
+        "manufacturer": null,
+        "name": "Olivia 1/4 Zip Light Jacket-L-Purple",
+        "platformId": "169",
+        "platformProductId": "1398",
+        "price": 77,
+        "quantity": 1,
+        "sku": "WJ12-L-Purple",
+        "title": null,
+        "totalDiscount": 0,
+        "upc": null,
+        "variantId": null,
+        "variantTitle": null,
+        "vendor": null
+      },
+      {
+        "ean13": null,
+        "id": "8815d269-571d-4791-8ca8-337a8764bf57",
+        "isGiftCard": false,
+        "isbn": null,
+        "manufacturer": null,
+        "name": "Olivia 1/4 Zip Light Jacket",
+        "platformId": "167",
+        "platformProductId": "1402",
+        "price": 77,
+        "quantity": 1,
+        "sku": "WJ12-L-Purple",
+        "title": null,
+        "totalDiscount": 0,
+        "upc": null,
+        "variantId": null,
+        "variantTitle": null,
+        "vendor": null
+      },
+      {
+        "ean13": null,
+        "id": "e2dc5902-bb10-4751-b48b-4cb1a8ba79ea",
+        "isGiftCard": false,
+        "isbn": null,
+        "manufacturer": null,
+        "name": "Olivia 1/4 Zip Light Jacket-L-Purple",
+        "platformId": "168",
+        "platformProductId": "1398",
+        "price": 0,
+        "quantity": 1,
+        "sku": "WJ12-L-Purple",
+        "title": null,
+        "totalDiscount": 0,
+        "upc": null,
+        "variantId": null,
+        "variantTitle": null,
+        "vendor": null
+      }
+    ],
+    "merchantId": "1e5ff978-ce7b-4762-a69e-1d91b3a672e4",
+    "name": "#59",
+    "platformCreatedAt": "2019-10-10T15:05:55.000Z",
+    "platformId": "59",
+    "platformStatus": "",
+    "risk": "LOW",
+    "session": {
+      "acceptLanguage": null,
+      "id": "3f500057-d68e-4480-b800-658dbe8d699b",
+      "ip": "1.1.1.1",
+      "screenHeight": null,
+      "screenWidth": null,
+      "userAgent": null
+    },
+    "status": "CANCELLED",
+    "totalPrice": 176.71,
+    "transactions": [
+      {
+        "amount": 176.71,
+        "creditCard": null,
+        "currency": "USD",
+        "id": "18aae073-f465-4024-98eb-b3b88ac37393",
+        "method": "CHECK",
+        "platformId": "59",
+        "processedAt": "2019-10-10T15:05:58.000Z",
+        "status": "SUCCESS",
+        "statusDetails": null
+      }
+    ],
+    "updatedAt": "2019-10-10T15:06:06.460Z"
+  },
+  "merchant": {
+    "acceptedTermsAt": "2019-10-08T13:19:27.229Z",
+    "accessTokens": [
+      {
+        "expires": null,
+        "id": "4691e553-b035-43f4-8f63-6e8276da036d",
+        "subjectId": "1e5ff978-ce7b-4762-a69e-1d91b3a672e4",
+        "subjectType": "MERCHANT"
+      }
+    ],
+    "billingId": "STUB_BILLING_ID",
+    "contact": {
+      "createdAt": "2019-10-08T13:19:27.444Z",
+      "email": "apps@ns8.com",
+      "firstName": null,
+      "id": "790d081b-8278-455c-baed-1a39fc454d72",
+      "lastName": null,
+      "name": null,
+      "phone": null,
+      "updatedAt": null
+    },
+    "createdAt": "2019-10-08T13:19:27.444Z",
+    "domain": "dev-cfroehlich.ns8demos.com",
+    "id": "1e5ff978-ce7b-4762-a69e-1d91b3a672e4",
+    "integrationPlatformType": "MAGENTO",
+    "name": "dev-cfroehlich",
+    "platformId": "",
+    "profile": {
+      "createdAt": "2019-10-08T13:19:27.444Z",
+      "customerVerificationApprovedRisk": "LOW",
+      "customerVerificationApprovedStatus": "APPROVED",
+      "customerVerificationDeniedRisk": "HIGH",
+      "customerVerificationDeniedStatus": "CANCELLED",
+      "customerVerificationEmailBody": null,
+      "customerVerificationEmailSubject": null,
+      "emailOnCancel": false,
+      "highRiskScoreThreshold": 200,
+      "id": "e7610509-27cf-4cbf-8cb3-630a4cf9bd7e",
+      "interceptPaymentCapture": "NEVER",
+      "lowRiskScoreThreshold": 600,
+      "remarketingThreshold": 100,
+      "timezone": "America/New_York",
+      "updatedAt": null,
+      "validOrderThreshold": 200,
+      "whitePagesHighRiskScoreThreshold": 200,
+      "whitePagesLowRiskScoreThreshold": 400,
+      "whitePagesThresholdStatus": "AUTOMATIC"
+    },
+    "serviceIntegrations": [
+      {
+        "id": "35937749-ec17-411a-b6c7-dbd420e30286",
+        "identitySecret": null,
+        "identityToken": null,
+        "metadata": {
+          "accountId": 111222333,
+          "appId": 17
+        },
+        "secret": null,
+        "token": "IojfCWyE9OedjSowha4WnOVCVKtXhwPG",
+        "type": "TRUE_STATS"
+      },
+      {
+        "id": "8bf31d2a-eb77-4ec4-910a-88082a03e451",
+        "identitySecret": "c1k1l4ayzum511141ylk6w9qfkhtka7h",
+        "identityToken": "m9aj4z9q6b6z0ss708pvoxch22wkbqse",
+        "metadata": null,
+        "secret": "13ggoexsjbiqca3nx1j3q5xlk042hng2",
+        "token": "iv51lxod9qarte5qnj7bcp6ude7g5vir",
+        "type": "MAGENTO"
+      }
+    ],
+    "status": "ACTIVE",
+    "storefrontUrl": "http://dev-cfroehlich.ns8demos.com",
+    "updatedAt": "2019-10-10T14:47:50.535Z",
+    "usageReportingScheduleBucket": 1,
+    "v1Migration": null
+  },
+  "type": "LOCAL"
+}
