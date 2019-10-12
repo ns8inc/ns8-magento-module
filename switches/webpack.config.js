@@ -1,32 +1,28 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
-/* eslint-disable func-names */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-const fs = require('fs');
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable func-names */
+/* eslint-disable global-require */
 const path = require('path');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
-function DtsBundlePlugin() {};
+/**
+ * This is the webpack plugin that compiles the TSD file for use in exporting our types from the final bundle.
+ * NOTE: Using legacy JavaScript concepts to build this plugin, because it works as-is.
+ */
+function DtsBundlePlugin() {}
 DtsBundlePlugin.prototype.apply = function (compiler) {
   const dts = require('dts-bundle');
   compiler.plugin('done', () => {
     dts.bundle({
       name: 'app',
-      main: 'tmp_tsc_compile/index.d.ts',
+      main: '.tmp/index.d.ts',
       out: '../dist/index.d.ts',
       removeSource: false,
       outputAsModuleFolder: true, // to use npm in-package typings
     });
   });
 };
-
-// Resolve Common JS & Node Modules
-const nodeModules = {};
-fs
-  .readdirSync('node_modules')
-  .filter((x) => ['.bin'].indexOf(x) === -1)
-  .forEach((mod) => {
-    nodeModules[mod] = `commonjs ${mod}`;
-  });
 
 const config = {
   entry: './index.ts',
@@ -40,6 +36,7 @@ const config = {
   },
   resolve: {
     extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
+    modules: ['node_modules'],
   },
   devtool: 'source-map',
 
@@ -49,18 +46,19 @@ const config = {
       use: [{
         loader: 'awesome-typescript-loader',
       }],
-      exclude: /node_modules/,
     }],
   },
   plugins: [
     new DtsBundlePlugin(),
+    new HardSourceWebpackPlugin({
+
+    }),
   ],
   target: 'node',
   node: {
     __dirname: false,
     __filename: false,
   },
-  externals: nodeModules,
 };
 
 module.exports = config;

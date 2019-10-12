@@ -1,4 +1,4 @@
-import * as stackTrace from 'stack-trace';
+import * as StackTracey from 'stacktracey';
 
 export const error = (message: string, error: Error) => {
   log(message, error);
@@ -9,7 +9,7 @@ export const log = (message: string, error: Error) => {
   try {
     console.warn(message);
     console.error(`${error.message}: ${error.name}: ${error.stack}`);
-    console.info(stackTrace.parse(error));
+    console.info(new StackTracey(error).pretty);
   } catch {
     //Never fail in logging
   }
