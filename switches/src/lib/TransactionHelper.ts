@@ -1,32 +1,21 @@
 import {
   CreditCard,
-  CreditCardTransactionType,
   Transaction,
   TransactionMethod,
   TransactionStatus
 } from 'ns8-protect-models';
 import { get } from 'lodash';
-import { error, MagentoClient } from '.';
+import { error } from '.';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
-import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { Payment as MagentoPayment } from '@ns8/magento2-rest-client';
 import { PaymentAdditionalInfo as MagentoPaymentAdditionalInfo } from '@ns8/magento2-rest-client';
-import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { VaultPaymentToken as MagentoVaultPaymentToken } from '@ns8/magento2-rest-client';
+import { HelperBase } from './HelperBase';
 
 /**
  * Utility class for working with Magento Transaction data
  */
-export class TransactionHelper {
-  private SwitchContext: SwitchContext;
-  private MagentoClient: MagentoClient;
-  private MagentoOrder: MagentoOrder;
-  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: MagentoOrder) {
-    this.SwitchContext = switchContext;
-    this.MagentoClient = magentoClient;
-    this.MagentoOrder = magentoOrder;
-  }
-
+export class TransactionHelper extends HelperBase {
   /**
    * Convert a Magento Payment into a TransactionMethod enum
    */

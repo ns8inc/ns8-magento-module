@@ -17,17 +17,17 @@ import { SwitchContext } from 'ns8-switchboard-interfaces';
  * Utility class for working with Magento Orders
  */
 export class OrderHelper {
-  private MagentoOrder: MagentoOrder;
-  private Order: Order;
-  private SwitchContext: SwitchContext;
+  public MagentoOrder: MagentoOrder;
+  public Order: Order;
+  public SwitchContext: SwitchContext;
 
   //Helper classes
-  private AddressHelper: AddressHelper;
-  private CustomerHelper: CustomerHelper;
-  private LineItemsHelper: LineItemsHelper;
-  private MagentoClient: MagentoClient;
-  private SessionHelper: SessionHelper;
-  private TransactionHelper: TransactionHelper;
+  public AddressHelper: AddressHelper;
+  public CustomerHelper: CustomerHelper;
+  public LineItemsHelper: LineItemsHelper;
+  public MagentoClient: MagentoClient;
+  public SessionHelper: SessionHelper;
+  public TransactionHelper: TransactionHelper;
 
   private _ready: Promise<MagentoOrder>;
 

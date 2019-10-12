@@ -1,21 +1,11 @@
 import { LineItem } from 'ns8-protect-models';
-import { MagentoClient, error } from '.';
-import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
-import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { error } from '.';
+import { HelperBase } from './HelperBase';
 
 /**
  * Utlity method for converting Magento Items to Protect Line Items
  */
-export class LineItemsHelper {
-  private SwitchContext: SwitchContext;
-  private MagentoClient: MagentoClient;
-  private MagentoOrder: MagentoOrder;
-
-  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: MagentoOrder) {
-    this.SwitchContext = switchContext;
-    this.MagentoClient = magentoClient;
-    this.MagentoOrder = magentoOrder;
-  }
+export class LineItemsHelper extends HelperBase {
 
   /**
    * Converts Items to Line Items.

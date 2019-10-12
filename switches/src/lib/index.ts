@@ -2,6 +2,7 @@ export * from './AddressHelper';
 export * from './CustomerHelper';
 export * from './CustomerVerificationHelper';
 export * from './FraudAssessmentHelper';
+export * from './HelperBase';
 export * from './LineItemsHelper';
 export * from './MagentoClient';
 export * from './NamedOrderHelper';

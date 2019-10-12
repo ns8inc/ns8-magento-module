@@ -1,25 +1,15 @@
 import { Address } from 'ns8-protect-models';
 import { get } from 'lodash';
-import { error, MagentoClient } from '.';
+import { error } from '.';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
-import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
-import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { Address as MagentoAddress } from '@ns8/magento2-rest-client';
 import { getName } from 'country-list';
+import { HelperBase } from './HelperBase';
 
 /**
  * Utility class for working with Magento Addresses
  */
-export class AddressHelper {
-  private SwitchContext: SwitchContext;
-  private MagentoClient: MagentoClient;
-  private MagentoOrder: MagentoOrder;
-  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: MagentoOrder) {
-    this.SwitchContext = switchContext;
-    this.MagentoClient = magentoClient;
-    this.MagentoOrder = magentoOrder;
-  }
-
+export class AddressHelper extends HelperBase {
   /**
    * Attempts to convert all of the address inside a Magento Order into Protect Addresses.
    * Since addresses live in multiple places on the Magento models, some coercion is required here.

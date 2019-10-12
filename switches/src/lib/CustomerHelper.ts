@@ -1,24 +1,13 @@
 import { Customer } from 'ns8-protect-models';
 import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
-import { MagentoClient, error } from '.';
+import { error } from '.';
+import { HelperBase } from './HelperBase';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
-import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
-import { SwitchContext } from 'ns8-switchboard-interfaces';
 
 /**
  * Utility class for converting Magento Customer model to Protect Customer
  */
-export class CustomerHelper {
-  private SwitchContext: SwitchContext;
-  private MagentoClient: MagentoClient;
-  private MagentoOrder: MagentoOrder;
-
-  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: MagentoOrder) {
-    this.SwitchContext = switchContext;
-    this.MagentoClient = magentoClient;
-    this.MagentoOrder = magentoOrder;
-  }
-
+export class CustomerHelper extends HelperBase {
   /**
    * Get the Protect gender identifier based on the data from Magento.
    * NOTE: we should probably add support for the more nuanced (non-binary) concepts of gender!
