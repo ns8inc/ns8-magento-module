@@ -4,7 +4,7 @@ import {
   Transaction,
   TransactionMethod,
   TransactionStatus
-  } from 'ns8-protect-models';
+} from 'ns8-protect-models';
 import { get } from 'lodash';
 import { error, MagentoClient } from '.';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
@@ -89,7 +89,7 @@ export class TransactionHelper {
           trans.creditCard = new CreditCard({
             cardExpiration: `${payment.cc_exp_month}/${payment.cc_exp_year}`,
             cardHolder: `${customer.firstname} ${customer.lastname}`,
-            creditCardBin: '', //TODO: what does this represent?
+            creditCardBin: '', //Magento does not give us the full credit card number, so we cannot currently calculate the Bin (and it is not provided)
             creditCardCompany: payment.cc_type,
             creditCardNumber: payment.cc_last4,
             gateway: get(payment, 'extension_attributes.vault_payment_token.gateway_token'),
