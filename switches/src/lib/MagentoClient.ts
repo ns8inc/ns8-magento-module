@@ -1,7 +1,6 @@
 import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
-import { error } from '.';
+import { error, sleep, handleApiError } from '.';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
-import { RestApiError } from '@ns8/magento2-rest-client';
 import { RestClient } from '@ns8/magento2-rest-client';
 import { ServiceIntegration } from 'ns8-protect-models';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
@@ -38,37 +37,13 @@ export class MagentoClient {
   }
 
   /**
-   * Mechanism for synchronous wait.
-   * Usage: `await this.sleep(5000)`
-   */
-  private sleep = async (milliseconds: number) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
-  }
-
-  /**
-   * Handles specific conditions in API errors.
-   * If a 404, will execute a simple retry loop.
-   * Returns `false` if the API error is unhandled; otherwise returns the API response.
-   */
-  private handleApiError = async (error, method, params, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<any> => {
-    if (error.statusCode === 404 && attempts < maxRetry) {
-      attempts += 1;
-      await this.sleep(waitMs);
-      const args = [...params, attempts, maxRetry, waitMs];
-      return await method(...args);
-    } else {
-      return false;
-    }
-  }
-
-  /**
    * Convenience method to get a Magento Order by OrderId from the Magento API.
    */
   public getOrder = async (orderId: number, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoOrder | null> => {
     try {
       return await this.client.orders.get(orderId);
     } catch (e) {
-      if(false === await this.handleApiError(e, this.getOrder, [orderId], attempts, maxRetry, waitMs)) {
+      if(false === await handleApiError(e, this.getOrder, [orderId], attempts, maxRetry, waitMs)) {
         error(`Failed to get Order Id:${orderId} from Magento`, e);
       }
     }
@@ -81,7 +56,7 @@ export class MagentoClient {
   public cancelOrder = async (orderId: number): Promise<boolean> => {
     let ret = false;
     try {
-      //The response is not typed; but we expect `cancel == true`
+      //The response is not strongly typed; but we expect `cancel == true` or `cancel == 'true'` or `cancel == '1'` or `cancel == 1`
       const cancel = await this.client.orders.cancel(orderId);
       ret = true;
     } catch (e) {
@@ -92,11 +67,12 @@ export class MagentoClient {
 
   /**
    * Attempt to place an order on hold. If successful, return true.
+   * TODO: unit tests around holding/unholding
    */
   public holdOrder = async (orderId: number): Promise<boolean> => {
     let ret = false;
     try {
-      //The response is not typed; but we expect `hold == true`
+      //The response is not strongly typed; but we expect `hold == true` or `hold == 'true'` or `hold == '1'` or `hold == 1`
       const hold = await this.client.orders.hold(orderId);
       ret = true;
     } catch (e) {
@@ -107,12 +83,13 @@ export class MagentoClient {
 
   /**
    * Attempt to unhold an order (presumably already on hold). If successful, return true.
+   * TODO: unit tests around holding/unholding
    */
   public unholdOrder = async (orderId: number): Promise<boolean> => {
     let ret = false;
     try {
-      //The response is not typed; but we expect `hold == true`
-      const hold = await this.client.orders.unhold(orderId);
+      //The response is not strongly typed; but we expect `unhold == true` or `unhold == 'true'` or `unhold == '1'` or `unhold == 1`
+      const unhold = await this.client.orders.unhold(orderId);
       ret = true;
     } catch (e) {
       error(`Failed to hold Order Id:${orderId} in Magento API`, e);
@@ -127,7 +104,7 @@ export class MagentoClient {
     try {
       return await this.client.customers.get(customerId);
     } catch (e) {
-      if (false === await this.handleApiError(e, this.getCustomer, [customerId], attempts, maxRetry, waitMs)) {
+      if (false === await handleApiError(e, this.getCustomer, [customerId], attempts, maxRetry, waitMs)) {
         error(`Failed to get Customer Id:${customerId} from Magento`, e);
       }
     }
@@ -141,7 +118,7 @@ export class MagentoClient {
     try {
       return await this.client.transactions.getByTransactionId(transactionId) || null;
     } catch (e) {
-      if (false === await this.handleApiError(e, this.getTransaction, [transactionId], attempts, maxRetry, waitMs)) {
+      if (false === await handleApiError(e, this.getTransaction, [transactionId], attempts, maxRetry, waitMs)) {
         error(`Failed to get Transaction Id:${transactionId} from Magento`, e);
       }
     }

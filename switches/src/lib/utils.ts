@@ -28,6 +28,30 @@ export const toDate = (date: string | undefined): Date | undefined => {
   return ret;
 }
 
+/**
+ * Mechanism for synchronous wait.
+ * Usage: `await this.sleep(5000)`
+ */
+export const sleep = async (milliseconds: number) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
+
+/**
+ * Handles specific conditions in API errors.
+ * If a 404, will execute a simple retry loop.
+ * Returns `false` if the API error is unhandled; otherwise returns the API response.
+ */
+export const handleApiError = async (error, method, params, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<any> => {
+  if (error.statusCode === 404 && attempts < maxRetry) {
+    attempts += 1;
+    await sleep(waitMs);
+    const args = [...params, attempts, maxRetry, waitMs];
+    return await method(...args);
+  } else {
+    return false;
+  }
+}
+
 export enum OrderState {
   CREATED = 'created',
   UPDATED = 'updated'
