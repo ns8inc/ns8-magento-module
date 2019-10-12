@@ -75,7 +75,7 @@ export class OrderHelper {
   }
 
   /**
-   * Converts a Magento Order into a Protect Order.
+   * Converts a Magento Order into a Protect Order. This should exclusively be called on Order Create.
    * This is purely a data model conversion of one DTO into another DTO.
    * The actual creation of the Order will happen when Protect receives this data.
    */
@@ -83,6 +83,9 @@ export class OrderHelper {
     this.Order = new Order();
     try {
       this._ready.then( async(magentoOrder: MagentoOrder) => {
+        if (!this.process(OrderState.CREATED)) {
+          throw new Error('Cannot call Create Order unless the order is new.');
+        }
         this.Order = new Order({
           name: `#${magentoOrder.entity_id}`,
           currency: magentoOrder.order_currency_code,
