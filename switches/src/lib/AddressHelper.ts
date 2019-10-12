@@ -40,7 +40,7 @@ export class AddressHelper {
         addresses.push(get(assignment, 'shipping.address') as MagentoShippingAssignment);
       });
       addresses.forEach((address) => {
-        var addr = new Address({
+        const addr = new Address({
           type: ModelTools.stringToProtectAddressType(get(address, 'address_type')),
           address1: get(address, 'street[0]'),
           address2: get(address, 'street[1]'),
