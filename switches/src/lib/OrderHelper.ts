@@ -7,7 +7,7 @@ import {
   OrderState,
   SessionHelper,
   TransactionHelper
-  } from '.';
+} from '.';
 import { get } from 'lodash';
 import { Order } from 'ns8-protect-models';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
@@ -82,7 +82,7 @@ export class OrderHelper {
   public createProtectOrder = async (): Promise<Order> => {
     this.Order = new Order();
     try {
-      this._ready.then( async(magentoOrder: MagentoOrder) => {
+      this._ready.then(async (magentoOrder: MagentoOrder) => {
         if (!this.process(OrderState.CREATED)) {
           throw new Error('Cannot call Create Order unless the order is new.');
         }
@@ -115,13 +115,5 @@ export class OrderHelper {
   /**
    * Get the Magento version of this Order
    */
-  public getMagentoOrder = async (): Promise<MagentoOrder> => {
-    let ret: MagentoOrder = {} as MagentoOrder;
-    try {
-      ret = await this._ready;
-    } catch (e) {
-      error('Failed to get order', e);
-    }
-    return ret;
-  }
+  public getMagentoOrder = async (): Promise<MagentoOrder> => this._ready;
 }
