@@ -34,7 +34,7 @@
     "build:prod": "yarn build && node ./dist/build/module/config.js --env=prod",
     "clean": "rimraf dist",
     "compile": "tsc -d",
-    "lint:ts": "eslint --ext=ts src"
+    "lint": "eslint --ext=ts switchboard switches"
   },
   "version": "0.0.0"
 }
