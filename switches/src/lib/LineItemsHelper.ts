@@ -1,6 +1,5 @@
-import { LineItem } from 'ns8-protect-models';
-import { error } from '.';
 import { HelperBase } from './HelperBase';
+import { LineItem } from 'ns8-protect-models';
 
 /**
  * Utlity method for converting Magento Items to Protect Line Items
@@ -40,7 +39,7 @@ export class LineItemsHelper extends HelperBase {
         ret.push(i);
       });
     } catch (e) {
-      error(`Failed to create Line Items`, e);
+      this.error(`Failed to create Line Items`, e);
     }
     return ret;
   }

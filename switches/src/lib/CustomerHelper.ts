@@ -1,6 +1,5 @@
 import { Customer } from 'ns8-protect-models';
 import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
-import { error } from '.';
 import { HelperBase } from './HelperBase';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
 
@@ -39,7 +38,7 @@ export class CustomerHelper extends HelperBase {
         defaultAddress = customer.addresses.find((a) => { a.telephone });
       }
       if (defaultAddress && defaultAddress.telephone) {
-        phoneNumber = ModelTools.formatPhoneNumber(defaultAddress.telephone);
+        phoneNumber = ModelTools.formatPhoneNumber(defaultAddress.telephone) || '';
       }
     }
     return phoneNumber;
@@ -68,7 +67,7 @@ export class CustomerHelper extends HelperBase {
       ret = new Customer({
         //Protect throws an error when trying to assign a value to birthday.
         //TODO: investigate and restore this
-        //birthday: toDate(customer.dob),
+        //birthday: Utilities.toDate(customer.dob),
         email: customer.email,
         firstName: customer.firstname,
         gender: this.getGender(customer.gender),
@@ -77,7 +76,7 @@ export class CustomerHelper extends HelperBase {
         platformId: `${customer.id}`
       });
     } catch (e) {
-      error(`Failed to create Customer`, e);
+      this.error(`Failed to create Customer`, e);
     }
 
     return ret;

@@ -1,9 +1,7 @@
+import { Logger } from '@ns8/ns8-protect-sdk';
 import { NamedOrderUpdate } from 'ns8-switchboard-interfaces';
 import { OrderHelper } from './OrderHelper';
 import { Status } from 'ns8-protect-models';
-import {
-  error,
-  } from '.';
 
 /**
  * Utility class for working with Protect Named Order Updates
@@ -48,7 +46,7 @@ export class NamedOrderHelper extends OrderHelper {
           break;
       }
     } catch (e) {
-      error('Failed to get named order', e);
+      Logger.error('Failed to get named order', e);
     }
     return ret;
   }

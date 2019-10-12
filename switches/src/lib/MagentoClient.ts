@@ -1,10 +1,12 @@
 import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
-import { error, sleep, handleApiError } from '.';
+import { handleApiError } from '.';
+import { Logger } from '@ns8/ns8-protect-sdk';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { RestClient } from '@ns8/magento2-rest-client';
 import { ServiceIntegration } from 'ns8-protect-models';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
+import { Utilities } from '@ns8/ns8-protect-sdk';
 
 /**
  * A wrapper around the Magento2 REST Client for convience and error handling.
@@ -32,7 +34,7 @@ export class MagentoClient {
         accessTokenSecret: si.secret
       })
     } catch (e) {
-      error('Failed to construct RestClient', e);
+      Logger.error('Failed to construct RestClient', e);
     }
   }
 
@@ -44,7 +46,7 @@ export class MagentoClient {
       return await this.client.orders.get(orderId);
     } catch (e) {
       if(false === await handleApiError(e, this.getOrder, [orderId], attempts, maxRetry, waitMs)) {
-        error(`Failed to get Order Id:${orderId} from Magento`, e);
+        Logger.error(`Failed to get Order Id:${orderId} from Magento`, e);
       }
     }
     return null;
@@ -60,7 +62,7 @@ export class MagentoClient {
       const cancel = await this.client.orders.cancel(orderId);
       ret = true;
     } catch (e) {
-        error(`Failed to cancel Order Id:${orderId} in Magento API`, e);
+        Logger.error(`Failed to cancel Order Id:${orderId} in Magento API`, e);
     }
     return ret;
   }
@@ -76,7 +78,7 @@ export class MagentoClient {
       const hold = await this.client.orders.hold(orderId);
       ret = true;
     } catch (e) {
-      error(`Failed to hold Order Id:${orderId} in Magento API`, e);
+      Logger.error(`Failed to hold Order Id:${orderId} in Magento API`, e);
     }
     return ret;
   }
@@ -92,7 +94,7 @@ export class MagentoClient {
       const unhold = await this.client.orders.unhold(orderId);
       ret = true;
     } catch (e) {
-      error(`Failed to hold Order Id:${orderId} in Magento API`, e);
+      Logger.error(`Failed to hold Order Id:${orderId} in Magento API`, e);
     }
     return ret;
   }
@@ -105,7 +107,7 @@ export class MagentoClient {
       return await this.client.customers.get(customerId);
     } catch (e) {
       if (false === await handleApiError(e, this.getCustomer, [customerId], attempts, maxRetry, waitMs)) {
-        error(`Failed to get Customer Id:${customerId} from Magento`, e);
+        Logger.error(`Failed to get Customer Id:${customerId} from Magento`, e);
       }
     }
     return null;
@@ -119,7 +121,7 @@ export class MagentoClient {
       return await this.client.transactions.getByTransactionId(transactionId) || null;
     } catch (e) {
       if (false === await handleApiError(e, this.getTransaction, [transactionId], attempts, maxRetry, waitMs)) {
-        error(`Failed to get Transaction Id:${transactionId} from Magento`, e);
+        Logger.error(`Failed to get Transaction Id:${transactionId} from Magento`, e);
       }
     }
     return null;

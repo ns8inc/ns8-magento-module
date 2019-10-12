@@ -1,14 +1,14 @@
 import {
   AddressHelper,
   CustomerHelper,
-  error,
   LineItemsHelper,
   MagentoClient,
   OrderState,
   SessionHelper,
   TransactionHelper
-} from '.';
+  } from '.';
 import { get } from 'lodash';
+import { Logger } from '@ns8/ns8-protect-sdk';
 import { Order } from 'ns8-protect-models';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
@@ -106,7 +106,7 @@ export class OrderHelper {
       })
 
     } catch (e) {
-      error('Failed to create order', e);
+      Logger.error('Failed to create order', e);
     }
 
     return this.Order;

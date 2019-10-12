@@ -18,29 +18,27 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@ns8/magento2-rest-client@0.2.15":
-  version "0.2.15"
-  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.15.tgz#e2dce5bf1eeccc28d1c00151f983f942b0d858f0"
-  integrity sha512-TxyKoB85nyy49GIlgFPqfI5Ps8wiYIFrdoJ5Zc7ctbpo5sPcwbKcgg6niX5ZRZwDy1DKisX3vgfTcmlUPKAH0w==
+"@ns8/magento2-rest-client@0.2.17":
+  version "0.2.17"
+  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.17.tgz#8158b38e64e17010efde9c11392395cfb103da17"
+  integrity sha512-igZy+AclWUNLJIrp6t2xjH40OG80opCDqt+TKfJXsbqA36QgdZgIttJaguqoRMU7nSHFZD06GEfOF41VHGmkkQ==
 
-"@ns8/ns8-protect-sdk@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.12.tgz#41ee2178a5b8881263d083bf77de2f83d6e90783"
-  integrity sha512-dcJBSsXdvvqCjmREfuNRCq8nNHGqyTrCnbaNupUGJbSXeumdpb2u40xnN0VH6O5Uxs+/ze+iHabkwrMNs44m2Q==
+"@ns8/ns8-protect-sdk@0.1.16":
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.16.tgz#5e3cf88b9b9364c90a7e8b36ecba4fcc403ed636"
+  integrity sha512-8IVs3ia9V7Wig7bzMUH89R67TlAr5KjJ+zKnEh7WpDf1ymjtd944xbPV3kF0e6T7T1J/dM17fijucIgHUIgj/g==
   dependencies:
-    "@ns8/ns8-switchboard-operator" "^1.0.95"
-    aws-sdk "^2.538.0"
-    glob "^7.1.4"
-    libphonenumber-js "^1.7.25"
-    minimist "^1.2.0"
-    ns8-protect-models "^1.0.206"
-    ns8-switchboard-interfaces "^1.0.83"
-    sort-json "^2.0.0"
-    yamljs "^0.3.0"
-  optionalDependencies:
-    "@types/glob" "^7.1.1"
-    "@types/minimist" "^1.2.0"
-    "@types/node" "^12.7.5"
+    "@ns8/ns8-switchboard-operator" "1.0.98"
+    aws-sdk "2.548.0"
+    country-list "2.2.0"
+    glob "7.1.4"
+    libphonenumber-js "1.7.25"
+    minimist "1.2.0"
+    ns8-protect-models "1.0.206"
+    ns8-switchboard-interfaces "1.0.85"
+    sort-json "2.0.0"
+    stacktracey "1.2.122"
+    yamljs "0.3.0"
 
 "@ns8/ns8-switchboard-operator@1.0.98":
   version "1.0.98"
@@ -52,34 +50,10 @@
     ns8-protect-models "^1.0.206"
     ns8-switchboard-interfaces "^1.0.85"
 
-"@ns8/ns8-switchboard-operator@^1.0.95":
-  version "1.0.96"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.96.tgz#4b6bb93f67739a74c214a97e42aa3e75b469034e"
-  integrity sha512-Ms7T5ap31AzUM74hezVWIKQTZvPNKu+0FzEmQscbNjcMjoGwpfmvOkjx+YAqq49ZabTcEwGKxui0bM0seil3iA==
-  dependencies:
-    aws-lambda "^0.1.2"
-    isomorphic-fetch "^2.2.1"
-    ns8-protect-models "^1.0.206"
-    ns8-switchboard-interfaces "^1.0.83"
-
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
   integrity sha512-OCutwjDZ4aFS6PB1UZ988C4YgwlBHJd6wCeQqaLdmadZ/7e+w79+hbMUFC1QXDNCmdyoRfAFdm0RypzwR+Qpag==
-
-"@types/events@*":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
-  integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
-
-"@types/glob@^7.1.1":
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.1.tgz#aa59a1c6e3fbc421e07ccd31a944c30eba521575"
-  integrity sha512-1Bh06cbWJUHMC97acuD6UMG29nMt0Aqz1vF3guLfG+kHHJhy3AyohZFFxYk2f7Q1SQIrNwvncxAE0N/9s70F2w==
-  dependencies:
-    "@types/events" "*"
-    "@types/minimatch" "*"
-    "@types/node" "*"
 
 "@types/json-schema@^7.0.3":
   version "7.0.3"
@@ -91,25 +65,15 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.144.tgz#12e57fc99064bce45e5ab3c8bc4783feb75eab8e"
   integrity sha512-ogI4g9W5qIQQUhXAclq6zhqgqNUr7UlFaqDHbch7WLSLeeM/7d3CRaw7GLajxvyFvhJqw4Rpcz5bhoaYtIx6Tg==
 
-"@types/minimatch@*":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
-  integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
-
-"@types/minimist@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
-  integrity sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
-
-"@types/node@*", "@types/node@^12.7.5", "@types/node@^12.7.8":
-  version "12.7.11"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.11.tgz#be879b52031cfb5d295b047f5462d8ef1a716446"
-  integrity sha512-Otxmr2rrZLKRYIybtdG/sgeO+tHY20GxeDjcGmUnmmlCWyEnv2a2x1ZXBo3BTec4OiTXMQCiazB8NMBf0iRlFw==
-
 "@types/node@12.7.12":
   version "12.7.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.12.tgz#7c6c571cc2f3f3ac4a59a5f2bd48f5bdbc8653cc"
   integrity sha512-KPYGmfD0/b1eXurQ59fXD1GBzhSQfz6/lKBxkaHX9dKTzjXbK68Zt7yGUxUsCS1jeTy/8aL+d9JEr+S54mpkWQ==
+
+"@types/node@^12.7.8":
+  version "12.7.11"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.11.tgz#be879b52031cfb5d295b047f5462d8ef1a716446"
+  integrity sha512-Otxmr2rrZLKRYIybtdG/sgeO+tHY20GxeDjcGmUnmmlCWyEnv2a2x1ZXBo3BTec4OiTXMQCiazB8NMBf0iRlFw==
 
 "@typescript-eslint/eslint-plugin@2.3.3":
   version "2.3.3"
@@ -244,7 +208,22 @@ aws-sdk@2.546.0:
     uuid "3.3.2"
     xml2js "0.4.19"
 
-aws-sdk@^*, aws-sdk@^2.538.0:
+aws-sdk@2.548.0:
+  version "2.548.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.548.0.tgz#20a3c7a77e1c6fd694cdb5e0ecc0ccf0d0542674"
+  integrity sha512-dnG1MEc3uOonGDswHPiq7TYn6EOG3+IQhF2LSRambz9adaZxwRgFOII7UVPJjh33FtxKpMzOSmf62R+EX822Nw==
+  dependencies:
+    buffer "4.9.1"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
+aws-sdk@^*:
   version "2.543.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.543.0.tgz#08b69a6fab9b3ab08e329888d06a8c4ee583f26d"
   integrity sha512-ABHsA4W7LLYnTBCgtbTt0NF7+66nMCtdcJuAn30+RGzF0bOw3lCguqzootFrMlIOXklddQFJ9kKTXd+p/+uCVQ==
@@ -348,6 +327,11 @@ contains-path@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/contains-path/-/contains-path-0.1.0.tgz#fe8cf184ff6670b6baef01a9d4861a5cbec4120a"
   integrity sha1-/ozxhP9mcLa67wGp1IYaXL7EEgo=
+
+country-list@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/country-list/-/country-list-2.2.0.tgz#e248338cafb97b2d86cf0784a25dceb4d52054d1"
+  integrity sha512-AS21pllCp72LmUztqXPVKXK3TRyap1XlohGLqN04cXH2rFB9vo7SnH5sMnqltZPnu9ie/x1se3UuCZJbGXErfw==
 
 cross-spawn@^6.0.5:
   version "6.0.5"
@@ -712,7 +696,7 @@ glob-parent@^5.0.0:
   dependencies:
     is-glob "^4.0.1"
 
-glob@^7.0.5, glob@^7.1.3, glob@^7.1.4:
+glob@7.1.4, glob@^7.0.5, glob@^7.1.3, glob@^7.1.4:
   version "7.1.4"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.4.tgz#aa608a2f6c577ad357e1ae5a5c26d9a8d1969255"
   integrity sha512-hkLPepehmnKk41pUGm3sYxoFs/umurYfYJCerbXEyFIWcAzvpipAgVkBqqT9RBKMGjnq6kMuyYwha6csxbiM1A==
@@ -928,7 +912,7 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-libphonenumber-js@1.7.25, libphonenumber-js@^1.7.25:
+libphonenumber-js@1.7.25:
   version "1.7.25"
   resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.7.25.tgz#c50ce4d808cfa5d545ba80bcd93bc026b376b678"
   integrity sha512-WlmFl3xSR0oGH0+ZGtEbcNgo6h7JUyYaRmGWlddrkEFmPjAULRur2KZzmNWQSBfD0LhUdnKYhwIi2MnB7gswWw==
@@ -1052,14 +1036,6 @@ ns8-switchboard-interfaces@1.0.85, ns8-switchboard-interfaces@^1.0.85:
   version "1.0.85"
   resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.85.tgz#6a28b6b38027a549a5dd0af103dc5bd2f9199ffb"
   integrity sha512-fHLa46jQdJC1X7tTv2BFOJf7W5cSYSrX44PX5ymf0arqFjzUEBfVcsgwehXHKivgBF78N2CTQ1ViFY+W0i2PPw==
-  dependencies:
-    "@types/node" "^12.7.8"
-    ns8-protect-models "^1.0.206"
-
-ns8-switchboard-interfaces@^1.0.83:
-  version "1.0.84"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.84.tgz#9bff0e440254190df4a8e38592cf89aace04aad9"
-  integrity sha512-ORf5ltSVy7hk7zwceSQfu9nLIMRpeU48OlpRinCmUa1/F10A92IDpV2HH/c6T/4qOXYsL7aOe8FvzvLOU90UBw==
   dependencies:
     "@types/node" "^12.7.8"
     ns8-protect-models "^1.0.206"
@@ -1359,7 +1335,7 @@ slice-ansi@^2.1.0:
     astral-regex "^1.0.0"
     is-fullwidth-code-point "^2.0.0"
 
-sort-json@^2.0.0:
+sort-json@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/sort-json/-/sort-json-2.0.0.tgz#a7030d8875adbd4a5ea39a000567ed94c1aa3c50"
   integrity sha512-OgXPErPJM/rBK5OhzIJ+etib/BmLQ1JY55Nb/ElhoWUec62pXNF/X6DrecHq3NW5OAGX0KxYD7m0HtgB9dvGeA==
@@ -1624,7 +1600,7 @@ xmlbuilder@~9.0.1:
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-9.0.7.tgz#132ee63d2ec5565c557e20f4c22df9aca686b10d"
   integrity sha1-Ey7mPS7FVlxVfiD0wi35rKaGsQ0=
 
-yamljs@^0.3.0:
+yamljs@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/yamljs/-/yamljs-0.3.0.tgz#dc060bf267447b39f7304e9b2bfbe8b5a7ddb03b"
   integrity sha512-C/FsVVhht4iPQYXOInoxUM/1ELSf9EsgKH34FofQOp6hwCPrW4vG4w5++TED3xRUo8gD7l0P1J1dLlDYzODsTQ==

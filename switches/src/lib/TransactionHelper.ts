@@ -5,7 +5,6 @@ import {
   TransactionStatus
 } from 'ns8-protect-models';
 import { get } from 'lodash';
-import { error } from '.';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
 import { Payment as MagentoPayment } from '@ns8/magento2-rest-client';
 import { PaymentAdditionalInfo as MagentoPaymentAdditionalInfo } from '@ns8/magento2-rest-client';
@@ -109,7 +108,7 @@ export class TransactionHelper extends HelperBase {
       trans.status = this.getStatus();
       ret.push(trans);
     } catch (e) {
-      error(`Failed create Transactions`, e);
+      this.error(`Failed create Transactions`, e);
     }
     return ret;
   }
