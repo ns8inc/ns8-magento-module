@@ -3,13 +3,11 @@ import {
   Transaction,
   TransactionMethod,
   TransactionStatus
-} from 'ns8-protect-models';
-import { get } from 'lodash';
+  } from 'ns8-protect-models';
+import { HelperBase } from './HelperBase';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
 import { Payment as MagentoPayment } from '@ns8/magento2-rest-client';
 import { PaymentAdditionalInfo as MagentoPaymentAdditionalInfo } from '@ns8/magento2-rest-client';
-import { VaultPaymentToken as MagentoVaultPaymentToken } from '@ns8/magento2-rest-client';
-import { HelperBase } from './HelperBase';
 
 /**
  * Utility class for working with Magento Transaction data
@@ -29,9 +27,111 @@ export class TransactionHelper extends HelperBase {
    * Get the Magento Transaction Id
    */
   private getPlatformId = (payment: MagentoPayment): string => {
-    const vault: MagentoVaultPaymentToken | undefined = get(payment, 'extension_attributes.vault_payment_token') as MagentoVaultPaymentToken;
-    if (!vault || !vault.entity_id) return `${payment.entity_id}`;
-    else return `${vault.entity_id}`;
+    let ret = ''
+    if (payment) {
+      if (payment && payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
+        const vault = payment.extension_attributes.vault_payment_token;
+        if (vault.entity_id) {
+          ret = `${vault.entity_id}`;
+        }
+      } else {
+        ret = `${payment.entity_id}`;
+      }
+    }
+    return ret;
+  }
+
+  /**
+     * Get the Magento Customer Id
+     */
+  private getCustomerId = (payment: MagentoPayment): number | undefined => {
+    let ret: number | undefined;
+    if (payment) {
+      //extension_attributes.vault_payment_token.customer_id
+      if (payment && payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
+        const vault = payment.extension_attributes.vault_payment_token;
+        if (vault.customer_id) {
+          ret = vault.customer_id;
+        }
+      } else {
+        const data = this.SwitchContext.data;
+        if (data && data.order && data.order.customer_id) {
+          ret = data.order.customer_id as number;
+        }
+      }
+    }
+    return ret;
+  }
+
+  /**
+   * Get the Magento Gateway
+   */
+  private getGateway = (payment: MagentoPayment): string | undefined => {
+    let ret: string | undefined;
+    if (payment) {
+      if (payment && payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
+        const vault = payment.extension_attributes.vault_payment_token;
+        if (vault.gateway_token) {
+          ret = vault.gateway_token;
+        }
+      }
+    }
+    return ret;
+  }
+
+  /**
+   * Get any [[MagentoPaymentAdditionalInfo]] that may exist
+   */
+  private getPaymentAdditionalInfo = (): MagentoPaymentAdditionalInfo[] | undefined => {
+    let ret: MagentoPaymentAdditionalInfo[] | undefined;
+    if (this.MagentoOrder.extension_attributes && this.MagentoOrder.extension_attributes.payment_additional_info) {
+      ret = this.MagentoOrder.extension_attributes.payment_additional_info;
+    }
+    return ret;
+  }
+
+  /**
+   * Get the AVS code, if any
+   */
+  private getAvsResultCode = (payment: MagentoPayment): string | undefined => {
+    let ret: string | undefined;
+    //These `payment_additional_info` properties are Magento's version of EAV structures.
+    //Literally any key/value can exist. It is usually safe to assume that the values will always be strings.
+    const additionalInfo = this.getPaymentAdditionalInfo();
+
+    //Authorize.Net has a first class AVS status; other CC providers do not
+    if (payment.cc_avs_status) {
+      ret = payment.cc_avs_status;
+    } else if (additionalInfo) {
+      const avs = additionalInfo.find((info) => {
+        if (info.key.startsWith('avs')) return true;
+      });
+      if (avs && avs.value) {
+        ret = avs.value;
+      }
+    }
+    return ret;
+  }
+
+  /**
+   * Get the AVS code, if any
+   */
+  private getCvvAvsResultCode = (payment: MagentoPayment): string | undefined => {
+    let ret: string | undefined;
+    //These `payment_additional_info` properties are Magento's version of EAV structures.
+    //Literally any key/value can exist. It is usually safe to assume that the values will always be strings.
+    const additionalInfo = this.getPaymentAdditionalInfo();
+
+    if (additionalInfo) {
+      //CVV does not consistently exist, nor is in named the same way across payment providers.
+      const cvv = additionalInfo.find((info) => {
+        if (info.key.startsWith('cvv')) return true;
+      });
+      if (cvv && cvv.value) {
+        ret = cvv.value;
+      }
+    }
+    return ret;
   }
 
   /**
@@ -52,6 +152,7 @@ export class TransactionHelper extends HelperBase {
     return TransactionStatus.SUCCESS;
   }
 
+
   /**
    * Converts the Magento Order into Protect Transactions
    */
@@ -68,40 +169,25 @@ export class TransactionHelper extends HelperBase {
       });
       trans.method = this.getTransactionMethod(payment);
       if (trans.method === TransactionMethod.CC) {
-        const customerId = get(payment, 'extension_attributes.vault_payment_token.customer_id') as number;
-        //The Order data received both from the switchboard context and from the Order API is incomplete.
-        //Fetch the customer and the Magento transaction from the API in order to continue
-        const customer = await this.MagentoClient.getCustomer(customerId);
-        const magentoTrans = await this.MagentoClient.getTransaction(payment.cc_trans_id || payment.last_trans_id);
-        if (null !== customer && null !== magentoTrans) {
-          trans.creditCard = new CreditCard({
-            cardExpiration: `${payment.cc_exp_month}/${payment.cc_exp_year}`,
-            cardHolder: `${customer.firstname} ${customer.lastname}`,
-            creditCardBin: '', //Magento does not give us the full credit card number, so we cannot currently calculate the Bin (and it is not provided)
-            creditCardCompany: payment.cc_type,
-            creditCardNumber: payment.cc_last4,
-            gateway: get(payment, 'extension_attributes.vault_payment_token.gateway_token'),
-            transactionType: ModelTools.stringToCreditCardTransactionType(magentoTrans.txn_type)
-          });
-
-          //These `payment_additional_info` properties are Magento's version of EAV structures.
-          //Literally any key/value can exist. It is usually safe to assume that the values will always be strings.
-          const additionalInfo = get(this.MagentoOrder, 'extension_attributes.payment_additional_info') as MagentoPaymentAdditionalInfo[];
-
-          //Authorize.Net has a first class AVS status; other CC providers do not
-          if (payment.cc_avs_status) {
-            trans.creditCard.avsResultCode = payment.cc_avs_status;
-          } else {
-            const avs = additionalInfo.find((info) => {
-              if (info.key.startsWith('avs')) return true;
+        const customerId = this.getCustomerId(payment);
+        if (customerId) {
+          //The Order data received both from the switchboard context and from the Order API is incomplete.
+          //Fetch the customer and the Magento transaction from the API in order to continue
+          const customer = await this.MagentoClient.getCustomer(customerId);
+          const magentoTrans = await this.MagentoClient.getTransaction(payment.cc_trans_id || payment.last_trans_id);
+          if (null !== customer && null !== magentoTrans) {
+            trans.creditCard = new CreditCard({
+              cardExpiration: `${payment.cc_exp_month}/${payment.cc_exp_year}`,
+              cardHolder: `${customer.firstname} ${customer.lastname}`,
+              creditCardBin: '', //Magento does not give us the full credit card number, so we cannot currently calculate the Bin (and it is not provided)
+              creditCardCompany: payment.cc_type,
+              creditCardNumber: payment.cc_last4,
+              gateway: this.getGateway(payment),
+              transactionType: ModelTools.stringToCreditCardTransactionType(magentoTrans.txn_type),
+              avsResultCode: this.getAvsResultCode(payment),
+              cvvResultCode: this.getCvvAvsResultCode(payment)
             });
-            trans.creditCard.avsResultCode = get(avs, 'value');
           }
-          //CVV does not consistently exist, nor is in named the same way across payment providers.
-          const cvv = additionalInfo.find((info) => {
-            if (info.key.startsWith('cvv')) return true;
-          });
-          trans.creditCard.cvvResultCode = get(cvv, 'value');
         }
       }
       trans.platformId = this.getPlatformId(payment);

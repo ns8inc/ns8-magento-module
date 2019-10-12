@@ -6,8 +6,7 @@ import {
   OrderState,
   SessionHelper,
   TransactionHelper
-  } from '.';
-import { get } from 'lodash';
+} from '.';
 import { Logger } from '@ns8/ns8-protect-sdk';
 import { Order } from 'ns8-protect-models';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
@@ -54,13 +53,27 @@ export class OrderHelper {
     }
   }
 
+  private getOrderId = (): number | undefined => {
+    let ret: number | undefined;
+    const data = this.SwitchContext.data;
+    if (data) {
+      if (data.order && data.order.entity_id) {
+        ret = data.order.entity_id as number;
+      } else if (data.platformId) {
+        ret = data.platformId as number;
+      }
+    }
+    return ret;
+  }
+
   /**
    * Initialze this instance with the Magento Order returned from the platform API
    */
   private init = async (): Promise<MagentoOrder> => {
     if (this.MagentoOrder) return this.MagentoOrder;
 
-    const orderId = get(this.SwitchContext, 'data.order.entity_id') || get(this.SwitchContext, 'data.platformId');
+    const orderId = this.getOrderId();
+    if (!orderId) throw new Error(`No Magento OrderId could be found`);
     const order: MagentoOrder | null = await this.MagentoClient.getOrder(orderId);
     if (null === order) throw new Error(`No Magento order could be loaded by order id ${orderId}`)
     this.MagentoOrder = order;
