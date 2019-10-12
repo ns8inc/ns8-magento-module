@@ -22,7 +22,7 @@ export class AddressHelper {
 
   /**
    * Attempts to convert all of the address inside a Magento Order into Protect Addresses.
-   * Since addresses live in multiple places on the Magento models, some coersion is required here.
+   * Since addresses live in multiple places on the Magento models, some coercion is required here.
    */
   public toOrderAddresses = (): Address[] => {
     const ret: Address[] = [];
