@@ -47,6 +47,14 @@ class Dashboard extends Action
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function _isAllowed()
+    {
+        return $this->context->getAuthorization()->isAllowed('NS8_CSP2::admin');
+    }
+
+    /**
      * Load the page defined in view/adminhtml/layout/ns8csp2admin_sales_dashboard.xml
      *
      * @return \Magento\Framework\View\Result\Page
