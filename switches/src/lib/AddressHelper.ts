@@ -51,14 +51,7 @@ export class AddressHelper extends HelperBase {
   }
 
   private getRegion = (region: MagentoRegion | string | undefined): string => {
-    let ret = '';
-    if (region) {
-      if (typeof region === 'string') {
-        ret = region;
-      } else {
-        ret = region.region;
-      }
-    }
+    const ret = region && typeof region === 'object' ? region.region : region;
     return ret || '';
   }
 
