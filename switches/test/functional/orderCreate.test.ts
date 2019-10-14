@@ -2,17 +2,20 @@ import 'jest';
 import { RestClient } from '@ns8/magento2-rest-client';
 import * as fs from 'fs';
 import { CreateOrderAction } from '../../dist';
-const switchboardData = require('../mock_data/switchcontext.json');
+import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { createSwitchboardContextMock } from '../lib';
+const switchboardData: SwitchContext[] = [];
+require('dotenv').config();
 
-beforeAll( async() => {
-  require('dotenv').config();
-
+beforeAll((done) => {
   const options = {
     url: process.env.MAGENTO_URL || '',
     consumerKey: process.env.CONSUMER_KEY || '',
     consumerSecret: process.env.CONSUMER_SECRET || '',
     accessToken: process.env.ACCESS_TOKEN || '',
     accessTokenSecret: process.env.ACCESS_TOKEN_SECRET || '',
+    apiBaseUrl: process.env.API_BASE_URL || '',
+    magentoBaseUrl: process.env.MAGENTO_BASE_URL || ''
   };
 
   const client = new RestClient(options);
@@ -21,35 +24,39 @@ beforeAll( async() => {
   if (!fs.existsSync('test/mock_data/orders')) fs.mkdirSync('test/mock_data/orders');
   if (!fs.existsSync('test/mock_data/transactions')) fs.mkdirSync('test/mock_data/transactions');
 
-  return await client.orders.list()
-    .then( (data) => {
+  return client.orders.list()
+    .then((allOrders) => {
       try {
-        fs.writeFileSync('test/mock_data/orders/orders.json', JSON.stringify(data, null, 2))
-        // data.items.forEach((item) => {
-        //   try {
-        //     client.orders.get(item.entity_id)
-        //       .then(function (data) {
-        //         fs.writeFileSync(`test/mock_data/orders/order_${item.entity_id}.json`, JSON.stringify(data, null, 2))
-        //       })
-        //   } catch (e) {
-        //     console.error(e);
-        //   }
-        // })
+        allOrders.items.forEach((item) => {
+          try {
+            switchboardData.push(createSwitchboardContextMock({
+              order: {
+                entity_id: item.entity_id,
+                status: 'pending',
+                state: 'new'
+              }
+            }, options))
+          } catch (e) {
+            console.error(e);
+          }
+        })
       } catch (e) {
         console.error(e);
       }
-    })
-});
-
-describe('::testExecutionOfCreateOrderStep', () => {
-  it('does not throw when called with mock data', done => {
-
-    var order = new CreateOrderAction().create(switchboardData).then(data => {
-      expect.anything();
-      done();
-    }).catch(reason => {
       done();
     });
+}, 30000);
 
+/**
+ * TODO: fix the issue with async test execution in Jest
+ */
+test('does not throw when called with mock data', done => {
+
+  var order = new CreateOrderAction().create(switchboardData[0]).then(data => {
+    expect.anything();
+    done();
+  }).catch(reason => {
+    done();
   });
+
 });

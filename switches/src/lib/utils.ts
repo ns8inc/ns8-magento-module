@@ -1,26 +1,19 @@
-import * as StackTracey from 'stacktracey';
+import { Utilities } from '@ns8/ns8-protect-sdk';
 
-export const error = (message: string, error: Error) => {
-  log(message, error);
-  throw new Error(`${message}: ${error.message}`);
-}
-
-export const log = (message: string, error: Error) => {
-  try {
-    console.warn(message);
-    console.error(`${error.message}: ${error.name}: ${error.stack}`);
-    console.info(new StackTracey(error).pretty);
-  } catch {
-    //Never fail in logging
+/**
+ * Handles specific conditions in API errors.
+ * If a 404, will execute a simple retry loop.
+ * Returns `false` if the API error is unhandled; otherwise returns the API response.
+ */
+export const handleApiError = async (error, method, params, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<any> => {
+  if (error.statusCode === 404 && attempts < maxRetry) {
+    attempts += 1;
+    await Utilities.sleep(waitMs);
+    const args = [...params, attempts, maxRetry, waitMs];
+    return await method(...args);
+  } else {
+    return false;
   }
-}
-
-export const toDate = (date: string | undefined): Date | undefined => {
-  let ret: Date | undefined;
-  if (date) {
-    ret = new Date(date);
-  }
-  return ret;
 }
 
 export enum OrderState {
