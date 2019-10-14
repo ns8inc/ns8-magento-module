@@ -3,7 +3,7 @@ import {
   Transaction,
   TransactionMethod,
   TransactionStatus
-  } from 'ns8-protect-models';
+} from 'ns8-protect-models';
 import { HelperBase } from './HelperBase';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
 import { Payment as MagentoPayment } from '@ns8/magento2-rest-client';
@@ -29,7 +29,7 @@ export class TransactionHelper extends HelperBase {
   private getPlatformId = (payment: MagentoPayment): string => {
     let ret = ''
     if (payment) {
-      if (payment && payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
+      if (payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
         const vault = payment.extension_attributes.vault_payment_token;
         if (vault.entity_id) {
           ret = `${vault.entity_id}`;
@@ -48,7 +48,7 @@ export class TransactionHelper extends HelperBase {
     let ret: number | undefined;
     if (payment) {
       //extension_attributes.vault_payment_token.customer_id
-      if (payment && payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
+      if (payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
         const vault = payment.extension_attributes.vault_payment_token;
         if (vault.customer_id) {
           ret = vault.customer_id;
@@ -69,7 +69,7 @@ export class TransactionHelper extends HelperBase {
   private getGateway = (payment: MagentoPayment): string | undefined => {
     let ret: string | undefined;
     if (payment) {
-      if (payment && payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
+      if (payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
         const vault = payment.extension_attributes.vault_payment_token;
         if (vault.gateway_token) {
           ret = vault.gateway_token;
@@ -80,7 +80,9 @@ export class TransactionHelper extends HelperBase {
   }
 
   /**
-   * Get any [[MagentoPaymentAdditionalInfo]] that may exist
+   * Get any [[MagentoPaymentAdditionalInfo]] that may exist.
+   * These `payment_additional_info` properties are Magento's version of EAV structures.
+   * Literally any key/value can exist. It is usually safe to assume that the values will always be strings.
    */
   private getPaymentAdditionalInfo = (): MagentoPaymentAdditionalInfo[] | undefined => {
     let ret: MagentoPaymentAdditionalInfo[] | undefined;
@@ -95,19 +97,19 @@ export class TransactionHelper extends HelperBase {
    */
   private getAvsResultCode = (payment: MagentoPayment): string | undefined => {
     let ret: string | undefined;
-    //These `payment_additional_info` properties are Magento's version of EAV structures.
-    //Literally any key/value can exist. It is usually safe to assume that the values will always be strings.
-    const additionalInfo = this.getPaymentAdditionalInfo();
 
     //Authorize.Net has a first class AVS status; other CC providers do not
     if (payment.cc_avs_status) {
       ret = payment.cc_avs_status;
-    } else if (additionalInfo) {
-      const avs = additionalInfo.find((info) => {
-        if (info.key.startsWith('avs')) return true;
-      });
-      if (avs && avs.value) {
-        ret = avs.value;
+    } else {
+      const additionalInfo = this.getPaymentAdditionalInfo();
+      if (additionalInfo) {
+        const avs = additionalInfo.find((info) => {
+          if (info.key.startsWith('avs')) return true;
+        });
+        if (avs && avs.value) {
+          ret = avs.value;
+        }
       }
     }
     return ret;
@@ -118,10 +120,8 @@ export class TransactionHelper extends HelperBase {
    */
   private getCvvAvsResultCode = (payment: MagentoPayment): string | undefined => {
     let ret: string | undefined;
-    //These `payment_additional_info` properties are Magento's version of EAV structures.
-    //Literally any key/value can exist. It is usually safe to assume that the values will always be strings.
-    const additionalInfo = this.getPaymentAdditionalInfo();
 
+    const additionalInfo = this.getPaymentAdditionalInfo();
     if (additionalInfo) {
       //CVV does not consistently exist, nor is in named the same way across payment providers.
       const cvv = additionalInfo.find((info) => {
