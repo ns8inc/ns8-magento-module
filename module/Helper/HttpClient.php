@@ -117,7 +117,7 @@ class HttpClient extends AbstractHelper
     private function execute($route, $data = [], $method = "POST", $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
     {
         try {
-            $uri = $this->config->getApiBaseUrl($route);
+            $uri = $this->config->getNS8MiddlewareUrl($route);
 
             $httpClient = new Client();
             $httpClient->setUri($uri);
