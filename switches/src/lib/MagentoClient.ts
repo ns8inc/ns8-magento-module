@@ -1,12 +1,12 @@
 import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
-import { handleApiError } from '.';
+import { handleApiError, validateBooleanHttpResponse } from '.';
 import { Logger } from '@ns8/ns8-protect-sdk';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { RestClient } from '@ns8/magento2-rest-client';
 import { ServiceIntegration } from 'ns8-protect-models';
+import { StatusHistory as MagentoComment } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
-import { Utilities } from '@ns8/ns8-protect-sdk';
 
 /**
  * A wrapper around the Magento2 REST Client for convience and error handling.
@@ -39,13 +39,13 @@ export class MagentoClient {
   }
 
   /**
-   * Convenience method to get a Magento Order by OrderId from the Magento API.
+   * Convenience method to get a [[MagentoOrder]] by OrderId from the Magento API.
    */
   public getOrder = async (orderId: number, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoOrder | null> => {
     try {
       return await this.client.orders.get(orderId);
     } catch (e) {
-      if(false === await handleApiError(e, this.getOrder, [orderId], attempts, maxRetry, waitMs)) {
+      if (false === await handleApiError(e, this.getOrder, [orderId], attempts, maxRetry, waitMs)) {
         Logger.error(`Failed to get Order Id:${orderId} from Magento`, e);
       }
     }
@@ -53,30 +53,42 @@ export class MagentoClient {
   }
 
   /**
-   * Attempt to cancel an order. If successful, return true.
+   * Attempt to post a [[MagentoComment]] to a [[MagentoOrder]]. If successful, return true.
    */
-  public cancelOrder = async (orderId: number): Promise<boolean> => {
+  public postOrderComment = async (orderId: number, comment: MagentoComment): Promise<boolean> => {
     let ret = false;
     try {
-      //The response is not strongly typed; but we expect `cancel == true` or `cancel == 'true'` or `cancel == '1'` or `cancel == 1`
-      const cancel = await this.client.orders.cancel(orderId);
-      ret = true;
+      const httpResponse = await this.client.orders.postComment(orderId, comment);
+      ret = validateBooleanHttpResponse(httpResponse);
     } catch (e) {
-        Logger.error(`Failed to cancel Order Id:${orderId} in Magento API`, e);
+      Logger.error(`Failed to add comment to Order Id:${orderId} in Magento API`, e);
     }
     return ret;
   }
 
   /**
-   * Attempt to place an order on hold. If successful, return true.
+   * Attempt to cancel a [[MagentoOrder]]. If successful, return true.
+   */
+  public cancelOrder = async (orderId: number): Promise<boolean> => {
+    let ret = false;
+    try {
+      const httpResponse = await this.client.orders.cancel(orderId);
+      ret = validateBooleanHttpResponse(httpResponse);
+    } catch (e) {
+      Logger.error(`Failed to cancel Order Id:${orderId} in Magento API`, e);
+    }
+    return ret;
+  }
+
+  /**
+   * Attempt to place a [[MagentoOrder]] on hold. If successful, return true.
    * TODO: unit tests around holding/unholding
    */
   public holdOrder = async (orderId: number): Promise<boolean> => {
     let ret = false;
     try {
-      //The response is not strongly typed; but we expect `hold == true` or `hold == 'true'` or `hold == '1'` or `hold == 1`
-      const hold = await this.client.orders.hold(orderId);
-      ret = true;
+      const httpResponse = await this.client.orders.hold(orderId);
+      ret = validateBooleanHttpResponse(httpResponse);
     } catch (e) {
       Logger.error(`Failed to hold Order Id:${orderId} in Magento API`, e);
     }
@@ -84,15 +96,14 @@ export class MagentoClient {
   }
 
   /**
-   * Attempt to unhold an order (presumably already on hold). If successful, return true.
+   * Attempt to unhold a [[MagentoOrder]] (presumably already on hold). If successful, return true.
    * TODO: unit tests around holding/unholding
    */
   public unholdOrder = async (orderId: number): Promise<boolean> => {
     let ret = false;
     try {
-      //The response is not strongly typed; but we expect `unhold == true` or `unhold == 'true'` or `unhold == '1'` or `unhold == 1`
-      const unhold = await this.client.orders.unhold(orderId);
-      ret = true;
+      const httpResponse = await this.client.orders.unhold(orderId);
+      ret = validateBooleanHttpResponse(httpResponse);
     } catch (e) {
       Logger.error(`Failed to hold Order Id:${orderId} in Magento API`, e);
     }
@@ -100,7 +111,7 @@ export class MagentoClient {
   }
 
   /**
-   * Get a Magento Customer by Id
+   * Get a [[MagentoCustomer]] by Id
    */
   public getCustomer = async (customerId: number, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoCustomer | null> => {
     try {
@@ -114,7 +125,7 @@ export class MagentoClient {
   }
 
   /**
-   * Get a Magento Transaction by Id
+   * Get a [[MagentoTransaction]] by Id
    */
   public getTransaction = async (transactionId: string, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoTransaction | null> => {
     try {

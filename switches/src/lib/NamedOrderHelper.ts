@@ -2,7 +2,7 @@ import { Logger } from '@ns8/ns8-protect-sdk';
 import { NamedOrderUpdate } from 'ns8-switchboard-interfaces';
 import { OrderHelper } from './OrderHelper';
 import { Status } from 'ns8-protect-models';
-
+import { StatusHistory as MagentoComment } from '@ns8/magento2-rest-client';
 /**
  * Utility class for working with Protect Named Order Updates
  */
@@ -29,12 +29,13 @@ export class NamedOrderHelper extends OrderHelper {
 
       switch (status.toLowerCase().trim()) {
         case 'cancelled':
-          this.MagentoClient.cancelOrder(magentoOrder.entity_id);
+          await this.MagentoClient.cancelOrder(magentoOrder.entity_id);
           ret = {
             status: Status.CANCELLED,
             platformStatus: 'Canceled',
             orderName: name,
           };
+          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, { comment: 'NS8 Protect Order Cancelled' } as MagentoComment);
           break;
         default:
           //TBD
@@ -43,6 +44,7 @@ export class NamedOrderHelper extends OrderHelper {
             platformStatus: 'Approved',
             orderName: name,
           };
+          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, { comment: 'NS8 Protect Order Approved' } as MagentoComment);
           break;
       }
     } catch (e) {
