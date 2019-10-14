@@ -21,9 +21,7 @@
     "test/**/*"
   ],
   "include": [
-    "build/**/*",
     "switchboard/src/**/*",
-    "switches/src/**/*",
-    "switchboard/Switchboard.ts"
+    "switches/src/**/*"
   ]
 }
