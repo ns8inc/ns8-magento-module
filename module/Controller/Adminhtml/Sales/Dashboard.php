@@ -40,6 +40,7 @@ class Dashboard extends Action
         Config $config
     ) {
         parent::__construct($context);
+        $this->context = $context;
         $this->resultPageFactory = $resultPageFactory;
         $this->httpClient = $httpClient;
         $this->logger = $logger;
