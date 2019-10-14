@@ -39,7 +39,7 @@ export class MagentoClient {
   }
 
   /**
-   * Convenience method to get a Magento Order by OrderId from the Magento API.
+   * Convenience method to get a [[MagentoOrder]] by OrderId from the Magento API.
    */
   public getOrder = async (orderId: number, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoOrder | null> => {
     try {
@@ -53,7 +53,7 @@ export class MagentoClient {
   }
 
   /**
-   * Attempt to cancel an order. If successful, return true.
+   * Attempt to post a [[MagentoComment]] to a [[MagentoOrder]]. If successful, return true.
    */
   public postOrderComment = async (orderId: number, comment: MagentoComment): Promise<boolean> => {
     let ret = false;
@@ -67,7 +67,7 @@ export class MagentoClient {
   }
 
   /**
-   * Attempt to cancel an order. If successful, return true.
+   * Attempt to cancel a [[MagentoOrder]]. If successful, return true.
    */
   public cancelOrder = async (orderId: number): Promise<boolean> => {
     let ret = false;
@@ -81,7 +81,7 @@ export class MagentoClient {
   }
 
   /**
-   * Attempt to place an order on hold. If successful, return true.
+   * Attempt to place a [[MagentoOrder]] on hold. If successful, return true.
    * TODO: unit tests around holding/unholding
    */
   public holdOrder = async (orderId: number): Promise<boolean> => {
@@ -96,7 +96,7 @@ export class MagentoClient {
   }
 
   /**
-   * Attempt to unhold an order (presumably already on hold). If successful, return true.
+   * Attempt to unhold a [[MagentoOrder]] (presumably already on hold). If successful, return true.
    * TODO: unit tests around holding/unholding
    */
   public unholdOrder = async (orderId: number): Promise<boolean> => {
@@ -111,7 +111,7 @@ export class MagentoClient {
   }
 
   /**
-   * Get a Magento Customer by Id
+   * Get a [[MagentoCustomer]] by Id
    */
   public getCustomer = async (customerId: number, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoCustomer | null> => {
     try {
@@ -125,7 +125,7 @@ export class MagentoClient {
   }
 
   /**
-   * Get a Magento Transaction by Id
+   * Get a [[MagentoTransaction]] by Id
    */
   public getTransaction = async (transactionId: string, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoTransaction | null> => {
     try {
