@@ -3,13 +3,8 @@
   "dependencies": {},
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
-<<<<<<< HEAD
-    "@ns8/magento2-rest-client": "0.2.15",
-    "@ns8/ns8-protect-sdk": "0.1.12",
-=======
     "@ns8/magento2-rest-client": "0.2.17",
     "@ns8/ns8-protect-sdk": "0.1.16",
->>>>>>> 4003b6e36ff84575417b3fb72b6f9518ebd4fe25
     "@types/jest": "24.0.18",
     "@types/node": "12.7.12",
     "awesome-typescript-loader": "5.2.1",
