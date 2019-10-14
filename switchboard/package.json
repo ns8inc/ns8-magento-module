@@ -1,11 +1,11 @@
 {
   "dependencies": {
-    "@ns8/ns8-magento2-switches": "1.0.13"
+    "@ns8/ns8-magento2-switches": "1.0.14"
   },
   "devDependencies": {
     "aws-lambda": "0.1.2",
     "serverless-pseudo-parameters": "2.5.0",
-    "serverless-step-functions": "2.10.0",
+    "serverless-step-functions": "2.10.1",
     "typescript": "3.6.4"
   },
   "scripts": {

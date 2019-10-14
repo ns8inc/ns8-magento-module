@@ -16,7 +16,6 @@
     "eslint-config-airbnb-base": "14.0.0",
     "eslint-plugin-import": "2.18.2",
     "isomorphic-fetch": "2.2.1",
-    "lodash": "4.17.15",
     "minimist": "1.2.0",
     "ns8-protect-models": "1.0.206",
     "ns8-switchboard-interfaces": "1.0.85",
