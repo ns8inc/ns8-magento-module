@@ -115,6 +115,8 @@ class Logger extends AbstractHelper
                 ]
             ];
             //Log to our own API
+            // TODO: I don't believe this is logging anything currently.
+            // The targeted 'get' endpoint simply lists disagnostic info.
             $this->httpClient->get('protect/diagnostic', $data);
         } catch (\Exception $e) {
             $this->logger->log('ERROR', 'NS8_CSP2.log: '.$e->getMessage(), $e);
