@@ -1,22 +1,21 @@
-import { MagentoClient } from '.';
-import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { Session } from 'ns8-protect-models';
-import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { HelperBase } from './HelperBase';
 
-export class SessionHelper {
-  private SwitchContext: SwitchContext;
-  private MagentoClient: MagentoClient;
-  private MagentoOrder: MagentoOrder;
-  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: MagentoOrder) {
-    this.SwitchContext = switchContext;
-    this.MagentoClient = magentoClient;
-    this.MagentoOrder = magentoOrder;
+export class SessionHelper extends HelperBase {
+
+  private getIpAddress = ():string => {
+    //NOTE: for mock purposes, this must be any real value that is not localhost, 127.0.0.1 or otherwise a reserved "localhost" IP address
+    let ret = '1.1.1.1'; //DNS Server IP
+    if (this.SwitchContext.data && this.SwitchContext.data.order && this.SwitchContext.data.order.remote_ip) {
+      ret = this.SwitchContext.data.order.remote_ip;
+    }
+    return ret;
   }
 
   //TODO: ship this data from Magento
   public toSession = (): Session => {
     return new Session({
-      ip: '1.1.1.1',
+      ip: this.getIpAddress(),
     });
   }
 }

@@ -1,13 +1,13 @@
 import { existsSync, mkdirSync, copyFileSync } from 'fs';
-import minimist from 'minimist';
+require('dotenv').config();
 
 const destFolder = 'module/etc/integration';
 const configDest = `${destFolder}/config.xml`;
 
-const placeConfig = (env) => {
-  if (env !== 'dev' && env !== 'prod') {
-    console.error(env);
-    throw new Error('No matching env');
+const placeConfig = () => {
+  let env = 'prod';
+  if (process.env.NODE_ENV !== 'prod') {
+    env = 'dev';
   }
   if (!existsSync(destFolder)) {
     mkdirSync(destFolder, {
@@ -15,8 +15,7 @@ const placeConfig = (env) => {
     });
   }
   copyFileSync(`build/module/etc/integration/config.${env}.xml`, configDest);
+  console.info(`Set integration XML. Copied build/module/etc/integration/config.${env}.xml to ${configDest}.`)
 };
 
-const args = minimist(process.argv.slice(2));
-const { env } = args;
-placeConfig(env);
+placeConfig();

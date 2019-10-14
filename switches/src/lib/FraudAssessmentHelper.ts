@@ -1,15 +1,7 @@
 import { FraudAssessment } from 'ns8-protect-models';
-import { MagentoClient } from '.';
-import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { HelperBase } from './HelperBase';
 
-export class FraudAssessmentHelper {
-  private SwitchContext: SwitchContext;
-  private MagentoClient: MagentoClient;
-
-  constructor(switchContext: SwitchContext, magentoClient: MagentoClient) {
-    this.SwitchContext = switchContext;
-    this.MagentoClient = magentoClient;
-  }
+export class FraudAssessmentHelper extends HelperBase {
 
   public toFraudAssessment = (): FraudAssessment[] => {
 
