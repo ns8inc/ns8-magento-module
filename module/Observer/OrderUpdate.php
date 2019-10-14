@@ -52,7 +52,7 @@ class OrderUpdate implements ObserverInterface
     {
         try {
             $order = $observer->getEvent()->getOrder();
-            $orderData = $rawOrder->getData();
+            $orderData = $order->getData();
             $params = array();
             if ($order->getState() == 'new' || $order->getStatus() == 'pending') {
                 $params = array('action'=>'CREATE_ORDER_ACTION');
