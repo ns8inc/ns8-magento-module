@@ -52,7 +52,12 @@ class OrderUpdate implements ObserverInterface
     {
         try {
             $order = $observer->getEvent()->getOrder()->getData();
-            $params = array('action'=>'CREATE_ORDER_ACTION');
+            $params = array();
+            if ($order->getState() == 'new' || $order->getStatus() == 'pending') {
+                $params = array('action'=>'CREATE_ORDER_ACTION');
+            } else {
+                $params = array('action'=>'UPDATE_ORDER_STATUS_ACTION');
+            }
             $data = array('order'=>$order);
             $response = $this->httpClient->post('protect/executor', $data, $params);
         } catch (\Exception $e) {
