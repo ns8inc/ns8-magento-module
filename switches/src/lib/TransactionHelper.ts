@@ -47,7 +47,6 @@ export class TransactionHelper extends HelperBase {
   private getCustomerId = (payment: MagentoPayment): number | undefined => {
     let ret: number | undefined;
     if (payment) {
-      //extension_attributes.vault_payment_token.customer_id
       if (payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
         const vault = payment.extension_attributes.vault_payment_token;
         if (vault.customer_id) {
