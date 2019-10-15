@@ -2,21 +2,22 @@
 
 namespace NS8\CSP2\Helper;
 
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Framework\App\State;
+use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\UrlInterface;
+use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
+use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use Magento\Framework\Encryption\EncryptorInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Backend\Model\UrlInterface;
+use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\ProductMetadataInterface;
-use Magento\Framework\Module\ModuleList;
-use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\State;
+use Magento\Framework\Encryption\EncryptorInterface;
+use Magento\Framework\Module\ModuleList;
 use Magento\Framework\Stdlib\CookieManagerInterface;
-use Psr\Log\LoggerInterface;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
+use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Generic Helper/Utility class with convenience methods for common ops
@@ -26,59 +27,63 @@ class Config extends AbstractHelper
     /*
      * Placeholders for future functionality
     */
+    protected $backendUrl;
+    protected $cacheTypeList;
+    protected $context;
+    protected $cookieManager;
+    protected $encryptor;
+    protected $moduleList;
+    protected $productMetadata;
+    protected $request;
     protected $scopeConfig;
     protected $scopeWriter;
-    protected $encryptor;
-    protected $backendUrl;
-    protected $productMetadata;
-    protected $moduleList;
-    protected $storeManager;
     protected $state;
-    protected $cacheTypeList;
-    protected $request;
-    protected $cookieManager;
+    protected $storeManager;
 
     /**
      * Default constructor
      *
-     * @param State $state
-     * @param ScopeConfigInterface $scopeConfig
-     * @param WriterInterface $scopeWriter
-     * @param EncryptorInterface $encryptor
-     * @param StoreManagerInterface $storeManager
-     * @param UrlInterface $backendUrl
-     * @param ProductMetadataInterface $productMetadata
-     * @param ModuleList $moduleList
-     * @param TypeListInterface $cacheTypeList
-     * @param RequestInterface $request
      * @param CookieManagerInterface $cookieManager
+     * @param Context $context
+     * @param EncryptorInterface $encryptor
+     * @param ModuleList $moduleList
+     * @param ProductMetadataInterface $productMetadata
+     * @param RequestInterface $request
+     * @param ScopeConfigInterface $scopeConfig
+     * @param State $state
+     * @param StoreManagerInterface $storeManager
+     * @param TypeListInterface $cacheTypeList
+     * @param UrlInterface $backendUrl
+     * @param WriterInterface $scopeWriter
      */
     public function __construct(
-        State $state,
-        ScopeConfigInterface $scopeConfig,
-        WriterInterface $scopeWriter,
-        EncryptorInterface $encryptor,
-        StoreManagerInterface $storeManager,
-        UrlInterface $backendUrl,
-        ProductMetadataInterface $productMetadata,
-        ModuleList $moduleList,
-        TypeListInterface $cacheTypeList,
-        RequestInterface $request,
         CookieManagerInterface $cookieManager,
-        LoggerInterface $loggerInterface
+        Context $context,
+        EncryptorInterface $encryptor,
+        LoggerInterface $loggerInterface,
+        ModuleList $moduleList,
+        ProductMetadataInterface $productMetadata,
+        RequestInterface $request,
+        ScopeConfigInterface $scopeConfig,
+        State $state,
+        StoreManagerInterface $storeManager,
+        TypeListInterface $cacheTypeList,
+        UrlInterface $backendUrl,
+        WriterInterface $scopeWriter
     ) {
-        $this->state = $state;
+        $this->backendUrl = $backendUrl;
+        $this->cacheTypeList = $cacheTypeList;
+        $this->context = $context;
+        $this->cookieManager = $cookieManager;
+        $this->encryptor = $encryptor;
+        $this->logger = $loggerInterface;
+        $this->moduleList = $moduleList;
+        $this->productMetadata = $productMetadata;
+        $this->request = $request;
         $this->scopeConfig = $scopeConfig;
         $this->scopeWriter = $scopeWriter;
-        $this->encryptor = $encryptor;
+        $this->state = $state;
         $this->storeManager = $storeManager;
-        $this->backendUrl = $backendUrl;
-        $this->productMetadata = $productMetadata;
-        $this->moduleList = $moduleList;
-        $this->cacheTypeList = $cacheTypeList;
-        $this->request = $request;
-        $this->cookieManager = $cookieManager;
-        $this->logger = $loggerInterface;
     }
 
     /**
@@ -240,70 +245,10 @@ class Config extends AbstractHelper
         );
     }
 
-    public function remoteAddress()
+    public function getAuthenticatedUserName()
     {
-        $xf = $this->request->getServer('HTTP_X_FORWARDED_FOR');
-
-        if (!isset($xf)) {
-            $xf = '';
-        }
-
-        $remoteAddr = $this->request->getServer('REMOTE_ADDR');
-
-        if (!isset($remoteAddr)) {
-            $remoteAddr = '';
-        }
-
-        if (isset($xf) && trim($xf) != '') {
-            $xf = trim($xf);
-            $xfs = [];
-
-            //  see if multiple addresses are in the XFF header
-            if (strpos($xf, '.') !== false) {
-                $xfs = explode(',', $xf);
-            } elseif (strpos($xf, ' ') !== false) {
-                $xfs = explode(' ', $xf);
-            }
-
-            if (!empty($xfs)) {
-                $count = count($xfs);
-
-                //  get first public address, since multiple private routings can occur and be added to forwarded list
-                for ($i = 0; $i < $count; $i++) {
-                    $ipTrim = trim($xfs[$i]);
-
-                    if (substr($ipTrim, 0, 7) == '::ffff:' && count(explode('.', $ipTrim)) == 4) {
-                        $ipTrim = substr($ipTrim, 7);
-                    }
-
-                    if ($ipTrim != '' && substr($ipTrim, 0, 3) != '10.'
-                        && substr($ipTrim, 0, 7) != '172.16.'
-                        && substr($ipTrim, 0, 7) != '172.31.'
-                        && substr($ipTrim, 0, 8) != '127.0.0.'
-                        && substr($ipTrim, 0, 8) != '192.168.' && $ipTrim != 'unknown' && $ipTrim != '::1') {
-                        return ($ipTrim);
-                    }
-                }
-                $xf = trim($xfs[0]);
-            }
-
-            if (substr($xf, 0, 7) == '::ffff:' && count(explode('.', $xf)) == 4) {
-                $xf = substr($xf, 7);
-            }
-
-            //  a tiny % of hits have an unknown ip address
-            if (substr($xf, 0, 7) == 'unknown') {
-                return '127.0.0.1';
-            }
-
-            return ($xf);
-        } else {
-            //  a tiny % of hits have an unknown ip address, so return a default address
-            if (substr($remoteAddr, 0, 7) == 'unknown') {
-                return '127.0.0.1';
-            }
-
-            return ($remoteAddr);
-        }
+        $auth = $this->context->getAuth();
+        $loginUser = $auth->getUser();
+        return $loginUser->getUserName();
     }
 }

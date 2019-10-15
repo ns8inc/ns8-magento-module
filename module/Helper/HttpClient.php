@@ -75,7 +75,7 @@ class HttpClient extends AbstractHelper
     public function post($url, $data = [], $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
     {
         $data['session'] = $this->getSessionData();
-
+        $data['username'] = $this->config->getAuthenticatedUserName();
         return $this->executeWithAuth($url, $data, "POST", $parameters, $headers, $timeout);
     }
 
