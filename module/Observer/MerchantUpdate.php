@@ -10,7 +10,7 @@ use Magento\Customer\Model\Session;
 use NS8\CSP2\Helper\Logger;
 use NS8\CSP2\Helper\HttpClient;
 
-class StoreUpdate implements ObserverInterface
+class MerchantUpdate implements ObserverInterface
 {
     protected $request;
     protected $customerSession;
@@ -31,9 +31,9 @@ class StoreUpdate implements ObserverInterface
         Logger $logger,
         HttpClient $httpClient
     ) {
+        $this->request = $request;
         $this->customerSession = $session;
         $this->logger = $logger;
-        $this->request = $request;
         $this->httpClient = $httpClient;
     }
 
@@ -48,10 +48,13 @@ class StoreUpdate implements ObserverInterface
         $params = ['action' => 'UPDATE_MERCHANT_ACTION'];
 
         try {
-            $data = ['store' => $observer->getEvent()->getStore()->getData()];
+            $eventData = $observer->getEvent()->getData();
         } catch (\Exception $e) {
-            $this->logger->error('The store data could not be retrieved', $e);
+            $this->logger->error('The event data could not be retrieved', $e);
+            return;
         }
+
+        $data = ['eventData' => $eventData];
 
         try {
             $this->httpClient->post('protect/executor', $data, $params);
