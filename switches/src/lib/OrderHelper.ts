@@ -95,29 +95,27 @@ export class OrderHelper {
   public createProtectOrder = async (): Promise<Order> => {
     this.Order = new Order();
     try {
-      this._ready.then(async (magentoOrder: MagentoOrder) => {
-        if (!this.process(OrderState.CREATED)) {
-          throw new Error('Cannot call Create Order unless the order is new.');
-        }
-        this.Order = new Order({
-          name: `#${magentoOrder.entity_id}`,
-          currency: magentoOrder.order_currency_code,
-          merchantId: this.SwitchContext.merchant.id,
-          session: this.SessionHelper.toSession(),
-          addresses: this.AddressHelper.toOrderAddresses(),
-          platformId: `${magentoOrder.entity_id}`,
-          platformCreatedAt: new Date(magentoOrder.created_at),
-          transactions: await this.TransactionHelper.toTransactions(),
-          lineItems: this.LineItemsHelper.toLineItems(),
-          createdAt: new Date(magentoOrder.created_at),
-          customer: await this.CustomerHelper.toCustomer(),
-          hasGiftCard: false,
-          platformStatus: '', //TODO: what is this?
-          totalPrice: magentoOrder.base_grand_total,
-          updatedAt: new Date(magentoOrder.updated_at)
-        });
-      })
-
+      await this._ready;
+      if (!this.process(OrderState.CREATED)) {
+        throw new Error('Cannot call Create Order unless the order is new.');
+      }
+      this.Order = new Order({
+        name: `#${this.MagentoOrder.entity_id}`,
+        currency: this.MagentoOrder.order_currency_code,
+        merchantId: this.SwitchContext.merchant.id,
+        session: this.SessionHelper.toSession(),
+        addresses: this.AddressHelper.toOrderAddresses(),
+        platformId: `${this.MagentoOrder.entity_id}`,
+        platformCreatedAt: new Date(this.MagentoOrder.created_at),
+        transactions: await this.TransactionHelper.toTransactions(),
+        lineItems: this.LineItemsHelper.toLineItems(),
+        createdAt: new Date(this.MagentoOrder.created_at),
+        customer: await this.CustomerHelper.toCustomer(),
+        hasGiftCard: false,
+        platformStatus: '', //TODO: what is this?
+        totalPrice: this.MagentoOrder.base_grand_total,
+        updatedAt: new Date(this.MagentoOrder.updated_at)
+      });
     } catch (e) {
       Logger.error('Failed to create order', e);
     }
