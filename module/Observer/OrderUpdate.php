@@ -60,7 +60,7 @@ class OrderUpdate implements ObserverInterface
                 $params = array('action'=>'UPDATE_ORDER_STATUS_ACTION');
             }
             $data = array('order'=>$orderData);
-            $response = $this->httpClient->post('protect/executor', $data, $params);
+            $response = $this->httpClient->post('/switch/executor', $data, $params);
         } catch (\Exception $e) {
             $this->logger->error('The order update could not be processed', $e);
         }

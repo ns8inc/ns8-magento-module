@@ -62,7 +62,7 @@ class Dashboard extends Action
      */
     public function execute()
     {
-        $merchant = $this->httpClient->get('/protect/merchants/current', '');
+        $merchant = $this->httpClient->get('/merchant/current', '');
         if (empty($merchant->error)) {
             $this->logger->debug('MERCHANT ==> ' . $merchant->name);
         } else {
