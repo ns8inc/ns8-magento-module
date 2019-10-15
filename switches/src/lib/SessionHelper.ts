@@ -3,19 +3,19 @@ import { HelperBase } from './HelperBase';
 
 export class SessionHelper extends HelperBase {
 
-  private getIpAddress = ():string => {
-    //NOTE: for mock purposes, this must be any real value that is not localhost, 127.0.0.1 or otherwise a reserved "localhost" IP address
-    let ret = '1.1.1.1'; //DNS Server IP
-    if (this.SwitchContext.data && this.SwitchContext.data.order && this.SwitchContext.data.order.remote_ip) {
-      ret = this.SwitchContext.data.order.remote_ip;
-    }
-    return ret;
-  }
-
-  //TODO: ship this data from Magento
+  /**
+   * Convert the session object.
+   *
+   * @return {Session} The session
+   */
   public toSession = (): Session => {
+    if (this.SwitchContext.data && this.SwitchContext.data.session) {
+      return new Session(this.SwitchContext.data.session);
+    }
+
+    //NOTE: for mock purposes, this must be any real value that is not localhost, 127.0.0.1 or otherwise a reserved "localhost" IP address
     return new Session({
-      ip: this.getIpAddress(),
+      ip: '1.1.1.1'
     });
   }
 }

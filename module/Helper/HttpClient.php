@@ -211,8 +211,8 @@ class HttpClient extends AbstractHelper
     private function getSessionData()
     {
         return [
+            'id' => $this->customerSession->getSessionId(),
             'ip' => $this->request->getClientIp(),
-            'session_id' => $this->customerSession->getSessionId(),
         ];
     }
 }
