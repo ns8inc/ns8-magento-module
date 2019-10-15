@@ -58,7 +58,7 @@ class StoreUpdate implements ObserverInterface
         }
 
         try {
-            $this->httpClient->post('protect/executor', $data, $params);
+            $this->httpClient->post('/switch/executor', $data, $params);
         } catch (\Exception $e) {
             $this->logger->error('The merchant update could not be processed', $e);
         }
