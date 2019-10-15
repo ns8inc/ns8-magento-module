@@ -1,4 +1,4 @@
 export * from './lib';
+export * from './models';
 export * from './steps';
-export * from './lib';
 export * from './switches';

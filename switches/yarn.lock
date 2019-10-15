@@ -342,10 +342,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@ns8/magento2-rest-client@0.2.17":
-  version "0.2.17"
-  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.17.tgz#8158b38e64e17010efde9c11392395cfb103da17"
-  integrity sha512-igZy+AclWUNLJIrp6t2xjH40OG80opCDqt+TKfJXsbqA36QgdZgIttJaguqoRMU7nSHFZD06GEfOF41VHGmkkQ==
+"@ns8/magento2-rest-client@0.2.18":
+  version "0.2.18"
+  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.18.tgz#4677b99afdcc7e16c6835196081b6fa32d2c034c"
+  integrity sha512-LMTu5f/dyGlGnFlL1xsa4m0eqig2g2tHm9cCe1AAsAjdYs0q06Megmwpe8hsIgfnHleA80wLQP912Y/TW6tHEQ==
 
 "@ns8/ns8-protect-sdk@0.1.16":
   version "0.1.16"
@@ -459,10 +459,10 @@
   resolved "https://registry.yarnpkg.com/@types/jest-diff/-/jest-diff-20.0.1.tgz#35cc15b9c4f30a18ef21852e255fdb02f6d59b89"
   integrity sha512-yALhelO3i0hqZwhjtcr6dYyaLoCHbAMshwtj6cGxTvHZAKXHsYGdff6E8EPw3xLKY0ELUTQ69Q1rQiJENnccMA==
 
-"@types/jest@24.0.18":
-  version "24.0.18"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.18.tgz#9c7858d450c59e2164a8a9df0905fc5091944498"
-  integrity sha512-jcDDXdjTcrQzdN06+TSVsPPqxvsZA/5QkYfIZlq1JMw7FdP5AZylbOc+6B/cuDurctRe+MziUMtQ3xQdrbjqyQ==
+"@types/jest@24.0.19":
+  version "24.0.19"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.19.tgz#f7036058d2a5844fe922609187c0ad8be430aff5"
+  integrity sha512-YYiqfSjocv7lk5H/T+v5MjATYjaTMsUkbDnjGqSMoO88jWdtJXJV4ST/7DKZcoMHMBvB2SeSfyOzZfkxXHR5xg==
   dependencies:
     "@types/jest-diff" "*"
 
@@ -6265,10 +6265,10 @@ webpack-sources@^1.0.1, webpack-sources@^1.4.0, webpack-sources@^1.4.1:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@4.41.0:
-  version "4.41.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.41.0.tgz#db6a254bde671769f7c14e90a1a55e73602fc70b"
-  integrity sha512-yNV98U4r7wX1VJAj5kyMsu36T8RPPQntcb5fJLOsMz/pt/WrKC0Vp1bAlqPLkA1LegSwQwf6P+kAbyhRKVQ72g==
+webpack@4.41.2:
+  version "4.41.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.41.2.tgz#c34ec76daa3a8468c9b61a50336d8e3303dce74e"
+  integrity sha512-Zhw69edTGfbz9/8JJoyRQ/pq8FYUoY0diOXqW0T6yhgdhCv6wr0hra5DwwWexNRns2Z2+gsnrNcbe9hbGBgk/A==
   dependencies:
     "@webassemblyjs/ast" "1.8.5"
     "@webassemblyjs/helper-module-context" "1.8.5"
