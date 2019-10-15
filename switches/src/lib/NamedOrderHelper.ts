@@ -18,9 +18,9 @@ export class NamedOrderHelper extends OrderHelper {
     const ret: NamedOrderUpdate = {} as NamedOrderUpdate;
     try {
       const data = this.SwitchContext.data as OrderActionData;
-
+      const orderId = this.getOrderId();
       ret.platformStatus = data.order.status || data.order.state;
-      ret.orderName = `#${data.order.entity_id}`;
+      ret.orderName = `#${orderId}`;
 
       if (!isValidMagentoStatus(data.order.status) && !isValidMagentoState(data.order.state)) {
         throw new Error(`The status of this order (${data.order.status}) is not recognized.`);
@@ -50,34 +50,28 @@ export class NamedOrderHelper extends OrderHelper {
    * This will process the Switchboard Context for an Order Update Event and then execute the necessary steps to handle the Order.
    */
   public processOrderUpdateEvent = async (): Promise<NamedOrderUpdate> => {
-    let ret: NamedOrderUpdate = {} as NamedOrderUpdate;
+    const ret: NamedOrderUpdate = {} as NamedOrderUpdate;
     try {
       const magentoOrder = await this.getMagentoOrder();
       const data = this.SwitchContext.data as OrderUpdateEventData;
 
+      ret.status = data.status;
+      ret.orderName = data.name;
+
       switch (data.status) {
         case Status.CANCELLED:
           await this.MagentoClient.cancelOrder(magentoOrder.entity_id);
-          ret = {
-            status: Status.CANCELLED,
-            platformStatus: MagentoStatus.CANCELED,
-            orderName: data.name,
-          };
+          ret.platformStatus = MagentoStatus.CANCELED;
           await this.MagentoClient.postOrderComment(magentoOrder.entity_id, { comment: 'NS8 Protect Order Cancelled' } as MagentoComment);
           break;
         case Status.APPROVED:
-          ret = {
-            status: Status.APPROVED,
-            platformStatus: MagentoStatus.,
-            orderName: name,
-          };
+          //Not entirely clear what, if anything we need to do in this case. I think it's safe to assume the order is still pending in Magento.
+          ret.platformStatus = MagentoStatus.PENDING;
           await this.MagentoClient.postOrderComment(magentoOrder.entity_id, { comment: 'NS8 Protect Order Approved' } as MagentoComment);
           break;
         case Status.MERCHANT_REVIEW:
-
-          break;
-        default:
-          //TBD
+          ret.platformStatus = MagentoStatus.PENDING;
+          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, { comment: 'NS8 Protect Order Requires Review' } as MagentoComment);
           break;
       }
     } catch (e) {

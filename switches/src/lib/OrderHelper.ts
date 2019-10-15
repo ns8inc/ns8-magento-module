@@ -53,14 +53,28 @@ export class OrderHelper {
     }
   }
 
-  private getOrderId = (): number | undefined => {
+  /**
+   * Attempts to get the _actual_ order ID
+   */
+  public getOrderId = (): number | undefined => {
     let ret: number | undefined;
     const data = this.SwitchContext.data;
     if (data) {
-      if (data.order && data.order.entity_id) {
-        ret = data.order.entity_id as number;
-      } else if (data.platformId) {
-        ret = data.platformId as number;
+      if (data.order) {
+        if (data.order.increment_id) {
+          //This should be the canonical id, represented as a string
+          //e.g. "000000083" -> 83
+          ret = parseInt(data.order.increment_id);
+        }
+        if (!ret && data.order.entity_id) {
+          //If for any reason, we can't get the canonical id, use the entity_id + 1
+          //e.g. 82 + 1 -> 83
+          ret = parseInt(data.order.entity_id) + 1;
+        }
+      }
+      if (!ret && data.platformId) {
+        //We control the `platformId`; it should be correct if we have already set it
+        ret = parseInt(data.platformId);
       }
     }
     return ret;
@@ -99,13 +113,14 @@ export class OrderHelper {
       if (!this.process(OrderState.CREATED)) {
         throw new Error('Cannot call Create Order unless the order is new.');
       }
+      const orderId = this.getOrderId();
       this.Order = new Order({
-        name: `#${this.MagentoOrder.entity_id}`,
+        name: `#${orderId}`,
         currency: this.MagentoOrder.order_currency_code,
         merchantId: this.SwitchContext.merchant.id,
         session: this.SessionHelper.toSession(),
         addresses: this.AddressHelper.toOrderAddresses(),
-        platformId: `${this.MagentoOrder.entity_id}`,
+        platformId: `${orderId}`,
         platformCreatedAt: new Date(this.MagentoOrder.created_at),
         transactions: await this.TransactionHelper.toTransactions(),
         lineItems: this.LineItemsHelper.toLineItems(),

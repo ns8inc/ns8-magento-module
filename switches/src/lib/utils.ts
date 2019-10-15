@@ -56,6 +56,6 @@ export enum MagentoState {
   PROCESSING = 'processing',
   SUSPECTED_FRAUD = 'processing',
 }
-
-export const isValidMagentoStatus = (key: string): boolean => MagentoStatus[key];
-export const isValidMagentoState = (key: string): boolean => MagentoState[key];
+export const existsInEnum = (enm: object, key: string): boolean => Object.values(enm).some((v) => v === key);
+export const isValidMagentoStatus = (key: string): boolean => existsInEnum(MagentoStatus, key);
+export const isValidMagentoState = (key: string): boolean => existsInEnum(MagentoState, key);
