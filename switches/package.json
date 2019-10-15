@@ -24,7 +24,7 @@
     "typescript": "3.6.4",
     "uglifyjs-webpack-plugin": "2.2.0",
     "url": "0.11.0",
-    "webpack": "4.41.1",
+    "webpack": "4.41.0",
     "webpack-cli": "3.3.9",
     "webpack-dev-server": "3.8.2",
     "webpack-merge": "4.2.2"
@@ -40,10 +40,12 @@
     "build": "tsc -d && yarn bundle",
     "build:dev": "yarn && yarn build && yarn link",
     "bundle": "webpack",
-    "clean": "rimraf .tmp",
+    "clean": "rimraf .tmp && rimraf dist && rimraf node_modules",
     "lint": "tslint --project .",
+    "rebuild": "yarn clean && yarn build",
+    "rebuild:dev": "yarn clean && yarn build:dev",
     "test": "jest",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand"
   },
-  "version": "1.0.14"
+  "version": "1.0.15-crf4"
 }
