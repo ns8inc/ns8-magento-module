@@ -147,9 +147,7 @@ class Config extends AbstractHelper
             $route = substr($route, 1);
         }
         $routeSlug = 'api'.'/'.$route;
-        $middlewareUrl = $this->getNS8Url('NS8_CLIENT_URL', 'https://protect-client.ns8.com', $routeSlug);
-        $this->logger->debug('NS8 Middleware URL ==> ' . $middlewareUrl);
-        return $middlewareUrl;
+        return $this->getNS8Url('NS8_CLIENT_URL', 'https://protect-client.ns8.com', $routeSlug);
     }
 
     /**
