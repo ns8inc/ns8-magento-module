@@ -3,7 +3,7 @@ import { SwitchContext } from 'ns8-switchboard-interfaces';
 
 export function toProtectMerchantUpdate(magentoUpdateSwitchContext: SwitchContext) {
   const configData = magentoUpdateSwitchContext.data.configData;
-  let contact: Contact = new Contact(magentoUpdateSwitchContext.merchant.contact);
+  const contact: Contact = new Contact(magentoUpdateSwitchContext.merchant.contact);
   let merchantName: string = magentoUpdateSwitchContext.merchant.name;
 
   if (configData.groups.store_information) {

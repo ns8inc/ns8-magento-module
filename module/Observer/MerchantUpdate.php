@@ -45,8 +45,6 @@ class MerchantUpdate implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        $params = ['action' => 'UPDATE_MERCHANT_ACTION'];
-
         try {
             $eventData = $observer->getEvent()->getData();
         } catch (\Exception $e) {
@@ -54,6 +52,7 @@ class MerchantUpdate implements ObserverInterface
             return;
         }
 
+        $params = ['action' => 'UPDATE_MERCHANT_ACTION'];
         $data = ['eventData' => $eventData];
 
         try {
