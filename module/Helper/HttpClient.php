@@ -1,7 +1,9 @@
 <?php
 namespace NS8\CSP2\Helper;
 
+use Magento\Customer\Model\Session;
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\HTTP\PhpEnvironment\Request;
 use Magento\Framework\HTTP\ZendClientFactory;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
@@ -17,7 +19,9 @@ use NS8\CSP2\Helper\Config;
 class HttpClient extends AbstractHelper
 {
     protected $config;
+    protected $customerSession;
     protected $logger;
+    protected $request;
 
     /**
      * Default constructor
@@ -29,12 +33,16 @@ class HttpClient extends AbstractHelper
         Config $config,
         LoggerInterface $logger,
         OauthServiceInterface $oauthServiceInterface,
-        IntegrationServiceInterface $integrationServiceInterface
+        IntegrationServiceInterface $integrationServiceInterface,
+        Request $request,
+        Session $session
     ) {
         $this->config = $config;
         $this->logger = $logger;
         $this->integrationServiceInterface = $integrationServiceInterface;
         $this->oauthServiceInterface = $oauthServiceInterface;
+        $this->request = $request;
+        $this->customerSession = $session;
     }
 
     /**
@@ -66,6 +74,8 @@ class HttpClient extends AbstractHelper
      */
     public function post($url, $data = [], $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
     {
+        $data['session'] = $this->getSessionData();
+
         return $this->executeWithAuth($url, $data, "POST", $parameters, $headers, $timeout);
     }
 
@@ -191,5 +201,18 @@ class HttpClient extends AbstractHelper
         );
         $response = $this->execute('protect/magento/accessTokens', '', 'GET', $getParams);
         return $response->token;
+    }
+
+    /**
+     * Get the session data.
+     *
+     * @return array The session data
+     */
+    private function getSessionData()
+    {
+        return [
+            'ip' => $this->request->getClientIp(),
+            'session_id' => $this->customerSession->getSessionId(),
+        ];
     }
 }

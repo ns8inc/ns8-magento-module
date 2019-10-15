@@ -22,17 +22,12 @@ functions:
   UpdateOrderRiskEvent:
     handler: dist/app.UpdateOrderRiskEvent
     name: '${self:custom.integrationName}-updateOrderRiskEvent'
+  UpdateOrderStatusAction:
+    handler: dist/app.UpdateOrderStatusAction
+    name: '${self:custom.integrationName}-updateOrderStatusAction'
   UpdateOrderStatusEvent:
     handler: dist/app.UpdateOrderStatusEvent
     name: '${self:custom.integrationName}-updateOrderStatusEvent'
-
-RetryDefault: &retryDefault
-  Retry:
-  - ErrorEquals:
-    - States.ALL
-    IntervalSeconds: 1
-    BackoffRate: 2
-
 package:
   exclude:
     - 'src/**'
@@ -62,6 +57,13 @@ provider:
   runtime: nodejs10.x
   stage: '${opt:stage, env:DEV_NAME}'
   timeout: 30
+RetryDefault: &retryDefault
+  Retry:
+  - BackoffRate: 2
+    ErrorEquals:
+      - States.ALL
+    IntervalSeconds: 1
+    MaxAttempts: 0
 service: 'ns8-switchboard-${file(./switchboard.json):id}'
 stepFunctions:
   stateMachines:
@@ -70,15 +72,9 @@ stepFunctions:
         StartAt: CreateOrderActionStart
         States:
           CreateOrderActionStart:
+            <<: *retryDefault
             End: true
             Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-createOrderAction'
-            Retry:
-              -
-                BackoffRate: 2
-                ErrorEquals:
-                  - States.ALL
-                IntervalSeconds: 1
-                MaxAttempts: 0
             Type: Task
       name: '${self:custom.integrationName}-createOrderAction'
     OnInstallEvent:
@@ -86,15 +82,9 @@ stepFunctions:
         StartAt: OnInstallEventStart
         States:
           OnInstallEventStart:
+            <<: *retryDefault
             End: true
             Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-onInstallEventStart'
-            Retry:
-              -
-                BackoffRate: 2
-                ErrorEquals:
-                  - States.ALL
-                IntervalSeconds: 1
-                MaxAttempts: 0
             Type: Task
       name: '${self:custom.integrationName}-onInstallEventStart'
     UninstallAction:
@@ -102,15 +92,9 @@ stepFunctions:
         StartAt: UninstallActionStart
         States:
           UninstallActionStart:
+            <<: *retryDefault
             End: true
             Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-uninstallAction'
-            Retry:
-              -
-                BackoffRate: 2
-                ErrorEquals:
-                  - States.ALL
-                IntervalSeconds: 1
-                MaxAttempts: 0
             Type: Task
       name: '${self:custom.integrationName}-uninstallAction'
     UpdateCustVerifyStatusEvent:
@@ -118,15 +102,9 @@ stepFunctions:
         StartAt: UpdateCustVerifyStatusEventStart
         States:
           UpdateCustVerifyStatusEventStart:
+            <<: *retryDefault
             End: true
             Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateCustVerifyStatusEvent'
-            Retry:
-              -
-                BackoffRate: 2
-                ErrorEquals:
-                  - States.ALL
-                IntervalSeconds: 1
-                MaxAttempts: 0
             Type: Task
       name: '${self:custom.integrationName}-updateCustVerifyStatusEvent'
     UpdateEQ8ScoreEvent:
@@ -134,15 +112,9 @@ stepFunctions:
         StartAt: UpdateEQ8ScoreEventStart
         States:
           UpdateEQ8ScoreEventStart:
+            <<: *retryDefault
             End: true
             Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateEQ8ScoreEvent'
-            Retry:
-              -
-                BackoffRate: 2
-                ErrorEquals:
-                  - States.ALL
-                IntervalSeconds: 1
-                MaxAttempts: 0
             Type: Task
       name: '${self:custom.integrationName}-updateEQ8ScoreEvent'
     UpdateMerchantAction:
@@ -150,15 +122,9 @@ stepFunctions:
         StartAt: UpdateMerchantActionStart
         States:
           UpdateMerchantActionStart:
+            <<: *retryDefault
             End: true
             Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateMerchantAction'
-            Retry:
-              -
-                BackoffRate: 2
-                ErrorEquals:
-                  - States.ALL
-                IntervalSeconds: 1
-                MaxAttempts: 0
             Type: Task
       name: '${self:custom.integrationName}-updateMerchantAction'
     UpdateOrderRiskEvent:
@@ -166,30 +132,28 @@ stepFunctions:
         StartAt: UpdateOrderRiskEventStart
         States:
           UpdateOrderRiskEventStart:
+            <<: *retryDefault
             End: true
             Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderRiskEvent'
-            Retry:
-              -
-                BackoffRate: 2
-                ErrorEquals:
-                  - States.ALL
-                IntervalSeconds: 1
-                MaxAttempts: 0
             Type: Task
       name: '${self:custom.integrationName}-updateOrderRiskEvent'
+    UpdateOrderStatusAction:
+      definition:
+        StartAt: UpdateOrderStatusActionStart
+        States:
+          UpdateOrderStatusActionStart:
+            <<: *retryDefault
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderStatusAction'
+            Type: Task
+      name: '${self:custom.integrationName}-updateOrderStatusAction'
     UpdateOrderStatusEvent:
       definition:
         StartAt: UpdateOrderStatusEventStart
         States:
           UpdateOrderStatusEventStart:
+            <<: *retryDefault
             End: true
             Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderStatusEvent'
-            Retry:
-              -
-                BackoffRate: 2
-                ErrorEquals:
-                  - States.ALL
-                IntervalSeconds: 1
-                MaxAttempts: 0
             Type: Task
       name: '${self:custom.integrationName}-updateOrderStatusEvent'

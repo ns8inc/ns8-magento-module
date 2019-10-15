@@ -1,44 +1,40 @@
 {
   "author": "ns8inc",
-  "dependencies": {
-    "@ns8/magento2-rest-client": "^0.2.9",
-    "@ns8/ns8-protect-sdk": "^0.1.12",
-    "@ns8/ns8-switchboard-operator": "^1.0.95",
-    "@types/node": "^12.7.5",
-    "aws-lambda": "^0.1.2",
-    "aws-sdk": "^2.538.0",
-    "dotenv": "^8.1.0",
-    "isomorphic-fetch": "^2.2.1",
-    "libphonenumber-js": "^1.7.24",
-    "lodash": "^4.17.15",
-    "minimist": "^1.2.0",
-    "ns8-protect-models": "^1.0.206",
-    "ns8-switchboard-interfaces": "^1.0.83",
-    "stack-trace": "0.0.10",
-    "typescript": "^3.6.3"
-  },
+  "dependencies": {},
   "description": "magento extension project",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.0.0",
-    "@typescript-eslint/parser": "^2.0.0",
-    "eslint": "^6.2.1",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2"
+    "@ns8/magento2-rest-client": "0.2.17",
+    "@ns8/ns8-protect-sdk": "0.1.16",
+    "@ns8/ns8-switchboard-operator": "1.0.98",
+    "@types/node": "12.7.12",
+    "@typescript-eslint/eslint-plugin": "2.3.3",
+    "@typescript-eslint/parser": "2.3.3",
+    "aws-lambda": "0.1.2",
+    "aws-sdk": "^2.548.0",
+    "dotenv": "8.1.0",
+    "eslint": "6.5.1",
+    "eslint-config-airbnb-base": "14.0.0",
+    "eslint-plugin-import": "2.18.2",
+    "isomorphic-fetch": "2.2.1",
+    "minimist": "1.2.0",
+    "ns8-protect-models": "1.0.206",
+    "ns8-switchboard-interfaces": "1.0.85",
+    "scp2": "0.5.0",
+    "ts-node": "8.4.1",
+    "typescript": "3.6.4"
   },
   "license": "MIT",
   "name": "ns8-magento-platform",
-  "optionalDependencies": {
-    "@types/lodash": "^4.14.141",
-    "@types/stack-trace": "0.0.29"
-  },
   "scripts": {
-    "beautify": "node ./dist/build/build.js",
+    "beautify": "ts-node ./build/build.ts",
     "build": "yarn && yarn compile && yarn beautify",
-    "build:dev": "yarn build && yarn link && node ./dist/build/module/config.js --env=dev",
-    "build:prod": "yarn build && node ./dist/build/module/config.js --env=prod",
+    "build:dev": "set NODE_ENV=dev yarn build && yarn link && yarn config:magento",
+    "build:prod": "set NODE_ENV=prod yarn build && yarn config:magento",
     "clean": "rimraf dist",
     "compile": "tsc -d",
-    "lint:ts": "eslint --ext=ts src"
+    "config:magento": "ts-node ./build/module/config.ts",
+    "deploy:magento": "ts-node ./build/deployMagento.ts",
+    "lint": "eslint --ext=ts switchboard switches"
   },
   "version": "0.0.0"
 }

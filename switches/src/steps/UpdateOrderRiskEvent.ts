@@ -1,10 +1,12 @@
 import { EventSwitch } from 'ns8-switchboard-interfaces';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { OrderHelper } from '..';
 
 export class UpdateOrderRiskEvent implements EventSwitch {
   async handle(switchContext: SwitchContext): Promise<any> {
-    const { platformId } = switchContext.data;
-
-    return {} as any;
+    const converter = new OrderHelper(switchContext);
+    const result = await converter.getMagentoOrder();
+    const protectData = switchContext.data;
+    return { result, protectData } as any;
   }
 }

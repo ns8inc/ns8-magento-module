@@ -1,18 +1,16 @@
 {
   "dependencies": {
-    "@ns8/ns8-magento2-switches": "1.0.9"
+    "@ns8/ns8-magento2-switches": "1.0.14"
   },
   "devDependencies": {
     "aws-lambda": "0.1.2",
-    "rimraf": "3.0.0",
     "serverless-pseudo-parameters": "2.5.0",
-    "serverless-step-functions": "2.10.0",
-    "typescript": "3.6.3"
+    "serverless-step-functions": "2.10.1",
+    "typescript": "3.6.4"
   },
   "scripts": {
-    "build": "yarn compile",
-    "build:dev": "yarn && yarn build",
-    "compile": "rimraf dist && yarn install && tsc -d",
+    "build": "yarn install && tsc -d",
+    "build:dev": "yarn build",
     "deploy": "sls deploy",
     "undeploy": "sls remove"
   }

@@ -4,6 +4,7 @@
 /* eslint-disable func-names */
 /* eslint-disable global-require */
 const path = require('path');
+// This plugin can increase the performance of the build by caching and incrementally building
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 /**

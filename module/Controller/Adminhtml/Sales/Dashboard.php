@@ -40,10 +40,19 @@ class Dashboard extends Action
         Config $config
     ) {
         parent::__construct($context);
+        $this->context = $context;
         $this->resultPageFactory = $resultPageFactory;
         $this->httpClient = $httpClient;
         $this->logger = $logger;
         $this->config = $config;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _isAllowed()
+    {
+        return $this->context->getAuthorization()->isAllowed('NS8_CSP2::admin');
     }
 
     /**

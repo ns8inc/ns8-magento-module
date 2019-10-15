@@ -1,25 +1,30 @@
-import * as StackTracey from 'stacktracey';
+import { Utilities } from '@ns8/ns8-protect-sdk';
 
-export const error = (message: string, error: Error) => {
-  log(message, error);
-  throw new Error(`${message}: ${error.message}`);
-}
-
-export const log = (message: string, error: Error) => {
-  try {
-    console.warn(message);
-    console.error(`${error.message}: ${error.name}: ${error.stack}`);
-    console.info(new StackTracey(error).pretty);
-  } catch {
-    //Never fail in logging
+/**
+ * Handles specific conditions in API errors.
+ * If a 404, will execute a simple retry loop.
+ * Returns `false` if the API error is unhandled; otherwise returns the API response.
+ */
+export const handleApiError = async (error, method, params, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<any> => {
+  if (error.statusCode === 404 && attempts < maxRetry) {
+    attempts += 1;
+    await Utilities.sleep(waitMs);
+    const args = [...params, attempts, maxRetry, waitMs];
+    return await method(...args);
+  } else {
+    return false;
   }
 }
 
-export const toDate = (date: string | undefined): Date | undefined => {
-  let ret: Date | undefined;
-  if (date) {
-    ret = new Date(date);
-  }
+/**
+ * Safely handle boolean responses and throw an Error if we do not get an expected result
+ * @param httpResponse
+ */
+export const validateBooleanHttpResponse = (httpResponse: any): boolean => {
+  //The response may not be strongly typed; but we expect `httpResponse == true` or `httpResponse == 'true'` or `httpResponse == '1'` or `httpResponse == 1`;
+  //If we get anything else, it is probably an error?
+  const ret = (httpResponse === true || httpResponse === 'true' || httpResponse === 'True' || httpResponse === '1' || httpResponse === 1);
+  if (!ret) throw new Error('Failed to get an expected boolean response.');
   return ret;
 }
 
