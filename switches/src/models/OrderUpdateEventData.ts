@@ -3,10 +3,11 @@ import { Customer } from 'ns8-protect-models';
 import { FraudAssessment } from 'ns8-protect-models';
 import { LineItem } from 'ns8-protect-models';
 import { Session } from 'ns8-protect-models';
+import { Status } from 'ns8-protect-models';
 import { Transaction } from 'ns8-protect-models';
 
 export interface OrderUpdateEventData {
-  status: string;
+  status: Status;
   createdAt: Date;
   updatedAt: Date;
   id: string;

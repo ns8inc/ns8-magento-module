@@ -32,3 +32,30 @@ export enum OrderState {
   CREATED = 'created',
   UPDATED = 'updated'
 }
+
+export enum MagentoStatus {
+  CANCELED = 'canceled',
+  CLOSED = 'closed',
+  COMPLETE = 'complete',
+  ON_HOLD = 'holded',
+  PAYMENT_REVIEW = 'payment_review',
+  PENDING = 'pending',
+  PENDING_PAYMENT = 'pending_payment',
+  PROCESSING = 'processing',
+  SUSPECTED_FRAUD = 'fraud',
+}
+
+export enum MagentoState {
+  CANCELED = 'canceled',
+  CLOSED = 'closed',
+  COMPLETE = 'complete',
+  ON_HOLD = 'holded',
+  PAYMENT_REVIEW = 'payment_review',
+  PENDING = 'new',
+  PENDING_PAYMENT = 'pending_payment',
+  PROCESSING = 'processing',
+  SUSPECTED_FRAUD = 'processing',
+}
+
+export const isValidMagentoStatus = (key: string): boolean => MagentoStatus[key];
+export const isValidMagentoState = (key: string): boolean => MagentoState[key];
