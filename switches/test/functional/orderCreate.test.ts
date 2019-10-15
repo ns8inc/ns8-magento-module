@@ -32,7 +32,7 @@ beforeAll((done) => {
             switchboardData.push(createSwitchboardContextMock({
               order: {
                 entity_id: item.entity_id,
-                incremental_id: item.increment_id,
+                increment_id: item.increment_id,
                 status: item.status,
                 state: item.state
               }
