@@ -1,7 +1,0 @@
-<integrations>
-   <integration name="NS8 Integration">
-       <email>patrick.allen@ns8.com</email>
-       <endpoint_url>http://patrick-local-api.ngrok.io/protect/magento/callback</endpoint_url>
-       <identity_link_url>http://patrick-local-api.ngrok.io/protect/magento/identity</identity_link_url>
-   </integration>
-</integrations>
