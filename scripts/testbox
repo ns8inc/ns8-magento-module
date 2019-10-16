@@ -197,6 +197,7 @@ function init() {
     yum -y install docker
     service docker start
     chkconfig docker on
+
     usermod -aG docker ec2-user
 
     # ngrok
@@ -225,6 +226,7 @@ function init() {
     mkdir $TESTBOX_DATA_DIR
     chown -R ec2-user:ec2-user $TESTBOX_DATA_DIR
 
+    echo "testbox init complete! Please LOG OUT and LOG IN again so the proper groups take effect!"
 }
 
 function build() {
@@ -255,9 +257,9 @@ function build() {
 
     # run docker start scripts to start mysql, dynamodb, and create dynamodb tables
     echo 'running docker start scripts for: mysql, dynamodb, and create dynamodb tables ...'
-    sh $EC2_USER_HOME/ns8-protect-api/scripts/start-mysql.sh
-    sh $EC2_USER_HOME/ns8-protect-api/scripts/start-dynamodb.sh
-    sh $EC2_USER_HOME/ns8-protect-api/scripts/create-dynamodb-tables.sh
+    sh $EC2_USER_HOME/$API/scripts/start-mysql.sh
+    sh $EC2_USER_HOME/$API/scripts/start-dynamodb.sh
+    sh $EC2_USER_HOME/$API/scripts/create-dynamodb-tables.sh
 
 
     ###### CLIENT SETUP ######
@@ -331,6 +333,11 @@ function build() {
 function check_config() {
 
     # some sanity checks before we go to the trouble of starting everything up
+
+    if [ -z "$(groups | grep docker)" ]
+    then
+        echo "Did you log out and log back in after running 'sudo ./testbox init' ? You are not part of the docker group."
+    fi
 
     if [ ! -f "$TESTBOX_CONFIG" ]
     then
