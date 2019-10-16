@@ -117,7 +117,7 @@ class HttpClient extends AbstractHelper
     private function execute($route, $data = [], $method = "POST", $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
     {
         try {
-            $uri = $this->config->getApiBaseUrl($route);
+            $uri = $this->config->getNS8MiddlewareUrl($route);
 
             $httpClient = new Client();
             $httpClient->setUri($uri);
@@ -199,7 +199,7 @@ class HttpClient extends AbstractHelper
             'oauth_consumer_key' => $consumerId,
             'access_token' => $accessToken
         );
-        $response = $this->execute('protect/magento/accessTokens', '', 'GET', $getParams);
+        $response = $this->execute('init/magento/access-token', '', 'GET', $getParams);
         return $response->token;
     }
 
@@ -211,8 +211,8 @@ class HttpClient extends AbstractHelper
     private function getSessionData()
     {
         return [
+            'id' => $this->customerSession->getSessionId(),
             'ip' => $this->request->getClientIp(),
-            'session_id' => $this->customerSession->getSessionId(),
         ];
     }
 }

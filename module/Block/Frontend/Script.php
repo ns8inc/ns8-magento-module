@@ -47,6 +47,6 @@ class Script extends Template
      */
     public function getScript(): string
     {
-        return $this->httpClient->get('/protect/analytics/script', [], [], [], 30, false);
+        return $this->httpClient->get('/init/script', [], [], [], 30, false);
     }
 }

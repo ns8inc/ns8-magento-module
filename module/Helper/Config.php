@@ -89,7 +89,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The final URL
      */
-    private function getApiUrl($envVarName, $defaultUrl, $route = '')
+    private function getNS8Url($envVarName, $defaultUrl, $route = '')
     {
         $url = getenv($envVarName, true) ?: getenv($envVarName) ?: '';
         $url = trim($url);
@@ -121,7 +121,7 @@ class Config extends AbstractHelper
      */
     public function getApiBaseUrl($route = '')
     {
-        return $this->getApiUrl('NS8_PROTECT_URL', 'https://protect.ns8.com', $route);
+        return $this->getNS8Url('NS8_PROTECT_URL', 'https://protect.ns8.com', $route);
     }
 
     /**
@@ -132,7 +132,22 @@ class Config extends AbstractHelper
      */
     public function getNS8ClientUrl($route = '')
     {
-        return $this->getApiUrl('NS8_CLIENT_URL', 'https://client.ns8.com', $route);
+        return $this->getNS8Url('NS8_CLIENT_URL', 'https://protect-client.ns8.com', $route);
+    }
+
+    /**
+     * Gets the current protect Middleware URL based on the environment variables; defaults to Production.
+     *
+     * @param string $route
+     * @return string The NS8 Protect Middleware URL in use for this instance.
+     */
+    public function getNS8MiddlewareUrl($route = '')
+    {
+        if (substr($route, 0, 1) === '/') {
+            $route = substr($route, 1);
+        }
+        $routeSlug = 'api'.'/'.$route;
+        return $this->getNS8Url('NS8_CLIENT_URL', 'https://protect-client.ns8.com', $routeSlug);
     }
 
     /**
