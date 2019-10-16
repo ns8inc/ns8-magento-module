@@ -1,7 +1,7 @@
 import 'jest';
 import { RestClient } from '@ns8/magento2-rest-client';
 import * as fs from 'fs';
-import { CreateOrderAction } from '../../dist';
+import { CreateOrderAction, MagentoState, MagentoStatus, UpdateOrderStatusAction } from '../../dist';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { createSwitchboardContextMock } from '../lib';
 const switchboardData: SwitchContext[] = [];
@@ -32,8 +32,9 @@ beforeAll((done) => {
             switchboardData.push(createSwitchboardContextMock({
               order: {
                 entity_id: item.entity_id,
-                status: 'pending',
-                state: 'new'
+                increment_id: item.increment_id,
+                status: item.status,
+                state: item.state
               }
             }, options))
           } catch (e) {
@@ -47,12 +48,28 @@ beforeAll((done) => {
     });
 }, 30000);
 
-/**
- * TODO: fix the issue with async test execution in Jest
- */
-test('does not throw when called with mock data', done => {
+test('Assert that order creation succeeds', done => {
+  //Any valid item will do; just grab the first.
+  //This test will not actually create new data
+  const first = switchboardData[0];
+  first.data.order.state = MagentoState.PENDING;
+  first.data.order.status = MagentoStatus.PENDING;
+  const order = new CreateOrderAction().create(first).then(data => {
+    expect.anything();
+    done();
+  }).catch(reason => {
+    done();
+  });
 
-  var order = new CreateOrderAction().create(switchboardData[0]).then(data => {
+});
+
+test('Assert that order cancellation succeeds', done => {
+  //Any valid item will do; just grab the first.
+  //This test will not actually cancel an order
+  const first = switchboardData[0];
+  first.data.order.state = MagentoState.CANCELED;
+  first.data.order.status = MagentoStatus.CANCELED;
+  const order = new UpdateOrderStatusAction().update(first).then(data => {
     expect.anything();
     done();
   }).catch(reason => {

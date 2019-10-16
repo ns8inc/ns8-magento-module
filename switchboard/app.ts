@@ -1,13 +1,14 @@
 import {
   CreateOrderActionSwitch as CreateOrderAction,
   OnInstallEventSwitch as OnInstallEvent,
+  UninstallActionSwitch as UninstallAction,
   UpdateCustVerifyStatusEventSwitch as UpdateCustVerifyStatusEvent,
   UpdateEQ8ScoreEventSwitch as UpdateEQ8ScoreEvent,
-  UpdateOrderRiskEventSwitch as UpdateOrderRiskEvent,
-  UninstallActionSwitch as UninstallAction,
   UpdateMerchantActionSwitch as UpdateMerchantAction,
+  UpdateOrderRiskEventSwitch as UpdateOrderRiskEvent,
+  UpdateOrderStatusActionSwitch as UpdateOrderStatusAction,
   UpdateOrderStatusEventSwitch as UpdateOrderStatusEvent
-} from '@ns8/ns8-magento2-switches';
+  } from '@ns8/ns8-magento2-switches';
 
 /*
  The purpose of this module is 3 fold.
@@ -25,10 +26,11 @@ import {
 export {
   CreateOrderAction,
   OnInstallEvent,
+  UninstallAction,
   UpdateCustVerifyStatusEvent,
   UpdateEQ8ScoreEvent,
-  UpdateOrderStatusEvent,
-  UpdateOrderRiskEvent,
-  UninstallAction,
   UpdateMerchantAction,
+  UpdateOrderRiskEvent,
+  UpdateOrderStatusAction,
+  UpdateOrderStatusEvent,
 }

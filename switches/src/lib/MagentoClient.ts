@@ -55,10 +55,10 @@ export class MagentoClient {
   /**
    * Attempt to post a [[MagentoComment]] to a [[MagentoOrder]]. If successful, return true.
    */
-  public postOrderComment = async (orderId: number, comment: MagentoComment): Promise<boolean> => {
+  public postOrderComment = async (orderId: number, comment: string): Promise<boolean> => {
     let ret = false;
     try {
-      const httpResponse = await this.client.orders.postComment(orderId, comment);
+      const httpResponse = await this.client.orders.postComment(orderId, { comment: comment } as MagentoComment);
       ret = validateBooleanHttpResponse(httpResponse);
     } catch (e) {
       Logger.error(`Failed to add comment to Order Id:${orderId} in Magento API`, e);
