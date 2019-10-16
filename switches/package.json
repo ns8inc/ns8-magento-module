@@ -40,7 +40,7 @@
     "build": "tsc -d && yarn bundle",
     "build:dev": "yarn && yarn build && yarn link",
     "bundle": "webpack",
-    "clean": "rimraf .awcache && rimraf .tmp && rimraf dist && rimraf node_modules",
+    "clean": "rimraf .awcache .tmp dist node_modules",
     "lint": "tslint --project .",
     "rebuild": "yarn clean && yarn build",
     "rebuild:dev": "yarn clean && yarn build:dev",
