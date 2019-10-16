@@ -217,12 +217,11 @@ function init() {
     echo "export AWS_REGION=us-west-2" >> $EC2_USER_HOME/.bashrc
     echo "export AWS_SDK_LOAD_CONFIG=1" >> $EC2_USER_HOME/.bashrc
 
-    # user's bin, which is in the ~/.bash_profile already
-    mkdir -p $EC2_USER_HOME/bin
-    chown -R ec2-user:ec2-user $TESTBOX_DATA_DIR
-
     # testbox data directory
-    rm -rf $TESTBOX_DATA_DIR
+    if [ -d $TESTBOX_DATA_DIR ]
+    then
+        rm -rf $TESTBOX_DATA_DIR
+    fi
     mkdir $TESTBOX_DATA_DIR
     chown -R ec2-user:ec2-user $TESTBOX_DATA_DIR
 
@@ -433,6 +432,8 @@ function configure() {
     echo "If you haven't already, please add your SSH public key '~/.ssh/id_rsa.pub' to your Github SSH keys before proceeding."
     echo "See: https://github.com/settings/keys."
     echo "You will need this to clone NS8 Protect repos."
+
+    printf "\nMost of the fields are editable, in case you mis-entered any information.  See %s" $TESTBOX_CONFIG
 
 }
 
