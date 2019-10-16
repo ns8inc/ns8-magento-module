@@ -47,5 +47,5 @@
     "test": "jest",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand"
   },
-  "version": "1.0.15-crf8"
+  "version": "1.0.16"
 }

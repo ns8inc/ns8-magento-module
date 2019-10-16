@@ -3,10 +3,11 @@ import {
   CustomerHelper,
   LineItemsHelper,
   MagentoClient,
+  OrderActionData,
   OrderState,
   SessionHelper,
   TransactionHelper
-} from '.';
+} from '..';
 import { Logger } from '@ns8/ns8-protect-sdk';
 import { Order } from 'ns8-protect-models';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
@@ -29,7 +30,7 @@ export class OrderHelper {
   public TransactionHelper: TransactionHelper;
 
   private _ready: Promise<MagentoOrder>;
-
+  private _orderId: number;
   /**
    * Constructor will call init() which sets a _ready Promise.
    * Any methods on this instance which require access to the Magento Order should wait on _ready.
@@ -54,22 +55,24 @@ export class OrderHelper {
   }
 
   /**
-   * Attempts to get the _actual_ order ID
+   * Attempts to get the Magento order ID.
+   * NOTE: there is significant confusion around the difference between the `entity_id`, `id` and `increment_id` concepts as Magento provides different and sometimes conflicting ID representations of the same entity.
+   * @see https://magento.stackexchange.com/questions/26250/confusion-with-order-id-order-increment-id-and-i-am-not-getting-order-id-as-200
+   * The `entity_id` is the canonical database id of the order row in the `sales_order` table. This id should be used for the majority of API calls.
+   * The `increment_id` is the **Display** Id, exposed via the Magento Admin UI and through the Customer UI. This Id will displayed consistently throughout the UI, and it will not match the underlying canonical database id.
+   * The format for `increment_id` is determined by the unique store id under which the order was placed. The assumption is that any Magento instance could have multiple stores, so you would end up with display ids that would provide some guidance to the store associated with the order.
+   * For the purposes of calling the Magento API, in almost all cases we want to use the `entity_id`. For display purposes, we also need to store the `increment_id` for use in PHP tables, etc.
+   * We will store the Protect Order's `name` as the `increment_id` and assign `platformId` as the `entity_id`.
    */
   public getOrderId = (): number | undefined => {
+    if (this._orderId) return this._orderId;
+
     let ret: number | undefined;
     const data = this.SwitchContext.data;
     if (data) {
       if (data.order) {
-        if (data.order.increment_id) {
-          //This should be the canonical id, represented as a string
-          //e.g. "000000083" -> 83
-          ret = parseInt(data.order.increment_id);
-        }
-        if (!ret && data.order.entity_id) {
-          //If for any reason, we can't get the canonical id, use the entity_id + 1
-          //e.g. 82 + 1 -> 83
-          ret = parseInt(data.order.entity_id) + 1;
+        if (data.order.entity_id) {
+          ret = parseInt(data.order.entity_id);
         }
       }
       if (!ret && data.platformId) {
@@ -77,6 +80,7 @@ export class OrderHelper {
         ret = parseInt(data.platformId);
       }
     }
+    if (ret) this._orderId = ret;
     return ret;
   }
 
@@ -114,8 +118,9 @@ export class OrderHelper {
         throw new Error('Cannot call Create Order unless the order is new.');
       }
       const orderId = this.getOrderId();
+      const magentoOrderData = this.SwitchContext.data as OrderActionData;
       this.Order = new Order({
-        name: `#${orderId}`,
+        name: magentoOrderData.order.increment_id,
         currency: this.MagentoOrder.order_currency_code,
         merchantId: this.SwitchContext.merchant.id,
         session: this.SessionHelper.toSession(),

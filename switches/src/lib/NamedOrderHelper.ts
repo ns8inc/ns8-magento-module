@@ -18,9 +18,8 @@ export class NamedOrderHelper extends OrderHelper {
     const ret: NamedOrderUpdate = {} as NamedOrderUpdate;
     try {
       const data = this.SwitchContext.data as OrderActionData;
-      const orderId = this.getOrderId();
       ret.platformStatus = data.order.status || data.order.state;
-      ret.orderName = `#${orderId}`;
+      ret.orderName = data.order.increment_id;
 
       if (!isValidMagentoStatus(data.order.status) && !isValidMagentoState(data.order.state)) {
         throw new Error(`The status of this order (${data.order.status}) is not recognized.`);
