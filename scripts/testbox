@@ -1,0 +1,495 @@
+#!/bin/bash
+
+# DATA
+EC2_USER_HOME='/home/ec2-user'
+TESTBOX_DATA_DIR="$EC2_USER_HOME/.testbox"
+TESTBOX_CONFIG="$TESTBOX_DATA_DIR/testbox_config"
+INIT_LOG="$TESTBOX_DATA_DIR/testbox-init.log"
+INIT_ERROR_LOG="$TESTBOX_DATA_DIR/testbox-init-error.log"
+BUILD_LOG="$TESTBOX_DATA_DIR/testbox-build.log"
+BUILD_ERROR_LOG="$TESTBOX_DATA_DIR/testbox-build-error.log"
+
+# REPOS
+API='ns8-protect-api'
+CLIENT='ns8-protect-client'
+MAGENTO='ns8-magento-platform'
+
+# URL RELATED 
+PROTECT_API_SUBDOMAIN='magento-v2-api'
+PROTECT_CLIENT_SUBDOMAIN='magento-v2-client'
+LIGHTSAIL_SUBDOMAIN='magento-v2'
+NS8_PROTECT_URL="https://$PROTECT_API_SUBDOMAIN.ngrok.io"
+NS8_CLIENT_URL="https://$PROTECT_CLIENT_SUBDOMAIN.ngrok.io"
+DEV_LIGHTSAIL_DOMAIN="http://$LIGHTSAIL_SUBDOMAIN.ns8demos.com"
+
+# SERVICES
+DOCKER_MYSQL_PORT=3307
+MAGENTO_BUILD_CONFIG=$EC2_USER_HOME/$MAGENTO/build/module/etc/integration/config.dev.xml
+
+
+function print_banner() {
+
+    printf "
+    
+    Welcome to ....
+
+
+        ███        ▄████████    ▄████████     ███     ▀█████████▄   ▄██████▄  ▀████    ▐████▀ 
+    ▀█████████▄   ███    ███   ███    ███ ▀█████████▄   ███    ███ ███    ███   ███▌   ████▀  
+       ▀███▀▀██   ███    █▀    ███    █▀     ▀███▀▀██   ███    ███ ███    ███    ███  ▐███    
+        ███   ▀  ▄███▄▄▄       ███            ███   ▀  ▄███▄▄▄██▀  ███    ███    ▀███▄███▀    
+        ███     ▀▀███▀▀▀     ▀███████████     ███     ▀▀███▀▀▀██▄  ███    ███    ████▀██▄     
+        ███       ███    █▄           ███     ███       ███    ██▄ ███    ███   ▐███  ▀███    
+        ███       ███    ███    ▄█    ███     ███       ███    ███ ███    ███  ▄███     ███▄  
+       ▄████▀     ██████████  ▄████████▀     ▄████▀   ▄█████████▀   ▀██████▀  ████       ███▄
+
+
+    "
+
+}
+
+function usage() {
+
+    printf "usage: testbox <init> | <configure> [-f,--file] | <pull> [-y,--yes] | <build> | <banner>
+    NOTE: Run init and configure, in that order, before running pull and build. 
+    <init>
+        Initialize the lightsail instance by running through the standard Magento2 lightsail setup script.
+    <configure>
+        Run through requisite service authorizations.
+        -f, --config-file
+    <pull>
+        git clone the latest code from the 'ns8-magento-platform', 'ns8-protect-api' and 'ns8-protect-client' platforms. 
+        -y, --yes
+        Do not prompt for repo branch or commit hash, use defaults (branch: master, commit: HEAD).
+    <build>
+        Install and serve each repo from scratch.
+    <banner>
+        Print augmented usage banner (for testbox logins)
+
+"
+
+}
+
+fail_with_msg () {
+	echo "[ testbox ERROR ]: $1"
+	exit 1
+}
+
+
+function init() {
+
+    if [ "$(whoami)" != root ]
+	then
+	    fail_with_msg "please run 'testbox init' with sudo."
+	fi
+
+	# Magento
+	# Create SWAP file; 2GB
+	dd if=/dev/zero of=/swapfile bs=1M count=2048
+	mkswap /swapfile
+	chmod 600 /swapfile
+	swapon /swapfile
+	echo "swap /swapfile swap defaults 0 0" | tee -a /etc/fstab
+
+	# Add nodejs repository
+	curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash -
+
+	# Update packages
+	yum update -y
+
+	# Install LAMP
+	yum install -y \
+	git \
+	httpd24 \
+	nodejs \
+	php71 \
+	php71-bcmath \
+	php71-gd \
+	php71-intl \
+	php71-mbstring \
+	php71-mcrypt \
+	php71-mysqlnd \
+	php71-soap \
+	php71-zip \
+	mysql57-server
+
+	# Configure Web and DB servers to start on boot
+	chkconfig httpd on
+	chkconfig mysqld on
+
+	chmod ugo+rwx /var/www/html
+
+	# Change PHP memory limit // Magento wants > 2GB
+	sed -i 's/memory_limit = 128M/memory_limit = 4096M/g' /etc/php-*.ini
+
+	# Change Apache to allow Overrides
+	sed -i '151s/None/All/' /etc/httpd/conf/httpd.conf
+
+	# Set Composer path
+	echo "COMPOSER_HOME=/var/www/html/var/composer_home" | tee -a /etc/environment
+
+	# Set NS8_PROTECT_URL environment variable
+	echo "SetEnv NS8_CLIENT_URL $NS8_CLIENT_URL" | tee -a /var/www/html/.htaccess
+	echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL" | tee -a /var/www/html/.htaccess
+
+	# Set file permissions (Force the group apache on all files and give RWX permissions)
+	chown -R apache:apache /var/www/html
+	#chmod -R 2775 /var/www/html
+	setfacl -Rdm g:apache:rwx /var/www/html
+
+	# Start Web and DB server
+	service httpd start
+	service mysqld start
+
+	# Create database
+	mysql -u root -e "CREATE DATABASE magento2"
+	mysql -u root -e "CREATE USER 'magento_db_user'@'localhost' IDENTIFIED BY 'magento_db_password'"
+	mysql -u root -e "GRANT ALL PRIVILEGES ON magento2.* TO 'magento_db_user'@'localhost'"
+	mysql -u root -e "FLUSH PRIVILEGES"
+
+	# Download installer
+	# With sample data and copy sample data to webroot 
+	cd /var/www && curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.2_sample_data.zip
+
+	# Unzip Magento files to web root
+	unzip -oqq /var/www/Magento-* -d /var/www/html
+
+	# Install Magento via CLI
+	php /var/www/html/bin/magento setup:install \
+	--language=en_US \
+	--timezone=America/Los_Angeles \
+	--db-name=magento2 \
+	--db-user=magento_db_user \
+	--db-password=magento_db_password \
+	--backend-frontname=admin_demo \
+	--admin-firstname=Development \
+	--admin-lastname=Testing \
+	--admin-email=dev@ns8demos.com \
+	--admin-user=development \
+	--admin-password=YzbLenbGRGN6fxqNsz.ti \
+	--base-url=$DEV_LIGHTSAIL_DOMAIN
+
+	# Update Composer Auth
+	cp /var/www/html/auth.json.sample /var/www/html/auth.json
+
+	#### Need to remove git section
+	sed -i '/github/d' /var/www/html/auth.json
+	sed -i '/},$/d' /var/www/html/auth.json
+	sed -i 's/<public-key>/1b8325eb6d792fe22c0fb83f65150281/' /var/www/html/auth.json
+	sed -i 's/<private-key>/d68ff7618b2f3118a0342d7f914848c8/' /var/www/html/auth.json
+
+	# Create the directory where we will test the CSP2 extension
+	mkdir -p /var/www/html/app/code/NS8/CSP2
+
+	# Make the magento command executable
+	chmod +x /var/www/html/bin/magento
+
+	# Allow the ec2-user to write to the magento install
+	chmod -R ugo+rwx /var/www/html
+
+	# Allow password login -- Is this necessary?
+	sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+	service sshd restart
+
+	# docker
+	echo 'installing docker ...'
+	yum -y install docker 
+	service docker start
+	chkconfig docker on
+	usermod -aG docker ec2-user
+
+	# ngrok
+	echo 'installing ngrok ...'
+	curl -O https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && unzip ngrok-stable-linux-amd64.zip
+	mv ngrok /usr/bin/
+	rm -f ngrok-stable-linux-amd64.zip
+
+	# yarn
+	echo 'installing yarn ...'
+	curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
+	yum -y install yarn
+
+    # .bashrc
+    echo "testbox banner" >> $EC2_USER_HOME/.bashrc
+	echo "export AWS_REGION=us-west-2" >> $EC2_USER_HOME/.bashrc
+	echo "export AWS_SDK_LOAD_CONFIG=1" >> $EC2_USER_HOME/.bashrc
+
+    # testbox data directory
+    rm -rf $TESTBOX_DATA_DIR
+    mkdir $TESTBOX_DATA_DIR
+    chown -R ec2-user:ec2-user $TESTBOX_DATA_DIR 
+
+}
+
+function build() {
+
+	check_config
+
+	# 'import' variables from $CONFIG_FILE produced in 'init' command
+	. $TESTBOX_CONFIG
+
+	###### API SETUP ######
+
+	echo 'installing api dependencies ...'
+	cd $EC2_USER_HOME/$API || _exit_with_error "No $EC2_USER_HOME/$API directory"
+	yarn install
+
+	# switch docker mysql port to 3307 because magento runs on 3306
+	sed -i "s/mysql:\/\/localhost:3306/mysql:\/\/localhost:$DOCKER_MYSQL_PORT/" $EC2_USER_HOME/$API/config/dev.yml
+	sed -i "s/3306:3306/3307:3306/" $EC2_USER_HOME/$API/scripts/start-mysql.sh
+
+	# STOP, KILL and RESTART DOCKER CONTAINERS
+    # TODO: use 'docker top 2&>1 /dev/null' to check if needs to be stopped to prevent 
+    # warnings that aren't actually script failures
+	docker stop protect-api-dynamodb
+	docker rm protect-api-dynamodb
+
+	docker stop protect-api-mysql
+	docker rm protect-api-mysql
+
+	# run docker start scripts to start mysql, dynamodb, and create dynamodb tables
+	echo 'running docker start scripts for: mysql, dynamodb, and create dynamodb tables ...'
+	sh $EC2_USER_HOME/ns8-protect-api/scripts/start-mysql.sh
+	sh $EC2_USER_HOME/ns8-protect-api/scripts/start-dynamodb.sh
+	sh $EC2_USER_HOME/ns8-protect-api/scripts/create-dynamodb-tables.sh
+
+
+	###### CLIENT SETUP ######
+
+	# install client client app
+	echo 'installing client/client dependencies ...'
+	cd $EC2_USER_HOME/$CLIENT/client || fail_with_msg "can't cd to $EC2_USER_HOME/$CLIENT/client. It doesn't exist."
+	yarn install --frozen-lockfile
+
+	# install client middleware app
+	echo 'installing client/middleware dependencies ...'
+	cd $EC2_USER_HOME/$CLIENT/middleware || fail_with_msg "$EC2_USER_HOME/$CLIENT/middleware does not exist."
+	
+	# add protect token to middleware env
+	cp $EC2_USER_HOME/$CLIENT/middleware/template.env $EC2_USER_HOME/$CLIENT/middleware/.env
+	sed -i "s/^TEST_ACCESS_TOKEN=.*$/TEST_ACCESS_TOKEN=$PROTECT_TOKEN/" $EC2_USER_HOME/$CLIENT/middleware/.env
+
+	yarn install --frozen-lockfile
+
+
+    ##### RUN API AND MIDDLEWARE SERVERS ######
+
+	# run local build that serves a react client from api middleware route
+	echo 'starting local build for client/client and client/middleware servers ...'
+	cd $EC2_USER_HOME/$CLIENT && yarn local-full-build & # builds AND runs
+
+	# start api's dev server
+	echo 'starting api dev server ...'
+	cd $EC2_USER_HOME/$API && yarn start:dev &
+
+    # start ngrok
+    # note on running ngrok in background: https://github.com/inconshreveable/ngrok/issues/57
+	echo 'starting ngrok protect and client urls ...'
+    ngrok http -log=stdout -subdomain=$PROTECT_API_SUBDOMAIN 4000 > /dev/null &
+    ngrok http -log=stdout -subdomain=$PROTECT_CLIENT_SUBDOMAIN 8080 > /dev/null &
+
+
+
+
+    ###### MAGENTO ######
+
+	# replace default config.dev.xml params 
+	sed -i "s#<email>.*</email>#<email>$NS8_EMAIL</email>#" $MAGENTO_BUILD_CONFIG
+	sed -i "s#<endpoint_url>.*</endpoint_url>#<endpoint_url>$OAUTH_ENDPOINT_URL</endpoint_url>#" $MAGENTO_BUILD_CONFIG
+	sed -i "s#<identity_link_url>.*</identity_link_url>#<identity_link_url>$OAUTH_IDENTITY_LINK_URL</identity_link_url>#" $MAGENTO_BUILD_CONFIG
+
+	# run build:dev script to build proper module data with our newly edited config.dev.xml file
+	cd $EC2_USER_HOME/$MAGENTO || fail_with_msg "can't cd to $EC2_USER_HOME/$MAGENTO. It doesn't exist."
+    yarn install && yarn build:dev
+
+	# copy magento/module to csp2 dir
+	cp -R $EC2_USER_HOME/$MAGENTO/module/*  /var/www/html/app/code/NS8/CSP2/
+
+	# go to /var/www/html && run 'sudo php bin/magento setup:upgrade && sudo bin/magento cache:clean'
+	cd /var/www/html && php bin/magento setup:upgrade && bin/magento cache:clean
+
+	# enable magento developer mode
+	php bin/magento deploy:mode:set developer
+
+	# enable PHP display errors
+	sed -i "s/#ini_set('display_errors', 1);/ini_set('display_errors', 1);/" /var/www/html/app/bootstrap.php
+
+	# Enable Magento 2 display errors
+	mv /var/www/html/pub/errors/local.xml.sample /var/www/html/pub/errors/local.xml
+
+
+}
+
+function check_config() {
+
+	# some sanity checks before we go to the trouble of starting everything up
+
+	if [ ! -f "$TESTBOX_CONFIG" ]
+	then
+		fail_with_msg "No config file exists at $CONFIG_FILE.  Run 'testbox init first."
+	fi
+
+	if [ !  -d "$EC2_USER_HOME/$MAGENTO" ]
+	then
+		fail_with_msg "the $MAGENTO repo doesn't exist at $EC2_USER_HOME/$MAGENTO."
+	fi
+
+	if [ !  -d "$EC2_USER_HOME/$CLIENT" ]
+	then
+		fail_with_msg "the $CLIENT repo doesn't exist at $EC2_USER_HOME/$CLIENT."
+	fi
+
+	if [ !  -d "$EC2_USER_HOME/$API" ]
+	then
+		fail_with_msg "the $API repo doesn't exist at $EC2_USER_HOME/$API."
+	fi
+
+	if [ !  -d "$EC2_USER_HOME/.aws" ]
+	then
+		fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws directory missing."
+	fi
+
+	if [ !  -s "$EC2_USER_HOME/.aws/config" ]
+	then
+		fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/config missing."        
+	fi
+
+	if [ !  -s "$EC2_USER_HOME/.aws/credentials" ]
+	then
+		fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/credentials missing."        
+	fi
+
+	if [ !  -s "$EC2_USER_HOME/.ngrok2/ngrok.yml" ]
+	then
+		fail_with_msg "ngrok authtoken not configured properly. file $EC2_USER_HOME/.ngrok2/ngrok.yml doesn't exist."        
+	fi
+
+	if [ ! -f "$EC2_USER_HOME/.npmrc" ]
+	then
+		fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't exist."        
+    fi
+
+	if ! grep -q "//registry.npmjs.org/:_authToken=" "$EC2_USER_HOME/.npmrc"
+ 	then
+		fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't have an authToken value."        
+	fi
+
+}
+
+function configure() {
+
+	# CLEAR OUT PREVIOUS STATE
+	rm -rf $TESTBOX_CONFIG
+	rm -rf $EC2_USER_HOME/.ngrok2/ngrok.yml
+
+	# MAGENTO EXTENSION CONFIG DATA
+	printf "\n[ Magento NS8 Protect extension configuration info ]\n"
+	read -rep "enter your ns8 email: " NS8_EMAIL
+	read -rep "enter your lightsail subdomain (<SUBDOMAIN>.ns8demos.com): " LIGHTSAIL_SUBDOMAIN
+
+	# NGROK
+	printf "\n[ Connect NGROK account, see https://dashboard.ngrok.com/get-started ] \n\n"
+	read -rs -p "enter your ngrok auth key (step 3 at https://dashboard.ngrok.com/get-started): " NGROK_AUTHTOKEN && echo ""
+	read -erp "enter your ngrok.io protect api subdomain (https://<SUBDOMAIN>.ngrok.io): " PROTECT_API_SUBDOMAIN
+	read -erp "enter your ngrok.io protect client subdomain (https://<SUBDOMAIN>.ngrok.io): " PROTECT_CLIENT_SUBDOMAIN
+	OAUTH_ENDPOINT_URL="https://$PROTECT_API_SUBDOMAIN.ngrok.io/protect/magento/callback"
+	OAUTH_IDENTITY_LINK_URL="https://$PROTECT_API_SUBDOMAIN.ngrok.io/protect/magento/identity"
+
+	# PERSIST CONFIG VALUES
+	echo "OAUTH_ENDPOINT_URL=$OAUTH_ENDPOINT_URL" >> $TESTBOX_CONFIG
+	echo "OAUTH_IDENTITY_LINK_URL=$OAUTH_IDENTITY_LINK_URL" >> $TESTBOX_CONFIG
+	echo "NS8_EMAIL=$NS8_EMAIL" >> $TESTBOX_CONFIG
+	echo "LIGHTSAIL_DOMAIN=http://$LIGHTSAIL_SUBDOMAIN.ns8demos.com" >> $TESTBOX_CONFIG
+	echo "PROTECT_API_SUBDOMAIN=$PROTECT_API_SUBDOMAIN" >> $TESTBOX_CONFIG
+	echo "PROTECT_CLIENT_SUBDOMAIN=$PROTECT_CLIENT_SUBDOMAIN" >> $TESTBOX_CONFIG 
+	echo "PROTECT_TOKEN=$(cat /proc/sys/kernel/random/uuid)" >> $TESTBOX_CONFIG
+
+	echo "[ NPM login ]"
+	npm login
+
+	ngrok authtoken "$NGROK_AUTHTOKEN"
+
+	printf "\n[ AWS Config, see https://internal-dev-docs.readme.io/docs/aws ]\n\n"
+	aws configure
+
+	if [ ! -f  $EC2_USER_HOME/.ssh/id_rsa ]
+	then
+		ssh-keygen -q -t rsa -N "" -f "$EC2_USER_HOME/.ssh/id_rsa" &&
+		echo "SSH key created a public and private key pair: 
+			private: $EC2_USER_HOME/.ssh/id_rsa, 
+			public: $EC2_USER_HOME/.ssh/id_rsa.pub."
+	fi
+	echo "If you haven't already, please add your SSH public key '~/.ssh/id_rsa.pub' to your Github SSH keys before proceeding."
+	echo "See: https://github.com/settings/keys."
+	echo "You will need this to clone NS8 Protect repos."
+
+}
+
+function pull() {
+
+        # -y or --yes checks out HEAD of master
+        # otherwise, you can specify branch and commit for each repo
+        YES_FLAG="$1"
+
+        # rm repo, clone again, checkout
+        for repo in ns8-protect-api ns8-protect-client ns8-magento-platform
+        do
+                # thank you, shellcheck .... https://github.com/koalaman/shellcheck/wiki/SC2114
+                rm -rf "${EC2_USER_HOME:?}/${repo:?}"
+
+                if [ "$YES_FLAG" = "-y" ] || [ "$YES_FLAG" == "--yes" ]
+                then
+                        git clone git@github.com:ns8inc/$repo --single-branch --branch master $EC2_USER_HOME/$repo
+                        cd $EC2_USER_HOME/$repo || fail_with_msg "can't cd to dir $EC2_USER_HOME/$repo. It does not exist."
+                        git checkout
+
+                else
+
+                        read -erp "COMMIT HASH for $repo [ default is HEAD ]:" COMMIT_HASH
+                        read -erp "branch for $repo [ default is master ]:" REPO_BRANCH
+
+                        if [ -z "$REPO_BRANCH" ]
+                        then
+                            REPO_BRANCH=master
+                        fi
+
+                        git clone git@github.com:ns8inc/$repo --single-branch --branch $REPO_BRANCH $EC2_USER_HOME/$repo
+                        cd $EC2_USER_HOME/$repo || fail_with_msg "can't cd to dir $EC2_USER_HOME/$repo. It does not exist."
+
+                        if [ -z "$COMMIT_HASH" ]
+                        then
+                            git checkout 
+                        else
+                            git checkout "$COMMIT_HASH"
+                        fi
+
+                fi
+        done
+
+}
+
+function main() {
+
+	if [ "$1" = "init" ]
+	then
+		init
+	elif [ "$1" = "configure" ]
+	then
+		configure
+	elif [ "$1" = "pull" ]
+	then
+		pull "$2"
+	elif [ "$1" = "build" ]
+	then
+		build
+	elif [ "$1" = "banner" ]
+	then
+        print_banner
+		usage
+	else
+		usage	
+	fi
+
+}
+
+main "$@"
