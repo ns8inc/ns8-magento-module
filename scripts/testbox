@@ -14,7 +14,7 @@ API='ns8-protect-api'
 CLIENT='ns8-protect-client'
 MAGENTO='ns8-magento-platform'
 
-# URL RELATED 
+# URL RELATED
 PROTECT_API_SUBDOMAIN='magento-v2-api'
 PROTECT_CLIENT_SUBDOMAIN='magento-v2-client'
 LIGHTSAIL_SUBDOMAIN='magento-v2'
@@ -30,17 +30,17 @@ MAGENTO_BUILD_CONFIG=$EC2_USER_HOME/$MAGENTO/build/module/etc/integration/config
 function print_banner() {
 
     printf "
-    
+
     Welcome to ....
 
 
-        ███        ▄████████    ▄████████     ███     ▀█████████▄   ▄██████▄  ▀████    ▐████▀ 
-    ▀█████████▄   ███    ███   ███    ███ ▀█████████▄   ███    ███ ███    ███   ███▌   ████▀  
-       ▀███▀▀██   ███    █▀    ███    █▀     ▀███▀▀██   ███    ███ ███    ███    ███  ▐███    
-        ███   ▀  ▄███▄▄▄       ███            ███   ▀  ▄███▄▄▄██▀  ███    ███    ▀███▄███▀    
-        ███     ▀▀███▀▀▀     ▀███████████     ███     ▀▀███▀▀▀██▄  ███    ███    ████▀██▄     
-        ███       ███    █▄           ███     ███       ███    ██▄ ███    ███   ▐███  ▀███    
-        ███       ███    ███    ▄█    ███     ███       ███    ███ ███    ███  ▄███     ███▄  
+        ███        ▄████████    ▄████████     ███     ▀█████████▄   ▄██████▄  ▀████    ▐████▀
+    ▀█████████▄   ███    ███   ███    ███ ▀█████████▄   ███    ███ ███    ███   ███▌   ████▀
+       ▀███▀▀██   ███    █▀    ███    █▀     ▀███▀▀██   ███    ███ ███    ███    ███  ▐███
+        ███   ▀  ▄███▄▄▄       ███            ███   ▀  ▄███▄▄▄██▀  ███    ███    ▀███▄███▀
+        ███     ▀▀███▀▀▀     ▀███████████     ███     ▀▀███▀▀▀██▄  ███    ███    ████▀██▄
+        ███       ███    █▄           ███     ███       ███    ██▄ ███    ███   ▐███  ▀███
+        ███       ███    ███    ▄█    ███     ███       ███    ███ ███    ███  ▄███     ███▄
        ▄████▀     ██████████  ▄████████▀     ▄████▀   ▄█████████▀   ▀██████▀  ████       ███▄
 
 
@@ -51,14 +51,14 @@ function print_banner() {
 function usage() {
 
     printf "usage: testbox <init> | <configure> [-f,--file] | <pull> [-y,--yes] | <build> | <banner>
-    NOTE: Run init and configure, in that order, before running pull and build. 
+    NOTE: Run init and configure, in that order, before running pull and build.
     <init>
         Initialize the lightsail instance by running through the standard Magento2 lightsail setup script.
     <configure>
         Run through requisite service authorizations.
         -f, --config-file
     <pull>
-        git clone the latest code from the 'ns8-magento-platform', 'ns8-protect-api' and 'ns8-protect-client' platforms. 
+        git clone the latest code from the 'ns8-magento-platform', 'ns8-protect-api' and 'ns8-protect-client' platforms.
         -y, --yes
         Do not prompt for repo branch or commit hash, use defaults (branch: master, commit: HEAD).
     <build>
@@ -148,7 +148,7 @@ function init() {
 	mysql -u root -e "FLUSH PRIVILEGES"
 
 	# Download installer
-	# With sample data and copy sample data to webroot 
+	# With sample data and copy sample data to webroot
 	cd /var/www && curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.2_sample_data.zip
 
 	# Unzip Magento files to web root
@@ -193,7 +193,7 @@ function init() {
 
 	# docker
 	echo 'installing docker ...'
-	yum -y install docker 
+	yum -y install docker
 	service docker start
 	chkconfig docker on
 	usermod -aG docker ec2-user
@@ -214,10 +214,14 @@ function init() {
 	echo "export AWS_REGION=us-west-2" >> $EC2_USER_HOME/.bashrc
 	echo "export AWS_SDK_LOAD_CONFIG=1" >> $EC2_USER_HOME/.bashrc
 
+    # user's bin, which is in the ~/.bash_profile already
+    mkdir -p $EC2_USER_HOME/bin
+    chown -R ec2-user:ec2-user $TESTBOX_DATA_DIR
+
     # testbox data directory
     rm -rf $TESTBOX_DATA_DIR
     mkdir $TESTBOX_DATA_DIR
-    chown -R ec2-user:ec2-user $TESTBOX_DATA_DIR 
+    chown -R ec2-user:ec2-user $TESTBOX_DATA_DIR
 
 }
 
@@ -239,7 +243,7 @@ function build() {
 	sed -i "s/3306:3306/3307:3306/" $EC2_USER_HOME/$API/scripts/start-mysql.sh
 
 	# STOP, KILL and RESTART DOCKER CONTAINERS
-    # TODO: use 'docker top 2&>1 /dev/null' to check if needs to be stopped to prevent 
+    # TODO: use 'docker top 2&>1 /dev/null' to check if needs to be stopped to prevent
     # warnings that aren't actually script failures
 	docker stop protect-api-dynamodb
 	docker rm protect-api-dynamodb
@@ -293,7 +297,7 @@ function build() {
 
     ###### MAGENTO ######
 
-	# replace default config.dev.xml params 
+	# replace default config.dev.xml params
 	sed -i "s#<email>.*</email>#<email>$NS8_EMAIL</email>#" $MAGENTO_BUILD_CONFIG
 	sed -i "s#<endpoint_url>.*</endpoint_url>#<endpoint_url>$OAUTH_ENDPOINT_URL</endpoint_url>#" $MAGENTO_BUILD_CONFIG
 	sed -i "s#<identity_link_url>.*</identity_link_url>#<identity_link_url>$OAUTH_IDENTITY_LINK_URL</identity_link_url>#" $MAGENTO_BUILD_CONFIG
@@ -351,27 +355,27 @@ function check_config() {
 
 	if [ !  -s "$EC2_USER_HOME/.aws/config" ]
 	then
-		fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/config missing."        
+		fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/config missing."
 	fi
 
 	if [ !  -s "$EC2_USER_HOME/.aws/credentials" ]
 	then
-		fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/credentials missing."        
+		fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/credentials missing."
 	fi
 
 	if [ !  -s "$EC2_USER_HOME/.ngrok2/ngrok.yml" ]
 	then
-		fail_with_msg "ngrok authtoken not configured properly. file $EC2_USER_HOME/.ngrok2/ngrok.yml doesn't exist."        
+		fail_with_msg "ngrok authtoken not configured properly. file $EC2_USER_HOME/.ngrok2/ngrok.yml doesn't exist."
 	fi
 
 	if [ ! -f "$EC2_USER_HOME/.npmrc" ]
 	then
-		fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't exist."        
+		fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't exist."
     fi
 
 	if ! grep -q "//registry.npmjs.org/:_authToken=" "$EC2_USER_HOME/.npmrc"
  	then
-		fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't have an authToken value."        
+		fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't have an authToken value."
 	fi
 
 }
@@ -401,7 +405,7 @@ function configure() {
 	echo "NS8_EMAIL=$NS8_EMAIL" >> $TESTBOX_CONFIG
 	echo "LIGHTSAIL_DOMAIN=http://$LIGHTSAIL_SUBDOMAIN.ns8demos.com" >> $TESTBOX_CONFIG
 	echo "PROTECT_API_SUBDOMAIN=$PROTECT_API_SUBDOMAIN" >> $TESTBOX_CONFIG
-	echo "PROTECT_CLIENT_SUBDOMAIN=$PROTECT_CLIENT_SUBDOMAIN" >> $TESTBOX_CONFIG 
+	echo "PROTECT_CLIENT_SUBDOMAIN=$PROTECT_CLIENT_SUBDOMAIN" >> $TESTBOX_CONFIG
 	echo "PROTECT_TOKEN=$(cat /proc/sys/kernel/random/uuid)" >> $TESTBOX_CONFIG
 
 	echo "[ NPM login ]"
@@ -414,9 +418,10 @@ function configure() {
 
 	if [ ! -f  $EC2_USER_HOME/.ssh/id_rsa ]
 	then
-		ssh-keygen -q -t rsa -N "" -f "$EC2_USER_HOME/.ssh/id_rsa" &&
-		echo "SSH key created a public and private key pair: 
-			private: $EC2_USER_HOME/.ssh/id_rsa, 
+		ssh-keygen -q -t rsa -N "" -f "$EC2_USER_HOME/.ssh/id_rsa"
+        chown -R ec2-user:ec2-user ~/.ssh/id_rsa*
+		echo "SSH key created a public and private key pair:
+			private: $EC2_USER_HOME/.ssh/id_rsa,
 			public: $EC2_USER_HOME/.ssh/id_rsa.pub."
 	fi
 	echo "If you haven't already, please add your SSH public key '~/.ssh/id_rsa.pub' to your Github SSH keys before proceeding."
@@ -458,7 +463,7 @@ function pull() {
 
                         if [ -z "$COMMIT_HASH" ]
                         then
-                            git checkout 
+                            git checkout
                         else
                             git checkout "$COMMIT_HASH"
                         fi
