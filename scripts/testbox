@@ -123,7 +123,7 @@ function init() {
     sed -i 's/memory_limit = 128M/memory_limit = 4096M/g' /etc/php-*.ini
 
     # Change Apache to allow Overrides
-    sed -i '151s/None/All/' /etc/httpd/conf/httpd.conf
+    sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
 
     # Set Composer path
     echo "COMPOSER_HOME=/var/www/html/var/composer_home" >> /etc/environment
