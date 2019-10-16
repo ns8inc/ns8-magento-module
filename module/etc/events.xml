@@ -4,6 +4,9 @@
     <observer name="ns8_order_save_after" instance="NS8\CSP2\Observer\OrderUpdate" />
   </event>
   <event name="store_edit">
-    <observer name="ns8_store_update" instance="NS8\CSP2\Observer\StoreUpdate" />
+    <observer name="ns8_store_update" instance="NS8\CSP2\Observer\MerchantUpdate" />
+  </event>
+  <event name="admin_system_config_save">
+    <observer name="ns8_system_config_update" instance="NS8\CSP2\Observer\MerchantUpdate" />
   </event>
 </config>

@@ -6,17 +6,15 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\App\Request\Http;
 use Magento\Customer\Model\Session;
-use Magento\Store\Api\Data\StoreInterface;
 
 use NS8\CSP2\Helper\Logger;
 use NS8\CSP2\Helper\HttpClient;
 
-class StoreUpdate implements ObserverInterface
+class MerchantUpdate implements ObserverInterface
 {
     protected $request;
     protected $customerSession;
     protected $logger;
-    protected $store;
     protected $httpClient;
 
     /**
@@ -25,19 +23,17 @@ class StoreUpdate implements ObserverInterface
      * @param Http $request
      * @param Session $session
      * @param Logger $logger
-     * @param StoreInterface $store
+     * @param HttpClient $httpClient
      */
     public function __construct(
         Http $request,
         Session $session,
         Logger $logger,
-        StoreInterface $store,
         HttpClient $httpClient
     ) {
+        $this->request = $request;
         $this->customerSession = $session;
         $this->logger = $logger;
-        $this->request = $request;
-        $this->order = $store;
         $this->httpClient = $httpClient;
     }
 
@@ -49,13 +45,15 @@ class StoreUpdate implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        $params = ['action' => 'UPDATE_MERCHANT_ACTION'];
-
         try {
-            $data = ['store' => $observer->getEvent()->getStore()->getData()];
+            $eventData = $observer->getEvent()->getData();
         } catch (\Exception $e) {
-            $this->logger->error('The store data could not be retrieved', $e);
+            $this->logger->error('The event data could not be retrieved', $e);
+            return;
         }
+
+        $params = ['action' => 'UPDATE_MERCHANT_ACTION'];
+        $data = ['eventData' => $eventData];
 
         try {
             $this->httpClient->post('/switch/executor', $data, $params);
