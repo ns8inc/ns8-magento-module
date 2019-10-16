@@ -294,7 +294,6 @@ function build() {
 
 
 
-
     ###### MAGENTO ######
 
 	# replace default config.dev.xml params
@@ -421,8 +420,8 @@ function configure() {
 		ssh-keygen -q -t rsa -N "" -f "$EC2_USER_HOME/.ssh/id_rsa"
         chown -R ec2-user:ec2-user ~/.ssh/id_rsa*
 		echo "SSH key created a public and private key pair:
-			private: $EC2_USER_HOME/.ssh/id_rsa,
-			public: $EC2_USER_HOME/.ssh/id_rsa.pub."
+		private: $EC2_USER_HOME/.ssh/id_rsa,
+		public: $EC2_USER_HOME/.ssh/id_rsa.pub."
 	fi
 	echo "If you haven't already, please add your SSH public key '~/.ssh/id_rsa.pub' to your Github SSH keys before proceeding."
 	echo "See: https://github.com/settings/keys."
