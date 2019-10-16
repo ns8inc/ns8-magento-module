@@ -7,24 +7,24 @@ import { Status } from 'ns8-protect-models';
 import { Transaction } from 'ns8-protect-models';
 
 export interface OrderUpdateEventData {
-  status: Status;
+  addresses: Address[];
   createdAt: Date;
-  updatedAt: Date;
+  currency: string;
+  customer: Customer;
+  customerVerification: null;
+  fraudAssessments: FraudAssessment[];
+  hasGiftCard: boolean;
   id: string;
+  lineItems: LineItem[];
   merchantId: string;
-  platformId: string;
   name: string;
   platformCreatedAt: Date;
-  currency: string;
-  totalPrice: number;
-  risk: string;
-  hasGiftCard: boolean;
+  platformId: string;
   platformStatus: string;
-  addresses: Address[];
-  customer: Customer;
-  fraudAssessments: FraudAssessment[];
+  risk: string;
   session: Session;
-  customerVerification: null;
+  status: Status;
+  totalPrice: number;
   transactions: Transaction[];
-  lineItems: LineItem[];
+  updatedAt: Date;
 }
