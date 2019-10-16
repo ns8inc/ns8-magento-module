@@ -283,11 +283,13 @@ function build() {
 
     # run local build that serves a react client from api middleware route
     echo 'starting local build for client/client and client/middleware servers ...'
-    cd $EC2_USER_HOME/$CLIENT && yarn local-full-build & # builds AND runs
+    cd $EC2_USER_HOME/$CLIENT
+    yarn local-full-build & # builds AND runs
 
     # start api's dev server
     echo 'starting api dev server ...'
-    cd $EC2_USER_HOME/$API && yarn start:dev &
+    cd $EC2_USER_HOME/$API
+    yarn start:dev &
 
     # start ngrok
     # note on running ngrok in background: https://github.com/inconshreveable/ngrok/issues/57
@@ -306,13 +308,15 @@ function build() {
 
     # run build:dev script to build proper module data with our newly edited config.dev.xml file
     cd $EC2_USER_HOME/$MAGENTO || fail_with_msg "can't cd to $EC2_USER_HOME/$MAGENTO. It doesn't exist."
-    yarn install && yarn build:dev
+    yarn install
+    yarn build:dev
 
     # copy magento/module to csp2 dir
     cp -R $EC2_USER_HOME/$MAGENTO/module/*  /var/www/html/app/code/NS8/CSP2/
 
-    # go to /var/www/html && run 'sudo php bin/magento setup:upgrade && sudo bin/magento cache:clean'
-    cd /var/www/html && php bin/magento setup:upgrade && bin/magento cache:clean
+    cd /var/www/html
+    php bin/magento setup:upgrade
+    bin/magento cache:clean
 
     # enable magento developer mode
     php bin/magento deploy:mode:set developer
@@ -394,7 +398,8 @@ function configure() {
 
     # NGROK
     printf "\n[ Connect NGROK account, see https://dashboard.ngrok.com/get-started ] \n\n"
-    read -rs -p "enter your ngrok auth key (step 3 at https://dashboard.ngrok.com/get-started): " NGROK_AUTHTOKEN && echo ""
+    read -rs -p "enter your ngrok auth key (step 3 at https://dashboard.ngrok.com/get-started): " NGROK_AUTHTOKEN
+    echo ""
     read -erp "enter your ngrok.io protect api subdomain (https://<SUBDOMAIN>.ngrok.io): " PROTECT_API_SUBDOMAIN
     read -erp "enter your ngrok.io protect client subdomain (https://<SUBDOMAIN>.ngrok.io): " PROTECT_CLIENT_SUBDOMAIN
     OAUTH_ENDPOINT_URL="https://$PROTECT_API_SUBDOMAIN.ngrok.io/protect/magento/callback"
