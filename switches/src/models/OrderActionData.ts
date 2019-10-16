@@ -1,3 +1,5 @@
+import { Session } from 'ns8-protect-models';
+
 export interface OrderActionModel {
   applied_rule_ids: string;
   base_currency_code: string;
@@ -83,4 +85,6 @@ export interface OrderActionModel {
  */
 export interface OrderActionData {
   order: OrderActionModel;
+  session: Session;
+  username: string;
 }

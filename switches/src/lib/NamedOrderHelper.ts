@@ -13,6 +13,7 @@ export class NamedOrderHelper extends OrderHelper {
 
   /**
    * This will process the Switchboard Context for an Order Update Action and then execute the necessary steps to handle the Order.
+   * This executes in response to Order changes **from** Magento. The Magento side Action triggers this step function logic.
    */
   public processOrderUpdateAction = async (): Promise<NamedOrderUpdate> => {
     const ret: NamedOrderUpdate = {} as NamedOrderUpdate;
@@ -24,10 +25,13 @@ export class NamedOrderHelper extends OrderHelper {
       if (!isValidMagentoStatus(data.order.status) && !isValidMagentoState(data.order.state)) {
         throw new Error(`The status of this order (${data.order.status}) is not recognized.`);
       }
+      //We currently have only 3 concepts on the Protect side for Order status: Canceled, Approved and Merchant Review
+      //This attempts to normalize the multitude of states an order can have from within Magento into our very narrow concepts.
       if (
         data.order.status == MagentoStatus.CANCELED ||
         data.order.state == MagentoState.CANCELED
       ) {
+        //Explicit cancellation is obvious. Canceled = Canceled.
         ret.status = Status.CANCELLED;
       } else if (
         data.order.status == MagentoStatus.CLOSED ||
@@ -35,8 +39,10 @@ export class NamedOrderHelper extends OrderHelper {
         data.order.status == MagentoStatus.COMPLETE ||
         data.order.state == MagentoStatus.COMPLETE
       ) {
+        //Closed vs Complete is somewhat ambiguous. In either case, the order is done--but was not explicitly terminated.
         ret.status = Status.APPROVED;
       } else {
+        //Everything else in Magento status land means the order is still in a state of review.
         ret.status = Status.MERCHANT_REVIEW;
       }
     } catch (e) {
@@ -47,6 +53,8 @@ export class NamedOrderHelper extends OrderHelper {
 
   /**
    * This will process the Switchboard Context for an Order Update Event and then execute the necessary steps to handle the Order.
+   * This executes in response to order rules defined in Protect. This executes in response to Protect's assessment of the order, according to the rules defined.
+   * The expected outcome of this function is to update Magento in accordance with the define rule logic.
    */
   public processOrderUpdateEvent = async (): Promise<NamedOrderUpdate> => {
     const ret: NamedOrderUpdate = {} as NamedOrderUpdate;
@@ -61,16 +69,16 @@ export class NamedOrderHelper extends OrderHelper {
         case Status.CANCELLED:
           await this.MagentoClient.cancelOrder(magentoOrder.entity_id);
           ret.platformStatus = MagentoStatus.CANCELED;
-          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, { comment: 'NS8 Protect Order Cancelled' } as MagentoComment);
+          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, 'NS8 Protect Order Cancelled');
           break;
         case Status.APPROVED:
           //Not entirely clear what, if anything we need to do in this case. I think it's safe to assume the order is still pending in Magento.
           ret.platformStatus = MagentoStatus.PENDING;
-          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, { comment: 'NS8 Protect Order Approved' } as MagentoComment);
+          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, 'NS8 Protect Order Approved');
           break;
         case Status.MERCHANT_REVIEW:
           ret.platformStatus = MagentoStatus.PENDING;
-          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, { comment: 'NS8 Protect Order Requires Review' } as MagentoComment);
+          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, 'NS8 Protect Order Requires Review');
           break;
       }
     } catch (e) {
