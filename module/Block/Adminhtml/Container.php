@@ -102,6 +102,10 @@ class Container extends Template
         $uri = sprintf('/orders/order-name/%s', $this->base64UrlEncode('#' . $this->request->getParam('order_id')));
         $req = $this->httpClient->get($uri);
 
+        if (!isset($req->fraudAssessments)) {
+            return null;
+        }
+
         // The goal here is to look in the fraudAssessments array and return the first score we find that's an EQ8.
         return array_reduce($req->fraudAssessments, function (?int $foundScore, \stdClass $fraudAssessment): ?int {
             if (!empty($foundScore)) {
