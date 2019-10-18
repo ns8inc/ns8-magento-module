@@ -262,8 +262,16 @@ class Config extends AbstractHelper
 
     public function getAuthenticatedUserName()
     {
-        $auth = $this->context->getAuth();
-        $loginUser = $auth->getUser();
-        return $loginUser->getUserName();
+        $username = '';
+        try {
+            $auth = $this->context->getAuth();
+            $loginUser = $auth->getUser();
+            if ($loginUser) {
+                $username = $loginUser->getUserName();
+            }
+        } catch (\Exception $e) {
+            // intentionally left empty
+        }
+        return $username;
     }
 }

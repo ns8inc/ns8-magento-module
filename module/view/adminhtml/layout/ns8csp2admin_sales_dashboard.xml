@@ -6,7 +6,7 @@
   </head>
   <body>
     <referenceContainer name="content">
-      <block class="NS8\CSP2\Block\Adminhtml\Container" template="NS8_CSP2::clientIframe.phtml" />
+      <block class="NS8\CSP2\Block\Adminhtml\Container" template="NS8_CSP2::client_iframe.phtml" />
     </referenceContainer>
   </body>
 </page>
