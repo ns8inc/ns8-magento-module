@@ -22,6 +22,12 @@
         value: 'auto'
       });
 
+      iframe.call('setStyle', {
+        selector: 'body',
+        property: 'overflow-y',
+        value: 'hidden'
+      });
+
       matchIframeHeightToContent(iframe);
 
       /*
