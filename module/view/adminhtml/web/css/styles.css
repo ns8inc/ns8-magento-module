@@ -1,3 +1,4 @@
-#ns8-protect-wrapper {
-  height: 4560px;
+#ns8-protect-wrapper > .ns8-protect-client-iframe {
+  border: none;
+  width: 100%;
 }
