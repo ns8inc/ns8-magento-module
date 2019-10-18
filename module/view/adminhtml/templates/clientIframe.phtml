@@ -10,8 +10,18 @@
       .then(height => iframe.frame.style.height = `${height}px`);
 
     const beginIframeHeightMatching = (iframe) => {
-      iframe.call('hideClientScrollbars');
-      iframe.call('removeClientHeightStyling');
+      iframe.call('setStyle', {
+        selector: 'html',
+        property: 'overflow',
+        value: 'hidden'
+      });
+
+      iframe.call('setStyle', {
+        selector: 'html',
+        property: 'height',
+        value: 'auto'
+      });
+
       matchIframeHeightToContent(iframe);
 
       /*
