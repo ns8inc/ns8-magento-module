@@ -25,9 +25,14 @@ DtsBundlePlugin.prototype.apply = function (compiler) {
   });
 };
 
+let mode = 'production';
+if (process.env.NODE_ENV && process.env.NODE_ENV.startsWith('dev')) {
+  mode = 'development';
+}
+
 const config = {
   entry: './index.ts',
-  mode: 'development',
+  mode,
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',

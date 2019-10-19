@@ -3,9 +3,9 @@
   "dependencies": {},
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
-    "@ns8/magento2-rest-client": "0.2.20",
+    "@ns8/magento2-rest-client": "0.2.21",
     "@ns8/ns8-switchboard-operator": "1.0.99",
-    "@ns8/ns8-protect-sdk": "0.1.18",
+    "@ns8/ns8-protect-sdk": "0.1.19",
     "@types/jest": "24.0.19",
     "@types/node": "12.11.1",
     "awesome-typescript-loader": "5.2.1",
@@ -20,7 +20,6 @@
     "ts-jest": "24.1.0",
     "ts-node": "8.4.1",
     "typescript": "3.6.4",
-    "uglifyjs-webpack-plugin": "2.2.0",
     "url": "0.11.0",
     "webpack": "4.41.2",
     "webpack-cli": "3.3.9",
@@ -36,7 +35,7 @@
   "repository": "https://github.com/ns8inc/ns8-magento2-switches.git",
   "scripts": {
     "build": "tsc -d && yarn bundle",
-    "build:dev": "yarn && yarn build && yarn link",
+    "build:dev": "set NODE_ENV=development yarn && yarn build && yarn link",
     "bundle": "webpack",
     "clean": "rimraf .awcache .tmp dist node_modules",
     "lint": "tslint --project .",
@@ -45,5 +44,5 @@
     "test": "jest",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand"
   },
-  "version": "1.0.16"
+  "version": "1.0.16-crf1"
 }
