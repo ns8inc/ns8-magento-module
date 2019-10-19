@@ -8,7 +8,7 @@ const path = require('path');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 /**
- * This is the webpack plugin that compiles the TSD file for use in exporting our types from the final bundle.
+ * This is the webpack plugin that compiles the TSD file for use in the final bundle.
  * NOTE: Using legacy JavaScript concepts to build this plugin, because it works as-is.
  */
 function DtsBundlePlugin() {}
@@ -40,7 +40,6 @@ const config = {
     modules: ['node_modules'],
   },
   devtool: 'source-map',
-
   module: {
     rules: [{
       test: /\.tsx?$/,
@@ -51,9 +50,7 @@ const config = {
   },
   plugins: [
     new DtsBundlePlugin(),
-    new HardSourceWebpackPlugin({
-
-    }),
+    new HardSourceWebpackPlugin(),
   ],
   target: 'node',
   node: {
