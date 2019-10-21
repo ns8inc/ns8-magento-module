@@ -8,3 +8,10 @@ node_modules/
 src/
 test/
 webpack.config.js
+.vscode/
+.editorconfig
+.gitignore
+codealike.json
+docs/
+tsconfig.json
+typedoc.json
