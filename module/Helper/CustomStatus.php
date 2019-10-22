@@ -24,11 +24,14 @@ class CustomStatus extends AbstractHelper
     /**
      * Custom Holded (state) Merchant Review status label
      */
+
     const MERCHANT_REVIEW_STATUS_LABEL = 'NS8 Merchant Review';
+
     /**
      * Custom Processing (state) Approved status code
      */
     const APPROVED = 'ns8_approved';
+
     /**
      * Custom Processing (state) Approved status label
      */
