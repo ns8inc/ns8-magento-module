@@ -2,7 +2,6 @@
 
 namespace NS8\CSP2\Helper;
 
-use Exception;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Integration\Model\ConfigBasedIntegrationManager;
@@ -87,7 +86,6 @@ class CustomStatus extends AbstractHelper
      * @param string $statusLabel
      * @param mixed $state
      * @return void
-     * @throws Exception
      */
     protected function addCustomStatus($statusName, $statusLabel, $state)
     {
@@ -111,7 +109,6 @@ class CustomStatus extends AbstractHelper
      * Sets the custom Protect states for Magento
      * @param string $upgradeMode
      * @return void
-     * @throws Exception
      */
     public function setCustomStatuses($upgradeMode)
     {
