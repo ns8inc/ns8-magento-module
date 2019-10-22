@@ -3,41 +3,92 @@ namespace NS8\CSP2\Helper;
 
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\HTTP\Header;
 use Magento\Framework\HTTP\PhpEnvironment\Request;
 use Magento\Framework\HTTP\ZendClientFactory;
+use Magento\Integration\Api\IntegrationServiceInterface;
+use Magento\Integration\Api\OauthServiceInterface;
+use NS8\CSP2\Helper\Config;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
-use Magento\Integration\Api\IntegrationServiceInterface;
-use Magento\Integration\Api\OauthServiceInterface;
-
-use NS8\CSP2\Helper\Config;
 
 /**
  * General purpose HTTP/REST client for making API calls
  */
 class HttpClient extends AbstractHelper
 {
+    /**
+     * The configuration.
+     *
+     * @var \NS8\CSP2\Helper\Config
+     */
     protected $config;
+
+    /**
+     * The customer session.
+     *
+     * @var \Magento\Customer\Model\Session
+     */
     protected $customerSession;
+
+    /**
+     * The HTTP header.
+     *
+     * @var \Magento\Framework\HTTP\Header
+     */
+    protected $header;
+
+    /**
+     * The integration service interface.
+     *
+     * @var \Magento\Integration\Api\IntegrationServiceInterface
+     */
+    protected $integrationServiceInterface;
+
+    /**
+     * The OAuth service interface.
+     *
+     * @var \Magento\Integration\Api\OauthServiceInterface
+     */
+    protected $oauthServiceInterface;
+
+    /**
+     * The logger.
+     *
+     * @var \Psr\Log\LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * The HTTP request.
+     *
+     * @var \Magento\Framework\HTTP\PhpEnvironment\Request
+     */
     protected $request;
 
     /**
      * Default constructor
      *
-     * @param Config $config
-     * @param LoggerInterface $logger
+     * @param \NS8\CSP2\Helper\Config $config The config
+     * @param \Magento\Framework\HTTP\Header $header The HTTP header
+     * @param \Psr\Log\LoggerInterface $logger The logger
+     * @param \Magento\Integration\Api\IntegrationServiceInterface $integrationServiceInterface The IS interface
+     * @param \Magento\Integration\Api\OauthServiceInterface $oauthServiceInterface The OAuth service interface
+     * @param \Magento\Framework\HTTP\PhpEnvironment\Request $request The HTTP request
+     * @param \Magento\Customer\Model\Session $session The customer session
      */
     public function __construct(
         Config $config,
+        Header $header,
         LoggerInterface $logger,
-        OauthServiceInterface $oauthServiceInterface,
         IntegrationServiceInterface $integrationServiceInterface,
+        OauthServiceInterface $oauthServiceInterface,
         Request $request,
         Session $session
     ) {
         $this->config = $config;
+        $this->header = $header;
         $this->logger = $logger;
         $this->integrationServiceInterface = $integrationServiceInterface;
         $this->oauthServiceInterface = $oauthServiceInterface;
@@ -213,6 +264,7 @@ class HttpClient extends AbstractHelper
         return [
             'id' => $this->customerSession->getSessionId(),
             'ip' => $this->request->getClientIp(),
+            'userAgent' => $this->header->getHttpUserAgent(),
         ];
     }
 }
