@@ -262,6 +262,7 @@ class HttpClient extends AbstractHelper
     private function getSessionData()
     {
         return [
+            'acceptLanguage' => $this->header->getHttpAcceptLanguage(),
             'id' => $this->customerSession->getSessionId(),
             'ip' => $this->request->getClientIp(),
             'userAgent' => $this->header->getHttpUserAgent(),
