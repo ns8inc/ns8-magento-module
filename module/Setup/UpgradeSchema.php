@@ -8,13 +8,11 @@ use Magento\Framework\DB\Ddl\Table;
 
 class UpgradeSchema implements UpgradeSchemaInterface
 {
-    public function __construct() 
+    public function __construct()
     {
-        
     }
 
     public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-        
     }
 }
