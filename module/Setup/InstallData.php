@@ -1,7 +1,6 @@
 <?php
 namespace NS8\CSP2\Setup;
 
-use Exception;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
