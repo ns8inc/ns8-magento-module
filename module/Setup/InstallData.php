@@ -1,5 +1,5 @@
 <?php
- namespace NS8\CSP2\Setup;
+namespace NS8\CSP2\Setup;
 
 use Exception;
 use Magento\Framework\Setup\InstallDataInterface;
