@@ -11,6 +11,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\State;
 use Magento\Framework\Encryption\EncryptorInterface;
@@ -282,19 +283,18 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Gets the Order display id, aka "increment id"
-     *
-     * @param ?string $orderId
-     * @return string
+     * Get the Order display id from the requested order
+     * @param Http $httpRequest The HTTP request object
+     * @return string An order increment id, else an empty string
      */
-    public function getOrderIncrementId(?string $orderId) : string
+    public function getOrderIncrementId(Http $httpRequest): string
     {
         $ret = '';
         try {
+            $orderId = $this->request->getParam('order_id');
             $order = $this->orderRepository->get($orderId);
             $ret = $order->getIncrementId();
         } catch (Exception $e) {
-            #Do nothing
         }
         return $ret;
     }

@@ -64,7 +64,7 @@ class Container extends Template
      * @param \NS8\CSP2\Helper\Config $configHelper The config helper
      * @param \Magento\Backend\Block\Template\Context $context The context
      * @param \NS8\CSP2\Helper\HttpClient $httpClient The HTTP client
-     * @param \Magento\Framework\App\Request\Http $context The request
+     * @param \Magento\Framework\App\Request\Http $request The request
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory The page factory
      */
     public function __construct(
@@ -80,22 +80,6 @@ class Container extends Template
         $this->httpClient = $httpClient;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
-    }
-
-    /**
-     * Get the Order display id from the requested order
-     *
-     * @return string An order increment id, else an empty string
-     */
-    private function getOrderIncrementId(): string
-    {
-        $ret = '';
-        try {
-            $orderId = $this->request->getParam('order_id');
-            $ret = $this->configHelper->getOrderIncrementId($orderId);
-        } catch (Exception $e) {
-        }
-        return $ret;
     }
 
     /**
@@ -115,7 +99,7 @@ class Container extends Template
      */
     public function getEQ8Score(): ?int
     {
-        $orderIncrementId = $this->getOrderIncrementId();
+        $orderIncrementId = $this->configHelper->getOrderIncrementId($this->request);
         $uri = sprintf('/orders/order-name/%s', $this->base64UrlEncode($orderIncrementId));
         $req = $this->httpClient->get($uri);
 
@@ -141,8 +125,7 @@ class Container extends Template
      */
     public function getNS8ClientUrl(): string
     {
-        $orderIncrementId = $this->getOrderIncrementId();
-
+        $orderIncrementId = $this->configHelper->getOrderIncrementId($this->request);
         return sprintf(
             '%s%s?access_token=%s',
             $this->configHelper->getNS8ClientUrl(),
