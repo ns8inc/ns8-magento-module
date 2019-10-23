@@ -146,7 +146,7 @@ class Container extends Template
         return sprintf(
             '%s%s?access_token=%s',
             $this->configHelper->getNS8ClientUrl(),
-            isset($orderId) ? '/order-details/' . $this->base64UrlEncode($orderIncrementId) : '',
+            isset($orderIncrementId) ? '/order-details/' . $this->base64UrlEncode($orderIncrementId) : '',
             $this->getAccessToken()
         );
     }
