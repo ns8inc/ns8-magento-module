@@ -285,11 +285,11 @@ class Config extends AbstractHelper
     /**
      * Get the Order display id from the requested order
      * @param Http $httpRequest The HTTP request object
-     * @return string An order increment id, else an empty string
+     * @return ?string An order increment id
      */
     public function getOrderIncrementId(Http $httpRequest): string
     {
-        $ret = '';
+        $ret = null;
         try {
             $orderId = $this->request->getParam('order_id');
             $order = $this->orderRepository->get($orderId);
