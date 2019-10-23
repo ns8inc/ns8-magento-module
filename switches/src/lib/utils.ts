@@ -33,29 +33,19 @@ export enum OrderState {
   UPDATED = 'updated'
 }
 
-export enum MagentoStatus {
-  CANCELED = 'canceled',
-  CLOSED = 'closed',
-  COMPLETE = 'complete',
-  ON_HOLD = 'holded',
-  PAYMENT_REVIEW = 'payment_review',
-  PENDING = 'pending',
-  PENDING_PAYMENT = 'pending_payment',
-  PROCESSING = 'processing',
-  SUSPECTED_FRAUD = 'fraud',
-}
-
 export enum MagentoState {
+  APPROVED = 'ns8_approved',
   CANCELED = 'canceled',
   CLOSED = 'closed',
   COMPLETE = 'complete',
+  MERCHANT_REVIEW = 'ns8_merchant_review',
   ON_HOLD = 'holded',
   PAYMENT_REVIEW = 'payment_review',
   PENDING = 'new',
   PENDING_PAYMENT = 'pending_payment',
   PROCESSING = 'processing',
-  SUSPECTED_FRAUD = 'processing',
 }
+
 export const existsInEnum = (enm: object, key: string): boolean => Object.values(enm).some((v) => v === key);
-export const isValidMagentoStatus = (key: string): boolean => existsInEnum(MagentoStatus, key);
-export const isValidMagentoState = (key: string): boolean => existsInEnum(MagentoState, key);
+
+export const isValidMagentoState = (key: string): boolean => existsInEnum(OrderState, key);
