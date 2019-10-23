@@ -83,6 +83,22 @@ class Container extends Template
     }
 
     /**
+     * Get the Order display id from the requested order
+     *
+     * @return string An order increment id, else an empty string
+     */
+    private function getOrderIncrementId(): string
+    {
+        $ret = '';
+        try {
+            $orderId = $this->request->getParam('order_id');
+            $ret = $this->configHelper->getOrderIncrementId($orderId);
+        } catch (Exception $e) {
+        }
+        return $ret;
+    }
+
+    /**
      * Get the NS8 Protect Client Access Token.
      *
      * @return string The access token
@@ -99,7 +115,8 @@ class Container extends Template
      */
     public function getEQ8Score(): ?int
     {
-        $uri = sprintf('/orders/order-name/%s', $this->base64UrlEncode('#' . $this->request->getParam('order_id')));
+        $orderIncrementId = $this->getOrderIncrementId();
+        $uri = sprintf('/orders/order-name/%s', $this->base64UrlEncode($orderIncrementId));
         $req = $this->httpClient->get($uri);
 
         if (!isset($req->fraudAssessments)) {
@@ -124,12 +141,12 @@ class Container extends Template
      */
     public function getNS8ClientUrl(): string
     {
-        $orderId = $this->request->getParam('order_id');
+        $orderIncrementId = $this->getOrderIncrementId();
 
         return sprintf(
             '%s%s?access_token=%s',
             $this->configHelper->getNS8ClientUrl(),
-            isset($orderId) ? '/order-details/' . $this->base64UrlEncode('#' . $orderId) : '',
+            isset($orderId) ? '/order-details/' . $this->base64UrlEncode($orderIncrementId) : '',
             $this->getAccessToken()
         );
     }
