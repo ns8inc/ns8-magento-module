@@ -287,7 +287,7 @@ class Config extends AbstractHelper
      * @param Http $httpRequest The HTTP request object
      * @return ?string An order increment id
      */
-    public function getOrderIncrementId(Http $httpRequest): string
+    public function getOrderIncrementId(Http $httpRequest): ?string
     {
         $ret = null;
         try {
