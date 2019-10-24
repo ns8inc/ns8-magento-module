@@ -34,7 +34,8 @@
     "compile": "tsc -d",
     "config:magento": "ts-node ./build/module/config.ts",
     "deploy:magento": "ts-node ./build/deployMagento.ts",
-    "lint": "eslint --ext=ts switchboard switches"
+    "lint": "eslint --ext=ts switchboard switches",
+    "lint:php": "phpcs --standard=Magento2 --ignore=*/vendor/* ./module"
   },
   "version": "0.0.0"
 }
