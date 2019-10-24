@@ -2,10 +2,10 @@ import { Logger } from '@ns8/ns8-protect-sdk';
 import { NamedOrderUpdate } from 'ns8-switchboard-interfaces';
 import { OrderHelper } from './OrderHelper';
 import { Status } from 'ns8-protect-models';
-import { StatusHistory, OrderState } from '@ns8/magento2-rest-client';
+import { StatusHistory, OrderState as MagentoOrderState } from '@ns8/magento2-rest-client';
 import { OrderActionData } from '..';
 import { OrderUpdateEventData } from '../models';
-import { MagentoState, isValidMagentoState } from './utils';
+import { ProtectOrderState, isValidMagentoState } from './utils';
 /**
  * Utility class for working with Protect Named Order Updates
  */
@@ -27,10 +27,10 @@ export class OrderUpdateHelper extends OrderHelper {
       }
       //We currently have only 3 concepts on the Protect side for Order status: Canceled, Approved and Merchant Review
       //This attempts to normalize the multitude of states an order can have from within Magento into our very narrow concepts.
-      if (data.order.state == MagentoState.CANCELED || data.order.state == MagentoState.CLOSED) {
+      if (data.order.state == MagentoOrderState.CANCELED || data.order.state == MagentoOrderState.CLOSED) {
         //Cancelled indicates the order has been proactively cancelled. Closed indicates the order is terminated and the customer has been refunded.
         ret.status = Status.CANCELLED;
-      } else if (data.order.state == MagentoState.COMPLETE) {
+      } else if (data.order.state == MagentoOrderState.COMPLETE) {
         //If the order is complete, then the merchant has approved it.
         ret.status = Status.APPROVED;
       } else {
@@ -55,9 +55,9 @@ export class OrderUpdateHelper extends OrderHelper {
 
       // If the order has already been terminated, refunded or fulfilled,
       // then do nothing.
-      if (magentoOrder.state === MagentoState.CANCELED ||
-          magentoOrder.state == MagentoState.CLOSED ||
-          magentoOrder.state == MagentoState.COMPLETE) {
+      if (magentoOrder.state === MagentoOrderState.CANCELED ||
+          magentoOrder.state == MagentoOrderState.CLOSED ||
+          magentoOrder.state == MagentoOrderState.COMPLETE) {
         return ret;
       }
 
@@ -75,33 +75,33 @@ export class OrderUpdateHelper extends OrderHelper {
       switch (data.status) {
         case Status.CANCELLED:
           await this.MagentoClient.cancelOrder(magentoOrder.entity_id);
-          ret.platformStatus = MagentoState.CANCELED;
+          ret.platformStatus = MagentoOrderState.CANCELED;
           comment.comment = 'NS8 Protect Order Cancelled';
-          comment.status = OrderState.CANCELED;
+          comment.status = ProtectOrderState.CANCELED;
           await this.MagentoClient.postOrderComment(magentoOrder.entity_id, comment);
           break;
         case Status.APPROVED:
-          if (magentoOrder.state == MagentoState.ON_HOLD) {
+          if (magentoOrder.state == MagentoOrderState.ON_HOLD) {
             //There are various ways this can fail; try for now and move on if we don't succeed
             try {
               await this.MagentoClient.unholdOrder(magentoOrder.entity_id);
             } catch {}
           }
-          ret.platformStatus = MagentoState.APPROVED;
+          ret.platformStatus = ProtectOrderState.APPROVED;
           comment.comment = 'NS8 Protect Order Approved';
-          comment.status = MagentoState.APPROVED;
+          comment.status = ProtectOrderState.APPROVED;
           await this.MagentoClient.postOrderComment(magentoOrder.entity_id, comment);
           break;
         case Status.MERCHANT_REVIEW:
-          if (magentoOrder.state != MagentoState.ON_HOLD) {
+          if (magentoOrder.state != MagentoOrderState.ON_HOLD) {
             //There are various ways this can fail; try for now and move on if we don't succeed
             try {
               await this.MagentoClient.holdOrder(magentoOrder.entity_id);
             } catch { }
           }
-          ret.platformStatus = MagentoState.MERCHANT_REVIEW;
+          ret.platformStatus = ProtectOrderState.MERCHANT_REVIEW;
           comment.comment = 'NS8 Protect Order Requires Review';
-          comment.status = MagentoState.MERCHANT_REVIEW;
+          comment.status = ProtectOrderState.MERCHANT_REVIEW;
           await this.MagentoClient.postOrderComment(magentoOrder.entity_id, comment);
           break;
       }
