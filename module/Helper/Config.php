@@ -266,9 +266,13 @@ class Config extends AbstractHelper
         );
     }
 
-    public function getAuthenticatedUserName()
+    /**
+     * Get's the authenticated user name for the admin user
+     * @return ?string The admin user name or null
+     */
+    public function getAuthenticatedUserName() : ?string
     {
-        $username = '';
+        $username = null;
         try {
             $auth = $this->context->getAuth();
             $loginUser = $auth->getUser();
