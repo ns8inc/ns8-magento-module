@@ -11,7 +11,6 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\ProductMetadataInterface;
-use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\State;
 use Magento\Framework\Encryption\EncryptorInterface;
@@ -213,7 +212,7 @@ class Config extends AbstractHelper
             if (!isset($this->state->_areaCode)) {
                 $this->state->setAreaCode('adminhtml');
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // intentionally left empty
         }
     }
@@ -276,7 +275,7 @@ class Config extends AbstractHelper
             if ($loginUser) {
                 $username = $loginUser->getUserName();
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // intentionally left empty
         }
         return $username;
@@ -284,10 +283,9 @@ class Config extends AbstractHelper
 
     /**
      * Get the Order display id from the requested order
-     * @param Http $httpRequest The HTTP request object
      * @return ?string An order increment id
      */
-    public function getOrderIncrementId(Http $httpRequest): ?string
+    public function getOrderIncrementId(): ?string
     {
         $ret = null;
         try {
