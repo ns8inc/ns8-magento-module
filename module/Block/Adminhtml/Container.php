@@ -64,7 +64,7 @@ class Container extends Template
      * @param \NS8\CSP2\Helper\Config $configHelper The config helper
      * @param \Magento\Backend\Block\Template\Context $context The context
      * @param \NS8\CSP2\Helper\HttpClient $httpClient The HTTP client
-     * @param \Magento\Framework\App\Request\Http $context The request
+     * @param \Magento\Framework\App\Request\Http $request The request
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory The page factory
      */
     public function __construct(
@@ -99,7 +99,8 @@ class Container extends Template
      */
     public function getEQ8Score(): ?int
     {
-        $uri = sprintf('/orders/order-name/%s', $this->base64UrlEncode('#' . $this->request->getParam('order_id')));
+        $orderIncrementId = $this->configHelper->getOrderIncrementId();
+        $uri = sprintf('/orders/order-name/%s', $this->base64UrlEncode($orderIncrementId));
         $req = $this->httpClient->get($uri);
 
         if (!isset($req->fraudAssessments)) {
@@ -124,12 +125,11 @@ class Container extends Template
      */
     public function getNS8ClientUrl(): string
     {
-        $orderId = $this->request->getParam('order_id');
-
+        $orderIncrementId = $this->configHelper->getOrderIncrementId();
         return sprintf(
             '%s%s?access_token=%s',
             $this->configHelper->getNS8ClientUrl(),
-            isset($orderId) ? '/order-details/' . $this->base64UrlEncode('#' . $orderId) : '',
+            isset($orderIncrementId) ? '/order-details/' . $this->base64UrlEncode($orderIncrementId) : '',
             $this->getAccessToken()
         );
     }

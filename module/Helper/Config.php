@@ -2,6 +2,7 @@
 
 namespace NS8\CSP2\Helper;
 
+use Exception;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\UrlInterface;
 use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
@@ -15,6 +16,7 @@ use Magento\Framework\App\State;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
 use Magento\Framework\Stdlib\CookieManagerInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -33,6 +35,7 @@ class Config extends AbstractHelper
     protected $cookieManager;
     protected $encryptor;
     protected $moduleList;
+    protected $orderRepository;
     protected $productMetadata;
     protected $request;
     protected $scopeConfig;
@@ -43,10 +46,11 @@ class Config extends AbstractHelper
     /**
      * Default constructor
      *
-     * @param CookieManagerInterface $cookieManager
      * @param Context $context
+     * @param CookieManagerInterface $cookieManager
      * @param EncryptorInterface $encryptor
      * @param ModuleList $moduleList
+     * @param OrderRepositoryInterface $orderRepository
      * @param ProductMetadataInterface $productMetadata
      * @param RequestInterface $request
      * @param ScopeConfigInterface $scopeConfig
@@ -57,11 +61,12 @@ class Config extends AbstractHelper
      * @param WriterInterface $scopeWriter
      */
     public function __construct(
-        CookieManagerInterface $cookieManager,
         Context $context,
+        CookieManagerInterface $cookieManager,
         EncryptorInterface $encryptor,
         LoggerInterface $loggerInterface,
         ModuleList $moduleList,
+        OrderRepositoryInterface $orderRepository,
         ProductMetadataInterface $productMetadata,
         RequestInterface $request,
         ScopeConfigInterface $scopeConfig,
@@ -78,6 +83,7 @@ class Config extends AbstractHelper
         $this->encryptor = $encryptor;
         $this->logger = $loggerInterface;
         $this->moduleList = $moduleList;
+        $this->orderRepository = $orderRepository;
         $this->productMetadata = $productMetadata;
         $this->request = $request;
         $this->scopeConfig = $scopeConfig;
@@ -206,7 +212,7 @@ class Config extends AbstractHelper
             if (!isset($this->state->_areaCode)) {
                 $this->state->setAreaCode('adminhtml');
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // intentionally left empty
         }
     }
@@ -260,18 +266,41 @@ class Config extends AbstractHelper
         );
     }
 
-    public function getAuthenticatedUserName()
+    /**
+     * Get's the authenticated user name for the admin user
+     * @return ?string The admin user name or null
+     */
+    public function getAuthenticatedUserName() : ?string
     {
-        $username = '';
+        $username = null;
         try {
             $auth = $this->context->getAuth();
             $loginUser = $auth->getUser();
             if ($loginUser) {
                 $username = $loginUser->getUserName();
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // intentionally left empty
         }
         return $username;
+    }
+
+    /**
+     * Get the Order display id from the requested order
+     * @param ?string $orderId
+     * @return ?string An order increment id
+     */
+    public function getOrderIncrementId(string $orderId = null): ?string
+    {
+        $ret = null;
+        try {
+            if (!isset($orderId)) {
+                $orderId = $this->request->getParam('order_id');
+            }
+            $order = $this->orderRepository->get($orderId);
+            $ret = $order->getIncrementId();
+        } catch (Exception $e) {
+        }
+        return $ret;
     }
 }

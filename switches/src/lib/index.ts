@@ -5,7 +5,7 @@ export * from './FraudAssessmentHelper';
 export * from './HelperBase';
 export * from './LineItemsHelper';
 export * from './MagentoClient';
-export * from './NamedOrderHelper';
+export * from './OrderUpdateHelper';
 export * from './OrderHelper';
 export * from './SessionHelper';
 export * from './MerchantHelper';

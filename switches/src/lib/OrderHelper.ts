@@ -29,7 +29,7 @@ export class OrderHelper {
   public SessionHelper: SessionHelper;
   public TransactionHelper: TransactionHelper;
 
-  private _ready: Promise<MagentoOrder>;
+  protected _ready: Promise<MagentoOrder>;
   private _orderId: number;
   /**
    * Constructor will call init() which sets a _ready Promise.
