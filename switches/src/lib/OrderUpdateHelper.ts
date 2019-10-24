@@ -56,8 +56,8 @@ export class OrderUpdateHelper extends OrderHelper {
       // If the order has already been terminated, refunded or fulfilled,
       // then do nothing.
       if (magentoOrder.state === MagentoOrderState.CANCELED ||
-          magentoOrder.state == MagentoOrderState.CLOSED ||
-          magentoOrder.state == MagentoOrderState.COMPLETE) {
+        magentoOrder.state == MagentoOrderState.CLOSED ||
+        magentoOrder.state == MagentoOrderState.COMPLETE) {
         return ret;
       }
 
@@ -77,7 +77,7 @@ export class OrderUpdateHelper extends OrderHelper {
           await this.MagentoClient.cancelOrder(magentoOrder.entity_id);
           ret.platformStatus = MagentoOrderState.CANCELED;
           comment.comment = 'NS8 Protect Order Cancelled';
-          comment.status = ProtectOrderState.CANCELED;
+          comment.status = MagentoOrderState.CANCELED;
           await this.MagentoClient.postOrderComment(magentoOrder.entity_id, comment);
           break;
         case Status.APPROVED:
@@ -85,7 +85,7 @@ export class OrderUpdateHelper extends OrderHelper {
             //There are various ways this can fail; try for now and move on if we don't succeed
             try {
               await this.MagentoClient.unholdOrder(magentoOrder.entity_id);
-            } catch {}
+            } catch { }
           }
           ret.platformStatus = ProtectOrderState.APPROVED;
           comment.comment = 'NS8 Protect Order Approved';
