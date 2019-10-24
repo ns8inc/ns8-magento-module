@@ -283,13 +283,16 @@ class Config extends AbstractHelper
 
     /**
      * Get the Order display id from the requested order
+     * @param ?string $orderId
      * @return ?string An order increment id
      */
-    public function getOrderIncrementId(): ?string
+    public function getOrderIncrementId(string $orderId = null): ?string
     {
         $ret = null;
         try {
-            $orderId = $this->request->getParam('order_id');
+            if (!isset($orderId)) {
+                $orderId = $this->request->getParam('order_id');
+            }
             $order = $this->orderRepository->get($orderId);
             $ret = $order->getIncrementId();
         } catch (Exception $e) {
