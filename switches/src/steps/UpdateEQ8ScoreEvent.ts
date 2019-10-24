@@ -1,7 +1,6 @@
 import { EventSwitch } from 'ns8-switchboard-interfaces';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { OrderHelper } from '..';
-import { ProtectOrderUpdateStatus } from '..';
 
 export class UpdateEQ8ScoreEvent implements EventSwitch {
   async handle(switchContext: SwitchContext): Promise<any> {
