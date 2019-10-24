@@ -99,7 +99,7 @@ class Logger extends AbstractHelper
     {
         try {
             //Log to Magento
-            $this->logger->log($level, $message, array('data'=>$data));
+            $this->logger->log($level, $message, ['data'=>$data]);
 
             //Structure some data for our API to consume later
             $data = [

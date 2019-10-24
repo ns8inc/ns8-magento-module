@@ -148,7 +148,7 @@ class HttpClient extends AbstractHelper
 
         $authHeaderString = 'Bearer ' . $accessToken;
 
-        $authHeader = array('Authorization' => $authHeaderString);
+        $authHeader = ['Authorization' => $authHeaderString];
         $allHeaders = array_merge($headers, $authHeader);
         return $this->execute($url, $data, $method, $parameters, $allHeaders, $timeout, $decodeJson);
     }
@@ -173,7 +173,7 @@ class HttpClient extends AbstractHelper
             $httpClient = new Client();
             $httpClient->setUri($uri);
 
-            $httpClient->setOptions(array('timeout' => $timeout));
+            $httpClient->setOptions(['timeout' => $timeout]);
             $httpClient->setMethod($method);
             $httpClient->setParameterGet($parameters);
             $httpClient->setMethod($method);
@@ -197,7 +197,7 @@ class HttpClient extends AbstractHelper
             $response = $decodeJson ? Decoder::decode($body) : $body;
             return $response;
         } catch (\Exception $e) {
-            $this->logger->error('Failed to execute API call', array('error'=>$e));
+            $this->logger->error('Failed to execute API call', ['error'=>$e]);
         }
         #TODO: consumers probably want more control over the response
     }
@@ -246,10 +246,10 @@ class HttpClient extends AbstractHelper
      */
     private function getProtectAccessToken($consumerId, $accessToken)
     {
-        $getParams = array(
+        $getParams = [
             'oauth_consumer_key' => $consumerId,
             'access_token' => $accessToken
-        );
+        ];
         $response = $this->execute('init/magento/access-token', '', 'GET', $getParams);
         return $response->token;
     }

@@ -17,10 +17,10 @@ use NS8\CSP2\Helper\Config;
 use NS8\CSP2\Helper\HttpClient;
 
  /**
- * The Container class.
- *
- * This handles the Magento data and allows it to be retrieved by the view templates.
- */
+  * The Container class.
+  *
+  * This handles the Magento data and allows it to be retrieved by the view templates.
+  */
 class Container extends Template
 {
     /**

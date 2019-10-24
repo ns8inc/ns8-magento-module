@@ -7,13 +7,11 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 
 class Uninstall implements UninstallInterface
 {
-    public function __construct() 
+    public function __construct()
     {
-        
     }
 
     public function uninstall(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-        
     }
 }
