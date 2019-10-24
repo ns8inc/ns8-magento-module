@@ -26,6 +26,7 @@ class OrderUpdate implements ObserverInterface
      *
      * @param Config $config
      * @param Http $request
+     * @param HttpClient $httpClient
      * @param Logger $logger
      * @param OrderInterface $order
      * @param Session $session
