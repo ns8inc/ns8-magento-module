@@ -99,7 +99,7 @@ class Container extends Template
      */
     public function getEQ8Score(): ?int
     {
-        $orderIncrementId = $this->configHelper->getOrderIncrementId($this->request);
+        $orderIncrementId = $this->configHelper->getOrderIncrementId();
         $uri = sprintf('/orders/order-name/%s', $this->base64UrlEncode($orderIncrementId));
         $req = $this->httpClient->get($uri);
 
@@ -125,7 +125,7 @@ class Container extends Template
      */
     public function getNS8ClientUrl(): string
     {
-        $orderIncrementId = $this->configHelper->getOrderIncrementId($this->request);
+        $orderIncrementId = $this->configHelper->getOrderIncrementId();
         return sprintf(
             '%s%s?access_token=%s',
             $this->configHelper->getNS8ClientUrl(),
