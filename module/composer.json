@@ -26,12 +26,19 @@
     "php": "~7.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "*"
+    "phpunit/phpunit": "*",
+    "magento/magento-coding-standard": "dev-master"
   },
   "scripts": {
     "test": [
       "parallel-lint . --exclude vendor",
       "phpunit"
+    ],
+    "post-install-cmd": [
+      "([ $COMPOSER_DEV_MODE -eq 0 ] || phpcs --config-set installed_paths ../../magento/magento-coding-standard/)"
+    ],
+    "post-update-cmd": [
+      "([ $COMPOSER_DEV_MODE -eq 0 ] || phpcs --config-set installed_paths ../../magento/magento-coding-standard/)"
     ]
   },
   "suggest": {},
