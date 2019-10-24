@@ -43,4 +43,3 @@ export enum ProtectOrderState {
 export const existsInEnum = (enm: object, key: string): boolean => Object.values(enm).some((v) => v === key);
 
 export const isValidMagentoState = (key: string): boolean => existsInEnum(MagentoOrderState, key);
-export const isValidProtectState = (key: string): boolean => existsInEnum(ProtectOrderState, key);
