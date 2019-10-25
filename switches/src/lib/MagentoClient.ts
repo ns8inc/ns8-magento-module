@@ -1,4 +1,4 @@
-import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
+import { Customer as MagentoCustomer, RestLogLevel } from '@ns8/magento2-rest-client';
 import { handleApiError, validateBooleanHttpResponse, RetryConfig } from '.';
 import { Logger } from '@ns8/ns8-protect-sdk';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
@@ -31,7 +31,8 @@ export class MagentoClient {
         consumerKey: si.identityToken,
         consumerSecret: si.identitySecret,
         accessToken: si.token,
-        accessTokenSecret: si.secret
+        accessTokenSecret: si.secret,
+        logLevel: RestLogLevel.NONE,
       })
     } catch (e) {
       Logger.error('Failed to construct RestClient', e);
@@ -46,7 +47,7 @@ export class MagentoClient {
       return await this.client.orders.get(orderId);
     } catch (e) {
       if (false === await handleApiError(e, async () => this.getOrder(orderId, retryConfig), retryConfig)) {
-        Logger.error(`Failed to get Order Id:${orderId} from Magento`, e);
+        Logger.log(`Failed to get Order Id:${orderId} from Magento`);
       }
     }
     return null;
@@ -60,7 +61,7 @@ export class MagentoClient {
       return await this.client.orders.getByIncrementId(incrementId);
     } catch (e) {
       if (false === await handleApiError(e, async () => this.getOrderByIncrementId(incrementId, retryConfig), retryConfig)) {
-        Logger.error(`Failed to get Order increment_id:${incrementId} from Magento`, e);
+        Logger.log(`Failed to get Order increment_id:${incrementId} from Magento`);
       }
     }
     return null;

@@ -25,7 +25,7 @@ export const handleApiError = async (error, callback, retryConfig: RetryConfig =
     await Utilities.sleep(retryConfig.waitMs);
     return await callback();
   } else {
-    Logger.log(`404 fetching key "${retryConfig.key}". ${retryConfig.maxRetry} retries attempted`, error);
+    Logger.log(`404 fetching key "${retryConfig.key}". ${retryConfig.maxRetry} retries attempted`);
     return false;
   }
 }

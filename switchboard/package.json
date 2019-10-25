@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@ns8/ns8-magento2-switches": "1.0.19-crf6"
+    "@ns8/ns8-magento2-switches": "1.0.19-crf7"
   },
   "devDependencies": {
     "aws-lambda": "0.1.2",
