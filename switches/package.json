@@ -44,5 +44,5 @@
     "test": "jest",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand"
   },
-  "version": "1.0.17"
+  "version": "1.0.18"
 }
