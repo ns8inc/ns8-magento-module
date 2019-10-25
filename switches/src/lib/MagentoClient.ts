@@ -46,7 +46,7 @@ export class MagentoClient {
     try {
       return await this.client.orders.get(orderId);
     } catch (e) {
-      if (false === await handleApiError(e, async () => this.getOrder(orderId, retryConfig), retryConfig)) {
+      if (false === await handleApiError(e, async () => await this.getOrder(orderId, retryConfig), retryConfig)) {
         Logger.log(`Failed to get Order Id:${orderId} from Magento`);
       }
     }
