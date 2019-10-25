@@ -42,7 +42,7 @@
     "rebuild": "yarn clean && yarn build",
     "rebuild:dev": "yarn clean && yarn build:dev",
     "test": "jest",
-    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand"
+    "test:debug": "node --inspect-brk=9230 ./node_modules/jest/bin/jest.js --runInBand"
   },
-  "version": "1.0.19-crf2"
+  "version": "1.0.19-crf6"
 }
