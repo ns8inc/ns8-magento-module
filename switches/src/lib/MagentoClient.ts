@@ -53,6 +53,20 @@ export class MagentoClient {
   }
 
   /**
+   * Convenience method to get a [[MagentoOrder]] by increment_id from the Magento API.
+   */
+  public getOrderByIncrementId = async (incrementId: string, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoOrder | null> => {
+    try {
+      return await this.client.orders.getByIncrementId(incrementId);
+    } catch (e) {
+      if (false === await handleApiError(e, this.getOrderByIncrementId, [incrementId], attempts, maxRetry, waitMs)) {
+        Logger.error(`Failed to get Order increment_id:${incrementId} from Magento`, e);
+      }
+    }
+    return null;
+  }
+
+  /**
    * Attempt to post a [[MagentoComment]] to a [[MagentoOrder]]. If successful, return true.
    */
   public postOrderComment = async (orderId: number, comment: MagentoComment): Promise<boolean> => {

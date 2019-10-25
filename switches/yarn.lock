@@ -286,10 +286,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@ns8/magento2-rest-client@0.2.25":
-  version "0.2.25"
-  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.25.tgz#63a1678b8022205ce0d327773c8fbbbde8cd0812"
-  integrity sha512-lzJQbOmeuB4h1VsHzTAEBBnJq5MNuNbV09l4Es3/Q2V9ERMo309B2cJEvV6TgFVe4riX4drrsqyvXoMEIdJCJg==
+"@ns8/magento2-rest-client@0.2.26":
+  version "0.2.26"
+  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.26.tgz#415367d321126424ae11d2f10ea4555bb4718d26"
+  integrity sha512-T15M+do3sVBFk7oZy5/b5zA5znkinyjKRP15jNjca+U+GTbM1wHa9B/i4f8GNBP4Qq2d77qiUQ+Trmy+X1f37A==
 
 "@ns8/ns8-protect-sdk@0.1.19":
   version "0.1.19"
