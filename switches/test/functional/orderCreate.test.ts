@@ -1,7 +1,7 @@
 import 'jest';
 import { RestClient } from '@ns8/magento2-rest-client';
 import * as fs from 'fs';
-import { CreateOrderAction, MagentoState, MagentoStatus, UpdateOrderStatusAction } from '../../dist';
+import { CreateOrderAction, MagentoState, UpdateOrderStatusAction } from '../../src';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { createSwitchboardContextMock } from '../lib';
 const switchboardData: SwitchContext[] = [];
@@ -18,34 +18,18 @@ beforeAll((done) => {
     magentoBaseUrl: process.env.MAGENTO_BASE_URL || ''
   };
 
-  const client = new RestClient(options);
-
   if (!fs.existsSync('test/mock_data')) fs.mkdirSync('test/mock_data');
   if (!fs.existsSync('test/mock_data/orders')) fs.mkdirSync('test/mock_data/orders');
   if (!fs.existsSync('test/mock_data/transactions')) fs.mkdirSync('test/mock_data/transactions');
 
-  return client.orders.list()
-    .then((allOrders) => {
-      try {
-        allOrders.items.forEach((item) => {
-          try {
-            switchboardData.push(createSwitchboardContextMock({
-              order: {
-                entity_id: item.entity_id,
-                increment_id: item.increment_id,
-                status: item.status,
-                state: item.state
-              }
-            }, options))
-          } catch (e) {
-            console.error(e);
-          }
-        })
-      } catch (e) {
-        console.error(e);
-      }
-      done();
-    });
+  switchboardData.push(createSwitchboardContextMock({
+    order: {
+      entity_id: 1,
+      increment_id: '000000001',
+      status: MagentoState.PENDING,
+      state: MagentoState.PENDING
+    }
+  }, options))
 }, 30000);
 
 test('Assert that order creation succeeds', done => {
@@ -53,7 +37,9 @@ test('Assert that order creation succeeds', done => {
   //This test will not actually create new data
   const first = switchboardData[0];
   first.data.order.state = MagentoState.PENDING;
-  first.data.order.status = MagentoStatus.PENDING;
+  first.data.order.status = MagentoState.PENDING;
+  first.data.order.entity_id = 200;
+  first.data.order.increment_id = "000000201"
   const order = new CreateOrderAction().create(first).then(data => {
     expect.anything();
     done();
@@ -61,19 +47,4 @@ test('Assert that order creation succeeds', done => {
     done();
   });
 
-});
-
-test('Assert that order cancellation succeeds', done => {
-  //Any valid item will do; just grab the first.
-  //This test will not actually cancel an order
-  const first = switchboardData[0];
-  first.data.order.state = MagentoState.CANCELED;
-  first.data.order.status = MagentoStatus.CANCELED;
-  const order = new UpdateOrderStatusAction().update(first).then(data => {
-    expect.anything();
-    done();
-  }).catch(reason => {
-    done();
-  });
-
-});
+}, 10000000);
