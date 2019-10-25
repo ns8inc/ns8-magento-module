@@ -60,7 +60,7 @@ export class MagentoClient {
     try {
       return await this.client.orders.getByIncrementId(incrementId);
     } catch (e) {
-      if (false === await handleApiError(e, async () => this.getOrderByIncrementId(incrementId, retryConfig), retryConfig)) {
+      if (false === await handleApiError(e, async () => await this.getOrderByIncrementId(incrementId, retryConfig), retryConfig)) {
         Logger.log(`Failed to get Order increment_id:${incrementId} from Magento`);
       }
     }
@@ -132,7 +132,7 @@ export class MagentoClient {
     try {
       return await this.client.customers.get(customerId);
     } catch (e) {
-      if (false === await handleApiError(e, async () => this.getCustomer(customerId, retryConfig), retryConfig)) {
+      if (false === await handleApiError(e, async () => await this.getCustomer(customerId, retryConfig), retryConfig)) {
         Logger.error(`Failed to get Customer Id:${customerId} from Magento`, e);
       }
     }
@@ -146,7 +146,7 @@ export class MagentoClient {
     try {
       return await this.client.transactions.getByTransactionId(transactionId) || null;
     } catch (e) {
-      if (false === await handleApiError(e, async () => this.getTransaction(transactionId, retryConfig), retryConfig)) {
+      if (false === await handleApiError(e, async () => await this.getTransaction(transactionId, retryConfig), retryConfig)) {
         Logger.error(`Failed to get Transaction Id:${transactionId} from Magento`, e);
       }
     }
