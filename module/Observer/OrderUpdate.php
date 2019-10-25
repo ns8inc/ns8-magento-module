@@ -90,20 +90,20 @@ class OrderUpdate implements ObserverInterface
         try {
             $order = $observer->getEvent()->getOrder();
             $orderData = $order->getData();
-            $params = array();
+            $params = [];
             $state = $order->getState();
             $status = $order->getStatus();
             $oldStatus = $this->addStatusHistory($order);
 
             if (isset($oldStatus)) {
-                $params = array('action'=>'UPDATE_ORDER_STATUS_ACTION');
+                $params = ['action'=>'UPDATE_ORDER_STATUS_ACTION'];
             } elseif ($state == 'new' || $status == 'pending') {
-                $params = array('action'=>'CREATE_ORDER_ACTION');
+                $params = ['action'=>'CREATE_ORDER_ACTION'];
             } else {
-                $params = array('action'=>'UPDATE_ORDER_STATUS_ACTION');
+                $params = ['action'=>'UPDATE_ORDER_STATUS_ACTION'];
             }
 
-            $data = array('order'=>$orderData);
+            $data = ['order'=>$orderData];
             $response = $this->httpClient->post('/switch/executor', $data, $params);
         } catch (Exception $e) {
             $this->logger->error('The order update could not be processed', $e);

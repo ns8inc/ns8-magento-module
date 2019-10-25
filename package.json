@@ -6,9 +6,11 @@
     "@ns8/magento2-rest-client": "0.2.23",
     "@ns8/ns8-protect-sdk": "0.1.19",
     "@ns8/ns8-switchboard-operator": "1.0.99",
+    "@types/archiver": "2.1.1",
     "@types/node": "12.11.5",
     "@typescript-eslint/eslint-plugin": "2.5.0",
     "@typescript-eslint/parser": "2.5.0",
+    "archiver": "3.1.1",
     "aws-lambda": "0.1.2",
     "aws-sdk": "2.554.0",
     "dotenv": "8.2.0",
@@ -34,7 +36,9 @@
     "compile": "tsc -d",
     "config:magento": "ts-node ./build/module/config.ts",
     "deploy:magento": "ts-node ./build/deployMagento.ts",
-    "lint": "eslint --ext=ts switchboard switches"
+    "lint": "eslint --ext=ts switchboard switches",
+    "lint:php": "phpcs --standard=Magento2 --ignore=*/vendor/* ./module",
+    "release:magento": "ts-node ./build/module/release.ts"
   },
   "version": "0.0.0"
 }
