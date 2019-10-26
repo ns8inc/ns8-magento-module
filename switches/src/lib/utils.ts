@@ -1,4 +1,5 @@
 import { Utilities, Logger } from '@ns8/ns8-protect-sdk';
+import { OrderState as MagentoOrderState } from '@ns8/magento2-rest-client';
 
 export class RetryConfig {
   constructor(partial: Partial<RetryConfig> = {}) {
@@ -42,24 +43,17 @@ export const validateBooleanHttpResponse = (httpResponse: any): boolean => {
   return ret;
 }
 
-export enum OrderState {
+export enum ProtectOrderUpdateStatus {
   CREATED = 'created',
   UPDATED = 'updated'
 }
 
-export enum MagentoState {
+export enum ProtectOrderState {
   APPROVED = 'ns8_approved',
   CANCELED = 'canceled',
-  CLOSED = 'closed',
-  COMPLETE = 'complete',
   MERCHANT_REVIEW = 'ns8_merchant_review',
-  ON_HOLD = 'holded',
-  PAYMENT_REVIEW = 'payment_review',
-  PENDING = 'new',
-  PENDING_PAYMENT = 'pending_payment',
-  PROCESSING = 'processing',
 }
 
 export const existsInEnum = (enm: object, key: string): boolean => Object.values(enm).some((v) => v === key);
 
-export const isValidMagentoState = (key: string): boolean => existsInEnum(MagentoState, key);
+export const isValidMagentoState = (key: string): boolean => existsInEnum(MagentoOrderState, key);

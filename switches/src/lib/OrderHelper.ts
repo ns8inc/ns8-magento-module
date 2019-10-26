@@ -4,7 +4,7 @@ import {
   LineItemsHelper,
   MagentoClient,
   OrderActionData,
-  OrderState,
+  ProtectOrderUpdateStatus,
   SessionHelper,
   TransactionHelper
 } from '..';
@@ -45,9 +45,9 @@ export class OrderHelper {
    * Determines whether or not to process this order.
    * TODO: update this logic when we have a better understanding of status/state in Magento
    */
-  public process = (state: OrderState): Boolean => {
+  public process = (state: ProtectOrderUpdateStatus): Boolean => {
     switch (state) {
-      case OrderState.CREATED:
+      case ProtectOrderUpdateStatus.CREATED:
         return this.SwitchContext.data.order.status === 'pending' || this.SwitchContext.data.state === 'new';
       default:
         return true;
@@ -114,7 +114,7 @@ export class OrderHelper {
     this.Order = new Order();
     try {
       await this._ready;
-      if (!this.process(OrderState.CREATED)) {
+      if (!this.process(ProtectOrderUpdateStatus.CREATED)) {
         throw new Error('Cannot call Create Order unless the order is new.');
       }
       const orderId = this.getOrderId();
