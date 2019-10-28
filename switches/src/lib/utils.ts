@@ -19,12 +19,12 @@ export class RetryConfig {
  * If a 404, will execute a simple retry loop.
  * Returns `false` if the API error is unhandled; otherwise returns the API response.
  */
-export const handleApiError = async (error, callback, retryConfig: RetryConfig = new RetryConfig()): Promise<any> => {
+export const handleApiError = async (error, retryCallback, retryConfig: RetryConfig = new RetryConfig()): Promise<any> => {
   if (error.statusCode === 404 && retryConfig.attempts < retryConfig.maxRetry) {
     retryConfig.attempts += 1;
     Logger.log(`404 fetching key "${retryConfig.key}". Retry #${retryConfig.attempts}/${retryConfig.maxRetry} in ${retryConfig.waitMs}ms`);
     await Utilities.sleep(retryConfig.waitMs);
-    return await callback();
+    return await retryCallback();
   } else {
     Logger.log(`404 fetching key "${retryConfig.key}". ${retryConfig.maxRetry} retries attempted`);
     return false;
