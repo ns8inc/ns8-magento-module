@@ -93,7 +93,7 @@ export class OrderHelper {
     const orderId = this.getOrderId();
     if (!orderId) throw new Error(`No Magento OrderId could be found`);
     const order: MagentoOrder | null = await this.MagentoClient.getOrder(orderId);
-    if (null === order) throw new Error(`Order "${this.SwitchContext.data.order.increment_id}" could be loaded by entity_id: ${orderId}`)
+    if (null === order) throw new Error(`Order "${this.SwitchContext.data.order.increment_id}" could not be loaded by entity_id: ${orderId}`)
     this.MagentoOrder = order;
 
     this.AddressHelper = new AddressHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
