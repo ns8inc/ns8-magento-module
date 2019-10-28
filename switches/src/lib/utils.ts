@@ -1,18 +1,32 @@
-import { Utilities } from '@ns8/ns8-protect-sdk';
+import { Utilities, Logger } from '@ns8/ns8-protect-sdk';
 import { OrderState as MagentoOrderState } from '@ns8/magento2-rest-client';
+
+export class RetryConfig {
+  constructor(partial: Partial<RetryConfig> = {}) {
+    Object.assign(this, partial || {});
+    this.attempts = partial.attempts || 0
+    this.maxRetry = partial.maxRetry || 5
+    this.waitMs = partial.waitMs || 2000
+  }
+  key: number | string;
+  attempts: number;
+  maxRetry: number;
+  waitMs: number;
+}
 
 /**
  * Handles specific conditions in API errors.
  * If a 404, will execute a simple retry loop.
  * Returns `false` if the API error is unhandled; otherwise returns the API response.
  */
-export const handleApiError = async (error, method, params, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<any> => {
-  if (error.statusCode === 404 && attempts < maxRetry) {
-    attempts += 1;
-    await Utilities.sleep(waitMs);
-    const args = [...params, attempts, maxRetry, waitMs];
-    return await method(...args);
+export const handleApiError = async (error, retryCallback, retryConfig: RetryConfig = new RetryConfig()): Promise<any> => {
+  if (error.statusCode === 404 && retryConfig.attempts < retryConfig.maxRetry) {
+    retryConfig.attempts += 1;
+    Logger.log(`404 fetching key "${retryConfig.key}". Retry #${retryConfig.attempts}/${retryConfig.maxRetry} in ${retryConfig.waitMs}ms`);
+    await Utilities.sleep(retryConfig.waitMs);
+    return await retryCallback();
   } else {
+    Logger.log(`404 fetching key "${retryConfig.key}". ${retryConfig.maxRetry} retries attempted`);
     return false;
   }
 }

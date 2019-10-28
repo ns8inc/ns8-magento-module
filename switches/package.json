@@ -3,7 +3,7 @@
   "dependencies": {},
   "description": "Custom switches for the magento2 integration",
   "devDependencies": {
-    "@ns8/magento2-rest-client": "0.2.25",
+    "@ns8/magento2-rest-client": "0.2.28",
     "@ns8/ns8-protect-sdk": "0.1.19",
     "@ns8/ns8-switchboard-operator": "1.0.99",
     "@types/jest": "24.0.19",
@@ -42,7 +42,7 @@
     "rebuild": "yarn clean && yarn build",
     "rebuild:dev": "yarn clean && yarn build:dev",
     "test": "jest",
-    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand"
+    "test:debug": "node --inspect-brk=9230 ./node_modules/jest/bin/jest.js --runInBand"
   },
-  "version": "1.0.18"
+  "version": "1.0.20"
 }

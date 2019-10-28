@@ -1,5 +1,5 @@
-import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
-import { handleApiError, validateBooleanHttpResponse } from '.';
+import { Customer as MagentoCustomer, RestLogLevel } from '@ns8/magento2-rest-client';
+import { handleApiError, validateBooleanHttpResponse, RetryConfig } from '.';
 import { Logger } from '@ns8/ns8-protect-sdk';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { RestClient } from '@ns8/magento2-rest-client';
@@ -31,7 +31,8 @@ export class MagentoClient {
         consumerKey: si.identityToken,
         consumerSecret: si.identitySecret,
         accessToken: si.token,
-        accessTokenSecret: si.secret
+        accessTokenSecret: si.secret,
+        logLevel: RestLogLevel.NONE,
       })
     } catch (e) {
       Logger.error('Failed to construct RestClient', e);
@@ -41,12 +42,26 @@ export class MagentoClient {
   /**
    * Convenience method to get a [[MagentoOrder]] by OrderId from the Magento API.
    */
-  public getOrder = async (orderId: number, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoOrder | null> => {
+  public getOrder = async (orderId: number, retryConfig: RetryConfig = new RetryConfig({key: orderId})): Promise<MagentoOrder | null> => {
     try {
       return await this.client.orders.get(orderId);
     } catch (e) {
-      if (false === await handleApiError(e, this.getOrder, [orderId], attempts, maxRetry, waitMs)) {
-        Logger.error(`Failed to get Order Id:${orderId} from Magento`, e);
+      if (false === await handleApiError(e, async () => await this.getOrder(orderId, retryConfig), retryConfig)) {
+        Logger.log(`Failed to get Order Id:${orderId} from Magento`);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Convenience method to get a [[MagentoOrder]] by increment_id from the Magento API.
+   */
+  public getOrderByIncrementId = async (incrementId: string, retryConfig: RetryConfig = new RetryConfig({ key: incrementId })): Promise<MagentoOrder | null> => {
+    try {
+      return await this.client.orders.getByIncrementId(incrementId);
+    } catch (e) {
+      if (false === await handleApiError(e, async () => await this.getOrderByIncrementId(incrementId, retryConfig), retryConfig)) {
+        Logger.log(`Failed to get Order increment_id:${incrementId} from Magento`);
       }
     }
     return null;
@@ -113,11 +128,11 @@ export class MagentoClient {
   /**
    * Get a [[MagentoCustomer]] by Id
    */
-  public getCustomer = async (customerId: number, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoCustomer | null> => {
+  public getCustomer = async (customerId: number, retryConfig: RetryConfig = new RetryConfig({ key: customerId })): Promise<MagentoCustomer | null> => {
     try {
       return await this.client.customers.get(customerId);
     } catch (e) {
-      if (false === await handleApiError(e, this.getCustomer, [customerId], attempts, maxRetry, waitMs)) {
+      if (false === await handleApiError(e, async () => await this.getCustomer(customerId, retryConfig), retryConfig)) {
         Logger.error(`Failed to get Customer Id:${customerId} from Magento`, e);
       }
     }
@@ -127,11 +142,11 @@ export class MagentoClient {
   /**
    * Get a [[MagentoTransaction]] by Id
    */
-  public getTransaction = async (transactionId: string, attempts: number = 0, maxRetry: number = 5, waitMs: number = 2000): Promise<MagentoTransaction | null> => {
+  public getTransaction = async (transactionId: string, retryConfig: RetryConfig = new RetryConfig({ key: transactionId })): Promise<MagentoTransaction | null> => {
     try {
       return await this.client.transactions.getByTransactionId(transactionId) || null;
     } catch (e) {
-      if (false === await handleApiError(e, this.getTransaction, [transactionId], attempts, maxRetry, waitMs)) {
+      if (false === await handleApiError(e, async () => await this.getTransaction(transactionId, retryConfig), retryConfig)) {
         Logger.error(`Failed to get Transaction Id:${transactionId} from Magento`, e);
       }
     }

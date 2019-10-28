@@ -50,9 +50,11 @@ export class CustomerHelper extends HelperBase {
   public toCustomer = async (): Promise<Customer> => {
     let ret: Customer = new Customer();
     try {
-      let customer = await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id);
+      // If a user is creating an order as a guest, the order will not have a customer id
+      let customer: MagentoCustomer | null = (this.MagentoOrder.customer_id > 0)
+        ? await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id)
+        : null;
       if (null === customer) {
-        //It is not clear when this would ever be the case, but in the event we can't get the customer from the API, we have most of the data we need already
         customer = {
           id: this.MagentoOrder.customer_id,
           firstname: this.MagentoOrder.customer_firstname,
