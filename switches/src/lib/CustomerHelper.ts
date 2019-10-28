@@ -50,11 +50,10 @@ export class CustomerHelper extends HelperBase {
   public toCustomer = async (): Promise<Customer> => {
     let ret: Customer = new Customer();
     try {
-      let customer: MagentoCustomer | null = null;
       // If a user is creating an order as a guest, the order will not have a customer id
-      if (this.MagentoOrder.customer_id > 0) {
-        customer = await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id);
-      }
+      let customer: MagentoCustomer | null = (this.MagentoOrder.customer_id > 0)
+        ? await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id)
+        : null;
       if (null === customer) {
         customer = {
           id: this.MagentoOrder.customer_id,
