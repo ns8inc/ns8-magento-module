@@ -52,7 +52,7 @@ class Dashboard extends Action
      */
     protected function _isAllowed()
     {
-        return $this->context->getAuthorization()->isAllowed('NS8_Protect::admin');
+        return $this->context->getAuthorization()->isAllowed(Config::NS8_MODULE_NAME.'::admin');
     }
 
     /**

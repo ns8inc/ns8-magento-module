@@ -1,14 +1,14 @@
 <?php
 namespace NS8\Protect\Setup;
 
-use Magento\Framework\Setup\UpgradeDataInterface;
+use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Integration\Model\ConfigBasedIntegrationManager;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\CustomStatus;
 
-class UpgradeData implements UpgradeDataInterface
+class InstallData implements InstallDataInterface
 {
     /**
      * @var CustomStatus
@@ -34,9 +34,9 @@ class UpgradeData implements UpgradeDataInterface
     /**
      * {@inheritdoc}
      */
-    public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
+    public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        $this->customStatus->setCustomStatuses('Running Data Upgrade');
+        $this->customStatus->setCustomStatuses('Running Data Install');
         $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
     }
 }

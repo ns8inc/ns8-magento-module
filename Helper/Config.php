@@ -51,7 +51,15 @@ class Config extends AbstractHelper
      */
     const NS8_ENV_NAME_CLIENT_URL = 'NS8_CLIENT_URL';
 
+    /**
+     * The canonical name of the Magento Service Integration
+     */
     const NS8_INTEGRATION_NAME = 'NS8 Protect';
+
+    /**
+     * The canonical name of the Magento extension/module name
+     */
+    const NS8_MODULE_NAME = 'NS8_Protect';
 
     /*
      * Placeholders for future functionality
@@ -240,7 +248,7 @@ class Config extends AbstractHelper
 
     public function getExtensionVersion()
     {
-        return $this->moduleList->getOne('NS8_Protect')['setup_version'];
+        return $this->moduleList->getOne(Config::NS8_MODULE_NAME)['setup_version'];
     }
 
     //  needed for install/upgrade routines - do not call from anywhere else
