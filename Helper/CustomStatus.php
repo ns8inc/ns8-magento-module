@@ -1,6 +1,6 @@
 <?php
 
-namespace NS8\CSP2\Helper;
+namespace NS8\Protect\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\Exception\AlreadyExistsException;
@@ -10,7 +10,7 @@ use Magento\Sales\Model\Order\Status;
 use Magento\Sales\Model\Order\StatusFactory;
 use Magento\Sales\Model\ResourceModel\Order\Status as StatusResource;
 use Magento\Sales\Model\ResourceModel\Order\StatusFactory as StatusResourceFactory;
-use NS8\CSP2\Helper\Logger;
+use NS8\Protect\Helper\Logger;
 
 /**
  * Creates (install/upgrade) or Deletes (uninstall) custom Protect states
@@ -116,7 +116,7 @@ class CustomStatus extends AbstractHelper
     public function setCustomStatuses($upgradeMode)
     {
         $this->logger->debug($upgradeMode);
-        $this->integrationManager->processIntegrationConfig(['NS8 Integration']);
+        $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
         $this->addCustomStatus(self::MERCHANT_REVIEW_STATUS, self::MERCHANT_REVIEW_STATUS_LABEL, Order::STATE_HOLDED);
         $this->addCustomStatus(self::APPROVED, self::APPROVED_LABEL, Order::STATE_PROCESSING);
     }

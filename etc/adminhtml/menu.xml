@@ -1,20 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
   <menu>
-    <add id="NS8_CSP2::ns8_sales_menu"
-      title="NS8 Protect"
-      module="NS8_CSP2"
-      sortOrder="10"
-      dependsOnModule="NS8_CSP2"
-      resource="NS8_CSP2::admin"
-      parent="Magento_Sales::sales" />
-    <add id="NS8_CSP2::ns8_dashboard"
-      title="Dashboard"
-      module="NS8_CSP2"
-      sortOrder="10"
-      dependsOnModule="NS8_CSP2"
-      action="ns8csp2admin/sales/dashboard"
-      resource="NS8_CSP2::admin"
-      parent="NS8_CSP2::ns8_sales_menu" />
+    <add id="NS8_Protect::ns8_sales_menu" title="NS8 Protect" module="NS8_Protect" sortOrder="10" dependsOnModule="NS8_Protect" resource="NS8_Protect::admin" parent="Magento_Sales::sales" />
+    <add id="NS8_Protect::ns8_dashboard" title="Dashboard" module="NS8_Protect" sortOrder="10" dependsOnModule="NS8_Protect" action="ns8protectadmin/sales/dashboard" resource="NS8_Protect::admin" parent="NS8_Protect::ns8_sales_menu" />
   </menu>
 </config>

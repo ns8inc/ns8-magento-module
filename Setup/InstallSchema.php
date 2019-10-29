@@ -1,5 +1,5 @@
 <?php
-namespace NS8\CSP2\Setup;
+namespace NS8\Protect\Setup;
 
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;

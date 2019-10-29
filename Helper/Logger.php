@@ -1,127 +1,48 @@
-<?php
-namespace NS8\CSP2\Helper;
+<script type="text/javascript">
+  require(['NS8_Protect/js/postmate.min'], function(Postmate) {
+    const handshake = new Postmate({
+      container: document.getElementById('ns8-protect-wrapper'),
+      url: '<?php echo $block->getNS8ClientUrl(); ?>',
+      classListArray: ['ns8-protect-client-iframe']
+    });
 
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Backend\Block\Template\Context;
-use Psr\Log\LoggerInterface;
+    const matchIframeHeightToContent = (iframe) => iframe.get('height')
+      .then(height => iframe.frame.style.height = `${height}px`);
 
-use NS8\CSP2\Helper\Config;
-use NS8\CSP2\Helper\HttpClient;
+    const beginIframeHeightMatching = (iframe) => {
+      iframe.call('setStyle', {
+        selector: 'html',
+        property: 'overflow',
+        value: 'hidden'
+      });
 
-/**
- * Generic logging utility class. This will attempt to log to Magento and to our own API.
- */
-class Logger extends AbstractHelper
-{
-    protected $logger;
-    protected $httpClient;
-    protected $config;
+      iframe.call('setStyle', {
+        selector: 'html',
+        property: 'height',
+        value: 'auto'
+      });
 
-    /**
-     * Default constructor
-     *
-     * @param LoggerInterface $loggerInterface
-     * @param Config $config
-     * @param HttpClient $httpClient
-     */
-    public function __construct(
-        LoggerInterface $loggerInterface,
-        Config $config,
-        HttpClient $httpClient
-    ) {
-        $this->logger = $loggerInterface;
-        $this->config = $config;
-        $this->httpClient = $httpClient;
-    }
+      iframe.call('setStyle', {
+        selector: 'body',
+        property: 'overflow-y',
+        value: 'hidden'
+      });
 
-    /**
-     * Logs an error
-     *
-     * @param string $message
-     * @param mixed $data
-     * @param string $function
-     * @return bool Logging never fails and always returns true.
-     */
-    public function error($message, $data = null, $function = 'Some Method')
-    {
-        return $this->log('ERROR', $message, $data, $function);
-    }
+      matchIframeHeightToContent(iframe);
 
-    /**
-     * Logs a debug
-     *
-     * @param string $message
-     * @param mixed $data
-     * @param string $function
-     * @return bool Logging never fails and always returns true.
-     */
-    public function debug($message, $data = null, $function = 'Some Method')
-    {
-        return $this->log('DEBUG', $message, $data, $function);
-    }
+      /*
+       * Unfortunately, there is no "natural" way to detect the
+       * height change of a document, so for now we resort to polling
+       * 200 ms seems fast enough to feel automatic without
+       * bogging down the browser.
+       */
+      window.setInterval(() => matchIframeHeightToContent(iframe), 200);
+    };
 
-    /**
-     * Logs a warn
-     *
-     * @param string $message
-     * @param mixed $data
-     * @param string $function
-     * @return bool Logging never fails and always returns true.
-     */
-    public function warn($message, $data = null, $function = 'Some Method')
-    {
-        return $this->log('WARN', $message, $data, $function);
-    }
+    handshake.then(
+      child => child.on('ns8-protect-client-connected', () => beginIframeHeightMatching(child))
+    );
+  });
+</script>
 
-    /**
-     * Logs an info
-     *
-     * @param string $message
-     * @param mixed $data
-     * @param string $function
-     * @return bool Logging never fails and always returns true.
-     */
-    public function info($message, $data = null, $function = 'Some Method')
-    {
-        return $this->log('INFO', $message, $data, $function);
-    }
-
-    /**
-     * Internal method to handle logging
-     *
-     * @param string $level Verbosity. Default 'ERROR'. Accepts 'INFO','WARN','DEBUG','ERROR'.
-     * @param string $message Any log message content.
-     * @param mixed $data Optional object data.
-     * @param string $function Option method name.
-     * @return bool Logging never fails and always returns true.
-     */
-    private function log($level = 'ERROR', $message = 'Log Message', $data = null, $function = 'Some Method')
-    {
-        try {
-            //Log to Magento
-            $this->logger->log($level, $message, ['data'=>$data]);
-
-            //Structure some data for our API to consume later
-            $data = [
-                'level' => $level,
-                'category' => 'magento NS8_CSP2',
-                'data' => [
-                    'platform' => 'magento',
-                    'function' => $function,
-                    'message' => $log,
-                    'data' => $data,
-                    'phpVersion' => PHP_VERSION,
-                    'phpOS' => PHP_OS
-                ]
-            ];
-            //Log to our own API
-            // TODO: I don't believe this is logging anything currently.
-            // The targeted 'get' endpoint simply lists disagnostic info.
-            $this->httpClient->get('/util/api-health-check', $data);
-        } catch (\Exception $e) {
-            $this->logger->log('ERROR', 'NS8_CSP2.log: '.$e->getMessage(), $e);
-        } finally {
-            return true;
-        }
-    }
-}
+<div id="ns8-protect-wrapper"></div>

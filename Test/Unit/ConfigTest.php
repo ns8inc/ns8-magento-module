@@ -1,8 +1,8 @@
 <?php
 
-namespace NS8\CSP2\Test\Unit;
+namespace NS8\Protect\Test\Unit;
 
-use NS8\CSP2\Helper\Logger;
+use NS8\Protect\Helper\Logger;
 
 class ConfigTest extends \PHPUnit\Framework\TestCase
 {
@@ -29,7 +29,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->logger = $this->objectManager->getObject("NS8\CSP2\Helper\Logger");
+        $this->logger = $this->objectManager->getObject("NS8\Protect\Helper\Logger");
     }
 
     /**

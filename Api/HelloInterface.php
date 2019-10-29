@@ -1,6 +1,6 @@
 <?php
 
-namespace NS8\CSP2\Api;
+namespace NS8\Protect\Api;
 
 interface HelloInterface
 {

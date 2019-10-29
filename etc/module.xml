@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-	<module name="NS8_CSP2" setup_version="1.0.12">
-		<sequence>
-			<module name="NS8 Integration"/>
-		</sequence>
-	</module>
+  <module name="NS8_Protect" setup_version="2.0.0">
+    <sequence>
+      <module name="NS8 Protect"/>
+    </sequence>
+  </module>
 </config>
