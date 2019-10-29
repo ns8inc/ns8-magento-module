@@ -1,12 +1,12 @@
 <?php
-namespace NS8\CSP2\Setup;
+namespace NS8\Protect\Setup;
 
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Integration\Model\ConfigBasedIntegrationManager;
-use NS8\CSP2\Helper\Config;
-use NS8\CSP2\Helper\CustomStatus;
+use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\CustomStatus;
 
 class UpgradeData implements UpgradeDataInterface
 {
