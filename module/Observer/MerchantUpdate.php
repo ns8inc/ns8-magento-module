@@ -52,7 +52,7 @@ class MerchantUpdate implements ObserverInterface
             return;
         }
 
-        $params = ['action' => 'UPDATE_MERCHANT_ACTION'];
+        $params = ['action' => HttpClient::UPDATE_MERCHANT_ACTION];
         $data = ['eventData' => $eventData];
 
         try {

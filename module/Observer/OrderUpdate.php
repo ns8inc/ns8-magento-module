@@ -96,11 +96,11 @@ class OrderUpdate implements ObserverInterface
             $oldStatus = $this->addStatusHistory($order);
 
             if (isset($oldStatus)) {
-                $params = ['action'=>'UPDATE_ORDER_STATUS_ACTION'];
+                $params = ['action'=>HttpClient::UPDATE_ORDER_STATUS_ACTION];
             } elseif ($state == 'new' || $status == 'pending') {
-                $params = ['action'=>'CREATE_ORDER_ACTION'];
+                $params = ['action'=>HttpClient::CREATE_ORDER_ACTION];
             } else {
-                $params = ['action'=>'UPDATE_ORDER_STATUS_ACTION'];
+                $params = ['action'=>HttpClient::UPDATE_ORDER_STATUS_ACTION];
             }
 
             $data = ['order'=>$orderData];

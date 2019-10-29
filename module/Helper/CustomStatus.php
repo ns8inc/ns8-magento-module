@@ -116,7 +116,7 @@ class CustomStatus extends AbstractHelper
     public function setCustomStatuses($upgradeMode)
     {
         $this->logger->debug($upgradeMode);
-        $this->integrationManager->processIntegrationConfig(['NS8 Integration']);
+        $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
         $this->addCustomStatus(self::MERCHANT_REVIEW_STATUS, self::MERCHANT_REVIEW_STATUS_LABEL, Order::STATE_HOLDED);
         $this->addCustomStatus(self::APPROVED, self::APPROVED_LABEL, Order::STATE_PROCESSING);
     }

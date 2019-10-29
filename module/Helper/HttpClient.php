@@ -19,9 +19,29 @@ use Zend\Json\Decoder;
 class HttpClient extends AbstractHelper
 {
     /**
+     * Canonical Step Name for Create Order
+     */
+    const CREATE_ORDER_ACTION = 'CREATE_ORDER_ACTION';
+
+    /**
+     * Canonical Step Name for Update Order
+     */
+    const UPDATE_ORDER_STATUS_ACTION = 'UPDATE_ORDER_STATUS_ACTION';
+
+    /**
+     * Canonical Step Name for Update Merchant
+     */
+    const UPDATE_MERCHANT_ACTION = 'UPDATE_MERCHANT_ACTION';
+
+    /**
+     * Canonical Step Name for Uninstall
+     */
+    const UNINSTALL_ACTION = 'UNINSTALL_ACTION';
+
+    /**
      * The configuration.
      *
-     * @var \NS8\CSP2\Helper\Config
+     * @var \NS8\Protect\Helper\Config
      */
     protected $config;
 
@@ -70,7 +90,7 @@ class HttpClient extends AbstractHelper
     /**
      * Default constructor
      *
-     * @param \NS8\CSP2\Helper\Config $config The config
+     * @param \NS8\Protect\Helper\Config $config The config
      * @param \Magento\Framework\HTTP\Header $header The HTTP header
      * @param \Psr\Log\LoggerInterface $logger The logger
      * @param \Magento\Integration\Api\IntegrationServiceInterface $integrationServiceInterface The IS interface
@@ -222,7 +242,7 @@ class HttpClient extends AbstractHelper
         if (!empty($storedToken)) {
             return $storedToken;
         } else {
-            $integration = $this->integrationServiceInterface->findByName('NS8 Integration');
+            $integration = $this->integrationServiceInterface->findByName(Config::NS8_INTEGRATION_NAME);
             $consumerId = $integration->getConsumerId();
             $consumer = $this->oauthServiceInterface->loadConsumer($consumerId);
             $accessTokenString = $this->oauthServiceInterface->getAccessToken($consumerId);

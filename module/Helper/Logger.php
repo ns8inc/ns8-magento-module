@@ -103,7 +103,7 @@ class Logger extends AbstractHelper
             //Structure some data for our API to consume later
             $data = [
                 'level' => $level,
-                'category' => 'magento NS8_CSP2',
+                'category' => 'magento '.Config::NS8_INTEGRATION_NAME,
                 'data' => [
                     'platform' => 'magento',
                     'function' => $function,
@@ -118,7 +118,7 @@ class Logger extends AbstractHelper
             // The targeted 'get' endpoint simply lists disagnostic info.
             $this->httpClient->get('/util/api-health-check', $data);
         } catch (\Exception $e) {
-            $this->logger->log('ERROR', 'NS8_CSP2.log: '.$e->getMessage(), $e);
+            $this->logger->log('ERROR', Config::NS8_MODULE_NAME.'.log: '.$e->getMessage(), $e);
         } finally {
             return true;
         }

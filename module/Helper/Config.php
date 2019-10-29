@@ -51,6 +51,16 @@ class Config extends AbstractHelper
      */
     const NS8_ENV_NAME_CLIENT_URL = 'NS8_CLIENT_URL';
 
+    /**
+     * The canonical name of the Magento Service Integration
+     */
+    const NS8_INTEGRATION_NAME = 'NS8 Protect';
+
+    /**
+     * The canonical name of the Magento extension/module name
+     */
+    const NS8_MODULE_NAME = 'NS8_Protect';
+
     /*
      * Placeholders for future functionality
     */
@@ -205,7 +215,7 @@ class Config extends AbstractHelper
      */
     public function getAccessToken()
     {
-        $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/csp2/token'));
+        $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/protect/token'));
         return $storedToken;
     }
 
@@ -217,7 +227,7 @@ class Config extends AbstractHelper
      */
     public function setAccessToken($accessToken)
     {
-        $this->scopeWriter->save('ns8/csp2/token', $this->encryptor->encrypt($accessToken));
+        $this->scopeWriter->save('ns8/protect/token', $this->encryptor->encrypt($accessToken));
         $this->flushConfigCache();
     }
 
@@ -238,7 +248,7 @@ class Config extends AbstractHelper
 
     public function getExtensionVersion()
     {
-        return $this->moduleList->getOne('NS8_CSP2')['setup_version'];
+        return $this->moduleList->getOne('NS8_Protect')['setup_version'];
     }
 
     //  needed for install/upgrade routines - do not call from anywhere else
