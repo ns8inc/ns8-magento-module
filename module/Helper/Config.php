@@ -248,7 +248,7 @@ class Config extends AbstractHelper
 
     public function getExtensionVersion()
     {
-        return $this->moduleList->getOne('NS8_Protect')['setup_version'];
+        return $this->moduleList->getOne(Config::NS8_MODULE_NAME)['setup_version'];
     }
 
     //  needed for install/upgrade routines - do not call from anywhere else
