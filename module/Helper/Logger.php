@@ -1,12 +1,11 @@
 <?php
-namespace NS8\CSP2\Helper;
+namespace NS8\Protect\Helper;
 
-use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Backend\Block\Template\Context;
+use Magento\Framework\App\Helper\AbstractHelper;
+use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\HttpClient;
 use Psr\Log\LoggerInterface;
-
-use NS8\CSP2\Helper\Config;
-use NS8\CSP2\Helper\HttpClient;
 
 /**
  * Generic logging utility class. This will attempt to log to Magento and to our own API.

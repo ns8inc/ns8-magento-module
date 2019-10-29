@@ -2,7 +2,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
   <body>
     <referenceBlock name="order_info">
-      <block class="NS8\CSP2\Block\Adminhtml\Container" template="NS8_CSP2::ns8_protect.phtml" />
+      <block class="NS8\Protect\Block\Adminhtml\Container" template="NS8_Protect::ns8_protect.phtml" />
     </referenceBlock>
   </body>
 </page>

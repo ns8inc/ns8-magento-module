@@ -1,8 +1,8 @@
 <?php
-namespace NS8\CSP2\Model;
+namespace NS8\Protect\Model;
 
-use NS8\CSP2\Api\HelloInterface;
- 
+use NS8\Protect\Api\HelloInterface;
+
 class Hello implements HelloInterface
 {
     /**

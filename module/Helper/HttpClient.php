@@ -1,5 +1,5 @@
 <?php
-namespace NS8\CSP2\Helper;
+namespace NS8\Protect\Helper;
 
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Helper\AbstractHelper;
@@ -8,7 +8,7 @@ use Magento\Framework\HTTP\PhpEnvironment\Request;
 use Magento\Framework\HTTP\ZendClientFactory;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
-use NS8\CSP2\Helper\Config;
+use NS8\Protect\Helper\Config;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
 use Zend\Json\Decoder;

@@ -1,6 +1,4 @@
 <?xml version="1.0" ?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-	<event name="testObserver">
-		<observer instance="NS8\CSP2\Observer\Backend\TestObserver" name="ns8_ns8csp_observer_backend_testobserver_testObserver"/>
-	</event>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 </config>

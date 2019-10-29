@@ -1,14 +1,14 @@
 <?php
 
-namespace NS8\CSP2\Observer;
+namespace NS8\Protect\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\App\Request\Http;
 use Magento\Customer\Model\Session;
 
-use NS8\CSP2\Helper\Logger;
-use NS8\CSP2\Helper\HttpClient;
+use NS8\Protect\Helper\Logger;
+use NS8\Protect\Helper\HttpClient;
 
 class MerchantUpdate implements ObserverInterface
 {

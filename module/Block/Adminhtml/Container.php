@@ -7,14 +7,14 @@
  */
 declare(strict_types=1);
 
-namespace NS8\CSP2\Block\Adminhtml;
+namespace NS8\Protect\Block\Adminhtml;
 
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\View\Result\PageFactory;
-use NS8\CSP2\Helper\Config;
-use NS8\CSP2\Helper\HttpClient;
+use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\HttpClient;
 
  /**
   * The Container class.
@@ -26,7 +26,7 @@ class Container extends Template
     /**
      * The config helper.
      *
-     * @var \NS8\CSP2\Helper\Config
+     * @var \NS8\Protect\Helper\Config
      */
     private $configHelper;
 
@@ -40,7 +40,7 @@ class Container extends Template
     /**
      * The HTTP client helper.
      *
-     * @var \NS8\CSP2\Helper\HttpClient
+     * @var \NS8\Protect\Helper\HttpClient
      */
     private $httpClient;
 
@@ -61,9 +61,9 @@ class Container extends Template
     /**
      * Constructor
      *
-     * @param \NS8\CSP2\Helper\Config $configHelper The config helper
+     * @param \NS8\Protect\Helper\Config $configHelper The config helper
      * @param \Magento\Backend\Block\Template\Context $context The context
-     * @param \NS8\CSP2\Helper\HttpClient $httpClient The HTTP client
+     * @param \NS8\Protect\Helper\HttpClient $httpClient The HTTP client
      * @param \Magento\Framework\App\Request\Http $request The request
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory The page factory
      */
@@ -143,7 +143,7 @@ class Container extends Template
     {
         $orderId = $this->request->getParam('order_id');
 
-        return $this->getUrl('ns8csp2admin/sales/dashboard', isset($orderId) ? ['order_id' => $orderId] : []);
+        return $this->getUrl('ns8protectadmin/sales/dashboard', isset($orderId) ? ['order_id' => $orderId] : []);
     }
 
     /**

@@ -112,8 +112,8 @@ sed -i 's/<private-key>/d68ff7618b2f3118a0342d7f914848c8/' /var/www/html/auth.js
 # cd /var/www/html
 ## Following command will run php with no memory limit (not necessary if set high enough in a php.ini file)
 #sudo -u apache php -d memory_limit=-1 /var/www/html/vendor/composer/composer/bin/composer require ns8/csp
-#Create the directory where we will test the CSP2 extension
-sudo -u apache mkdir -p /var/www/html/app/code/NS8/CSP2
+#Create the directory where we will test the Protect extension
+sudo -u apache mkdir -p /var/www/html/app/code/NS8/Protect
 
 #Make the magento command executable
 sudo chmod +x /var/www/html/bin/magento
@@ -121,14 +121,14 @@ sudo chmod +x /var/www/html/bin/magento
 # Allow the ec2-user to write to the magento install
 sudo chmod -R ugo+rwx /var/www/html/
 
-## The following 3 lines will (eventually) install CSP2 via the Magento Marketplace
-#sudo -u apache php /var/www/html/vendor/composer/composer/bin/composer require ns8/csp2
-#sudo -u apache php /var/www/html/bin/magento module:enable NS8_CSP2
+## The following 3 lines will (eventually) install Protect via the Magento Marketplace
+#sudo -u apache php /var/www/html/vendor/composer/composer/bin/composer require ns8/protect
+#sudo -u apache php /var/www/html/bin/magento module:enable NS8_Protect
 #sudo -u apache php /var/www/html/bin/magento setup:upgrade
 ## The following lines will (eventually) download and install a Magento Module manually
 # sudo -u apache wget -O /var/www/html/app/ns8-module.zip https://ns8.s3.amazonaws.com/builds/TBD
 # This assumes the module root is at the root of the zip file. If they are in a subfolder, you'll need to handle that
-# sudo -u apache unzip /var/www/html/app/ns8-module.zip -d /var/www/html/app/code/NS8/CSP2
+# sudo -u apache unzip /var/www/html/app/ns8-module.zip -d /var/www/html/app/code/NS8/Protect
 # sudo -u apache php /var/www/html/bin/magento setup:upgrade
 # rm /var/www/html/app/ns8-module.zip
 # Remove Composer Auth
@@ -139,5 +139,3 @@ sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_c
 sudo service sshd restart
 
 ## END--SCRIPT ##
-
-

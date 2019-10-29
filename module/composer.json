@@ -7,27 +7,21 @@
   ],
   "autoload": {
     "files": [
-      "src/registration.php"
+      "registration.php"
     ],
     "psr-4": {
-      "NS8\\CSP2\\": ""
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "NS8\\CSP2\\Test\\": ""
+      "NS8\\Protect\\": ""
     }
   },
   "description": "",
   "license": "MIT",
   "minimum-stability": "dev",
-  "name": "ns8/csp2",
+  "name": "ns8/protect",
   "require": {
     "php": "~7.0"
   },
   "require-dev": {
     "magento/magento-coding-standard": "dev-master",
-    "phpunit/phpunit": "*",
     "squizlabs/php_codesniffer": "3.*"
   },
   "scripts": {
@@ -36,10 +30,6 @@
     ],
     "post-update-cmd": [
       "([ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/)"
-    ],
-    "test": [
-      "parallel-lint . --exclude vendor",
-      "phpunit"
     ]
   },
   "suggest": {},

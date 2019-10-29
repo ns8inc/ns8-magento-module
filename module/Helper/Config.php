@@ -1,6 +1,6 @@
 <?php
 
-namespace NS8\CSP2\Helper;
+namespace NS8\Protect\Helper;
 
 use Exception;
 use Magento\Backend\App\Action\Context;
