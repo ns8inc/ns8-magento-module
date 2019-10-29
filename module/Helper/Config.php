@@ -26,6 +26,31 @@ use Psr\Log\LoggerInterface;
  */
 class Config extends AbstractHelper
 {
+    /**
+     * The URL to the Development Protect API
+     */
+    const NS8_DEV_URL_API = 'https://dev-protect.ns8.com';
+    /**
+     * The URL to the Development Client API
+     */
+    const NS8_DEV_URL_CLIENT = 'https://dev-protect-client.ns8.com';
+    /**
+     * The URL to the Production Protect API
+     */
+    const NS8_PRODUCTION_URL_API = 'https://protect.ns8.com';
+    /**
+     * The URL to the Production Client API
+     */
+    const NS8_PRODUCTION_URL_CLIENT = 'https://protect-client.ns8.com';
+    /**
+     * The Environment Variable name for development Protect API URL value
+     */
+    const NS8_ENV_NAME_API_URL = 'NS8_PROTECT_URL';
+    /**
+     * The Environment Variable name for development Client API URL value
+     */
+    const NS8_ENV_NAME_CLIENT_URL = 'NS8_CLIENT_URL';
+
     /*
      * Placeholders for future functionality
     */
@@ -125,29 +150,35 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Gets the current protect API URL based on the environment variables; defaults to Production.
+     * Gets the current protect API URL based on the environment variables.
+     * For now, defaults to Development.
+     * @todo Revisit defaults on preparation to release to Production
      *
      * @param string $route
      * @return string The NS8 Protect URL in use for this instance.
      */
     public function getApiBaseUrl($route = '')
     {
-        return $this->getNS8Url('NS8_PROTECT_URL', 'https://protect.ns8.com', $route);
+        return $this->getNS8Url(Config::NS8_ENV_NAME_API_URL, Config::NS8_DEV_URL_API, $route);
     }
 
     /**
-     * Gets the current protect Client URL based on the environment variables; defaults to Production.
+     * Gets the current protect Client URL based on the environment variables.
+     * For now, defaults to Development.
+     * @todo Revisit defaults on preparation to release to Production
      *
      * @param string $route
      * @return string The NS8 Protect Client URL in use for this instance.
      */
     public function getNS8ClientUrl($route = '')
     {
-        return $this->getNS8Url('NS8_CLIENT_URL', 'https://protect-client.ns8.com', $route);
+        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, Config::NS8_DEV_URL_CLIENT, $route);
     }
 
     /**
-     * Gets the current protect Middleware URL based on the environment variables; defaults to Production.
+     * Gets the current protect Middleware URL based on the environment variables.
+     * For now, defaults to Development.
+     * @todo Revisit defaults on preparation to release to Production
      *
      * @param string $route
      * @return string The NS8 Protect Middleware URL in use for this instance.
@@ -158,7 +189,7 @@ class Config extends AbstractHelper
             $route = substr($route, 1);
         }
         $routeSlug = 'api'.'/'.$route;
-        return $this->getNS8Url('NS8_CLIENT_URL', 'https://protect-client.ns8.com', $routeSlug);
+        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, Config::NS8_DEV_URL_CLIENT, $routeSlug);
     }
 
     /**
