@@ -34,9 +34,9 @@ class Verify extends Action
      * @param Context $context
      */
     public function __construct(Context $context, PageFactory $resultPageFactory) {
-	parent::__construct($context);
-	$this->context = $context;
-	$this->resultPageFactory = $resultPageFactory;
+        parent::__construct($context);
+        $this->context = $context;
+        $this->resultPageFactory = $resultPageFactory;
     }
 
     /**

@@ -45,14 +45,14 @@ class VerifyOrder extends Template
      * @param array $data The data to pass to the Template constructor (optional)
      */
     public function __construct(
-	Context $context,
-	HttpClient $httpClient,
-	Http $request,
-	array $data = []
+        Context $context,
+        HttpClient $httpClient,
+        Http $request,
+        array $data = []
     ) {
         parent::__construct($context, $data);
         $this->httpClient = $httpClient;
-	$this->request = $request;
+        $this->request = $request;
     }
 
     /**
@@ -61,14 +61,14 @@ class VerifyOrder extends Template
      * @return string The new order status if it was successfully changed, null otherwise.
      */
     public function updateOrderStatus(): ?string {
-	$orderId = $this->request->getParam('orderId');
-	$newStatus = ($this->request->getParam('view') === 'orders-validate') ? 'APPROVED' : 'CANCELLED';
-	$response = $this->httpClient->put(sprintf('orders/%s', $orderId), ['status' => $newStatus]);
+        $orderId = $this->request->getParam('orderId');
+        $newStatus = ($this->request->getParam('view') === 'orders-validate') ? 'APPROVED' : 'CANCELLED';
+        $response = $this->httpClient->put(sprintf('orders/%s', $orderId), ['status' => $newStatus]);
 
-	if (isset($response->status) && is_string($response->status)) {
-	    return $response->status;
-	}
+        if (isset($response->status) && is_string($response->status)) {
+            return $response->status;
+        }
 
-	return null;
+        return null;
     }
 }
