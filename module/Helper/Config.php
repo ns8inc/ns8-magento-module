@@ -29,11 +29,11 @@ class Config extends AbstractHelper
     /**
      * The URL to the Development Protect API
      */
-    const NS8_DEV_URL_API = 'https://dev-protect.ns8.com';
+    const NS8_DEV_URL_API = 'http://magento-v2-api.ngrok.io';
     /**
      * The URL to the Development Client API
      */
-    const NS8_DEV_URL_CLIENT = 'https://dev-protect-client.ns8.com';
+    const NS8_DEV_URL_CLIENT = 'http://magento-v2-client.ngrok.io';
     /**
      * The URL to the Production Protect API
      */
@@ -133,8 +133,13 @@ class Config extends AbstractHelper
         if (substr($url, -1) === '/') {
             $url = substr($url, 0, -1);
         }
+
         if (empty($url)) {
             $url = $defaultUrl;
+        }
+        if ($url === Config::NS8_PRODUCTION_URL_API ||
+            $url === Config::NS8_PRODUCTION_URL_CLIENT) {
+            throw new Exception('Cannot use Production URLs right now.');
         }
         if (!empty($route)) {
             $route = trim($route);
