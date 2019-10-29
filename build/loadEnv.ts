@@ -2,7 +2,7 @@
  * This will load the `.env` file onto the current process.
  * Missing properties will be loaded from `.env.defaults` if possible.
  * If no defaults exist and the properties are defined in `.env.schema`,
- * but are missing from `.env`, and error will be thrown with the missing
+ * but are missing from `.env`, an error will be thrown with the missing
  * property name.
  */
 const env = require('dotenv-extended').load({
