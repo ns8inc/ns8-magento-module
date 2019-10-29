@@ -155,6 +155,22 @@ class HttpClient extends AbstractHelper
     }
 
     /**
+     * Makes an HTTP PUT request
+     *
+     * @param string $url URL to target.
+     * @param mixed $data Data to include in the request body.
+     * @param array $parameters Optional array of request parameters.
+     * @param array $headers Optional array of request headers.
+     * @param integer $timeout Optional timeout value. Default 30.
+     * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
+     * @return mixed the XHR reponse object.
+     */
+    public function put($url, $data = [], $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
+    {
+        return $this->executeWithAuth($url, $data, "PUT", $parameters, $headers, $timeout);
+    }
+
+    /**
      * Internal method to handle the logic of making the HTTP request
      *
      * @param string $url
