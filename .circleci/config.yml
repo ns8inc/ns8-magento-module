@@ -1,13 +1,48 @@
 version: 2.1
 
-jobs: # a collection of steps
-  build: # runs not using Workflows must have a `build` job as entry point
-    docker: # run the steps with Docker 
-      - image: circleci/php:7.1-node-browsers # ...with this image as the primary container; this is where all `steps` will run
-    working_directory: /tmp/ns8-magento-csp-module-v2 # directory where steps will run
-    steps: # a set of executable commands
-      - checkout # special step to check out source code to working directory
-      - run: sudo apt install -y zlib1g-dev
-      - run: sudo docker-php-ext-install zip            
-      - run: cd src && zip -r ../NS8-CSP2-1.0.0.zip . -x 'vendor/*'
-      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples 
+orbs:
+  aws-cli: circleci/aws-cli@0.1.13
+
+jobs:
+
+  build-magento-module:
+    docker:
+      - image: ns8inc/nodeaws:latest
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "91:b0:e2:c9:d6:89:9c:35:cb:88:ba:53:a9:fa:13:fd"
+
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - run:
+          name: Clone ns8-magento-module repo
+          command: git clone git@github.com:ns8inc/ns8-magento-module.git
+
+      - run:
+          name: Copy files to ns8-magento-module project
+          command: |
+            cp -r module/. ns8-magento-module/
+      - run:
+          name: Stage changes to ns8-magento-module
+          working_directory: ns8-magento-module
+          command: |
+            git config user.email "circleci@ns8.com"
+            git config user.name "CircleCI"
+            git add -A
+      - run:
+          name: Commit changes to ns8-magento-module
+          working_directory: ns8-magento-module
+          command: |
+            git diff-index --quiet HEAD || git commit -m "$(git --git-dir ../.git log -1 --pretty=%s)"
+      - run:
+          name: push changes to ns8-magento-module
+          working_directory: ns8-magento-module
+          command: |
+            git push -v origin master
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build-magento-module
