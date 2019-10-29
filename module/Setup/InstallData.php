@@ -10,15 +10,26 @@ use NS8\Protect\Helper\CustomStatus;
 
 class InstallData implements InstallDataInterface
 {
+    /**
+     * @var CustomStatus
+     */
     protected $customStatus;
 
     /**
+     * @var ConfigBasedIntegrationManager
+     */
+    protected $integrationManager;
+
+    /**
+     * @param ConfigBasedIntegrationManager $integrationManager
      * @param CustomStatus $customStatus
      */
     public function __construct(
+        ConfigBasedIntegrationManager $integrationManager,
         CustomStatus $customStatus
     ) {
         $this->customStatus = $customStatus;
+        $this->integrationManager = $integrationManager;
     }
     /**
      * {@inheritdoc}
@@ -26,5 +37,6 @@ class InstallData implements InstallDataInterface
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
         $this->customStatus->setCustomStatuses('Running Data Install');
+        $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
     }
 }
