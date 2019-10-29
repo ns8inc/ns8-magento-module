@@ -40,5 +40,5 @@
     "lint:php": "phpcs --standard=Magento2 --ignore=*/vendor/* ./module",
     "release:magento": "ts-node ./build/module/release.ts"
   },
-  "version": "0.0.0"
+  "version": "2.0.0"
 }
