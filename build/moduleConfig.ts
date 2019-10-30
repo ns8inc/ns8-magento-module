@@ -25,8 +25,8 @@ const getConfigXml = (email: string, apiUrl: string): string => {
  * `NS8_PROTECT_URL`: your ngrok URL for the protect api
  */
 export const moduleConfig = (): void => {
-  let email = productionEmail,
-    apiUrl = productionApiUrl;
+  let email = productionEmail;
+  let apiUrl = productionApiUrl;
   // If we are not in prod mode, use the .env variables
   if (process.env.NODE_ENV && process.env.NODE_ENV.trim().toLocaleLowerCase() !== 'prod') {
     if (process.env.DEV_EMAIL) {
