@@ -5,6 +5,17 @@ orbs:
 
 jobs:
 
+  build:
+    docker:
+      # Specify the version you desire here
+      - image: circleci/php:7.1-node-browsers
+
+    steps:
+      - checkout
+
+      - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
+      - run: sudo docker-php-ext-install zip
+
   build-magento-module:
     docker:
       - image: ns8inc/nodeaws:latest
@@ -45,4 +56,6 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build-magento-module
+      # Disable this until we have time to fix ch10743
+      #- build-magento-module
+      - build
