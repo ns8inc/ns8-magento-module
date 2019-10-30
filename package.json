@@ -39,10 +39,12 @@
     "clean": "rimraf dist",
     "compile": "tsc -d",
     "lint": "eslint --ext=ts switchboard switches",
-    "lint:php": "phpcs --standard=Magento2 --ignore=*/vendor/* ./module",
     "module:config": "ts-node ./build/moduleConfig.ts",
     "module:deploy": "yarn module:config && ts-node ./build/moduleDeploy.ts",
+    "module:lint": "phpcs --standard=Magento2 --ignore=*/vendor/* ./module",
     "module:release": "set NODE_ENV=prod && yarn module:config && ts-node ./build/moduleRelease.ts",
+    "switchboard:build": "cd switchboard && yarn build",
+    "switches:build": "cd switches && yarn build",
     "version:inc": "ts-node ./build/incrementVersion.ts"
   },
   "version": "2.0.0"
