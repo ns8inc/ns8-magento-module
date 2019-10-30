@@ -62,7 +62,7 @@ class Uninstall implements UninstallInterface
                 $integration->delete();
             }
         } catch (Exception $e) {
-            $this->logger->error('The order update could not be processed', $e);
+            $this->logger->error('Protect uninstall failed', $e);
         } finally {
             $setup->endSetup();
         }
