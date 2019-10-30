@@ -56,7 +56,7 @@ class Uninstall implements UninstallInterface
         try {
             $setup->startSetup();
             $params = ['action'=>SwitchActionType::UNINSTALL_ACTION];
-            $response = $this->httpClient->post('/switch/executor', [], []);
+            $response = $this->httpClient->post('/switch/executor', [], $params);
             $integration = $this->integrationService->findByName(Config::NS8_INTEGRATION_NAME);
             if ($integration) {
                 $integration->delete();
