@@ -1,6 +1,6 @@
 <?php
 
-namespace NS8\CSP2\Helper;
+namespace NS8\Protect\Helper;
 
 use Exception;
 use Magento\Backend\App\Action\Context;
@@ -34,22 +34,36 @@ class Config extends AbstractHelper
      * The URL to the Development Client API
      */
     const NS8_DEV_URL_CLIENT = 'http://magento-v2-client.ngrok.io';
+
     /**
      * The URL to the Production Protect API
      */
     const NS8_PRODUCTION_URL_API = 'https://protect.ns8.com';
+
     /**
      * The URL to the Production Client API
      */
     const NS8_PRODUCTION_URL_CLIENT = 'https://protect-client.ns8.com';
+
     /**
      * The Environment Variable name for development Protect API URL value
      */
     const NS8_ENV_NAME_API_URL = 'NS8_PROTECT_URL';
+
     /**
      * The Environment Variable name for development Client API URL value
      */
     const NS8_ENV_NAME_CLIENT_URL = 'NS8_CLIENT_URL';
+
+    /**
+     * The canonical name of the Magento Service Integration
+     */
+    const NS8_INTEGRATION_NAME = 'NS8 Protect';
+
+    /**
+     * The canonical name of the Magento extension/module name
+     */
+    const NS8_MODULE_NAME = 'NS8_Protect';
 
     /*
      * Placeholders for future functionality
@@ -205,7 +219,7 @@ class Config extends AbstractHelper
      */
     public function getAccessToken()
     {
-        $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/csp2/token'));
+        $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/protect/token'));
         return $storedToken;
     }
 
@@ -217,7 +231,7 @@ class Config extends AbstractHelper
      */
     public function setAccessToken($accessToken)
     {
-        $this->scopeWriter->save('ns8/csp2/token', $this->encryptor->encrypt($accessToken));
+        $this->scopeWriter->save('ns8/protect/token', $this->encryptor->encrypt($accessToken));
         $this->flushConfigCache();
     }
 
@@ -238,7 +252,7 @@ class Config extends AbstractHelper
 
     public function getExtensionVersion()
     {
-        return $this->moduleList->getOne('NS8_CSP2')['setup_version'];
+        return $this->moduleList->getOne(Config::NS8_MODULE_NAME)['setup_version'];
     }
 
     //  needed for install/upgrade routines - do not call from anywhere else

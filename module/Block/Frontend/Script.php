@@ -7,11 +7,11 @@
  */
 declare(strict_types=1);
 
-namespace NS8\CSP2\Block\Frontend;
+namespace NS8\Protect\Block\Frontend;
 
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use NS8\CSP2\Helper\HttpClient;
+use NS8\Protect\Helper\HttpClient;
 
 /**
  * The Script class.
@@ -23,7 +23,7 @@ class Script extends Template
     /**
      * The HTTP client helper.
      *
-     * @var \NS8\CSP2\Helper\HttpClient
+     * @var \NS8\Protect\Helper\HttpClient
      */
     private $httpClient;
 
@@ -31,7 +31,7 @@ class Script extends Template
      * The constructor.
      *
      * @param \Magento\Framework\View\Element\Template\Context $context The Magento context
-     * @param \NS8\CSP2\Helper\HttpClient $httpClient The HTTP client
+     * @param \NS8\Protect\Helper\HttpClient $httpClient The HTTP client
      * @param array $data The data to pass to the Template constructor (optional)
      */
     public function __construct(Context $context, HttpClient $httpClient, array $data = [])

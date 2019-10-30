@@ -1,5 +1,5 @@
 <?php
-namespace NS8\CSP2\Observer;
+namespace NS8\Protect\Observer;
 
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\ObjectManager;
@@ -8,9 +8,10 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Api\Data\OrderInterface;
-use NS8\CSP2\Helper\Config;
-use NS8\CSP2\Helper\HttpClient;
-use NS8\CSP2\Helper\Logger;
+use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\HttpClient;
+use NS8\Protect\Helper\Logger;
+use NS8\Protect\Helper\SwitchActionType;
 
 class OrderUpdate implements ObserverInterface
 {
@@ -96,11 +97,11 @@ class OrderUpdate implements ObserverInterface
             $oldStatus = $this->addStatusHistory($order);
 
             if (isset($oldStatus)) {
-                $params = ['action'=>'UPDATE_ORDER_STATUS_ACTION'];
+                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
             } elseif ($state == 'new' || $status == 'pending') {
-                $params = ['action'=>'CREATE_ORDER_ACTION'];
+                $params = ['action'=>SwitchActionType::CREATE_ORDER_ACTION];
             } else {
-                $params = ['action'=>'UPDATE_ORDER_STATUS_ACTION'];
+                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
             }
 
             $data = ['order'=>$orderData];

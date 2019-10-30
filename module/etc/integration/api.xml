@@ -1,5 +1,5 @@
 <integrations>
-  <integration name="NS8 Integration">
+  <integration name="NS8 Protect">
     <resources>
       <!-- Attempt to grant "super" admin access to everything in DEV -->
       <resource name="Resource_Access::all" />

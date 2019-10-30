@@ -1,8 +1,10 @@
 <?xml version="1.0" ?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
-    <router id="admin">
-        <route frontName="ns8csp2admin" id="ns8csp2admin">
-            <module name="NS8_CSP2"/>
-        </route>
-    </router>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+  <router id="admin">
+    <route frontName="ns8protectadmin" 
+      id="ns8protectadmin">
+      <module name="NS8_Protect" />
+    </route>
+  </router>
 </config>

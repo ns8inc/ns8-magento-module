@@ -179,8 +179,8 @@ function init() {
     sed -i 's/<public-key>/1b8325eb6d792fe22c0fb83f65150281/' /var/www/html/auth.json
     sed -i 's/<private-key>/d68ff7618b2f3118a0342d7f914848c8/' /var/www/html/auth.json
 
-    # Create the directory where we will test the CSP2 extension
-    mkdir -p /var/www/html/app/code/NS8/CSP2
+    # Create the directory where we will test the Protect extension
+    mkdir -p /var/www/html/app/code/NS8/Protect
 
     # Make the magento command executable
     chmod +x /var/www/html/bin/magento
@@ -312,8 +312,8 @@ function build() {
     yarn install
     yarn build:dev
 
-    # copy magento/module to csp2 dir
-    cp -R $EC2_USER_HOME/$MAGENTO/module/*  /var/www/html/app/code/NS8/CSP2/
+    # copy magento/module to protect dir
+    cp -R $EC2_USER_HOME/$MAGENTO/module/*  /var/www/html/app/code/NS8/Protect/
 
     cd /var/www/html
     php bin/magento setup:upgrade

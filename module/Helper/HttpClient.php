@@ -1,5 +1,5 @@
 <?php
-namespace NS8\CSP2\Helper;
+namespace NS8\Protect\Helper;
 
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Helper\AbstractHelper;
@@ -8,7 +8,7 @@ use Magento\Framework\HTTP\PhpEnvironment\Request;
 use Magento\Framework\HTTP\ZendClientFactory;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
-use NS8\CSP2\Helper\Config;
+use NS8\Protect\Helper\Config;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
@@ -21,7 +21,7 @@ class HttpClient extends AbstractHelper
     /**
      * The configuration.
      *
-     * @var \NS8\CSP2\Helper\Config
+     * @var \NS8\Protect\Helper\Config
      */
     protected $config;
 
@@ -70,7 +70,7 @@ class HttpClient extends AbstractHelper
     /**
      * Default constructor
      *
-     * @param \NS8\CSP2\Helper\Config $config The config
+     * @param \NS8\Protect\Helper\Config $config The config
      * @param \Magento\Framework\HTTP\Header $header The HTTP header
      * @param \Psr\Log\LoggerInterface $logger The logger
      * @param \Magento\Integration\Api\IntegrationServiceInterface $integrationServiceInterface The IS interface
@@ -222,15 +222,17 @@ class HttpClient extends AbstractHelper
         if (!empty($storedToken)) {
             return $storedToken;
         } else {
-            $integration = $this->integrationServiceInterface->findByName('NS8 Integration');
+            $integration = $this->integrationServiceInterface->findByName(Config::NS8_INTEGRATION_NAME);
             $consumerId = $integration->getConsumerId();
             $consumer = $this->oauthServiceInterface->loadConsumer($consumerId);
             $accessTokenString = $this->oauthServiceInterface->getAccessToken($consumerId);
             $accessToken = $this->extractOauthTokenFromAuthString($accessTokenString);
 
             $protectAccessToken = $this->getProtectAccessToken($consumer->getKey(), $accessToken);
-            $this->config->setAccessToken($protectAccessToken);
-            $storedToken = $protectAccessToken;
+            if (isset($protectAccessToken)) {
+                $this->config->setAccessToken($protectAccessToken);
+                $storedToken = $protectAccessToken;
+            }
         }
 
         return $storedToken;
@@ -251,6 +253,12 @@ class HttpClient extends AbstractHelper
             'access_token' => $accessToken
         ];
         $response = $this->execute('init/magento/access-token', '', 'GET', $getParams);
+        if (null == $response) {
+            return null;
+        }
+        if ($response->statusCode >= 400) {
+            return null;
+        }
         return $response->token;
     }
 

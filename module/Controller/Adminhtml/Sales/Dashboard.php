@@ -1,13 +1,13 @@
 <?php
 
-namespace NS8\CSP2\Controller\Adminhtml\Sales;
+namespace NS8\Protect\Controller\Adminhtml\Sales;
 
 use \Magento\Backend\App\Action;
 use \Magento\Backend\App\Action\Context;
 use \Magento\Framework\View\Result\PageFactory;
-use NS8\CSP2\Helper\HttpClient;
-use NS8\CSP2\Helper\Logger;
-use NS8\CSP2\Helper\Config;
+use NS8\Protect\Helper\HttpClient;
+use NS8\Protect\Helper\Logger;
+use NS8\Protect\Helper\Config;
 
 class Dashboard extends Action
 {
@@ -52,11 +52,11 @@ class Dashboard extends Action
      */
     protected function _isAllowed()
     {
-        return $this->context->getAuthorization()->isAllowed('NS8_CSP2::admin');
+        return $this->context->getAuthorization()->isAllowed(Config::NS8_MODULE_NAME.'::admin');
     }
 
     /**
-     * Load the page defined in view/adminhtml/layout/ns8csp2admin_sales_dashboard.xml
+     * Load the page defined in view/adminhtml/layout/ns8protectadmin_sales_dashboard.xml
      *
      * @return \Magento\Framework\View\Result\Page
      */
