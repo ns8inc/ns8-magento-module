@@ -41,79 +41,79 @@ class HttpClient extends AbstractHelper
     /**
      * The configuration.
      *
-     * @var \NS8\Protect\Helper\Config
+     * @var Config
      */
     protected $config;
 
     /**
      * The customer session.
      *
-     * @var \Magento\Customer\Model\Session
+     * @var Session
      */
     protected $customerSession;
 
     /**
      * The HTTP header.
      *
-     * @var \Magento\Framework\HTTP\Header
+     * @var Header
      */
     protected $header;
 
     /**
      * The integration service interface.
      *
-     * @var \Magento\Integration\Api\IntegrationServiceInterface
+     * @var IntegrationServiceInterface
      */
     protected $integrationServiceInterface;
 
     /**
      * The OAuth service interface.
      *
-     * @var \Magento\Integration\Api\OauthServiceInterface
+     * @var OauthServiceInterface
      */
     protected $oauthServiceInterface;
 
     /**
      * The logger.
      *
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     protected $logger;
 
     /**
      * The HTTP request.
      *
-     * @var \Magento\Framework\HTTP\PhpEnvironment\Request
+     * @var Request
      */
     protected $request;
 
     /**
      * Default constructor
      *
-     * @param \NS8\Protect\Helper\Config $config The config
-     * @param \Magento\Framework\HTTP\Header $header The HTTP header
-     * @param \Psr\Log\LoggerInterface $logger The logger
-     * @param \Magento\Integration\Api\IntegrationServiceInterface $integrationServiceInterface The IS interface
-     * @param \Magento\Integration\Api\OauthServiceInterface $oauthServiceInterface The OAuth service interface
-     * @param \Magento\Framework\HTTP\PhpEnvironment\Request $request The HTTP request
-     * @param \Magento\Customer\Model\Session $session The customer session
+     * @param Config $config The config
+     * @param Header $header The HTTP header
+     * @param IntegrationServiceInterface $integrationServiceInterface The IS interface
+     * @param LoggerInterface $logger The logger
+     * @param OauthServiceInterface $oauthServiceInterface The OAuth service interface
+     * @param Request $request The HTTP request
+     * @param Session $session The customer session
      */
     public function __construct(
         Config $config,
         Header $header,
-        LoggerInterface $logger,
         IntegrationServiceInterface $integrationServiceInterface,
+        LoggerInterface $logger,
         OauthServiceInterface $oauthServiceInterface,
         Request $request,
         Session $session
     ) {
         $this->config = $config;
+        $this->customerSession = $session;
         $this->header = $header;
-        $this->logger = $logger;
         $this->integrationServiceInterface = $integrationServiceInterface;
+        $this->logger = $logger;
         $this->oauthServiceInterface = $oauthServiceInterface;
         $this->request = $request;
-        $this->customerSession = $session;
     }
 
     /**
