@@ -11,6 +11,7 @@ use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
+use NS8\Protect\Helper\SwitchActionType;
 
 class OrderUpdate implements ObserverInterface
 {
@@ -96,11 +97,11 @@ class OrderUpdate implements ObserverInterface
             $oldStatus = $this->addStatusHistory($order);
 
             if (isset($oldStatus)) {
-                $params = ['action'=>HttpClient::UPDATE_ORDER_STATUS_ACTION];
+                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
             } elseif ($state == 'new' || $status == 'pending') {
-                $params = ['action'=>HttpClient::CREATE_ORDER_ACTION];
+                $params = ['action'=>SwitchActionType::CREATE_ORDER_ACTION];
             } else {
-                $params = ['action'=>HttpClient::UPDATE_ORDER_STATUS_ACTION];
+                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
             }
 
             $data = ['order'=>$orderData];

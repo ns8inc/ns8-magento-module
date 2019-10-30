@@ -6,9 +6,9 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\App\Request\Http;
 use Magento\Customer\Model\Session;
-
 use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\HttpClient;
+use NS8\Protect\Helper\SwitchActionType;
 
 class MerchantUpdate implements ObserverInterface
 {
@@ -52,7 +52,7 @@ class MerchantUpdate implements ObserverInterface
             return;
         }
 
-        $params = ['action' => HttpClient::UPDATE_MERCHANT_ACTION];
+        $params = ['action' => SwitchActionType::UPDATE_MERCHANT_ACTION];
         $data = ['eventData' => $eventData];
 
         try {

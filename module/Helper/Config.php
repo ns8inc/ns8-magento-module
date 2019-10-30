@@ -34,18 +34,22 @@ class Config extends AbstractHelper
      * The URL to the Development Client API
      */
     const NS8_DEV_URL_CLIENT = 'http://magento-v2-client.ngrok.io';
+
     /**
      * The URL to the Production Protect API
      */
     const NS8_PRODUCTION_URL_API = 'https://protect.ns8.com';
+
     /**
      * The URL to the Production Client API
      */
     const NS8_PRODUCTION_URL_CLIENT = 'https://protect-client.ns8.com';
+
     /**
      * The Environment Variable name for development Protect API URL value
      */
     const NS8_ENV_NAME_API_URL = 'NS8_PROTECT_URL';
+
     /**
      * The Environment Variable name for development Client API URL value
      */
