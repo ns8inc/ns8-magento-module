@@ -6,6 +6,7 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UninstallInterface;
 use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
+use NS8\Protect\Helper\SwitchActionType;
 
 class Uninstall implements UninstallInterface
 {
@@ -42,7 +43,7 @@ class Uninstall implements UninstallInterface
     {
         try {
             $setup->startSetup();
-            $params = ['action'=>HttpClient::UNINSTALL_ACTION];
+            $params = ['action'=>SwitchActionType::UNINSTALL_ACTION];
             $response = $this->httpClient->post('/switch/executor', $data, $params);
         } catch (Exception $e) {
             $this->logger->error('The order update could not be processed', $e);

@@ -19,26 +19,6 @@ use Zend\Json\Decoder;
 class HttpClient extends AbstractHelper
 {
     /**
-     * Canonical Step Name for Create Order
-     */
-    const CREATE_ORDER_ACTION = 'CREATE_ORDER_ACTION';
-
-    /**
-     * Canonical Step Name for Update Order
-     */
-    const UPDATE_ORDER_STATUS_ACTION = 'UPDATE_ORDER_STATUS_ACTION';
-
-    /**
-     * Canonical Step Name for Update Merchant
-     */
-    const UPDATE_MERCHANT_ACTION = 'UPDATE_MERCHANT_ACTION';
-
-    /**
-     * Canonical Step Name for Uninstall
-     */
-    const UNINSTALL_ACTION = 'UNINSTALL_ACTION';
-
-    /**
      * The configuration.
      *
      * @var \NS8\Protect\Helper\Config
