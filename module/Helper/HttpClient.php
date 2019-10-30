@@ -249,8 +249,10 @@ class HttpClient extends AbstractHelper
             $accessToken = $this->extractOauthTokenFromAuthString($accessTokenString);
 
             $protectAccessToken = $this->getProtectAccessToken($consumer->getKey(), $accessToken);
-            $this->config->setAccessToken($protectAccessToken);
-            $storedToken = $protectAccessToken;
+            if (isset($protectAccessToken)) {
+                $this->config->setAccessToken($protectAccessToken);
+                $storedToken = $protectAccessToken;
+            }
         }
 
         return $storedToken;
@@ -271,6 +273,12 @@ class HttpClient extends AbstractHelper
             'access_token' => $accessToken
         ];
         $response = $this->execute('init/magento/access-token', '', 'GET', $getParams);
+        if (null == $response) {
+            return null;
+        }
+        if ($response->statusCode >= 400) {
+            return null;
+        }
         return $response->token;
     }
 
