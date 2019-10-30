@@ -22,10 +22,10 @@ const getConfigXml = (email: string, apiUrl: string, clientUrl: string): string 
  *
  * To generate a developer version of this file, you must set the following values in your `.env` file.
  * `DEV_EMAIL`: your email address
- * `CLIENT_BASE_URL`: your ngrok URL for the protect client
- * `API_BASE_URL`: your ngrok URL for the protect api
+ * `NS8_CLIENT_URL`: your ngrok URL for the protect client
+ * `NS8_PROTECT_URL`: your ngrok URL for the protect api
  */
-export const moduleConfig = ():void => {
+export const moduleConfig = (): void => {
   let email = productionEmail,
     clientUrl = productionClientUrl,
     apiUrl = productionApiUrl;
@@ -34,11 +34,11 @@ export const moduleConfig = ():void => {
     if (process.env.DEV_EMAIL) {
       email = process.env.DEV_EMAIL;
     }
-    if (process.env.CLIENT_BASE_URL) {
-      clientUrl = process.env.CLIENT_BASE_URL;
+    if (process.env.NS8_CLIENT_URL) {
+      clientUrl = process.env.NS8_CLIENT_URL;
     }
-    if (process.env.API_BASE_URL) {
-      apiUrl = process.env.API_BASE_URL;
+    if (process.env.NS8_PROTECT_URL) {
+      apiUrl = process.env.NS8_PROTECT_URL;
     }
   }
   writeFileSync(destFolder, getConfigXml(email, apiUrl, clientUrl));
