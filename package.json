@@ -45,7 +45,7 @@
     "module:lint": "cd module && phpcs --standard=Magento2 --ignore=*/vendor/*,*.min.js ./",
     "module:release": "set NODE_ENV=prod && yarn module:config && ts-node ./build/moduleRelease.ts",
     "switchboard:build": "cd switchboard && yarn build",
-    "switchboard:buildDev": "cd switchboard && yarn build:dev",
+    "switchboard:build:dev": "cd switchboard && yarn build:dev",
     "switchboard:deploy": "ts-node ./build/switchboardDeploy.ts",
     "switchboard:undeploy": "ts-node ./build/switchboardUndeploy.ts",
     "switches:build": "cd switches && yarn build",
