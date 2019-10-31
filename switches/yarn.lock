@@ -4230,10 +4230,10 @@ ns8-billing-core@^1.0.128:
   resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.675.tgz#65ff8c68d00f5d03cd5f3b300a032c76eb350244"
   integrity sha512-7wSMF7hNfUxbULXrOiZxKFJaDXgt83wg4Hxc87FwkDJNfnz2pc7U1mh4Z9m2Z15sbcrrNbe6Mc+E3HSsWOrahw==
 
-ns8-protect-models@1.0.210:
-  version "1.0.210"
-  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.210.tgz#9ab3a50f47b04d4787e964e603b613ae8e90993a"
-  integrity sha512-BaA6PO8xlowpZNx2vQUvVU7yiiKbOw+5yi0MWHszIkd1ob0HdYiHJvQLjmF6y/w6hOQgdCnVIv9KIvpxlxFrqw==
+ns8-protect-models@1.0.211, ns8-protect-models@^1.0.210:
+  version "1.0.211"
+  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.211.tgz#3040c46a2a1f5ceb7e21eb8677b48a69051e1d04"
+  integrity sha512-NB51rlqqTQD/2+63SX5qskdGSvcgV87jOA/4QOzvXQ6pi/C4ZVp8RZU8/SRedcl4qO/oQO9DR+HQwKSP8Hr9eA==
   dependencies:
     ns8-billing-core "^1.0.128"
 
@@ -4241,13 +4241,6 @@ ns8-protect-models@^1.0.207:
   version "1.0.207"
   resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.207.tgz#7df2ce58fb904e0906fda2bc0a5f35ff5acae21b"
   integrity sha512-sxu5sNYGxr5csU2dnZ6LxS7kSMthjrfe3u1geT+2pmrJumxofJXlgAMJ1C7NTTbA3+QEjVxdsv1Y8Q9zhaUR0g==
-  dependencies:
-    ns8-billing-core "^1.0.128"
-
-ns8-protect-models@^1.0.210:
-  version "1.0.211"
-  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.211.tgz#3040c46a2a1f5ceb7e21eb8677b48a69051e1d04"
-  integrity sha512-NB51rlqqTQD/2+63SX5qskdGSvcgV87jOA/4QOzvXQ6pi/C4ZVp8RZU8/SRedcl4qO/oQO9DR+HQwKSP8Hr9eA==
   dependencies:
     ns8-billing-core "^1.0.128"
 
