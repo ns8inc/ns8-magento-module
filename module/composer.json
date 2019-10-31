@@ -1,8 +1,10 @@
 {
-  "authors": [{
-    "email": "app@ns8.com",
-    "name": "NS8"
-  }],
+  "authors": [
+    {
+      "email": "app@ns8.com",
+      "name": "NS8"
+    }
+  ],
   "autoload": {
     "files": [
       "registration.php"
@@ -23,9 +25,7 @@
     "phpunit/phpunit": "*",
     "squizlabs/php_codesniffer": "3.5.2"
   },
-  "scripts": {
-    
-  },
+  "scripts": {},
   "suggest": {},
   "type": "magento2-module",
   "version": "2.0.0"

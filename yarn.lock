@@ -28,15 +28,15 @@
   resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.19.tgz#ba2beab8f42e54c76173f8280f125e6cea323fb4"
   integrity sha512-Txa4NB6XE4pUF0U+pwoGEkUIH00BQN99A/gQ2Cdz0oKmXfapAqT5ICG0VI38ARc7R2vZLCLsQ4zKQTv0+Imt9Q==
 
-"@ns8/ns8-switchboard-operator@1.0.102":
-  version "1.0.102"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.102.tgz#ed9beffca1cf67b28f29371105824e7fc66bcdc4"
-  integrity sha512-fSSaSoRaKDTcEJsNVQgkVWtqHv3njxLvFyXnt6JquZA80Cj4NT0lquVxZWe0hj0o0fYd17IEsVsueFdglAq1Tg==
+"@ns8/ns8-switchboard-operator@1.0.103":
+  version "1.0.103"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.103.tgz#cc054b9eb1d862bff2d092c0a7bbdc1ea7abcf7c"
+  integrity sha512-CCsq4fUQL9AYbis9Fs5rre0HwNfV9HnvSHY6j1D5exaQ3aZCdpa1Ib96Bp4eFyVoYPgCZ7g+o3TQWkvOxWJwdg==
   dependencies:
     aws-lambda "^0.1.2"
     isomorphic-fetch "^2.2.1"
-    ns8-protect-models "^1.0.210"
-    ns8-switchboard-interfaces "^1.0.86"
+    ns8-protect-models "^1.0.211"
+    ns8-switchboard-interfaces "^1.0.87"
 
 "@serverless/cli@^1.4.0":
   version "1.4.0"
@@ -2579,7 +2579,7 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-isomorphic-fetch@2.2.1, isomorphic-fetch@^2.2.1:
+isomorphic-fetch@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
   integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=
@@ -2937,7 +2937,7 @@ minimist@0.0.8:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
   integrity sha1-hX/Kv8M5fSYluCKCYuhqp6ARsF0=
 
-minimist@1.2.0, minimist@^1.2.0:
+minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
   integrity sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ=
@@ -3119,35 +3119,20 @@ ns8-billing-core@^1.0.128:
   resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.667.tgz#5d03aecaf9e391a6638f0a2f15215c1e85b0ded5"
   integrity sha512-xdYxVtuZY4mnilcKL7FdEpnFFmEOSdYbq39QowC0Cbvzv+Vt4XFWlOvXwY2CkVgBUP0J2Xn6pbT+GM5Pa7+uvQ==
 
-ns8-protect-models@1.0.211, ns8-protect-models@^1.0.210:
+ns8-protect-models@1.0.211, ns8-protect-models@^1.0.210, ns8-protect-models@^1.0.211:
   version "1.0.211"
   resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.211.tgz#3040c46a2a1f5ceb7e21eb8677b48a69051e1d04"
   integrity sha512-NB51rlqqTQD/2+63SX5qskdGSvcgV87jOA/4QOzvXQ6pi/C4ZVp8RZU8/SRedcl4qO/oQO9DR+HQwKSP8Hr9eA==
   dependencies:
     ns8-billing-core "^1.0.128"
 
-ns8-protect-models@^1.0.207:
-  version "1.0.208"
-  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.208.tgz#da356a0182c4f12d6978e81b5069e185faecc740"
-  integrity sha512-xqcwpfZsVP9THwQBqXu6KjQ6msm/DBp53y77snayk6BFxj8yoXdauNH/7pn6tzT0lJaJMcNC4arlxLZGR+NcoA==
-  dependencies:
-    ns8-billing-core "^1.0.128"
-
-ns8-switchboard-interfaces@1.0.87:
+ns8-switchboard-interfaces@1.0.87, ns8-switchboard-interfaces@^1.0.87:
   version "1.0.87"
   resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.87.tgz#7c28dd590a9c60b58e442c28620f24c2c47b7ef9"
   integrity sha512-uSi40+TZKuRYEL/uzrqdt9JnBn6HY+TnEltT81j4eW8CASKhYpklroRSbt1z+ww53Ttcx8inv9b/HvTchoDWOw==
   dependencies:
     "@types/node" "^12.7.8"
     ns8-protect-models "^1.0.210"
-
-ns8-switchboard-interfaces@^1.0.86:
-  version "1.0.86"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.86.tgz#91f004cb1915ed004f05660eb6c7b355cb160fb9"
-  integrity sha512-IgvMglH6csxvbNy7QJGRwX7IBb3Ks0uzip9smnWrPlgvO2F24JBAxJBgqECkiJW8MS08xH/SwgCKgaJtXdtD1w==
-  dependencies:
-    "@types/node" "^12.7.8"
-    ns8-protect-models "^1.0.207"
 
 object-assign@^4.0.1:
   version "4.1.1"
