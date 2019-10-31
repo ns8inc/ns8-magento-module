@@ -31,6 +31,7 @@ class InstallData implements InstallDataInterface
         $this->customStatus = $customStatus;
         $this->integrationManager = $integrationManager;
     }
+
     /**
      * {@inheritdoc}
      */

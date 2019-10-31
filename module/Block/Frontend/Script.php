@@ -23,15 +23,15 @@ class Script extends Template
     /**
      * The HTTP client helper.
      *
-     * @var \NS8\Protect\Helper\HttpClient
+     * @var HttpClient
      */
     private $httpClient;
 
     /**
      * The constructor.
      *
-     * @param \Magento\Framework\View\Element\Template\Context $context The Magento context
-     * @param \NS8\Protect\Helper\HttpClient $httpClient The HTTP client
+     * @param Context $context The Magento context
+     * @param HttpClient $httpClient The HTTP client
      * @param array $data The data to pass to the Template constructor (optional)
      */
     public function __construct(Context $context, HttpClient $httpClient, array $data = [])

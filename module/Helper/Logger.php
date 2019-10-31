@@ -1,6 +1,7 @@
 <?php
 namespace NS8\Protect\Helper;
 
+use Exception;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Helper\AbstractHelper;
 use NS8\Protect\Helper\Config;
@@ -12,25 +13,36 @@ use Psr\Log\LoggerInterface;
  */
 class Logger extends AbstractHelper
 {
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * @var HttpClient
+     */
     protected $httpClient;
+
+    /**
+     * @var Config
+     */
     protected $config;
 
     /**
      * Default constructor
      *
-     * @param LoggerInterface $loggerInterface
      * @param Config $config
      * @param HttpClient $httpClient
+     * @param LoggerInterface $loggerInterface
      */
     public function __construct(
-        LoggerInterface $loggerInterface,
         Config $config,
-        HttpClient $httpClient
+        HttpClient $httpClient,
+        LoggerInterface $loggerInterface
     ) {
-        $this->logger = $loggerInterface;
         $this->config = $config;
         $this->httpClient = $httpClient;
+        $this->logger = $loggerInterface;
     }
 
     /**
@@ -39,11 +51,11 @@ class Logger extends AbstractHelper
      * @param string $message
      * @param mixed $data
      * @param string $function
-     * @return bool Logging never fails and always returns true.
+     * @return void Logging never fails.
      */
-    public function error($message, $data = null, $function = 'Some Method')
+    public function error($message, $data = null, $function = 'Unknown') : void
     {
-        return $this->log('ERROR', $message, $data, $function);
+        $this->log('ERROR', $message, $data, $function);
     }
 
     /**
@@ -52,11 +64,11 @@ class Logger extends AbstractHelper
      * @param string $message
      * @param mixed $data
      * @param string $function
-     * @return bool Logging never fails and always returns true.
+     * @return void Logging never fails.
      */
-    public function debug($message, $data = null, $function = 'Some Method')
+    public function debug($message, $data = null, $function = 'Unknown') : void
     {
-        return $this->log('DEBUG', $message, $data, $function);
+        $this->log('DEBUG', $message, $data, $function);
     }
 
     /**
@@ -65,11 +77,11 @@ class Logger extends AbstractHelper
      * @param string $message
      * @param mixed $data
      * @param string $function
-     * @return bool Logging never fails and always returns true.
+     * @return void Logging never fails.
      */
-    public function warn($message, $data = null, $function = 'Some Method')
+    public function warn($message, $data = null, $function = 'Unknown') : void
     {
-        return $this->log('WARN', $message, $data, $function);
+        $this->log('WARN', $message, $data, $function);
     }
 
     /**
@@ -78,11 +90,11 @@ class Logger extends AbstractHelper
      * @param string $message
      * @param mixed $data
      * @param string $function
-     * @return bool Logging never fails and always returns true.
+     * @return void Logging never fails.
      */
-    public function info($message, $data = null, $function = 'Some Method')
+    public function info($message, $data = null, $function = 'Unknown') : void
     {
-        return $this->log('INFO', $message, $data, $function);
+        $this->log('INFO', $message, $data, $function);
     }
 
     /**
@@ -92,9 +104,9 @@ class Logger extends AbstractHelper
      * @param string $message Any log message content.
      * @param mixed $data Optional object data.
      * @param string $function Option method name.
-     * @return bool Logging never fails and always returns true.
+     * @return void Logging never fails.
      */
-    private function log($level = 'ERROR', $message = 'Log Message', $data = null, $function = 'Some Method')
+    private function log($level = 'ERROR', $message = 'Log Message', $data = null, $function = 'Unknown') : void
     {
         try {
             //Log to Magento
@@ -107,20 +119,16 @@ class Logger extends AbstractHelper
                 'data' => [
                     'platform' => 'magento',
                     'function' => $function,
-                    'message' => $log,
+                    'message' => $message,
                     'data' => $data,
                     'phpVersion' => PHP_VERSION,
                     'phpOS' => PHP_OS
                 ]
             ];
             //Log to our own API
-            // TODO: I don't believe this is logging anything currently.
-            // The targeted 'get' endpoint simply lists disagnostic info.
-            $this->httpClient->get('/util/api-health-check', $data);
-        } catch (\Exception $e) {
-            $this->logger->log('ERROR', Config::NS8_MODULE_NAME.'.log: '.$e->getMessage(), $e);
-        } finally {
-            return true;
+            $this->httpClient->post('/util/log-client-error', $data);
+        } catch (Exception $e) {
+            $this->logger->log('ERROR', Config::NS8_MODULE_NAME.'.log: '.$e->getMessage(), ['error'=>$e]);
         }
     }
 }

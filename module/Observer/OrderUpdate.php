@@ -13,13 +13,39 @@ use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\SwitchActionType;
 
+/**
+ * Responds to Order Update events
+ */
 class OrderUpdate implements ObserverInterface
 {
+    /**
+     * @var Config
+     */
     protected $config;
+
+    /**
+     * @var Session
+     */
     protected $customerSession;
+
+    /**
+     * @var HttpClient
+     */
     protected $httpClient;
+
+    /**
+     * @var Logger
+     */
     protected $logger;
+
+    /**
+     * @var OrderInterface
+     */
     protected $order;
+
+    /**
+     * @var Http
+     */
     protected $request;
 
     /**
@@ -51,7 +77,7 @@ class OrderUpdate implements ObserverInterface
     /**
      * Attempt to add a status history as the order state changes
      * @param OrderInterface $order
-     * @return ?string The last known status, or null
+     * @return string|null The last known status, or null
      */
     private function addStatusHistory(OrderInterface $order) : ?string
     {
@@ -86,7 +112,7 @@ class OrderUpdate implements ObserverInterface
      * @param Observer $observer
      * @return void
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer) : void
     {
         try {
             $order = $observer->getEvent()->getOrder();

@@ -33,11 +33,7 @@ class Uninstall implements UninstallInterface
     }
 
     /**
-     * Uninstall the extension
-     *
-     * @param SchemaSetupInterface $setup
-     * @param ModuleContextInterface $context
-     * @return void
+     * {@inheritdoc}
      */
     public function uninstall(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {

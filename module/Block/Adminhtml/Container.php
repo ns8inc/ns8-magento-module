@@ -16,56 +16,56 @@ use Magento\Framework\View\Result\PageFactory;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\HttpClient;
 
- /**
-  * The Container class.
-  *
-  * This handles the Magento data and allows it to be retrieved by the view templates.
-  */
+/**
+ * The Container class.
+ *
+ * This handles the Magento data and allows it to be retrieved by the view templates.
+ */
 class Container extends Template
 {
     /**
      * The config helper.
      *
-     * @var \NS8\Protect\Helper\Config
+     * @var Config
      */
     private $configHelper;
 
     /**
      * The context.
      *
-     * @var \Magento\Backend\Block\Template\Context
+     * @var Context
      */
     private $context;
 
     /**
      * The HTTP client helper.
      *
-     * @var \NS8\Protect\Helper\HttpClient
+     * @var HttpClient
      */
     private $httpClient;
 
     /**
      * The request.
      *
-     * @var \Magento\Framework\App\Request\Http
+     * @var Http
      */
     private $request;
 
     /**
      * The page factory.
      *
-     * @var \Magento\Framework\View\Result\PageFactory
+     * @var PageFactory
      */
     private $resultPageFactory;
 
     /**
      * Constructor
      *
-     * @param \NS8\Protect\Helper\Config $configHelper The config helper
-     * @param \Magento\Backend\Block\Template\Context $context The context
-     * @param \NS8\Protect\Helper\HttpClient $httpClient The HTTP client
-     * @param \Magento\Framework\App\Request\Http $request The request
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory The page factory
+     * @param Config $configHelper The config helper
+     * @param Context $context The context
+     * @param HttpClient $httpClient The HTTP client
+     * @param Http $request The request
+     * @param PageFactory $resultPageFactory The page factory
      */
     public function __construct(
         Config $configHelper,

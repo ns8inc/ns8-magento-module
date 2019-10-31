@@ -9,6 +9,9 @@ use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Config;
 
+/**
+ * The NS8 Protect Dashboard page
+ */
 class Dashboard extends Action
 {
     /**
@@ -50,15 +53,17 @@ class Dashboard extends Action
     /**
      * {@inheritdoc}
      */
+    // @codingStandardsIgnoreStart (This is an inherited method)
     protected function _isAllowed()
     {
         return $this->context->getAuthorization()->isAllowed(Config::NS8_MODULE_NAME.'::admin');
     }
+    // @codingStandardsIgnoreEnd
 
     /**
      * Load the page defined in view/adminhtml/layout/ns8protectadmin_sales_dashboard.xml
      *
-     * @return \Magento\Framework\View\Result\Page
+     * @return Page
      */
     public function execute()
     {
