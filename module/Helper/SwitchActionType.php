@@ -25,5 +25,4 @@ class SwitchActionType
      * Canonical Step Name for Uninstall
      */
     const UNINSTALL_ACTION = 'UNINSTALL_ACTION';
-
 }

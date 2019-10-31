@@ -31,6 +31,7 @@ class UpgradeData implements UpgradeDataInterface
         $this->customStatus = $customStatus;
         $this->integrationManager = $integrationManager;
     }
+
     /**
      * {@inheritdoc}
      */

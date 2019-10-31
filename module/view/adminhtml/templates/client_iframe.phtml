@@ -2,7 +2,7 @@
   require(['NS8_Protect/js/postmate.min'], function(Postmate) {
     const handshake = new Postmate({
       container: document.getElementById('ns8-protect-wrapper'),
-      url: '<?php echo $block->getNS8ClientUrl(); ?>',
+      url: '<?= $block->getNS8ClientUrl(); ?>',
       classListArray: ['ns8-protect-client-iframe']
     });
 

@@ -5,9 +5,9 @@
   "devDependencies": {
     "@ns8/magento2-rest-client": "0.2.28",
     "@ns8/ns8-protect-sdk": "0.1.19",
-    "@ns8/ns8-switchboard-operator": "1.0.102",
-    "@types/jest": "24.0.19",
-    "@types/node": "12.11.5",
+    "@ns8/ns8-switchboard-operator": "1.0.103",
+    "@types/jest": "24.0.21",
+    "@types/node": "12.12.3",
     "awesome-typescript-loader": "5.2.1",
     "aws-lambda": "0.1.2",
     "dotenv": "8.2.0",
@@ -22,7 +22,7 @@
     "typescript": "3.6.4",
     "url": "0.11.0",
     "webpack": "4.41.2",
-    "webpack-cli": "3.3.9",
+    "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.9.0",
     "webpack-merge": "4.2.2"
   },

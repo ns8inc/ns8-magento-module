@@ -3,6 +3,7 @@
 namespace NS8\Protect\Helper;
 
 use Exception;
+use UnexpectedValueException;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\UrlInterface;
 use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
@@ -65,43 +66,67 @@ class Config extends AbstractHelper
      */
     const NS8_MODULE_NAME = 'NS8_Protect';
 
-    /*
-     * Placeholders for future functionality
-    */
-    protected $backendUrl;
-    protected $cacheTypeList;
+    /**
+     * @var TypeListInterface
+     */
+    protected $typeList;
+
+    /**
+     * @var Context
+     */
     protected $context;
-    protected $cookieManager;
+
+    /**
+     * @var EncryptorInterface
+     */
     protected $encryptor;
+
+    /**
+     * @var ModuleList
+     */
     protected $moduleList;
+
+    /**
+     * @var OrderRepositoryInterface
+     */
     protected $orderRepository;
+
+    /**
+     * @var ProductMetadataInterface
+     */
     protected $productMetadata;
+
+    /**
+     * @var RequestInterface
+     */
     protected $request;
+
+    /**
+     * @var ScopeConfigInterface
+     */
     protected $scopeConfig;
+
+    /**
+     * @var WriterInterface
+     */
     protected $scopeWriter;
-    protected $state;
-    protected $storeManager;
 
     /**
      * Default constructor
      *
      * @param Context $context
-     * @param CookieManagerInterface $cookieManager
      * @param EncryptorInterface $encryptor
+     * @param LoggerInterface $loggerInterface
      * @param ModuleList $moduleList
      * @param OrderRepositoryInterface $orderRepository
      * @param ProductMetadataInterface $productMetadata
      * @param RequestInterface $request
      * @param ScopeConfigInterface $scopeConfig
-     * @param State $state
-     * @param StoreManagerInterface $storeManager
-     * @param TypeListInterface $cacheTypeList
-     * @param UrlInterface $backendUrl
+     * @param TypeListInterface $typeList
      * @param WriterInterface $scopeWriter
      */
     public function __construct(
         Context $context,
-        CookieManagerInterface $cookieManager,
         EncryptorInterface $encryptor,
         LoggerInterface $loggerInterface,
         ModuleList $moduleList,
@@ -109,16 +134,10 @@ class Config extends AbstractHelper
         ProductMetadataInterface $productMetadata,
         RequestInterface $request,
         ScopeConfigInterface $scopeConfig,
-        State $state,
-        StoreManagerInterface $storeManager,
-        TypeListInterface $cacheTypeList,
-        UrlInterface $backendUrl,
+        TypeListInterface $typeList,
         WriterInterface $scopeWriter
     ) {
-        $this->backendUrl = $backendUrl;
-        $this->cacheTypeList = $cacheTypeList;
         $this->context = $context;
-        $this->cookieManager = $cookieManager;
         $this->encryptor = $encryptor;
         $this->logger = $loggerInterface;
         $this->moduleList = $moduleList;
@@ -127,8 +146,7 @@ class Config extends AbstractHelper
         $this->request = $request;
         $this->scopeConfig = $scopeConfig;
         $this->scopeWriter = $scopeWriter;
-        $this->state = $state;
-        $this->storeManager = $storeManager;
+        $this->typeList = $typeList;
     }
 
     /**
@@ -139,7 +157,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The final URL
      */
-    private function getNS8Url($envVarName, $defaultUrl, $route = '')
+    private function getNS8Url($envVarName, $defaultUrl, $route = '') : string
     {
         $url = getenv($envVarName, true) ?: getenv($envVarName) ?: '';
         $url = trim($url);
@@ -153,7 +171,7 @@ class Config extends AbstractHelper
         }
         if ($url === Config::NS8_PRODUCTION_URL_API ||
             $url === Config::NS8_PRODUCTION_URL_CLIENT) {
-            throw new Exception('Cannot use Production URLs right now.');
+            throw new UnexpectedValueException('Cannot use Production URLs right now.');
         }
         if (!empty($route)) {
             $route = trim($route);
@@ -176,7 +194,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect URL in use for this instance.
      */
-    public function getApiBaseUrl($route = '')
+    public function getApiBaseUrl($route = '') : string
     {
         return $this->getNS8Url(Config::NS8_ENV_NAME_API_URL, Config::NS8_DEV_URL_API, $route);
     }
@@ -189,7 +207,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect Client URL in use for this instance.
      */
-    public function getNS8ClientUrl($route = '')
+    public function getNS8ClientUrl($route = '') : string
     {
         return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, Config::NS8_DEV_URL_CLIENT, $route);
     }
@@ -202,7 +220,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect Middleware URL in use for this instance.
      */
-    public function getNS8MiddlewareUrl($route = '')
+    public function getNS8MiddlewareUrl($route = '') : string
     {
         if (substr($route, 0, 1) === '/') {
             $route = substr($route, 1);
@@ -214,10 +232,9 @@ class Config extends AbstractHelper
     /**
      * Gets an access token.
      *
-     *
-     * @return string The NS8 Protect Access Token.
+     * @return string|null The NS8 Protect Access Token.
      */
-    public function getAccessToken()
+    public function getAccessToken() : ?string
     {
         $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/protect/token'));
         return $storedToken;
@@ -226,99 +243,47 @@ class Config extends AbstractHelper
     /**
      * Save an access token.
      *
-     *
-     * @return string The NS8 Protect Access Token.
+     * @return void
      */
-    public function setAccessToken($accessToken)
+    public function setAccessToken($accessToken) : void
     {
         $this->scopeWriter->save('ns8/protect/token', $this->encryptor->encrypt($accessToken));
         $this->flushConfigCache();
     }
 
-    public function flushConfigCache()
+    /**
+     * Clear the cache
+     *
+     * @return void
+     */
+    public function flushConfigCache() : void
     {
-        $this->cacheTypeList->cleanType(CacheTypeConfig::TYPE_IDENTIFIER);
+        $this->typeList->cleanType(CacheTypeConfig::TYPE_IDENTIFIER);
     }
 
-    public function getAdminUrl($path, $params = null)
-    {
-        return $this->backendUrl->getUrl($path, $params);
-    }
-
-    public function getMagentoVersion()
+    /**
+     * Get's the current Magento version
+     *
+     * @return string
+     */
+    public function getMagentoVersion() : string
     {
         return $this->productMetadata->getVersion();
     }
 
-    public function getExtensionVersion()
+    /**
+     * Gets the installed version of Protect
+     *
+     * @return string|null
+     */
+    public function getProtectVersion() : ?string
     {
         return $this->moduleList->getOne(Config::NS8_MODULE_NAME)['setup_version'];
     }
 
-    //  needed for install/upgrade routines - do not call from anywhere else
-    public function setAdminAreaCode()
-    {
-        try {
-            if (!isset($this->state->_areaCode)) {
-                $this->state->setAreaCode('adminhtml');
-            }
-        } catch (Exception $e) {
-            // intentionally left empty
-        }
-    }
-
-    public function getStores()
-    {
-        $result = [];
-        $stores = $this->storeManager->getStores();
-
-        foreach ($stores as $store) {
-            array_push($result, [
-                'id' => $store->getId(),
-                'websiteId' => $store->getWebsiteId(),
-                'code' => $store->getCode(),
-                'name' => $store->getName(),
-                'groupId' => $store->getStoreGroupId(),
-                'isActive' => $store->isActive(),
-                'url' => $store->getCurrentUrl(true)
-            ]);
-        }
-        return $result;
-    }
-
-    public function getStore()
-    {
-        $store = $this->storeManager->getStore();
-
-        $data = [
-            'id' => $store->getId(),
-            'websiteId' => $store->getWebsiteId(),
-            'code' => $store->getCode(),
-            'name' => $store->getName(),
-            'groupId' => $store->getStoreGroupId(),
-            'isActive' => $store->isActive(),
-            'url' => $store->getCurrentUrl(true)
-        ];
-        return $data;
-    }
-
-    public function getStoreId()
-    {
-        $store = $this->storeManager->getStore();
-        return $store->getId();
-    }
-
-    public function getStoreEmail()
-    {
-        return $this->scopeConfig->getValue(
-            'trans_email/ident_sales/email',
-            ScopeInterface::SCOPE_STORE
-        );
-    }
-
     /**
      * Get's the authenticated user name for the admin user
-     * @return ?string The admin user name or null
+     * @return string|null
      */
     public function getAuthenticatedUserName() : ?string
     {
@@ -326,19 +291,19 @@ class Config extends AbstractHelper
         try {
             $auth = $this->context->getAuth();
             $loginUser = $auth->getUser();
-            if ($loginUser) {
+            if (isset($loginUser)) {
                 $username = $loginUser->getUserName();
             }
         } catch (Exception $e) {
-            // intentionally left empty
+            $this->logger->log('ERROR', 'Failed to get username', ['error'=>$e]);
         }
         return $username;
     }
 
     /**
      * Get the Order display id from the requested order
-     * @param ?string $orderId
-     * @return ?string An order increment id
+     * @param string|null $orderId
+     * @return string|null An order increment id
      */
     public function getOrderIncrementId(string $orderId = null): ?string
     {
@@ -350,6 +315,7 @@ class Config extends AbstractHelper
             $order = $this->orderRepository->get($orderId);
             $ret = $order->getIncrementId();
         } catch (Exception $e) {
+            $this->logger->log('ERROR', 'Failed to get order '.$orderId, ['error'=>$e]);
         }
         return $ret;
     }
