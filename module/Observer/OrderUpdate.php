@@ -102,6 +102,7 @@ class OrderUpdate implements ObserverInterface
                     ->save();
             }
         } catch (Exception $e) {
+            $this->logger->error('Add Status History failed', $e);
         }
         return $oldStatus;
     }
