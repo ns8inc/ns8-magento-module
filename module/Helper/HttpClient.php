@@ -73,8 +73,8 @@ class HttpClient extends AbstractHelper
      *
      * @param Config $config The config
      * @param Header $header The HTTP header
-     * @param LoggerInterface $logger The logger
      * @param IntegrationServiceInterface $integrationServiceInterface The IS interface
+     * @param LoggerInterface $logger The logger
      * @param OauthServiceInterface $oauthServiceInterface The OAuth service interface
      * @param Request $request The HTTP request
      * @param Session $session The customer session
@@ -82,19 +82,19 @@ class HttpClient extends AbstractHelper
     public function __construct(
         Config $config,
         Header $header,
-        LoggerInterface $logger,
         IntegrationServiceInterface $integrationServiceInterface,
+        LoggerInterface $logger,
         OauthServiceInterface $oauthServiceInterface,
         Request $request,
         Session $session
     ) {
         $this->config = $config;
+        $this->customerSession = $session;
         $this->header = $header;
-        $this->logger = $logger;
         $this->integrationServiceInterface = $integrationServiceInterface;
+        $this->logger = $logger;
         $this->oauthServiceInterface = $oauthServiceInterface;
         $this->request = $request;
-        $this->customerSession = $session;
     }
 
     /**
