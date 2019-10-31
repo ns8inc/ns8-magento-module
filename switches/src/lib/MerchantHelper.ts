@@ -3,16 +3,18 @@ import { SwitchContext } from 'ns8-switchboard-interfaces';
 
 export function toProtectMerchantUpdate(magentoUpdateSwitchContext: SwitchContext) {
   const merchantUpdate = new MerchantUpdate(magentoUpdateSwitchContext.merchant);
+  if (!merchantUpdate) return new MerchantUpdate();
+
   const configData = magentoUpdateSwitchContext.data.configData;
 
-  if (configData.groups.store_information) {
+  if (configData.groups.store_information && merchantUpdate.contact) {
     const storeInformation = configData.groups.store_information.fields;
     merchantUpdate.contact.phone = storeInformation.phone.value;
     merchantUpdate.contact.name = storeInformation.name.value;
     merchantUpdate.name = storeInformation.name.value;
   }
 
-  if (configData.groups.ident_general) {
+  if (configData.groups.ident_general && merchantUpdate.contact) {
     const generalIdInfo = configData.groups.ident_general.fields;
     const names: string[] = generalIdInfo.name.value.split(' ');
     merchantUpdate.contact.firstName = names.shift();

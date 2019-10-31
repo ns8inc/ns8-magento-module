@@ -296,15 +296,15 @@
   resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.19.tgz#ba2beab8f42e54c76173f8280f125e6cea323fb4"
   integrity sha512-Txa4NB6XE4pUF0U+pwoGEkUIH00BQN99A/gQ2Cdz0oKmXfapAqT5ICG0VI38ARc7R2vZLCLsQ4zKQTv0+Imt9Q==
 
-"@ns8/ns8-switchboard-operator@1.0.99":
-  version "1.0.99"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.99.tgz#6f0f970d4782132780ce6283157c6dff4dac086b"
-  integrity sha512-4H6yPigNNAhhPmsdKGRTBXOsKpAUCBYZ5PCB0sMEukbnQaCWQAEY95DV5kHjIJxCmbt7T5Mzqz/OOv0QAlX1Fg==
+"@ns8/ns8-switchboard-operator@1.0.103":
+  version "1.0.103"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.103.tgz#cc054b9eb1d862bff2d092c0a7bbdc1ea7abcf7c"
+  integrity sha512-CCsq4fUQL9AYbis9Fs5rre0HwNfV9HnvSHY6j1D5exaQ3aZCdpa1Ib96Bp4eFyVoYPgCZ7g+o3TQWkvOxWJwdg==
   dependencies:
     aws-lambda "^0.1.2"
     isomorphic-fetch "^2.2.1"
-    ns8-protect-models "^1.0.207"
-    ns8-switchboard-interfaces "^1.0.86"
+    ns8-protect-models "^1.0.211"
+    ns8-switchboard-interfaces "^1.0.87"
 
 "@types/babel__core@^7.1.0":
   version "7.1.3"
@@ -391,10 +391,10 @@
   resolved "https://registry.yarnpkg.com/@types/jest-diff/-/jest-diff-20.0.1.tgz#35cc15b9c4f30a18ef21852e255fdb02f6d59b89"
   integrity sha512-yALhelO3i0hqZwhjtcr6dYyaLoCHbAMshwtj6cGxTvHZAKXHsYGdff6E8EPw3xLKY0ELUTQ69Q1rQiJENnccMA==
 
-"@types/jest@24.0.19":
-  version "24.0.19"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.19.tgz#f7036058d2a5844fe922609187c0ad8be430aff5"
-  integrity sha512-YYiqfSjocv7lk5H/T+v5MjATYjaTMsUkbDnjGqSMoO88jWdtJXJV4ST/7DKZcoMHMBvB2SeSfyOzZfkxXHR5xg==
+"@types/jest@24.0.21":
+  version "24.0.21"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.21.tgz#2c0a25440e025bb265f4a17d8b79b11b231426bf"
+  integrity sha512-uyqFvx78Tuy0h5iLCPWRCvi5HhWwEqhIj30doitp191oYLqlCxUyAJHdWVm5+Nr271/vPnkyt6rWeEIjGowBTg==
   dependencies:
     "@types/jest-diff" "*"
 
@@ -413,10 +413,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.11.1.tgz#1fd7b821f798b7fa29f667a1be8f3442bb8922a3"
   integrity sha512-TJtwsqZ39pqcljJpajeoofYRfeZ7/I/OMUQ5pR4q5wOKf2ocrUvBAZUMhWsOvKx3dVc/aaV5GluBivt0sWqA5A==
 
-"@types/node@12.11.5":
-  version "12.11.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.11.5.tgz#6c3c8dc84988aff11fd2a63d7b5fbf39eaaab7b1"
-  integrity sha512-LC8ALj/24PhByn39nr5jnTvpE7MujK8y7LQmV74kHYF5iQ0odCPkMH4IZNZw+cobKfSXqaC8GgegcbIsQpffdA==
+"@types/node@12.12.3":
+  version "12.12.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.3.tgz#ebfe83507ac506bc3486314a8aa395be66af8d23"
+  integrity sha512-opgSsy+cEF9N8MgaVPnWVtdJ3o4mV2aMHvDq7thkQUFt0EuOHJon4rQpJfhjmNHB+ikl0Cd6WhWIErOyQ+f7tw==
 
 "@types/node@8.0.0":
   version "8.0.0"
@@ -4230,27 +4230,20 @@ ns8-billing-core@^1.0.128:
   resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.675.tgz#65ff8c68d00f5d03cd5f3b300a032c76eb350244"
   integrity sha512-7wSMF7hNfUxbULXrOiZxKFJaDXgt83wg4Hxc87FwkDJNfnz2pc7U1mh4Z9m2Z15sbcrrNbe6Mc+E3HSsWOrahw==
 
-ns8-protect-models@1.0.210:
-  version "1.0.210"
-  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.210.tgz#9ab3a50f47b04d4787e964e603b613ae8e90993a"
-  integrity sha512-BaA6PO8xlowpZNx2vQUvVU7yiiKbOw+5yi0MWHszIkd1ob0HdYiHJvQLjmF6y/w6hOQgdCnVIv9KIvpxlxFrqw==
+ns8-protect-models@1.0.211, ns8-protect-models@^1.0.210, ns8-protect-models@^1.0.211:
+  version "1.0.211"
+  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.211.tgz#3040c46a2a1f5ceb7e21eb8677b48a69051e1d04"
+  integrity sha512-NB51rlqqTQD/2+63SX5qskdGSvcgV87jOA/4QOzvXQ6pi/C4ZVp8RZU8/SRedcl4qO/oQO9DR+HQwKSP8Hr9eA==
   dependencies:
     ns8-billing-core "^1.0.128"
 
-ns8-protect-models@^1.0.207:
-  version "1.0.207"
-  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.207.tgz#7df2ce58fb904e0906fda2bc0a5f35ff5acae21b"
-  integrity sha512-sxu5sNYGxr5csU2dnZ6LxS7kSMthjrfe3u1geT+2pmrJumxofJXlgAMJ1C7NTTbA3+QEjVxdsv1Y8Q9zhaUR0g==
-  dependencies:
-    ns8-billing-core "^1.0.128"
-
-ns8-switchboard-interfaces@1.0.86, ns8-switchboard-interfaces@^1.0.86:
-  version "1.0.86"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.86.tgz#91f004cb1915ed004f05660eb6c7b355cb160fb9"
-  integrity sha512-IgvMglH6csxvbNy7QJGRwX7IBb3Ks0uzip9smnWrPlgvO2F24JBAxJBgqECkiJW8MS08xH/SwgCKgaJtXdtD1w==
+ns8-switchboard-interfaces@1.0.87, ns8-switchboard-interfaces@^1.0.87:
+  version "1.0.87"
+  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.87.tgz#7c28dd590a9c60b58e442c28620f24c2c47b7ef9"
+  integrity sha512-uSi40+TZKuRYEL/uzrqdt9JnBn6HY+TnEltT81j4eW8CASKhYpklroRSbt1z+ww53Ttcx8inv9b/HvTchoDWOw==
   dependencies:
     "@types/node" "^12.7.8"
-    ns8-protect-models "^1.0.207"
+    ns8-protect-models "^1.0.210"
 
 number-is-nan@^1.0.0:
   version "1.0.1"
@@ -6026,10 +6019,10 @@ webidl-conversions@^4.0.2:
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"
   integrity sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==
 
-webpack-cli@3.3.9:
-  version "3.3.9"
-  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-3.3.9.tgz#79c27e71f94b7fe324d594ab64a8e396b9daa91a"
-  integrity sha512-xwnSxWl8nZtBl/AFJCOn9pG7s5CYUYdZxmmukv+fAHLcBIHM36dImfpQg3WfShZXeArkWlf6QRw24Klcsv8a5A==
+webpack-cli@3.3.10:
+  version "3.3.10"
+  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-3.3.10.tgz#17b279267e9b4fb549023fae170da8e6e766da13"
+  integrity sha512-u1dgND9+MXaEt74sJR4PR7qkPxXUSQ0RXYq8x1L6Jg1MYVEmGPrH6Ah6C4arD4r0J1P5HKjRqpab36k0eIzPqg==
   dependencies:
     chalk "2.4.2"
     cross-spawn "6.0.5"
