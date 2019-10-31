@@ -1,8 +1,9 @@
-import { MerchantUpdate } from 'ns8-protect-models';
+import { MerchantUpdate, Contact } from 'ns8-protect-models';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 
 export function toProtectMerchantUpdate(magentoUpdateSwitchContext: SwitchContext) {
   const merchantUpdate = new MerchantUpdate(magentoUpdateSwitchContext.merchant);
+  merchantUpdate.contact = new Contact(merchantUpdate.contact);
   const configData = magentoUpdateSwitchContext.data.configData;
 
   if (configData.groups.store_information) {
