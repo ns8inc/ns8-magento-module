@@ -3,6 +3,7 @@
 namespace NS8\Protect\Helper;
 
 use Exception;
+use UnexpectedValueException;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\UrlInterface;
 use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
@@ -170,7 +171,7 @@ class Config extends AbstractHelper
         }
         if ($url === Config::NS8_PRODUCTION_URL_API ||
             $url === Config::NS8_PRODUCTION_URL_CLIENT) {
-            throw new Exception('Cannot use Production URLs right now.');
+            throw new UnexpectedValueException('Cannot use Production URLs right now.');
         }
         if (!empty($route)) {
             $route = trim($route);
