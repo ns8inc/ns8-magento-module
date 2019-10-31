@@ -5,7 +5,7 @@
   "devDependencies": {
     "@ns8/magento2-rest-client": "0.2.23",
     "@ns8/ns8-protect-sdk": "0.1.19",
-    "@ns8/ns8-switchboard-operator": "1.0.99",
+    "@ns8/ns8-switchboard-operator": "1.0.102",
     "@types/archiver": "2.1.1",
     "@types/node": "12.11.5",
     "@types/rimraf": "2.0.2",
@@ -22,7 +22,7 @@
     "isomorphic-fetch": "2.2.1",
     "minimist": "1.2.0",
     "ns8-protect-models": "1.0.208",
-    "ns8-switchboard-interfaces": "1.0.86",
+    "ns8-switchboard-interfaces": "1.0.87",
     "rimraf": "3.0.0",
     "scp2": "0.5.0",
     "semver": "6.3.0",

@@ -28,14 +28,14 @@
   resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.19.tgz#ba2beab8f42e54c76173f8280f125e6cea323fb4"
   integrity sha512-Txa4NB6XE4pUF0U+pwoGEkUIH00BQN99A/gQ2Cdz0oKmXfapAqT5ICG0VI38ARc7R2vZLCLsQ4zKQTv0+Imt9Q==
 
-"@ns8/ns8-switchboard-operator@1.0.99":
-  version "1.0.99"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.99.tgz#6f0f970d4782132780ce6283157c6dff4dac086b"
-  integrity sha512-4H6yPigNNAhhPmsdKGRTBXOsKpAUCBYZ5PCB0sMEukbnQaCWQAEY95DV5kHjIJxCmbt7T5Mzqz/OOv0QAlX1Fg==
+"@ns8/ns8-switchboard-operator@1.0.102":
+  version "1.0.102"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.102.tgz#ed9beffca1cf67b28f29371105824e7fc66bcdc4"
+  integrity sha512-fSSaSoRaKDTcEJsNVQgkVWtqHv3njxLvFyXnt6JquZA80Cj4NT0lquVxZWe0hj0o0fYd17IEsVsueFdglAq1Tg==
   dependencies:
     aws-lambda "^0.1.2"
     isomorphic-fetch "^2.2.1"
-    ns8-protect-models "^1.0.207"
+    ns8-protect-models "^1.0.210"
     ns8-switchboard-interfaces "^1.0.86"
 
 "@types/archiver@2.1.1":
@@ -1247,7 +1247,22 @@ ns8-protect-models@1.0.208, ns8-protect-models@^1.0.207:
   dependencies:
     ns8-billing-core "^1.0.128"
 
-ns8-switchboard-interfaces@1.0.86, ns8-switchboard-interfaces@^1.0.86:
+ns8-protect-models@^1.0.210:
+  version "1.0.211"
+  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.211.tgz#3040c46a2a1f5ceb7e21eb8677b48a69051e1d04"
+  integrity sha512-NB51rlqqTQD/2+63SX5qskdGSvcgV87jOA/4QOzvXQ6pi/C4ZVp8RZU8/SRedcl4qO/oQO9DR+HQwKSP8Hr9eA==
+  dependencies:
+    ns8-billing-core "^1.0.128"
+
+ns8-switchboard-interfaces@1.0.87:
+  version "1.0.87"
+  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.87.tgz#7c28dd590a9c60b58e442c28620f24c2c47b7ef9"
+  integrity sha512-uSi40+TZKuRYEL/uzrqdt9JnBn6HY+TnEltT81j4eW8CASKhYpklroRSbt1z+ww53Ttcx8inv9b/HvTchoDWOw==
+  dependencies:
+    "@types/node" "^12.7.8"
+    ns8-protect-models "^1.0.210"
+
+ns8-switchboard-interfaces@^1.0.86:
   version "1.0.86"
   resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.86.tgz#91f004cb1915ed004f05660eb6c7b355cb160fb9"
   integrity sha512-IgvMglH6csxvbNy7QJGRwX7IBb3Ks0uzip9smnWrPlgvO2F24JBAxJBgqECkiJW8MS08xH/SwgCKgaJtXdtD1w==
