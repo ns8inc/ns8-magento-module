@@ -1,6 +1,7 @@
 <?php
 namespace NS8\Protect\Helper;
 
+use Exception;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\HTTP\Header;
@@ -100,7 +101,7 @@ class HttpClient extends AbstractHelper
      * Makes an HTTP GET request
      *
      * @param string $url URL to target.
-     * @param mixed $data Data to include in the request body.
+     * @param array $data Data to include in the request body.
      * @param array $parameters Optional array of request parameters.
      * @param array $headers Optional array of request headers.
      * @param integer $timeout Optional timeout value. Default 30.
@@ -116,7 +117,7 @@ class HttpClient extends AbstractHelper
      * Makes an HTTP POST request
      *
      * @param string $url URL to target.
-     * @param mixed $data Data to include in the request body.
+     * @param array $data Data to include in the request body.
      * @param array $parameters Optional array of request parameters.
      * @param array $headers Optional array of request headers.
      * @param integer $timeout Optional timeout value. Default 30.
@@ -133,8 +134,8 @@ class HttpClient extends AbstractHelper
     /**
      * Internal method to handle the logic of making the HTTP request
      *
-     * @param [type] $url
-     * @param [type] $data
+     * @param string $url
+     * @param array $data
      * @param string $method
      * @param array $parameters
      * @param array $headers
@@ -142,8 +143,15 @@ class HttpClient extends AbstractHelper
      * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    private function executeWithAuth($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
-    {
+    private function executeWithAuth(
+        $url,
+        $data,
+        $method = "POST",
+        $parameters = [],
+        $headers = [],
+        $timeout = 30,
+        $decodeJson = true
+    ) {
         $accessToken = $this->getAccessToken();
 
         $authHeaderString = 'Bearer ' . $accessToken;
@@ -165,8 +173,16 @@ class HttpClient extends AbstractHelper
      * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    private function execute($route, $data = [], $method = "POST", $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
-    {
+    private function execute(
+        $route,
+        $data = [],
+        $method = "POST",
+        $parameters = [],
+        $headers = [],
+        $timeout = 30,
+        $decodeJson = true
+    ) {
+        $response = null;
         try {
             $uri = $this->config->getNS8MiddlewareUrl($route);
 
@@ -179,7 +195,7 @@ class HttpClient extends AbstractHelper
             $httpClient->setMethod($method);
 
             $headers['magento-version'] = $this->config->getMagentoVersion();
-            $headers['extension-version'] = $this->config->getExtensionVersion();
+            $headers['extension-version'] = $this->config->getProtectVersion();
 
             if (!empty($headers)) {
                 $httpClient->setHeaders($headers);
@@ -187,19 +203,14 @@ class HttpClient extends AbstractHelper
 
             if (!empty($data)) {
                 $httpClient->setParameterPost($data);
-                // #TODO: do we still need this?
-                // $json = json_encode($data);
-                // $httpClient->setRawBody($json);
             }
-            #TODO: decompose this into more discrete steps.
             $body = $httpClient->send()->getBody();
 
             $response = $decodeJson ? Decoder::decode($body) : $body;
-            return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to execute API call', ['error'=>$e]);
         }
-        #TODO: consumers probably want more control over the response
+        return $response;
     }
 
     /**
@@ -208,15 +219,24 @@ class HttpClient extends AbstractHelper
      *
      * @param string $authString
      *
-     * @return string Oauth access token.
+     * @return string|null Oauth access token.
      */
-    private function extractOauthTokenFromAuthString($accessTokenString)
+    private function extractOauthTokenFromAuthString($accessTokenString) : ?string
     {
         parse_str($accessTokenString, $parsedToken);
-        return $parsedToken['oauth_token'];
+        if ($parsedToken) {
+            return $parsedToken['oauth_token'];
+        } else {
+            return null;
+        }
     }
 
-    private function getAccessToken()
+    /**
+     * Gets a Protect Access Token if the OAuth has succeeded
+     *
+     * @return string|null
+     */
+    private function getAccessToken() : ?string
     {
         $storedToken = $this->config->getAccessToken();
         if (!empty($storedToken)) {
@@ -244,9 +264,9 @@ class HttpClient extends AbstractHelper
      * @param string $consumerId
      * @param string $accessToken
      *
-     * @return string Protect access token.
+     * @return string|null Protect access token.
      */
-    private function getProtectAccessToken($consumerId, $accessToken)
+    private function getProtectAccessToken($consumerId, $accessToken) : ?string
     {
         $getParams = [
             'oauth_consumer_key' => $consumerId,
@@ -256,10 +276,14 @@ class HttpClient extends AbstractHelper
         if (null == $response) {
             return null;
         }
-        if ($response->statusCode >= 400) {
+        if (isset($response->statusCode) && $response->statusCode >= 400) {
             return null;
         }
-        return $response->token;
+        if (isset($response->token)) {
+            return $response->token;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -267,7 +291,7 @@ class HttpClient extends AbstractHelper
      *
      * @return array The session data
      */
-    private function getSessionData()
+    private function getSessionData() : array
     {
         return [
             'acceptLanguage' => $this->header->getHttpAcceptLanguage(),

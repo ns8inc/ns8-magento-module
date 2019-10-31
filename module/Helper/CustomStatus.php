@@ -90,7 +90,7 @@ class CustomStatus extends AbstractHelper
      * @param mixed $state
      * @return void
      */
-    protected function addCustomStatus($statusName, $statusLabel, $state)
+    protected function addCustomStatus($statusName, $statusLabel, $state) : void
     {
         /** @var StatusResource $statusResource */
         $statusResource = $this->statusResourceFactory->create();
@@ -113,7 +113,7 @@ class CustomStatus extends AbstractHelper
      * @param string $upgradeMode
      * @return void
      */
-    public function setCustomStatuses($upgradeMode)
+    public function setCustomStatuses($upgradeMode) : void
     {
         $this->logger->debug($upgradeMode);
         $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
