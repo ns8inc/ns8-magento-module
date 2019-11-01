@@ -152,7 +152,7 @@ class Config extends AbstractHelper
     /**
      * Safely try to get an Apache environment variable.
      * @internal this is only for NS8 local developers in testing.
-     * @param string $envVarName
+     * @param string $envVarName Variable name. Must be `NS8_CLIENT_URL` OR `NS8_PROTECT_URL`.
      * @return string|null In production, this should always return null.
      */
     private function getEnvironmentVariable(string $envVarName): ?string
