@@ -150,6 +150,21 @@ class Config extends AbstractHelper
     }
 
     /**
+     * Safely try to get an Apache environment variable
+     *
+     * @param string $envVarName
+     * @return string|null
+     */
+    private function getEnvironmentVariable(string $envVarName): ?string
+    {
+        try {
+            return apache_getenv($envVarName, true) ?: apache_getenv($envVarName);
+        } catch(Exception $e) {
+            $this->logger->log('ERROR', 'Failed to get environment variable "'.$envVarName.'"', ['error'=>$e]);
+        }
+    }
+
+    /**
      * Assembles the URL using environment variables and handles parsing extra `/`
      *
      * @param string $envVarName
@@ -157,9 +172,9 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The final URL
      */
-    private function getNS8Url($envVarName, $defaultUrl, $route = '') : string
+    private function getNS8Url(string $envVarName, string $defaultUrl, string $route = '') : string
     {
-        $url = getenv($envVarName, true) ?: getenv($envVarName) ?: '';
+        $url = $this->getEnvironmentVariable($envVarName) ?: '';
         $url = trim($url);
 
         if (substr($url, -1) === '/') {
