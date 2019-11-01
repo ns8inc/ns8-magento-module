@@ -150,6 +150,21 @@ class Config extends AbstractHelper
     }
 
     /**
+     * Safely try to get an Apache environment variable.
+     * @internal this is only for NS8 local developers in testing.
+     * @param string $envVarName Variable name. Must be `NS8_CLIENT_URL` OR `NS8_PROTECT_URL`.
+     * @return string|null In production, this should always return null.
+     */
+    private function getEnvironmentVariable(string $envVarName): ?string
+    {
+        try {
+            return apache_getenv($envVarName, true) ?: apache_getenv($envVarName);
+        } catch (Exception $e) {
+            $this->logger->log('DEBUG', 'Failed to get environment variable "'.$envVarName.'"', ['error'=>$e]);
+        }
+    }
+
+    /**
      * Assembles the URL using environment variables and handles parsing extra `/`
      *
      * @param string $envVarName
@@ -157,9 +172,9 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The final URL
      */
-    private function getNS8Url($envVarName, $defaultUrl, $route = '') : string
+    private function getNS8Url(string $envVarName, string $defaultUrl, string $route = '') : string
     {
-        $url = getenv($envVarName, true) ?: getenv($envVarName) ?: '';
+        $url = $this->getEnvironmentVariable($envVarName) ?: '';
         $url = trim($url);
 
         if (substr($url, -1) === '/') {
@@ -194,7 +209,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect URL in use for this instance.
      */
-    public function getApiBaseUrl($route = '') : string
+    public function getApiBaseUrl(string $route = '') : string
     {
         return $this->getNS8Url(Config::NS8_ENV_NAME_API_URL, Config::NS8_DEV_URL_API, $route);
     }
@@ -207,7 +222,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect Client URL in use for this instance.
      */
-    public function getNS8ClientUrl($route = '') : string
+    public function getNS8ClientUrl(string $route = '') : string
     {
         return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, Config::NS8_DEV_URL_CLIENT, $route);
     }
@@ -220,7 +235,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect Middleware URL in use for this instance.
      */
-    public function getNS8MiddlewareUrl($route = '') : string
+    public function getNS8MiddlewareUrl(string $route = '') : string
     {
         if (substr($route, 0, 1) === '/') {
             $route = substr($route, 1);
@@ -242,10 +257,10 @@ class Config extends AbstractHelper
 
     /**
      * Save an access token.
-     *
+     * @param string $accessToken
      * @return void
      */
-    public function setAccessToken($accessToken) : void
+    public function setAccessToken(string $accessToken) : void
     {
         $this->scopeWriter->save('ns8/protect/token', $this->encryptor->encrypt($accessToken));
         $this->flushConfigCache();
