@@ -30,12 +30,12 @@ export class CustomerHelper extends HelperBase {
   private getPhoneNumber = (customer: MagentoCustomer): string => {
     let phoneNumber = '';
     if (customer.addresses) {
-      const defaultAddress =
-        customer.addresses.find((a) => { a.telephone && a.default_billing === true }) ||
-        customer.addresses.find((a) => { a.telephone && a.default_shipping === true }) ||
-        customer.addresses.find((a) => { a.telephone });
-      if (defaultAddress && defaultAddress.telephone) {
-        phoneNumber = ModelTools.formatPhoneNumber(defaultAddress.telephone) || '';
+      const defaultBilling = customer.addresses.find((a) => a.telephone && a.default_billing === true);
+      const defaultShipping = customer.addresses.find((a) => a.telephone && a.default_shipping === true);
+      const anyPhoneNumber = customer.addresses.find((a) => a.telephone);
+      const addressWithPhone = defaultBilling || defaultShipping || anyPhoneNumber;
+      if (addressWithPhone && addressWithPhone.telephone) {
+        phoneNumber = ModelTools.formatPhoneNumber(addressWithPhone.telephone) || '';
       }
     }
     return phoneNumber;
