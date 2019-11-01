@@ -30,13 +30,10 @@ export class CustomerHelper extends HelperBase {
   private getPhoneNumber = (customer: MagentoCustomer): string => {
     let phoneNumber = '';
     if (customer.addresses) {
-      let defaultAddress = customer.addresses.find((a) => { a.telephone && a.default_billing === true });
-      if (!defaultAddress) {
-        defaultAddress = customer.addresses.find((a) => { a.telephone && a.default_shipping === true });
-      }
-      if (!defaultAddress) {
-        defaultAddress = customer.addresses.find((a) => { a.telephone });
-      }
+      const defaultAddress =
+        customer.addresses.find((a) => { a.telephone && a.default_billing === true }) ||
+        customer.addresses.find((a) => { a.telephone && a.default_shipping === true }) ||
+        customer.addresses.find((a) => { a.telephone });
       if (defaultAddress && defaultAddress.telephone) {
         phoneNumber = ModelTools.formatPhoneNumber(defaultAddress.telephone) || '';
       }
@@ -55,10 +52,12 @@ export class CustomerHelper extends HelperBase {
         ? await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id)
         : null;
       if (null === customer) {
+        // If we are here, the customer is a guest. We cannot assume anything except an email address.
+        // Even email address may not always be guaranteed?
         customer = {
           id: this.MagentoOrder.customer_id,
-          firstname: this.MagentoOrder.customer_firstname,
-          lastname: this.MagentoOrder.customer_lastname,
+          firstname: this.MagentoOrder.customer_firstname || 'Unknown',
+          lastname: this.MagentoOrder.customer_lastname || 'Unknown',
           email: this.MagentoOrder.customer_email,
           middlename: this.MagentoOrder.customer_middlename,
           dob: this.MagentoOrder.customer_dob,
