@@ -54,10 +54,11 @@ export class CustomerHelper extends HelperBase {
       if (null === customer) {
         // If we are here, the customer is a guest. We cannot assume anything except an email address.
         // Even email address may not always be guaranteed?
+        const guestName = 'Guest'; //TODO: confirm with business this is the name we want.
         customer = {
           id: this.MagentoOrder.customer_id,
-          firstname: this.MagentoOrder.customer_firstname || 'Unknown',
-          lastname: this.MagentoOrder.customer_lastname || 'Unknown',
+          firstname: this.MagentoOrder.customer_firstname || guestName,
+          lastname: this.MagentoOrder.customer_lastname || guestName,
           email: this.MagentoOrder.customer_email,
           middlename: this.MagentoOrder.customer_middlename,
           dob: this.MagentoOrder.customer_dob,
