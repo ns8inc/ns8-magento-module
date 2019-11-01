@@ -50,7 +50,7 @@
     "switchboard:undeploy": "ts-node ./build/switchboardUndeploy.ts",
     "switches:build": "cd switches && yarn build",
     "switches:build:dev": "cd switches && yarn build:dev",
-    "version:patch": "ts-node ./build/incrementVersion.ts"
+    "version:patch": "ts-node ./build/incrementVersion.ts && yarn build"
   },
-  "version": "2.0.0"
+  "version": "2.0.1-crf.1"
 }

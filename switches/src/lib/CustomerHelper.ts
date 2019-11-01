@@ -30,15 +30,12 @@ export class CustomerHelper extends HelperBase {
   private getPhoneNumber = (customer: MagentoCustomer): string => {
     let phoneNumber = '';
     if (customer.addresses) {
-      let defaultAddress = customer.addresses.find((a) => { a.telephone && a.default_billing === true });
-      if (!defaultAddress) {
-        defaultAddress = customer.addresses.find((a) => { a.telephone && a.default_shipping === true });
-      }
-      if (!defaultAddress) {
-        defaultAddress = customer.addresses.find((a) => { a.telephone });
-      }
-      if (defaultAddress && defaultAddress.telephone) {
-        phoneNumber = ModelTools.formatPhoneNumber(defaultAddress.telephone) || '';
+      const defaultBilling = customer.addresses.find((a) => a.telephone && a.default_billing === true);
+      const defaultShipping = customer.addresses.find((a) => a.telephone && a.default_shipping === true);
+      const anyPhoneNumber = customer.addresses.find((a) => a.telephone);
+      const addressWithPhone = defaultBilling || defaultShipping || anyPhoneNumber;
+      if (addressWithPhone && addressWithPhone.telephone) {
+        phoneNumber = ModelTools.formatPhoneNumber(addressWithPhone.telephone) || '';
       }
     }
     return phoneNumber;
@@ -55,10 +52,13 @@ export class CustomerHelper extends HelperBase {
         ? await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id)
         : null;
       if (null === customer) {
+        // If we are here, the customer is a guest. We cannot assume anything except an email address.
+        // Even email address may not always be guaranteed?
+        const guestName = 'Guest'; //TODO: confirm with business this is the name we want.
         customer = {
           id: this.MagentoOrder.customer_id,
-          firstname: this.MagentoOrder.customer_firstname,
-          lastname: this.MagentoOrder.customer_lastname,
+          firstname: this.MagentoOrder.customer_firstname || guestName,
+          lastname: this.MagentoOrder.customer_lastname || guestName,
           email: this.MagentoOrder.customer_email,
           middlename: this.MagentoOrder.customer_middlename,
           dob: this.MagentoOrder.customer_dob,
