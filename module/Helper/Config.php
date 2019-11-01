@@ -209,7 +209,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect URL in use for this instance.
      */
-    public function getApiBaseUrl($route = '') : string
+    public function getApiBaseUrl(string $route = '') : string
     {
         return $this->getNS8Url(Config::NS8_ENV_NAME_API_URL, Config::NS8_DEV_URL_API, $route);
     }
@@ -222,7 +222,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect Client URL in use for this instance.
      */
-    public function getNS8ClientUrl($route = '') : string
+    public function getNS8ClientUrl(string $route = '') : string
     {
         return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, Config::NS8_DEV_URL_CLIENT, $route);
     }
@@ -235,7 +235,7 @@ class Config extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect Middleware URL in use for this instance.
      */
-    public function getNS8MiddlewareUrl($route = '') : string
+    public function getNS8MiddlewareUrl(string $route = '') : string
     {
         if (substr($route, 0, 1) === '/') {
             $route = substr($route, 1);
@@ -257,10 +257,10 @@ class Config extends AbstractHelper
 
     /**
      * Save an access token.
-     *
+     * @param string $accessToken
      * @return void
      */
-    public function setAccessToken($accessToken) : void
+    public function setAccessToken(string $accessToken) : void
     {
         $this->scopeWriter->save('ns8/protect/token', $this->encryptor->encrypt($accessToken));
         $this->flushConfigCache();
