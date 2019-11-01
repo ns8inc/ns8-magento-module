@@ -150,17 +150,17 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Safely try to get an Apache environment variable
-     *
+     * Safely try to get an Apache environment variable.
+     * @internal this is only for NS8 local developers in testing.
      * @param string $envVarName
-     * @return string|null
+     * @return string|null In production, this should always return null.
      */
     private function getEnvironmentVariable(string $envVarName): ?string
     {
         try {
             return apache_getenv($envVarName, true) ?: apache_getenv($envVarName);
         } catch (Exception $e) {
-            $this->logger->log('ERROR', 'Failed to get environment variable "'.$envVarName.'"', ['error'=>$e]);
+            $this->logger->log('DEBUG', 'Failed to get environment variable "'.$envVarName.'"', ['error'=>$e]);
         }
     }
 
