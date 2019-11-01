@@ -13,6 +13,7 @@ use NS8\Protect\Helper\Config;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
+use Zend\Uri\Uri;
 
 /**
  * General purpose HTTP/REST client for making API calls
@@ -69,6 +70,13 @@ class HttpClient extends AbstractHelper
     protected $request;
 
     /**
+     * Zend URI helper
+     *
+     * @var Uri
+     */
+    protected $uri;
+
+    /**
      * Default constructor
      *
      * @param Config $config The config
@@ -78,6 +86,7 @@ class HttpClient extends AbstractHelper
      * @param OauthServiceInterface $oauthServiceInterface The OAuth service interface
      * @param Request $request The HTTP request
      * @param Session $session The customer session
+     * @param Uri $uri Zend URI helper
      */
     public function __construct(
         Config $config,
@@ -86,7 +95,8 @@ class HttpClient extends AbstractHelper
         LoggerInterface $logger,
         OauthServiceInterface $oauthServiceInterface,
         Request $request,
-        Session $session
+        Session $session,
+        Uri $uri
     ) {
         $this->config = $config;
         $this->customerSession = $session;
@@ -95,6 +105,7 @@ class HttpClient extends AbstractHelper
         $this->logger = $logger;
         $this->oauthServiceInterface = $oauthServiceInterface;
         $this->request = $request;
+        $this->uri = $uri;
     }
 
     /**
@@ -223,7 +234,8 @@ class HttpClient extends AbstractHelper
      */
     private function extractOauthTokenFromAuthString($accessTokenString) : ?string
     {
-        parse_str($accessTokenString, $parsedToken);
+        $this->uri->setQuery($accessTokenString);
+        $parsedToken = $this->uri->getQueryAsArray();
         if ($parsedToken) {
             return $parsedToken['oauth_token'];
         } else {
