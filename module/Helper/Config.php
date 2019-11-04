@@ -157,11 +157,13 @@ class Config extends AbstractHelper
      */
     private function getEnvironmentVariable(string $envVarName): ?string
     {
+        $ret = null;
         try {
-            return apache_getenv($envVarName, true) ?: apache_getenv($envVarName);
+            $ret = $_SERVER[$envVarName];
         } catch (Exception $e) {
             $this->logger->log('DEBUG', 'Failed to get environment variable "'.$envVarName.'"', ['error'=>$e]);
         }
+        return $ret;
     }
 
     /**
