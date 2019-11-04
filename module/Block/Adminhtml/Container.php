@@ -5,6 +5,7 @@
  *
  * This handles the Magento data and allows it to be retrieved by the view templates.
  */
+
 declare(strict_types=1);
 
 namespace NS8\Protect\Block\Adminhtml;
@@ -144,6 +145,18 @@ class Container extends Template
         $orderId = $this->request->getParam('order_id');
 
         return $this->getUrl('ns8protectadmin/sales/dashboard', isset($orderId) ? ['order_id' => $orderId] : []);
+    }
+
+    /**
+     * Get the base URL to the Magento Order Detail View
+     * This will not include the order id yet as we won't have
+     * that until the user clicks on the front end.
+     *
+     * @return string The URL
+     */
+    public function getMagentOrderDetailUrl(): string
+    {
+        return $this->getUrl('sales/order/view/order_id');
     }
 
     /**

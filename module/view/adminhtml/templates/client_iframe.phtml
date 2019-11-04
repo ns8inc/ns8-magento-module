@@ -39,8 +39,21 @@
       window.setInterval(() => matchIframeHeightToContent(iframe), 200);
     };
 
+    const navigateToMagentoOrderDetails = (orderId) => {
+      const orderDetailsUrlBase = '<?= $block->escapeUrl($block->getMagentOrderDetailUrl()); ?>'
+        .split('/')
+        .slice(0, -3) // Remove '/key/[key]/' as it will be incorrect once we add the orderId
+        .join('/');
+
+      window.location.href = `${orderDetailsUrlBase}/${orderId}`;
+    }
+
     handshake.then(
-      child => child.on('ns8-protect-client-connected', () => beginIframeHeightMatching(child))
+      child => {
+        child.on('ns8-protect-client-connected', () => beginIframeHeightMatching(child));
+
+        child.on('order-detail-name-click', (data) => navigateToOrderDetail(data.orderId));
+      }
     );
   });
 </script>
