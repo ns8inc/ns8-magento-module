@@ -159,7 +159,7 @@ class Config extends AbstractHelper
     {
         $ret = null;
         try {
-            $ret= $_SERVER[$envVarName];
+            $ret = $_SERVER[$envVarName];
         } catch (Exception $e) {
             $this->logger->log('DEBUG', 'Failed to get environment variable "'.$envVarName.'"', ['error'=>$e]);
         }
