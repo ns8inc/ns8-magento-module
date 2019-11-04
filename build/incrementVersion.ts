@@ -31,10 +31,10 @@ const incrementVersion = () => {
   const releaseType: ReleaseType = (devSuffix !== 'none' && patchMode === 'dev') ? 'prerelease' : 'patch';
   const currentVersion: string = rootPackage.version;
   const nextPackageVersion: string | null = semver.inc(currentVersion, releaseType, false, devSuffix);
+  if (!nextPackageVersion) throw new Error('Could not increment package version');
   //This is a temporary workaround for working with prerelease versions in order to comply with the Magento version standards
   const nextMagentoVersion: string | null = semver.inc(currentVersion, 'patch', false);
-
-  if (!nextPackageVersion) throw new Error('Could not increment version');
+  if (!nextMagentoVersion) throw new Error('Could not increment magento version');
 
   rootPackage.version = nextPackageVersion;
   writeFileSync('package.json', JSON.stringify(rootPackage, null, 2));
