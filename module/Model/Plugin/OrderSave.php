@@ -40,9 +40,9 @@ class OrderSave
     private function saveEq8ScoreAttribute(OrderInterface $order, OrderRepositoryInterface $repository)
     {
         $extensionAttributes = $order->getExtensionAttributes();
-        $eq8ScoreAttr = $extensionAttributes->getEq8ScoreAttribute();
-        if (isset($eq8ScoreAttr)) {
-            $eq8score = $eq8ScoreAttr->getValue();
+        $eq8score = $extensionAttributes->getEq8Score();
+        if (isset($eq8score)) {
+            //$eq8score = $eq8ScoreAttr->getValue();
             try {
                 $repository->save($eq8score);
             } catch (\Exception $e) {

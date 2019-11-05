@@ -4,32 +4,22 @@ namespace NS8\Protect\Setup;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
-use Magento\Integration\Model\ConfigBasedIntegrationManager;
-use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\CustomStatus;
+use NS8\Protect\Helper\Upgrade;
 
 class UpgradeData implements UpgradeDataInterface
 {
     /**
-     * @var CustomStatus
+     * @var Upgrade
      */
-    protected $customStatus;
+    protected $upgrade;
 
     /**
-     * @var ConfigBasedIntegrationManager
-     */
-    protected $integrationManager;
-
-    /**
-     * @param ConfigBasedIntegrationManager $integrationManager
-     * @param CustomStatus $customStatus
+     * @param Upgrade $upgrade
      */
     public function __construct(
-        ConfigBasedIntegrationManager $integrationManager,
-        CustomStatus $customStatus
+        Upgrade $upgrade
     ) {
-        $this->customStatus = $customStatus;
-        $this->integrationManager = $integrationManager;
+        $this->upgrade = $upgrade;
     }
 
     /**
@@ -37,7 +27,6 @@ class UpgradeData implements UpgradeDataInterface
      */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        $this->customStatus->setCustomStatuses('Running Data Upgrade');
-        $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
+        $this->upgrade('upgrade', $setup, $context);
     }
 }

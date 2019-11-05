@@ -50,7 +50,7 @@ class OrderGet
 
     private function getEq8ScoreAttribute(OrderInterface $order, OrderRepositoryInterface $repository)
     {
-        $eq8Score = $order->getData(Eq8Score::FIELD_NAME);
+        $eq8Score = $order->getData(Eq8Score::FIELD_NAME) ?: 0;
         $extensionAttributes = $order->getExtensionAttributes();
         $extensionAttributes = $extensionAttributes ? $extensionAttributes : $this->extensionFactory->create();
         $extensionAttributes->setEq8Score($eq8Score);
