@@ -5,7 +5,7 @@ namespace NS8\Protect\Api\Data;
 interface Eq8ScoreInterface
 {
     const FIELD_NAME = 'eq8_score';
-    const VALUE = self::FIELD_NAME;
+    const VALUE = 'eq8_score';
 
     /**
      * Return value.

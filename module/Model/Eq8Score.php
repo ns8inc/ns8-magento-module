@@ -5,8 +5,6 @@ use NS8\Protect\Api\Data\Eq8ScoreInterface;
 
 class Eq8Score implements Eq8ScoreInterface
 {
-    const FIELD_NAME = 'eq8_score';
-
     /**
      * {@inheritdoc}
      */
