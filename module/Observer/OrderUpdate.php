@@ -123,6 +123,12 @@ class OrderUpdate implements ObserverInterface
             $status = $order->getStatus();
             $oldStatus = $this->addStatusHistory($order);
 
+            try {
+                $order->setEq8Score(0);
+                $order->save();
+            } catch (Exception $e) {
+            }
+
             if (isset($oldStatus)) {
                 $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
             } elseif ($state == 'new' || $status == 'pending') {
