@@ -8,6 +8,9 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use NS8\Protect\Model\Eq8Score;
 
+/**
+ * Custom SAVE plugin for EAV `eq8_score` property
+ */
 class OrderSave
 {
     /**
@@ -28,15 +31,28 @@ class OrderSave
         $this->orderExtensionFactory = $orderExtensionFactory;
     }
 
+    /**
+     * Inherited method invoked after the property is saved
+     *
+     * @param OrderRepositoryInterface $repository
+     * @param OrderInterface $order
+     * @return OrderInterface
+     */
     public function afterSave(
         OrderRepositoryInterface $repository,
         OrderInterface $resultOrder
     ) {
         $resultOrder = $this->saveEq8ScoreAttribute($resultOrder, $repository);
-
         return $resultOrder;
     }
 
+    /**
+     * Internal logic to save the `eq8_score` property
+     *
+     * @param OrderInterface $order
+     * @param OrderRepositoryInterface $repository
+     * @return OrderInterface
+     */
     private function saveEq8ScoreAttribute(OrderInterface $order, OrderRepositoryInterface $repository)
     {
         $extensionAttributes = $order->getExtensionAttributes();

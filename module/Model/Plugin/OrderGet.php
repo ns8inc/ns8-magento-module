@@ -7,6 +7,9 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
 use NS8\Protect\Model\Eq8Score;
 
+/**
+ * Custom GET plugin for EAV `eq8_score` property
+ */
 class OrderGet
 {
     /**
@@ -17,7 +20,7 @@ class OrderGet
     protected $extensionFactory;
 
     /**
-     * OrderRepositoryPlugin constructor
+     * Order Extension Factory constructor
      *
      * @param OrderExtensionFactory $extensionFactory
      */
@@ -27,6 +30,13 @@ class OrderGet
         $this->orderExtensionFactory = $orderExtensionFactory;
     }
 
+    /**
+     * Inherited method invoked after the property is fetched
+     *
+     * @param OrderRepositoryInterface $repository
+     * @param OrderInterface $order
+     * @return OrderInterface
+     */
     public function afterGet(
         OrderRepositoryInterface $repository,
         OrderInterface $order
@@ -48,6 +58,13 @@ class OrderGet
         return $searchResult;
     }
 
+    /**
+     * Internal logic to get the `eq8_score` property
+     *
+     * @param OrderInterface $order
+     * @param OrderRepositoryInterface $repository
+     * @return OrderInterface
+     */
     private function getEq8ScoreAttribute(OrderInterface $order, OrderRepositoryInterface $repository)
     {
         $eq8Score = $order->getData(Eq8Score::FIELD_NAME) ?: 0;

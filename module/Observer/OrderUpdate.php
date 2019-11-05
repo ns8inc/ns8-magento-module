@@ -123,8 +123,11 @@ class OrderUpdate implements ObserverInterface
             $status = $order->getStatus();
             $oldStatus = $this->addStatusHistory($order);
 
+            // TODO: remove this!!
+            //   This is temporary code to help assert that the EAV property is mutated.
             try {
                 $order->setEq8Score(0);
+                // This eventually triggers the save event
                 $order->save();
             } catch (Exception $e) {
             }

@@ -12,6 +12,9 @@ use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\CustomStatus;
 use NS8\Protect\Helper\Logger;
 
+/**
+ * Execute the install/upgrade logic for the Protect extension
+ */
 class Upgrade extends AbstractHelper
 {
     /**
@@ -55,7 +58,7 @@ class Upgrade extends AbstractHelper
     /**
      * Runs the install/upgrade logic
      *
-     * @param string $mode
+     * @param string $mode Should be "install" or "upgrade"
      * @param ModuleDataSetupInterface $setup
      * @param ModuleContextInterface $context
      * @return void
@@ -63,68 +66,58 @@ class Upgrade extends AbstractHelper
     public function upgrade(string $mode, ModuleDataSetupInterface $setup, ModuleContextInterface $context) : void
     {
         try {
+            //Essential step.
             $setup->startSetup();
 
+            // Create or update our custom statuses using the current mode
             $this->customStatus->setCustomStatuses('Running Data '.$mode);
+            // Run the base integration config method. This does not trigger activation.
             $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
-
+            // Prep to run EAV extension setup
             $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
-
+            $eavData = [
+                'group' => 'Orders',
+                'type' => 'int',
+                'backend' => '', //TODO: verify this
+                'frontend' => '', //TODO: verify this
+                'label' => 'EQ8 Score',
+                'input' => 'boolean', //TODO: verify this
+                'class' => '', //TODO: verify this
+                'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean', //TODO: verify this
+                'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
+                'visible' => true,
+                'required' => false,
+                'user_defined' => false,
+                'default' => 0,
+                'searchable' => true,
+                'filterable' => true,
+                'comparable' => true,
+                'visible_on_front' => false,
+                'used_in_product_listing' => false,
+                'unique' => false,
+                'apply_to' => '' // TODO: verify this
+            ];
+            // Add an attribute to the Order model
+            // NOTES:
+            //   5 should equal etity_type_code="order" and entity_model="Magento\Sales\Model\ResourceModel\Order"
+            //   TODO: update this logic to pull the `eav_entity_type` record and use the canonical ID
             $eavSetup->addAttribute(
                 5,
                 'eq8_score',
-                [
-                    'group' => 'Orders',
-                    'type' => 'int',
-                    'backend' => '',
-                    'frontend' => '',
-                    'label' => 'EQ8 Score',
-                    'input' => 'boolean',
-                    'class' => '',
-                    'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
-                    'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
-                    'visible' => true,
-                    'required' => false,
-                    'user_defined' => false,
-                    'default' => '0',
-                    'searchable' => true,
-                    'filterable' => true,
-                    'comparable' => true,
-                    'visible_on_front' => false,
-                    'used_in_product_listing' => false,
-                    'unique' => false,
-                    'apply_to' => ''
-                ]
+                $eavData
             );
+            // It is not entirely clear to what "thing" these EAV extensions are being added.
+            //   Per the docs we currently have, we can attach to "sales_order" and "sales_order_grid".
+            //   TODO: correct these calls with the explicit models to which we know we need to extend
             $eavSetup->addAttribute(
                 'sales_order_grid',
                 'eq8_score',
-                [
-                    'group' => 'Orders',
-                    'type' => 'int',
-                    'backend' => '',
-                    'frontend' => '',
-                    'label' => 'EQ8 Score',
-                    'input' => 'boolean',
-                    'class' => '',
-                    'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
-                    'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
-                    'visible' => true,
-                    'required' => false,
-                    'user_defined' => false,
-                    'default' => '0',
-                    'searchable' => true,
-                    'filterable' => true,
-                    'comparable' => true,
-                    'visible_on_front' => false,
-                    'used_in_product_listing' => false,
-                    'unique' => false,
-                    'apply_to' => ''
-                ]
+                $eavData
             );
         } catch (Exception $e) {
             $this->logger->error('Protect '.$mode.' failed', $e);
         } finally {
+            //Essential step.
             $setup->endSetup();
         }
     }

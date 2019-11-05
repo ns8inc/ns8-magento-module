@@ -6,6 +6,9 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use NS8\Protect\Helper\Upgrade;
 
+/**
+ * Upgrade the Protect data model whenever the extension is updated
+ */
 class UpgradeData implements UpgradeDataInterface
 {
     /**

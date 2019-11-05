@@ -6,6 +6,9 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use NS8\Protect\Helper\Upgrade;
 
+/**
+ * Install the Protect data model extensions on first install
+ */
 class InstallData implements InstallDataInterface
 {
     /**
