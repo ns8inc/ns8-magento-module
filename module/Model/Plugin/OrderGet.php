@@ -1,6 +1,6 @@
 <?php
 
-namespace NS8\Protect\Plugin;
+namespace NS8\Protect\Model\Plugin;
 
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\Data\OrderInterface;

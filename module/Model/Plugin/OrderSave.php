@@ -1,6 +1,6 @@
 <?php
 
-namespace NS8\Protect\Plugin;
+namespace NS8\Protect\Model\Plugin;
 
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
