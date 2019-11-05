@@ -3,6 +3,6 @@
   xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
   <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
     <attribute code="eq8_score"
-      type="string" />
+      type="int" />
   </extension_attributes>
 </config>
