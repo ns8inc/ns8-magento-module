@@ -100,17 +100,8 @@ class Upgrade extends AbstractHelper
             // Add an attribute to the Order model
             // NOTES:
             //   5 should equal etity_type_code="order" and entity_model="Magento\Sales\Model\ResourceModel\Order"
-            //   TODO: update this logic to pull the `eav_entity_type` record and use the canonical ID
             $eavSetup->addAttribute(
-                5,
-                'eq8_score',
-                $eavData
-            );
-            // It is not entirely clear to what "thing" these EAV extensions are being added.
-            //   Per the docs we currently have, we can attach to "sales_order" and "sales_order_grid".
-            //   TODO: correct these calls with the explicit models to which we know we need to extend
-            $eavSetup->addAttribute(
-                'sales_order_grid',
+                'order',
                 'eq8_score',
                 $eavData
             );

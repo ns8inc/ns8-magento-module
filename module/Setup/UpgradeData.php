@@ -14,15 +14,15 @@ class UpgradeData implements UpgradeDataInterface
     /**
      * @var Upgrade
      */
-    protected $upgrade;
+    protected $upgradeHelper;
 
     /**
-     * @param Upgrade $upgrade
+     * @param Upgrade $upgradeHelper
      */
     public function __construct(
-        Upgrade $upgrade
+        Upgrade $upgradeHelper
     ) {
-        $this->upgrade = $upgrade;
+        $this->upgradeHelper = $upgradeHelper;
     }
 
     /**
@@ -30,6 +30,6 @@ class UpgradeData implements UpgradeDataInterface
      */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        $this->upgrade('upgrade', $setup, $context);
+        $this->upgradeHelper->upgrade('upgrade', $setup, $context);
     }
 }
