@@ -14,15 +14,15 @@ class InstallData implements InstallDataInterface
     /**
      * @var Upgrade
      */
-    protected $upgrade;
+    protected $upgradeHelper;
 
     /**
-     * @param Upgrade $upgrade
+     * @param Upgrade $upgradeHelper
      */
     public function __construct(
         Upgrade $upgrade
     ) {
-        $this->upgrade = $upgrade;
+        $this->upgradeHelper = $upgradeHelper;
     }
 
     /**
@@ -30,6 +30,6 @@ class InstallData implements InstallDataInterface
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        $this->upgrade('install', $setup, $context);
+        $this->upgradeHelper->upgrade('install', $setup, $context);
     }
 }
