@@ -99,22 +99,7 @@ class Container extends Template
      */
     public function getEQ8Score(): ?int
     {
-        $orderIncrementId = $this->configHelper->getOrderIncrementId();
-        $uri = sprintf('/orders/order-name/%s', $this->base64UrlEncode($orderIncrementId));
-        $req = $this->httpClient->get($uri);
-
-        if (!isset($req->fraudAssessments)) {
-            return null;
-        }
-
-        // The goal here is to look in the fraudAssessments array and return the first score we find that's an EQ8.
-        return array_reduce($req->fraudAssessments, function (?int $foundScore, \stdClass $fraudAssessment): ?int {
-            if (!empty($foundScore)) {
-                return $foundScore;
-            }
-
-            return $fraudAssessment->providerType === 'EQ8' ? $fraudAssessment->score : null;
-        });
+        return $this->httpClient->getEQ8Score();
     }
 
     /**
@@ -123,15 +108,9 @@ class Container extends Template
      *
      * @return string The URL
      */
-    public function getNS8ClientUrl(): string
+    public function getNS8ClientOrderUrl(): string
     {
-        $orderIncrementId = $this->configHelper->getOrderIncrementId();
-        return sprintf(
-            '%s%s?access_token=%s',
-            $this->configHelper->getNS8ClientUrl(),
-            isset($orderIncrementId) ? '/order-details/' . $this->base64UrlEncode($orderIncrementId) : '',
-            $this->getAccessToken()
-        );
+        return $this->configHelper->getNS8ClientOrderUrl();
     }
 
     /**
@@ -141,22 +120,6 @@ class Container extends Template
      */
     public function getNS8IframeUrl(): string
     {
-        $orderId = $this->request->getParam('order_id');
-
-        return $this->getUrl('ns8protectadmin/sales/dashboard', isset($orderId) ? ['order_id' => $orderId] : []);
-    }
-
-    /**
-     * Encode a string using base64 in URL mode.
-     *
-     * @link https://en.wikipedia.org/wiki/Base64#URL_applications
-     *
-     * @param string $data The data to encode
-     *
-     * @return string The encoded string
-     */
-    private function base64UrlEncode(string $data): string
-    {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+        return $this->configHelper->getNS8IframeUrl($this->request->getParam('order_id'));
     }
 }
