@@ -11,14 +11,41 @@ use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
+use NS8\Protect\Helper\SwitchActionType;
 
+/**
+ * Responds to Order Update events
+ */
 class OrderUpdate implements ObserverInterface
 {
+    /**
+     * @var Config
+     */
     protected $config;
+
+    /**
+     * @var Session
+     */
     protected $customerSession;
+
+    /**
+     * @var HttpClient
+     */
     protected $httpClient;
+
+    /**
+     * @var Logger
+     */
     protected $logger;
+
+    /**
+     * @var OrderInterface
+     */
     protected $order;
+
+    /**
+     * @var Http
+     */
     protected $request;
 
     /**
@@ -50,7 +77,7 @@ class OrderUpdate implements ObserverInterface
     /**
      * Attempt to add a status history as the order state changes
      * @param OrderInterface $order
-     * @return ?string The last known status, or null
+     * @return string|null The last known status, or null
      */
     private function addStatusHistory(OrderInterface $order) : ?string
     {
@@ -75,6 +102,7 @@ class OrderUpdate implements ObserverInterface
                     ->save();
             }
         } catch (Exception $e) {
+            $this->logger->error('Add Status History failed', $e);
         }
         return $oldStatus;
     }
@@ -85,7 +113,7 @@ class OrderUpdate implements ObserverInterface
      * @param Observer $observer
      * @return void
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer) : void
     {
         try {
             $order = $observer->getEvent()->getOrder();
@@ -96,11 +124,11 @@ class OrderUpdate implements ObserverInterface
             $oldStatus = $this->addStatusHistory($order);
 
             if (isset($oldStatus)) {
-                $params = ['action'=>HttpClient::UPDATE_ORDER_STATUS_ACTION];
+                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
             } elseif ($state == 'new' || $status == 'pending') {
-                $params = ['action'=>HttpClient::CREATE_ORDER_ACTION];
+                $params = ['action'=>SwitchActionType::CREATE_ORDER_ACTION];
             } else {
-                $params = ['action'=>HttpClient::UPDATE_ORDER_STATUS_ACTION];
+                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
             }
 
             $data = ['order'=>$orderData];

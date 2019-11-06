@@ -1,7 +1,7 @@
 <integrations>
   <integration name="NS8 Protect">
-    <email>apps@ns8.com</email>
-    <endpoint_url>http://cfro-magento.ngrok.io/protect/magento/callback</endpoint_url>
-    <identity_link_url>http://cfro-magento-client.ngrok.io/protect/magento/identity</identity_link_url>
+    <email>christopher.froehlich@ns8.com</email>
+    <endpoint_url>https://cfro-magento.ngrok.io/protect/magento/callback</endpoint_url>
+    <identity_link_url>https://cfro-magento.ngrok.io/protect/magento/identity</identity_link_url>
   </integration>
 </integrations>

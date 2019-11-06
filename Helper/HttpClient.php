@@ -1,6 +1,7 @@
 <?php
 namespace NS8\Protect\Helper;
 
+use Exception;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\HTTP\Header;
@@ -12,6 +13,7 @@ use NS8\Protect\Helper\Config;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
+use Zend\Uri\Uri;
 
 /**
  * General purpose HTTP/REST client for making API calls
@@ -19,108 +21,98 @@ use Zend\Json\Decoder;
 class HttpClient extends AbstractHelper
 {
     /**
-     * Canonical Step Name for Create Order
-     */
-    const CREATE_ORDER_ACTION = 'CREATE_ORDER_ACTION';
-
-    /**
-     * Canonical Step Name for Update Order
-     */
-    const UPDATE_ORDER_STATUS_ACTION = 'UPDATE_ORDER_STATUS_ACTION';
-
-    /**
-     * Canonical Step Name for Update Merchant
-     */
-    const UPDATE_MERCHANT_ACTION = 'UPDATE_MERCHANT_ACTION';
-
-    /**
-     * Canonical Step Name for Uninstall
-     */
-    const UNINSTALL_ACTION = 'UNINSTALL_ACTION';
-
-    /**
      * The configuration.
      *
-     * @var \NS8\Protect\Helper\Config
+     * @var Config
      */
     protected $config;
 
     /**
      * The customer session.
      *
-     * @var \Magento\Customer\Model\Session
+     * @var Session
      */
     protected $customerSession;
 
     /**
      * The HTTP header.
      *
-     * @var \Magento\Framework\HTTP\Header
+     * @var Header
      */
     protected $header;
 
     /**
      * The integration service interface.
      *
-     * @var \Magento\Integration\Api\IntegrationServiceInterface
+     * @var IntegrationServiceInterface
      */
     protected $integrationServiceInterface;
 
     /**
      * The OAuth service interface.
      *
-     * @var \Magento\Integration\Api\OauthServiceInterface
+     * @var OauthServiceInterface
      */
     protected $oauthServiceInterface;
 
     /**
      * The logger.
      *
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     protected $logger;
 
     /**
      * The HTTP request.
      *
-     * @var \Magento\Framework\HTTP\PhpEnvironment\Request
+     * @var Request
      */
     protected $request;
 
     /**
+     * Zend URI helper
+     *
+     * @var Uri
+     */
+    protected $uri;
+
+    /**
      * Default constructor
      *
-     * @param \NS8\Protect\Helper\Config $config The config
-     * @param \Magento\Framework\HTTP\Header $header The HTTP header
-     * @param \Psr\Log\LoggerInterface $logger The logger
-     * @param \Magento\Integration\Api\IntegrationServiceInterface $integrationServiceInterface The IS interface
-     * @param \Magento\Integration\Api\OauthServiceInterface $oauthServiceInterface The OAuth service interface
-     * @param \Magento\Framework\HTTP\PhpEnvironment\Request $request The HTTP request
-     * @param \Magento\Customer\Model\Session $session The customer session
+     * @param Config $config The config
+     * @param Header $header The HTTP header
+     * @param IntegrationServiceInterface $integrationServiceInterface The IS interface
+     * @param LoggerInterface $logger The logger
+     * @param OauthServiceInterface $oauthServiceInterface The OAuth service interface
+     * @param Request $request The HTTP request
+     * @param Session $session The customer session
+     * @param Uri $uri Zend URI helper
      */
     public function __construct(
         Config $config,
         Header $header,
-        LoggerInterface $logger,
         IntegrationServiceInterface $integrationServiceInterface,
+        LoggerInterface $logger,
         OauthServiceInterface $oauthServiceInterface,
         Request $request,
-        Session $session
+        Session $session,
+        Uri $uri
     ) {
         $this->config = $config;
+        $this->customerSession = $session;
         $this->header = $header;
-        $this->logger = $logger;
         $this->integrationServiceInterface = $integrationServiceInterface;
+        $this->logger = $logger;
         $this->oauthServiceInterface = $oauthServiceInterface;
         $this->request = $request;
-        $this->customerSession = $session;
+        $this->uri = $uri;
     }
 
     /**
      * Makes an HTTP GET request
      *
      * @param string $url URL to target.
-     * @param mixed $data Data to include in the request body.
+     * @param array $data Data to include in the request body.
      * @param array $parameters Optional array of request parameters.
      * @param array $headers Optional array of request headers.
      * @param integer $timeout Optional timeout value. Default 30.
@@ -136,7 +128,7 @@ class HttpClient extends AbstractHelper
      * Makes an HTTP POST request
      *
      * @param string $url URL to target.
-     * @param mixed $data Data to include in the request body.
+     * @param array $data Data to include in the request body.
      * @param array $parameters Optional array of request parameters.
      * @param array $headers Optional array of request headers.
      * @param integer $timeout Optional timeout value. Default 30.
@@ -153,8 +145,8 @@ class HttpClient extends AbstractHelper
     /**
      * Internal method to handle the logic of making the HTTP request
      *
-     * @param [type] $url
-     * @param [type] $data
+     * @param string $url
+     * @param array $data
      * @param string $method
      * @param array $parameters
      * @param array $headers
@@ -162,8 +154,15 @@ class HttpClient extends AbstractHelper
      * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    private function executeWithAuth($url, $data, $method = "POST", $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
-    {
+    private function executeWithAuth(
+        $url,
+        $data,
+        $method = "POST",
+        $parameters = [],
+        $headers = [],
+        $timeout = 30,
+        $decodeJson = true
+    ) {
         $accessToken = $this->getAccessToken();
 
         $authHeaderString = 'Bearer ' . $accessToken;
@@ -185,8 +184,16 @@ class HttpClient extends AbstractHelper
      * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    private function execute($route, $data = [], $method = "POST", $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
-    {
+    private function execute(
+        $route,
+        $data = [],
+        $method = "POST",
+        $parameters = [],
+        $headers = [],
+        $timeout = 30,
+        $decodeJson = true
+    ) {
+        $response = null;
         try {
             $uri = $this->config->getNS8MiddlewareUrl($route);
 
@@ -199,7 +206,7 @@ class HttpClient extends AbstractHelper
             $httpClient->setMethod($method);
 
             $headers['magento-version'] = $this->config->getMagentoVersion();
-            $headers['extension-version'] = $this->config->getExtensionVersion();
+            $headers['extension-version'] = $this->config->getProtectVersion();
 
             if (!empty($headers)) {
                 $httpClient->setHeaders($headers);
@@ -207,19 +214,14 @@ class HttpClient extends AbstractHelper
 
             if (!empty($data)) {
                 $httpClient->setParameterPost($data);
-                // #TODO: do we still need this?
-                // $json = json_encode($data);
-                // $httpClient->setRawBody($json);
             }
-            #TODO: decompose this into more discrete steps.
             $body = $httpClient->send()->getBody();
 
             $response = $decodeJson ? Decoder::decode($body) : $body;
-            return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to execute API call', ['error'=>$e]);
         }
-        #TODO: consumers probably want more control over the response
+        return $response;
     }
 
     /**
@@ -228,15 +230,25 @@ class HttpClient extends AbstractHelper
      *
      * @param string $authString
      *
-     * @return string Oauth access token.
+     * @return string|null Oauth access token.
      */
-    private function extractOauthTokenFromAuthString($accessTokenString)
+    private function extractOauthTokenFromAuthString($accessTokenString) : ?string
     {
-        parse_str($accessTokenString, $parsedToken);
-        return $parsedToken['oauth_token'];
+        $this->uri->setQuery($accessTokenString);
+        $parsedToken = $this->uri->getQueryAsArray();
+        if ($parsedToken) {
+            return $parsedToken['oauth_token'];
+        } else {
+            return null;
+        }
     }
 
-    private function getAccessToken()
+    /**
+     * Gets a Protect Access Token if the OAuth has succeeded
+     *
+     * @return string|null
+     */
+    private function getAccessToken() : ?string
     {
         $storedToken = $this->config->getAccessToken();
         if (!empty($storedToken)) {
@@ -249,8 +261,10 @@ class HttpClient extends AbstractHelper
             $accessToken = $this->extractOauthTokenFromAuthString($accessTokenString);
 
             $protectAccessToken = $this->getProtectAccessToken($consumer->getKey(), $accessToken);
-            $this->config->setAccessToken($protectAccessToken);
-            $storedToken = $protectAccessToken;
+            if (isset($protectAccessToken)) {
+                $this->config->setAccessToken($protectAccessToken);
+                $storedToken = $protectAccessToken;
+            }
         }
 
         return $storedToken;
@@ -262,16 +276,26 @@ class HttpClient extends AbstractHelper
      * @param string $consumerId
      * @param string $accessToken
      *
-     * @return string Protect access token.
+     * @return string|null Protect access token.
      */
-    private function getProtectAccessToken($consumerId, $accessToken)
+    private function getProtectAccessToken($consumerId, $accessToken) : ?string
     {
         $getParams = [
             'oauth_consumer_key' => $consumerId,
             'access_token' => $accessToken
         ];
         $response = $this->execute('init/magento/access-token', '', 'GET', $getParams);
-        return $response->token;
+        if (null == $response) {
+            return null;
+        }
+        if (isset($response->statusCode) && $response->statusCode >= 400) {
+            return null;
+        }
+        if (isset($response->token)) {
+            return $response->token;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -279,7 +303,7 @@ class HttpClient extends AbstractHelper
      *
      * @return array The session data
      */
-    private function getSessionData()
+    private function getSessionData() : array
     {
         return [
             'acceptLanguage' => $this->header->getHttpAcceptLanguage(),

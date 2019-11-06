@@ -2,39 +2,58 @@
 
 namespace NS8\Protect\Observer;
 
-use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\App\Request\Http;
+use Exception;
 use Magento\Customer\Model\Session;
-
-use NS8\Protect\Helper\Logger;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\Event\Observer;
+use Magento\Framework\Event\ObserverInterface;
 use NS8\Protect\Helper\HttpClient;
+use NS8\Protect\Helper\Logger;
+use NS8\Protect\Helper\SwitchActionType;
 
+/**
+ * Responds to merchant update events
+ */
 class MerchantUpdate implements ObserverInterface
 {
-    protected $request;
+    /**
+     * @var Session
+     */
     protected $customerSession;
-    protected $logger;
+
+    /**
+     * @var HttpClient
+     */
     protected $httpClient;
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var Http
+     */
+    protected $request;
 
     /**
      * Default constructor
      *
      * @param Http $request
-     * @param Session $session
-     * @param Logger $logger
      * @param HttpClient $httpClient
+     * @param Logger $logger
+     * @param Session $session
      */
     public function __construct(
         Http $request,
-        Session $session,
+        HttpClient $httpClient,
         Logger $logger,
-        HttpClient $httpClient
+        Session $session
     ) {
-        $this->request = $request;
         $this->customerSession = $session;
-        $this->logger = $logger;
         $this->httpClient = $httpClient;
+        $this->logger = $logger;
+        $this->request = $request;
     }
 
     /**
@@ -43,21 +62,21 @@ class MerchantUpdate implements ObserverInterface
      * @param Observer $observer
      * @return void
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer) : void
     {
         try {
             $eventData = $observer->getEvent()->getData();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('The event data could not be retrieved', $e);
             return;
         }
 
-        $params = ['action' => HttpClient::UPDATE_MERCHANT_ACTION];
+        $params = ['action' => SwitchActionType::UPDATE_MERCHANT_ACTION];
         $data = ['eventData' => $eventData];
 
         try {
             $this->httpClient->post('/switch/executor', $data, $params);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('The merchant update could not be processed', $e);
         }
     }
