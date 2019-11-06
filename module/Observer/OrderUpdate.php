@@ -126,7 +126,11 @@ class OrderUpdate implements ObserverInterface
             // TODO: remove this!!
             //   This is temporary code to help assert that the EAV property is mutated.
             try {
-                $order->setEq8Score(0);
+                // This line does not work, but the method exists
+                // $order->setEq8Score(0);
+                $extensionAttributes = $order->getExtensionAttributes();
+                $extensionAttributes->setEq8Score(10);
+                $order->setExtensionAttributes($extensionAttributes);
                 // This eventually triggers the save event
                 $order->save();
             } catch (Exception $e) {

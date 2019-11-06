@@ -2,6 +2,8 @@
 
 namespace NS8\Protect\Model\Plugin;
 
+use Exception;
+use Magento\Framework\EntityManager\EntityManager;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Magento\Sales\Api\Data\OrderInterface;
@@ -14,6 +16,11 @@ use NS8\Protect\Model\Eq8Score;
 class OrderSave
 {
     /**
+     * @var  EntityManager
+     */
+    private $entityManager;
+
+    /**
      * Order Extension Attributes Factory
      *
      * @var OrderExtensionFactory
@@ -21,28 +28,41 @@ class OrderSave
     protected $extensionFactory;
 
     /**
+     * @var OrderInterface
+     */
+    protected $order;
+
+    /**
      * OrderRepositoryPlugin constructor
      *
      * @param OrderExtensionFactory $extensionFactory
      */
     public function __construct(
+        EntityManager $entityManager,
         OrderExtensionFactory $orderExtensionFactory
     ) {
+        $this->entityManager = $entityManager;
         $this->orderExtensionFactory = $orderExtensionFactory;
     }
 
     /**
-     * Inherited method invoked after the property is saved
-     *
-     * @param OrderRepositoryInterface $repository
+     * @param OrderRepositoryInterface $subject
      * @param OrderInterface $order
-     * @return OrderInterface
+     * @return void
      */
+    public function beforeSave(
+        OrderRepositoryInterface $subject,
+        OrderInterface $order
+    ) {
+        $this->currentOrder = $order;
+    }
+
     public function afterSave(
         OrderRepositoryInterface $repository,
         OrderInterface $resultOrder
     ) {
         $resultOrder = $this->saveEq8ScoreAttribute($resultOrder, $repository);
+
         return $resultOrder;
     }
 
@@ -55,19 +75,34 @@ class OrderSave
      */
     private function saveEq8ScoreAttribute(OrderInterface $order, OrderRepositoryInterface $repository)
     {
-        $extensionAttributes = $order->getExtensionAttributes();
-        $eq8score = $extensionAttributes->getEq8Score();
-        if (isset($eq8score)) {
-            //$eq8score = $eq8ScoreAttr->getValue();
+        // I don't think there is a meaningful difference between $order and $this->currentOrder
+        //$extensionAttributes = $order->getExtensionAttributes();
+        $extensionAttributes = $this->currentOrder->getExtensionAttributes() ?: $this->orderExtensionFactory->create();
+        $eq8Score = $extensionAttributes->getEq8Score();
+        $this->currentOrder->setExtensionAttributes($extensionAttributes);
+
+        if (isset($eq8Score)) {
             try {
-                $repository->save($eq8score);
-            } catch (\Exception $e) {
+                // This doesn't work, but some examples suggest that it should. I assume there is some blackbox magic to associate the property with the order?
+                // $eq8score->setOrderId($order->getId());
+
+                // This seems like the most likely candidate to successfully save
+                // see: https://github.com/magento/magento2-samples/blob/master/sample-external-links/Model/Plugin/Product/Repository.php#L140
+                // $this->entityManager->save($this->currentOrder->getId(), $eq8Score);
+
+                // This does not seem to have any affect, but it does not throw an error
+                $this->currentOrder->save();
+
+                // This will cause a stack overflow
+                // $repository->save($this->currentOrder);
+            } catch (Exception $e) {
                 throw new CouldNotSaveException(
                     __('Could not add attribute to order: "%1"', $e->getMessage()),
                     $e
                 );
             }
         }
-        return $order;
+
+        return $this->currentOrder;
     }
 }
