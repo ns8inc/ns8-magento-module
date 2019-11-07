@@ -6,6 +6,12 @@ use NS8\Protect\Api\OrderScoreInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\HttpClient;
 
+/**
+ * Custom API to set Order Score data
+ * @link https://www.scommerce-mage.com/blog/magento-2-how-to-create-custom-api.html
+ * @link https://magento.stackexchange.com/questions/106337/magento-2-custom-authentication-for-api
+ * @link http://url.com
+ */
 class OrderScore implements OrderScoreInterface
 {
     /**

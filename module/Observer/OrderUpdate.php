@@ -122,13 +122,18 @@ class OrderUpdate implements ObserverInterface
             $state = $order->getState();
             $status = $order->getStatus();
             $oldStatus = $this->addStatusHistory($order);
+            $isNew = $state == 'new' || $status == 'pending';
 
-            if (isset($oldStatus)) {
+            if (isset($oldStatus) || !$isNew) {
                 $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
-            } elseif ($state == 'new' || $status == 'pending') {
-                $params = ['action'=>SwitchActionType::CREATE_ORDER_ACTION];
+                $extensionAttributes = $order->getExtensionAttributes();
+                $eq8Score = $extensionAttributes->getEq8Score();
+                //If we haven't cached the EQ8 Score, get it now
+                if(!isset($eq8Score)) {
+                    $this->httpClient->getEQ8Score($order->getId());
+                }
             } else {
-                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
+                $params = ['action'=>SwitchActionType::CREATE_ORDER_ACTION];
             }
 
             $data = ['order'=>$orderData];

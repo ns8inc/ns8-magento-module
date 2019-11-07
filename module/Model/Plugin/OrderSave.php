@@ -61,7 +61,7 @@ class OrderSave
         OrderRepositoryInterface $repository,
         OrderInterface $resultOrder
     ) {
-        $resultOrder = $this->saveEq8ScoreAttribute($resultOrder, $repository);
+        $resultOrder = $this->saveEq8ScoreAttribute($repository, $resultOrder);
 
         return $resultOrder;
     }
@@ -73,12 +73,14 @@ class OrderSave
      * @param OrderRepositoryInterface $repository
      * @return OrderInterface
      */
-    private function saveEq8ScoreAttribute(OrderInterface $order, OrderRepositoryInterface $repository)
+    private function saveEq8ScoreAttribute(OrderRepositoryInterface $repository, OrderInterface $order)
     {
         // I don't think there is a meaningful difference between $order and $this->currentOrder
         //$extensionAttributes = $order->getExtensionAttributes();
         $extensionAttributes = $this->currentOrder->getExtensionAttributes() ?: $this->orderExtensionFactory->create();
         $eq8Score = $extensionAttributes->getEq8Score();
+        $extensionAttributes->setEq8Score($eq8Score);
+
         $this->currentOrder->setExtensionAttributes($extensionAttributes);
 
         if (isset($eq8Score)) {
@@ -88,13 +90,20 @@ class OrderSave
 
                 // This seems like the most likely candidate to successfully save
                 // see: https://github.com/magento/magento2-samples/blob/master/sample-external-links/Model/Plugin/Product/Repository.php#L140
-                // $this->entityManager->save($this->currentOrder->getId(), $eq8Score);
+                try {
+                    $orderId = intval($this->currentOrder->getId());
+                    $this->entityManager->save($order, $eq8Score);
+                } catch (Exception $e) {
+                }
 
                 // This does not seem to have any affect, but it does not throw an error
-                $this->currentOrder->save();
+                $order->save();
+
+                $repository->save($order);
+
 
                 // This will cause a stack overflow
-                // $repository->save($this->currentOrder);
+                //$this->orderExtensionFactory->save($eq8Score);
             } catch (Exception $e) {
                 throw new CouldNotSaveException(
                     __('Could not add attribute to order: "%1"', $e->getMessage()),

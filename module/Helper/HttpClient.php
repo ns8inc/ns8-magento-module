@@ -366,8 +366,11 @@ class HttpClient extends AbstractHelper
         // $order->setEq8Score($eq8Score);
         $extensionAttributes = $order->getExtensionAttributes();
         $extensionAttributes->setEq8Score($eq8Score);
-        $order->setExtensionAttributes($extensionAttributes);
-        $order->save();
+        $order
+            ->setExtensionAttributes($extensionAttributes)
+            ->setData('eq8_score', $eq8Score)
+            ->setEq8Score($eq8Score)
+            ->save();
 
         return $order->getExtensionAttributes()->getEq8Score();
     }

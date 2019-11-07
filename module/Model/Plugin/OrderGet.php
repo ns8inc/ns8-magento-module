@@ -70,9 +70,7 @@ class OrderGet
         $eq8Score = $order->getData(Eq8Score::FIELD_NAME);
         $extensionAttributes = $order->getExtensionAttributes();
         $extensionAttributes = $extensionAttributes ? $extensionAttributes : $this->extensionFactory->create();
-        if (isset($eq8Score)) {
-            $extensionAttributes->setEq8Score($eq8Score);
-        }
+        $extensionAttributes->setEq8Score($eq8Score);
         $order->setExtensionAttributes($extensionAttributes);
         return $order;
     }

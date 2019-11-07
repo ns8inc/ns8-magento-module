@@ -77,25 +77,25 @@ class Upgrade extends AbstractHelper
             $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
             $eavData = [
                 'group' => 'Orders',
-                'type' => 'int',
-                'backend' => '', //TODO: verify this
-                'frontend' => '', //TODO: verify this
+                'type' => 'varchar',
+                //'backend' => '', //TODO: verify this
+                //'frontend' => '', //TODO: verify this
                 'label' => 'EQ8 Score',
-                'input' => 'boolean', //TODO: verify this
-                'class' => '', //TODO: verify this
-                'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean', //TODO: verify this
+                'input' => 'text', //TODO: verify this
+                //'class' => '', //TODO: verify this
+                //'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean', //TODO: verify this
+                'sort_order' => 65,
                 'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
                 'visible' => true,
                 'required' => false,
                 'user_defined' => false,
-                'default' => 0,
+                'default' => '0',
                 'searchable' => true,
                 'filterable' => true,
                 'comparable' => true,
                 'visible_on_front' => false,
-                'used_in_product_listing' => false,
-                'unique' => false,
-                'apply_to' => '' // TODO: verify this
+                'unique' => false
+                //'apply_to' => Type::TYPE_SIMPLE
             ];
             // Add an attribute to the Order model
             // NOTES:
