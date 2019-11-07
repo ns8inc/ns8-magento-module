@@ -9,7 +9,8 @@ interface OrderScoreInterface
      *
      * @api
      * @param string $orderId An Order Id
+     * @param string $eq8 An EQ8 score
      * @return string returns a score.
      */
-    public function score($orderId);
+    public function score($orderId, $eq8);
 }
