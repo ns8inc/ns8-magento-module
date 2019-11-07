@@ -327,7 +327,7 @@ class HttpClient extends AbstractHelper
         }
         $extensionAttributes = $order->getExtensionAttributes();
         $eq8Score = $extensionAttributes->getEq8Score();
-        if (isset($eq8Score) && $eq8Score != '0') {
+        if (isset($eq8Score)) {
             return $eq8Score;
         }
 
