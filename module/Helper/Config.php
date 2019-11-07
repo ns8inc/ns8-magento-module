@@ -114,7 +114,7 @@ class Config extends AbstractHelper
     /**
      * @var UrlInterface
      */
-    protected $urlInterface;
+    protected $url;
 
     /**
      * Default constructor
@@ -128,7 +128,7 @@ class Config extends AbstractHelper
      * @param RequestInterface $request
      * @param ScopeConfigInterface $scopeConfig
      * @param TypeListInterface $typeList
-     * @param UrlInterface $urlInterface
+     * @param UrlInterface $url
      * @param WriterInterface $scopeWriter
      */
     public function __construct(
@@ -141,7 +141,7 @@ class Config extends AbstractHelper
         RequestInterface $request,
         ScopeConfigInterface $scopeConfig,
         TypeListInterface $typeList,
-        UrlInterface $urlInterface,
+        UrlInterface $url,
         WriterInterface $scopeWriter
     ) {
         $this->context = $context;
@@ -154,7 +154,7 @@ class Config extends AbstractHelper
         $this->scopeConfig = $scopeConfig;
         $this->scopeWriter = $scopeWriter;
         $this->typeList = $typeList;
-        $this->urlInterface = $urlInterface;
+        $this->url = $url;
     }
 
     /**
@@ -279,7 +279,7 @@ class Config extends AbstractHelper
     public function getNS8IframeUrl(string $orderId = null): string
     {
         $orderId = $orderId ?: $this->request->getParam('order_id');
-        return $this->urlInterface->getUrl('ns8protectadmin/sales/dashboard', isset($orderId) ? ['order_id' => $orderId] : []);
+        return $this->url->getUrl('ns8protectadmin/sales/dashboard', isset($orderId) ? ['order_id' => $orderId] : []);
     }
 
     /**
