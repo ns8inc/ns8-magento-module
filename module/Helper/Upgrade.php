@@ -4,6 +4,7 @@ namespace NS8\Protect\Helper;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Integration\Model\ConfigBasedIntegrationManager;
@@ -73,38 +74,41 @@ class Upgrade extends AbstractHelper
             $this->customStatus->setCustomStatuses('Running Data '.$mode);
             // Run the base integration config method. This does not trigger activation.
             $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
-            // Prep to run EAV extension setup
-            $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
-            $eavData = [
-                'group' => 'Orders',
-                'type' => 'int',
-                'backend' => '', //TODO: verify this
-                'frontend' => '', //TODO: verify this
-                'label' => 'EQ8 Score',
-                'input' => 'boolean', //TODO: verify this
-                'class' => '', //TODO: verify this
-                'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean', //TODO: verify this
-                'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
-                'visible' => true,
-                'required' => false,
-                'user_defined' => false,
-                'default' => 0,
-                'searchable' => true,
-                'filterable' => true,
-                'comparable' => true,
-                'visible_on_front' => false,
-                'used_in_product_listing' => false,
-                'unique' => false,
-                'apply_to' => '' // TODO: verify this
-            ];
-            // Add an attribute to the Order model
-            // NOTES:
-            //   5 should equal etity_type_code="order" and entity_model="Magento\Sales\Model\ResourceModel\Order"
-            $eavSetup->addAttribute(
-                'order',
+
+            $connection = $setup->getConnection();
+            $connection->addColumn(
+                $setup->getTable('sales_order'),
                 'eq8_score',
-                $eavData
+                [
+                    'type' => Table::TYPE_SMALLINT,
+                    'nullable' => true,
+                    'comment' => 'EQ8 Score'
+                ]
             );
+
+            $connection->addColumn(
+                $setup->getTable('sales_order_grid'),
+                'eq8_score',
+                [
+                    'type' => Table::TYPE_SMALLINT,
+                    'nullable' => true,
+                    'comment' => 'EQ8 Score'
+                ]
+            );
+
+            // $connection->addIndex(
+            //     $setup->getTable('sales_order'),
+            //     $setup->getIdxName('sales_order', ['eq8_score']),
+            //     ['eq8_score']
+            // );
+
+            // $connection->addIndex(
+            //     $setup->getTable('sales_order_grid'),
+            //     $setup->getIdxName('sales_order_grid', ['eq8_score']),
+            //     ['eq8_score']
+            // );
+
+
         } catch (Exception $e) {
             $this->logger->error('Protect '.$mode.' failed', $e);
         } finally {
