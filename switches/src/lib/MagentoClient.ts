@@ -156,7 +156,7 @@ export class MagentoClient {
   /**
    * Attach an EQ8 Score to a Magento order
    */
-  public postScore = async (orderId: string, eq8Score: number): Promise<string | null> => {
+  public postScore = async (orderId: string, eq8Score: number): Promise<boolean | null> => {
     try {
       return await this.client.get(`/Protect/score/${orderId}/${eq8Score}`) || null;
     } catch (e) {

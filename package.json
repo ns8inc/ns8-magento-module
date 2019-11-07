@@ -56,5 +56,5 @@
     "version:patch": "ts-node ./build/incrementVersion.ts && yarn switches:publish && yarn build",
     "version:patch:dev": "SET PATCH_MODE=dev && yarn version:patch"
   },
-  "version": "2.0.2"
+  "version": "2.0.3"
 }
