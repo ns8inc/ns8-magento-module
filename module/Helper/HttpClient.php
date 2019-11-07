@@ -325,8 +325,7 @@ class HttpClient extends AbstractHelper
         if (!isset($order)) {
             throw new UnexpectedValueException('Order Id: '.$orderId.' could not be found');
         }
-        $extensionAttributes = $order->getExtensionAttributes();
-        $eq8Score = $extensionAttributes->getEq8Score();
+        $eq8Score = $order->getData('eq8_score');
         if (isset($eq8Score)) {
             return $eq8Score;
         }
@@ -362,17 +361,11 @@ class HttpClient extends AbstractHelper
      */
     public function setEQ8Score(int $eq8Score, $order) : int
     {
-        // This line does not work, but the method exists
-        // $order->setEq8Score($eq8Score);
-        $extensionAttributes = $order->getExtensionAttributes();
-        $extensionAttributes->setEq8Score($eq8Score);
         $order
-            ->setExtensionAttributes($extensionAttributes)
             ->setData('eq8_score', $eq8Score)
-            ->setEq8Score($eq8Score)
             ->save();
 
-        return $order->getExtensionAttributes()->getEq8Score();
+        return $eq8Score;
     }
 
     /**

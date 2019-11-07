@@ -3,10 +3,4 @@
   xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
   <preference for="NS8\Protect\Api\OrderScoreInterface"
     type="NS8\Protect\Model\OrderScore" />
-  <type name="Magento\Sales\Api\OrderRepositoryInterface">
-    <plugin name="save_eq8_score_attribute"
-      type="NS8\Protect\Model\Plugin\OrderSave" />
-    <plugin name="get_eq8_score_attribute"
-      type="NS8\Protect\Model\Plugin\OrderGet" />
-  </type>
 </config>
