@@ -56,7 +56,8 @@ provider:
   region: us-west-2
   runtime: nodejs10.x
   stage: '${opt:stage, env:DEV_NAME}'
-  timeout: 30
+  timeout: 60
+  versionFunctions: false
 RetryDefault: &retryDefault
   Retry:
   - BackoffRate: 2
