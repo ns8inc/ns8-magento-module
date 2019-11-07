@@ -6,8 +6,7 @@ import switchesPackage from '../switches/package.json';
 import { env } from './loadEnv';
 import { writeFileSync } from 'fs';
 
-const getModuleXml = (nextVersion: string): string => `
-<?xml version="1.0" ?>
+const getModuleXml = (nextVersion: string): string => `<?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
   <module name="NS8_Protect"
