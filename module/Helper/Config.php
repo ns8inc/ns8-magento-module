@@ -3,9 +3,7 @@
 namespace NS8\Protect\Helper;
 
 use Exception;
-use UnexpectedValueException;
 use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\UrlInterface;
 use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -17,10 +15,12 @@ use Magento\Framework\App\State;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
 use Magento\Framework\Stdlib\CookieManagerInterface;
+use Magento\Framework\UrlInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
+use UnexpectedValueException;
 
 /**
  * Generic Helper/Utility class with convenience methods for common ops
@@ -112,6 +112,11 @@ class Config extends AbstractHelper
     protected $scopeWriter;
 
     /**
+     * @var UrlInterface
+     */
+    protected $url;
+
+    /**
      * Default constructor
      *
      * @param Context $context
@@ -123,6 +128,7 @@ class Config extends AbstractHelper
      * @param RequestInterface $request
      * @param ScopeConfigInterface $scopeConfig
      * @param TypeListInterface $typeList
+     * @param UrlInterface $url
      * @param WriterInterface $scopeWriter
      */
     public function __construct(
@@ -135,6 +141,7 @@ class Config extends AbstractHelper
         RequestInterface $request,
         ScopeConfigInterface $scopeConfig,
         TypeListInterface $typeList,
+        UrlInterface $url,
         WriterInterface $scopeWriter
     ) {
         $this->context = $context;
@@ -147,6 +154,7 @@ class Config extends AbstractHelper
         $this->scopeConfig = $scopeConfig;
         $this->scopeWriter = $scopeWriter;
         $this->typeList = $typeList;
+        $this->url = $url;
     }
 
     /**
@@ -230,6 +238,23 @@ class Config extends AbstractHelper
     }
 
     /**
+     * Get the NS8 client order URL. If the order_id parameter is specified in the URL, then point to that specific order.
+     * Otherwise, just point to the main dashboard page.
+     * @param string|null $orderIncrementId
+     * @return string The URL
+     */
+    public function getNS8ClientOrderUrl(string $orderIncrementId = null): string
+    {
+        $orderIncrementId = $orderIncrementId ?: $this->getOrderIncrementId();
+        return sprintf(
+            '%s%s?access_token=%s',
+            $this->getNS8ClientUrl(),
+            isset($orderIncrementId) ? '/order-details/' . $this->base64UrlEncode($orderIncrementId) : '',
+            $this->getAccessToken()
+        );
+    }
+
+    /**
      * Gets the current protect Middleware URL based on the environment variables.
      * For now, defaults to Development.
      * @todo Revisit defaults on preparation to release to Production
@@ -244,6 +269,17 @@ class Config extends AbstractHelper
         }
         $routeSlug = 'api'.'/'.$route;
         return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, Config::NS8_DEV_URL_CLIENT, $routeSlug);
+    }
+
+    /**
+     * Get the URL of the iframe that holds the NS8 Protect client.
+     * @param string|null $orderId
+     * @return string The URL
+     */
+    public function getNS8IframeUrl(string $orderId = null): string
+    {
+        $orderId = $orderId ?: $this->request->getParam('order_id');
+        return $this->url->getUrl('ns8protectadmin/sales/dashboard', isset($orderId) ? ['order_id' => $orderId] : []);
     }
 
     /**
@@ -318,6 +354,20 @@ class Config extends AbstractHelper
     }
 
     /**
+     * Encode a string using base64 in URL mode.
+     *
+     * @link https://en.wikipedia.org/wiki/Base64#URL_applications
+     *
+     * @param string $data The data to encode
+     *
+     * @return string The encoded string
+     */
+    public function base64UrlEncode(string $data): string
+    {
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+    /**
      * Get the Order display id from the requested order
      * @param string|null $orderId
      * @return string|null An order increment id
@@ -325,12 +375,26 @@ class Config extends AbstractHelper
     public function getOrderIncrementId(string $orderId = null): ?string
     {
         $ret = null;
+        $order = $this->getOrder($orderId);
+        if(isset($order)) {
+            $ret = $order->getIncrementId();
+        }
+        return $ret;
+    }
+
+    /**
+     * Get an Order from an order id
+     * @param string|null $orderId
+     * @return OrderInterface An order
+     */
+    public function getOrder(string $orderId = null)
+    {
+        $ret = null;
         try {
             if (!isset($orderId)) {
                 $orderId = $this->request->getParam('order_id');
             }
-            $order = $this->orderRepository->get($orderId);
-            $ret = $order->getIncrementId();
+            $ret = $this->orderRepository->get($orderId);
         } catch (Exception $e) {
             $this->logger->log('ERROR', 'Failed to get order '.$orderId, ['error'=>$e]);
         }

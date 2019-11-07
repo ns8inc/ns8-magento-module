@@ -312,4 +312,63 @@ class HttpClient extends AbstractHelper
             'userAgent' => $this->header->getHttpUserAgent(),
         ];
     }
+
+    /**
+     * Get an EQ8 Score from an order id. If it does not exist locally, fetch it from the API and store it.
+     * @param string|null $orderId
+     * @return int|null An EQ8 Score for this order Id
+     */
+    public function getEQ8Score(string $orderId = null): ?int
+    {
+        $order = $this->config->getOrder($orderId);
+        if (!isset($order)) {
+            throw new UnexpectedValueException('Order Id: '.$orderId.' could not be found');
+        }
+        $extensionAttributes = $order->getExtensionAttributes();
+        $eq8Score = $extensionAttributes->getEq8Score();
+        if(isset($eq8Score) && $eq8Score != '0') {
+            return $eq8Score;
+        }
+
+        $orderIncId = $order->getIncrementId();
+        $uri = sprintf('/orders/order-name/%s', $this->config->base64UrlEncode($orderIncId));
+        $req = $this->get($uri);
+
+        if (!isset($req->fraudAssessments)) {
+            return null;
+        }
+
+        // The goal here is to look in the fraudAssessments array and return the first score we find that's an EQ8.
+        $eq8Score = array_reduce($req->fraudAssessments, function (?int $foundScore, \stdClass $fraudAssessment): ?int {
+            if (!empty($foundScore)) {
+                return $foundScore;
+            }
+            return $fraudAssessment->providerType === 'EQ8' ? $fraudAssessment->score : null;
+        });
+
+        if(isset($eq8Score)) {
+            $extensionAttributes->setEq8Score($eq8Score);
+            $order->setExtensionAttributes($extensionAttributes);
+            $order->save();
+        }
+        return $eq8Score;
+    }
+
+    /**
+     * Get an EQ8 Score from an order id. If it does not exist locally, fetch it from the API and store it.
+     * @param string|null $orderId
+     * @return string An EQ8 Score link for this order
+     */
+    public function getEQ8ScoreLink(string $orderId = null): string
+    {
+        if (!isset($orderId)) {
+            return 'NA';
+        }
+        $eq8Score = $this->getEQ8Score($orderId);
+        if (!isset($eq8Score)) {
+            return 'NA';
+        }
+        $link = $this->config->getNS8IframeUrl($orderId);
+        return '<a href="'.$link.'">'.$eq8Score.'</a>';
+    }
 }
