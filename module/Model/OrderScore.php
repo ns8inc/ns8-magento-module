@@ -35,12 +35,12 @@ class OrderScore implements OrderScoreInterface
     /**
      * @api
      * @param string $orderId
-     * @param string $eq8
-     * @return OrderInterface EQ8 Score.
+     * @param int $eq8
+     * @return bool true if the update succeeded
      */
-    public function score($orderId, $eq8)
+    public function score($orderId, $eq8) : bool
     {
         $order = $this->config->getOrder($orderId);
-        return $this->httpClient->setEQ8Score($eq8, $order);
+        return $eq8 == $this->httpClient->setEQ8Score($eq8, $order);
     }
 }

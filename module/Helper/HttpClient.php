@@ -358,9 +358,9 @@ class HttpClient extends AbstractHelper
      * Sets the EQ8 Score on an order
      * @param int $eq8Score The score to persist
      * @param OrderInterface $order The order to update
-     * @return OrderInterface The updated order
+     * @return int The saved EQ8 Score
      */
-    public function setEQ8Score(int $eq8Score, $order)
+    public function setEQ8Score(int $eq8Score, $order) : int
     {
         // This line does not work, but the method exists
         // $order->setEq8Score($eq8Score);
@@ -369,7 +369,7 @@ class HttpClient extends AbstractHelper
         $order->setExtensionAttributes($extensionAttributes);
         $order->save();
 
-        return $order;
+        return $order->getExtensionAttributes()->getEq8Score();
     }
 
     /**
