@@ -7,13 +7,13 @@
  */
 declare(strict_types=1);
 
-namespace NS8\CSP2\Block\Frontend;
+namespace NS8\Protect\Block\Frontend;
 
 use \Exception;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use NS8\CSP2\Helper\HttpClient;
+use NS8\Protect\Helper\HttpClient;
 
 /**
  * The Verify Order class.
@@ -84,7 +84,7 @@ class VerifyOrder extends Template
             $postFields = array_merge($params, (array)$this->request->getPost(), [
                 'returnUri' => implode('/', [
                     $this->getBaseUrl(),
-                    'ns8csp2',
+                    'ns8protect',
                     'order',
                     'verify',
                     'orderId', '{orderId}',
@@ -135,7 +135,7 @@ class VerifyOrder extends Template
             function (array $matches): string {
                 $query = parse_url($matches[1], PHP_URL_QUERY);
 
-                return sprintf('%s/ns8csp2/order/verify/%s', $this->getBaseUrl(), str_replace(['=', '&'], '/', $query));
+                return sprintf('%s/ns8protect/order/verify/%s', $this->getBaseUrl(), str_replace(['=', '&'], '/', $query));
             },
             $template
         );

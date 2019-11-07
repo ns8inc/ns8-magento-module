@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace NS8\CSP2\Controller\Order;
+namespace NS8\Protect\Controller\Order;
 
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
