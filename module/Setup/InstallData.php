@@ -20,7 +20,7 @@ class InstallData implements InstallDataInterface
      * @param Upgrade $upgradeHelper
      */
     public function __construct(
-        Upgrade $upgrade
+        Upgrade $upgradeHelper
     ) {
         $this->upgradeHelper = $upgradeHelper;
     }
