@@ -61,7 +61,7 @@ class Container extends Template
     protected $resultPageFactory;
 
     /**
-     * The page factory.
+     * The URL Helper class
      *
      * @var Url
      */
