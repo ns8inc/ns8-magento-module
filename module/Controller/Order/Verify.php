@@ -33,7 +33,8 @@ class Verify extends Action
      *
      * @param Context $context
      */
-    public function __construct(Context $context, PageFactory $resultPageFactory) {
+    public function __construct(Context $context, PageFactory $resultPageFactory)
+    {
         parent::__construct($context);
         $this->context = $context;
         $this->resultPageFactory = $resultPageFactory;
@@ -44,7 +45,8 @@ class Verify extends Action
      *
      * @return Page The page
      */
-    public function execute(): Page {
+    public function execute(): Page
+    {
         return $this->resultPageFactory->create();
     }
 }

@@ -9,11 +9,12 @@ declare(strict_types=1);
 
 namespace NS8\Protect\Block\Frontend;
 
-use \Exception;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use NS8\Protect\Helper\HttpClient;
+use RuntimeException;
+use Zend\Uri\Http as Uri;
 
 /**
  * The Verify Order class.
@@ -61,11 +62,11 @@ class VerifyOrder extends Template
      * There's a lot of hardcoded Shopify-specific stuff in the templates that the service spits out, so we need to
      * hack them up a bit to get them to work in Magento. We really need to fix it up in the Template Service.
      *
-     * @throws Exception If a valid view was not specified in the URL.
+     * @throws RuntimeException If a valid view was not specified in the URL.
      *
      * @return string The template (HTML)
      */
-    public function getNS8Template(): string
+    public function getNS8TemplateHtml(): string
     {
         $params = $this->request->getParams();
 
@@ -77,7 +78,7 @@ class VerifyOrder extends Template
         ];
 
         if (!in_array($params['view'] ?? null, $validViews)) {
-            throw new Exception('No valid view was specified in the URL.');
+            throw new RuntimeException('No valid view was specified in the URL.');
         }
 
         if ($this->request->isPost()) {
@@ -112,7 +113,7 @@ class VerifyOrder extends Template
      */
     private function redirect(string $url): string
     {
-        return sprintf('<script>window.location.replace("%s");</script>', htmlspecialchars($url));
+        return sprintf('<script>window.location.replace("%s");</script>', $this->escapeHtml($url));
     }
 
     /**
@@ -133,9 +134,10 @@ class VerifyOrder extends Template
         $template = preg_replace_callback(
             '#"(/apps/ns8-protect.*?)"#',
             function (array $matches): string {
-                $query = parse_url($matches[1], PHP_URL_QUERY);
+                $uri = new Uri($matches[1]);
+                $query = str_replace(['=', '&'], '/', $uri->getQuery());
 
-                return sprintf('%s/ns8protect/order/verify/%s', $this->getBaseUrl(), str_replace(['=', '&'], '/', $query));
+                return sprintf('%s/ns8protect/order/verify/%s', $this->getBaseUrl(), $query);
             },
             $template
         );
