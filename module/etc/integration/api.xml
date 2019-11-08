@@ -32,6 +32,7 @@
       <resource name="Magento_Sales::payment_amount_authorization" />
       <resource name="Magento_Sales::transactions_fetch" />
       <resource name="Magento_Sales::comment" />
+      <resource name="NS8_Protect::admin" />
     </resources>
   </integration>
 </integrations>
