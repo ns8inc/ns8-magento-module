@@ -1,8 +1,9 @@
 <script type="text/javascript">
   require(['NS8_Protect/js/postmate.min'], function(Postmate) {
+    const clientOrderUrl = '<?= $block->escapeUrl($block->getNS8ClientOrderUrl()); ?>';
     const handshake = new Postmate({
       container: document.getElementById('ns8-protect-wrapper'),
-      url: '<?= $block->escapeUrl($block->getNS8ClientOrderUrl()); ?>',
+      url: clientOrderUrl,
       classListArray: ['ns8-protect-client-iframe']
     });
 
@@ -40,12 +41,9 @@
     };
 
     const navigateToMagentoOrderDetails = (orderId) => {
-      const orderDetailsUrlBase = '<?= $block->escapeUrl($block->getMagentOrderDetailUrl()); ?>'
-        .split('/')
-        .slice(0, -3) // Remove '/key/[key]/' as it will be incorrect once we add the orderId
-        .join('/');
-
-      window.location.href = `${orderDetailsUrlBase}/${orderId}`;
+      const orderDetailsUrlBase = '<?= $block->escapeUrl($block->getMagentOrderDetailUrl()); ?>';
+      const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
+      window.location.href = orderUrl;
     }
 
     handshake.then(

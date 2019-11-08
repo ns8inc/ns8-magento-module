@@ -133,6 +133,6 @@ class Container extends Template
      */
     public function getMagentOrderDetailUrl(): string
     {
-        return $this->getUrl('sales/order/view/order_id');
+        return $this->configHelper->getMagentOrderDetailUrl();
     }
 }

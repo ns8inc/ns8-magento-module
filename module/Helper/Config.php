@@ -284,6 +284,24 @@ class Config extends AbstractHelper
     }
 
     /**
+     * Get the base URL to the Magento Order Detail View
+     * This will not include the order id yet as we won't have
+     * that until the user clicks on the front end.
+     *
+     * @return string The URL
+     */
+    public function getMagentOrderDetailUrl(): string
+    {
+        $ret = $this->url->getUrl('sales/order/view/order_id');
+        $segments = explode('/', $ret);
+        // TODO: change this to something more robust.
+        // If $ret does not end with the slug `/sales/order/view`, then the alogirthm is wrong
+        $segments = array_splice($segments, 0, -3);
+        $ret = join('/', $segments);
+        return $ret;
+    }
+
+    /**
      * Gets an access token.
      *
      * @return string|null The NS8 Protect Access Token.
