@@ -1,15 +1,15 @@
 <?php
 namespace NS8\Protect\Setup;
 
-use Magento\Framework\Setup\UpgradeDataInterface;
+use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
-use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
 use NS8\Protect\Helper\Setup;
 
 /**
  * Upgrade the Protect data model whenever the extension is updated
  */
-class UpgradeData implements UpgradeDataInterface
+class UpgradeSchema implements UpgradeSchemaInterface
 {
     /**
      * @var Setup
@@ -28,8 +28,8 @@ class UpgradeData implements UpgradeDataInterface
     /**
      * {@inheritdoc}
      */
-    public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
+    public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-        $this->setupHelper->upgradeData('upgrade', $setup, $context);
+        $this->setupHelper->upgradeSchema('upgrade', $setup, $context);
     }
 }
