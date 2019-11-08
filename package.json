@@ -49,7 +49,7 @@
     "switchboard:build": "cd switchboard && yarn build",
     "switchboard:build:dev": "cd switchboard && yarn build:dev",
     "switchboard:deploy": "SET METHOD=deploy && ts-node ./build/lambdaDeploy.ts",
-    "switchboard:undeploy": "SET METHOD=remove && yarn switchboard:deploy",
+    "switchboard:undeploy": "SET METHOD=remove && ts-node ./build/lambdaDeploy.ts",
     "switches:build": "cd switches && yarn build",
     "switches:build:dev": "cd switches && yarn build:dev",
     "switches:publish": "cd switches && yarn build && npm publish",
