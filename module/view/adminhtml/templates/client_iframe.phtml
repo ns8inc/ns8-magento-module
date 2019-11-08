@@ -1,6 +1,6 @@
 <script type="text/javascript">
   require(['NS8_Protect/js/postmate.min'], function(Postmate) {
-    const clientOrderUrl = '<?= $block->escapeUrl($block->getNS8ClientOrderUrl()); ?>';
+    const clientOrderUrl = '<?= $block->escapeUrl($block->url->getNS8ClientOrderUrl($block->order->getOrderIncrementId())); ?>';
     const handshake = new Postmate({
       container: document.getElementById('ns8-protect-wrapper'),
       url: clientOrderUrl,
@@ -41,7 +41,7 @@
     };
 
     const navigateToMagentoOrderDetails = (orderId) => {
-      const orderDetailsUrlBase = '<?= $block->escapeUrl($block->getMagentOrderDetailUrl()); ?>';
+      const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
       const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
       window.location.href = orderUrl;
     }

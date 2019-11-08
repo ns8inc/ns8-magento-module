@@ -107,8 +107,6 @@ class Upgrade extends AbstractHelper
             //     $setup->getIdxName('sales_order_grid', ['eq8_score']),
             //     ['eq8_score']
             // );
-
-
         } catch (Exception $e) {
             $this->logger->error('Protect '.$mode.' failed', $e);
         } finally {
