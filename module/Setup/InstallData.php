@@ -4,7 +4,7 @@ namespace NS8\Protect\Setup;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
-use NS8\Protect\Helper\Upgrade;
+use NS8\Protect\Helper\Setup;
 
 /**
  * Install the Protect data model extensions on first install
@@ -12,17 +12,17 @@ use NS8\Protect\Helper\Upgrade;
 class InstallData implements InstallDataInterface
 {
     /**
-     * @var Upgrade
+     * @var Setup
      */
-    protected $upgradeHelper;
+    protected $setupHelper;
 
     /**
-     * @param Upgrade $upgradeHelper
+     * @param Setup $setupHelper
      */
     public function __construct(
-        Upgrade $upgradeHelper
+        Setup $setupHelper
     ) {
-        $this->upgradeHelper = $upgradeHelper;
+        $this->setupHelper = $setupHelper;
     }
 
     /**
@@ -30,6 +30,6 @@ class InstallData implements InstallDataInterface
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        $this->upgradeHelper->upgrade('install', $setup, $context);
+        $this->setupHelper->upgradeData('install', $setup, $context);
     }
 }
