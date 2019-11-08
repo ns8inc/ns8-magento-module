@@ -55,7 +55,7 @@ class Order extends AbstractHelper
      * @param Logger $logger
      * @param OrderRepositoryInterface $orderRepository
      * @param RequestInterface $request
-     * @param Url $urlHellper
+     * @param Url $urlHelper
      * @param UrlInterface $url
      */
     public function __construct(
