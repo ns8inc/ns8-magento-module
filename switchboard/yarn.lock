@@ -34,10 +34,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@ns8/ns8-magento2-switches@2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-magento2-switches/-/ns8-magento2-switches-2.0.3.tgz#f828810ebdce2f9b2ac8c98e4a0d7754259d9fa7"
-  integrity sha512-43PXD4TiMOchmW/hhViys85K/mOGzrtf5JWgMBPwJlyJWCmmTZW2s2LwsuTdVr2xfNnHezfoaKOztMqMh7159w==
+"@ns8/ns8-magento2-switches@2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-magento2-switches/-/ns8-magento2-switches-2.0.4.tgz#9d86ccd50e571c99e2864fc4d1a1a02e3239958b"
+  integrity sha512-MBDuu0jsaCUC8ETn47Id92Z9qq26tCxs3/C8m73B97SJ28M+jtu/8R4zBLRz3rBniBQnOwqtyU0ENCwaDB2rIQ==
 
 "@serverless/cli@^1.4.0":
   version "1.4.0"
