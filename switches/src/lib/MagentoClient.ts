@@ -42,7 +42,7 @@ export class MagentoClient {
   /**
    * Convenience method to get a [[MagentoOrder]] by OrderId from the Magento API.
    */
-  public getOrder = async (orderId: number, retryConfig: RetryConfig = new RetryConfig({key: orderId})): Promise<MagentoOrder | null> => {
+  public getOrder = async (orderId: number, retryConfig: RetryConfig = new RetryConfig({ key: orderId })): Promise<MagentoOrder | null> => {
     try {
       return await this.client.orders.get(orderId);
     } catch (e) {
@@ -149,6 +149,18 @@ export class MagentoClient {
       if (false === await handleApiError(e, async () => await this.getTransaction(transactionId, retryConfig), retryConfig)) {
         Logger.error(`Failed to get Transaction Id:${transactionId} from Magento`, e);
       }
+    }
+    return null;
+  }
+
+  /**
+   * Attach an EQ8 Score to a Magento order
+   */
+  public postScore = async (orderId: string, eq8Score: number): Promise<boolean | null> => {
+    try {
+      return await this.client.get(`/Protect/score/${orderId}/${eq8Score}`) || null;
+    } catch (e) {
+      Logger.error(`Failed to set Order ${orderId}'s EQ8 Score to ${eq8Score}`, e);
     }
     return null;
   }

@@ -8,6 +8,7 @@ export * from './MagentoClient';
 export * from './OrderUpdateHelper';
 export * from './OrderHelper';
 export * from './SessionHelper';
+export * from './ScoreHelper';
 export * from './MerchantHelper';
 export * from './TransactionHelper';
 export * from './utils';

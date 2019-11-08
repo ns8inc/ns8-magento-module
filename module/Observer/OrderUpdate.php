@@ -122,26 +122,18 @@ class OrderUpdate implements ObserverInterface
             $state = $order->getState();
             $status = $order->getStatus();
             $oldStatus = $this->addStatusHistory($order);
+            $isNew = $state == 'new' || $status == 'pending';
 
-            // TODO: remove this!!
-            //   This is temporary code to help assert that the EAV property is mutated.
-            try {
-                // This line does not work, but the method exists
-                // $order->setEq8Score(0);
+            if (isset($oldStatus) || !$isNew) {
+                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
                 $extensionAttributes = $order->getExtensionAttributes();
-                $extensionAttributes->setEq8Score(10);
-                $order->setExtensionAttributes($extensionAttributes);
-                // This eventually triggers the save event
-                $order->save();
-            } catch (Exception $e) {
-            }
-
-            if (isset($oldStatus)) {
-                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
-            } elseif ($state == 'new' || $status == 'pending') {
-                $params = ['action'=>SwitchActionType::CREATE_ORDER_ACTION];
+                $eq8Score = $extensionAttributes->getEq8Score();
+                //If we haven't cached the EQ8 Score, get it now
+                if(!isset($eq8Score)) {
+                    $this->httpClient->getEQ8Score($order->getId());
+                }
             } else {
-                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
+                $params = ['action'=>SwitchActionType::CREATE_ORDER_ACTION];
             }
 
             $data = ['order'=>$orderData];

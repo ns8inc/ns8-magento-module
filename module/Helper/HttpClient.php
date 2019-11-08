@@ -9,6 +9,7 @@ use Magento\Framework\HTTP\PhpEnvironment\Request;
 use Magento\Framework\HTTP\ZendClientFactory;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
+use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
@@ -324,9 +325,8 @@ class HttpClient extends AbstractHelper
         if (!isset($order)) {
             throw new UnexpectedValueException('Order Id: '.$orderId.' could not be found');
         }
-        $extensionAttributes = $order->getExtensionAttributes();
-        $eq8Score = $extensionAttributes->getEq8Score();
-        if(isset($eq8Score) && $eq8Score != '0') {
+        $eq8Score = $order->getData('eq8_score');
+        if (isset($eq8Score)) {
             return $eq8Score;
         }
 
@@ -345,12 +345,26 @@ class HttpClient extends AbstractHelper
             }
             return $fraudAssessment->providerType === 'EQ8' ? $fraudAssessment->score : null;
         });
-
-        if(isset($eq8Score)) {
-            $extensionAttributes->setEq8Score($eq8Score);
-            $order->setExtensionAttributes($extensionAttributes);
-            $order->save();
+        if (!isset($eq8Score)) {
+            return null;
         }
+
+        $this->setEQ8Score($eq8Score, $order);
+        return $eq8Score;
+    }
+
+    /**
+     * Sets the EQ8 Score on an order
+     * @param int $eq8Score The score to persist
+     * @param OrderInterface $order The order to update
+     * @return int The saved EQ8 Score
+     */
+    public function setEQ8Score(int $eq8Score, $order) : int
+    {
+        $order
+            ->setData('eq8_score', $eq8Score)
+            ->save();
+
         return $eq8Score;
     }
 
