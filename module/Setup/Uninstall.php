@@ -10,6 +10,9 @@ use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\SwitchActionType;
 
+/**
+ * Uninstall the Protect extension completely
+ */
 class Uninstall implements UninstallInterface
 {
     /**
