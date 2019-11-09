@@ -297,7 +297,8 @@ class Config extends AbstractHelper
         // TODO: change this to something more robust.
         // If $ret does not end with the slug `/sales/order/view`, then the alogirthm is wrong
         $segments = array_splice($segments, 0, -3);
-        $ret = join('/', $segments);
+        // TODO: this needs to be more robust. Circle back and bullet proof this with backing tests.
+        $ret = join('/', $segments).'/order_id';
         return $ret;
     }
 
