@@ -158,7 +158,7 @@ export class MagentoClient {
    */
   public postScore = async (orderId: string, eq8Score: number): Promise<boolean | null> => {
     try {
-      return await this.client.get(`/Protect/score/${orderId}/${eq8Score}`) || null;
+      return await this.client.post(`/Protect/score/${orderId}/${eq8Score}`) || null;
     } catch (e) {
       Logger.error(`Failed to set Order ${orderId}'s EQ8 Score to ${eq8Score}`, e);
     }
