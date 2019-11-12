@@ -24,23 +24,15 @@ class Logger extends AbstractHelper
     protected $httpClient;
 
     /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
      * Default constructor
      *
-     * @param Config $config
      * @param HttpClient $httpClient
      * @param LoggerInterface $loggerInterface
      */
     public function __construct(
-        Config $config,
         HttpClient $httpClient,
         LoggerInterface $loggerInterface
     ) {
-        $this->config = $config;
         $this->httpClient = $httpClient;
         $this->logger = $loggerInterface;
     }

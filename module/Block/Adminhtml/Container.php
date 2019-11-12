@@ -14,8 +14,9 @@ use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\View\Result\PageFactory;
-use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\HttpClient;
+use NS8\Protect\Helper\Url;
 
 /**
  * The Container class.
@@ -25,114 +26,71 @@ use NS8\Protect\Helper\HttpClient;
 class Container extends Template
 {
     /**
-     * The config helper.
+     * The order helper.
      *
-     * @var Config
+     * @var Order
      */
-    private $configHelper;
+    public $order;
 
     /**
      * The context.
      *
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * The HTTP client helper.
      *
      * @var HttpClient
      */
-    private $httpClient;
+    protected $httpClient;
 
     /**
      * The request.
      *
      * @var Http
      */
-    private $request;
+    protected $request;
 
     /**
      * The page factory.
      *
      * @var PageFactory
      */
-    private $resultPageFactory;
+    protected $resultPageFactory;
+
+    /**
+     * The URL Helper class
+     *
+     * @var Url
+     */
+    public $url;
 
     /**
      * Constructor
      *
-     * @param Config $configHelper The config helper
      * @param Context $context The context
-     * @param HttpClient $httpClient The HTTP client
      * @param Http $request The request
+     * @param HttpClient $httpClient The HTTP client
+     * @param Order $order The order helper
      * @param PageFactory $resultPageFactory The page factory
+     * @param Url $url URL helper class
      */
     public function __construct(
-        Config $configHelper,
         Context $context,
-        HttpClient $httpClient,
         Http $request,
-        PageFactory $resultPageFactory
+        HttpClient $httpClient,
+        Order $order,
+        PageFactory $resultPageFactory,
+        Url $url
     ) {
         parent::__construct($context);
-        $this->configHelper = $configHelper;
         $this->context = $context;
         $this->httpClient = $httpClient;
+        $this->order = $order;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
-    }
-
-    /**
-     * Get the NS8 Protect Client Access Token.
-     *
-     * @return string The access token
-     */
-    public function getAccessToken(): string
-    {
-        return $this->configHelper->getAccessToken();
-    }
-
-    /**
-     * Get the NS8 EQ8 score for the order.
-     *
-     * @return int|null The EQ8 score
-     */
-    public function getEQ8Score(): ?int
-    {
-        return $this->httpClient->getEQ8Score();
-    }
-
-    /**
-     * Get the NS8 client URL. If the order_id parameter is specified in the URL, then point to that specific order.
-     * Otherwise, just point to the main dashboard page.
-     *
-     * @return string The URL
-     */
-    public function getNS8ClientOrderUrl(): string
-    {
-        return $this->configHelper->getNS8ClientOrderUrl();
-    }
-
-    /**
-     * Get the URL of the iframe that holds the NS8 Protect client.
-     *
-     * @return string The URL
-     */
-    public function getNS8IframeUrl(): string
-    {
-        return $this->configHelper->getNS8IframeUrl($this->request->getParam('order_id'));
-    }
-
-    /**
-     * Get the base URL to the Magento Order Detail View
-     * This will not include the order id yet as we won't have
-     * that until the user clicks on the front end.
-     *
-     * @return string The URL
-     */
-    public function getMagentOrderDetailUrl(): string
-    {
-        return $this->configHelper->getMagentOrderDetailUrl();
+        $this->url = $url;
     }
 }

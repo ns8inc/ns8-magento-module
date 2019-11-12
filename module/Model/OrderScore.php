@@ -3,8 +3,7 @@ namespace NS8\Protect\Model;
 
 use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Api\OrderScoreInterface;
-use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\HttpClient;
+use NS8\Protect\Helper\Order;
 
 /**
  * Custom API to set Order Score data
@@ -15,27 +14,19 @@ use NS8\Protect\Helper\HttpClient;
 class OrderScore implements OrderScoreInterface
 {
     /**
-     * @var Config
+     * @var Order
      */
-    protected $config;
-
-    /**
-     * @var HttpClient
-     */
-    protected $httpClient;
+    protected $order;
 
     /**
      * Default constructor
      *
-     * @param Config $config
-     * @param HttpClient $httpClient
+     * @param Order $order
      */
     public function __construct(
-        Config $config,
-        HttpClient $httpClient
+        Order $order
     ) {
-        $this->config=$config;
-        $this->httpClient=$httpClient;
+        $this->order=$order;
     }
 
     /**
@@ -46,7 +37,7 @@ class OrderScore implements OrderScoreInterface
      */
     public function score($orderId, $eq8) : bool
     {
-        $order = $this->config->getOrder($orderId);
-        return $eq8 == $this->httpClient->setEQ8Score($eq8, $order);
+        $order = $this->order->getOrder($orderId);
+        return $eq8 == $this->order->setEQ8Score($eq8, $order);
     }
 }

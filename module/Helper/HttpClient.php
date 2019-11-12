@@ -11,6 +11,7 @@ use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\Url;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
@@ -78,6 +79,13 @@ class HttpClient extends AbstractHelper
     protected $uri;
 
     /**
+     * URL Helper
+     *
+     * @var Url
+     */
+    protected $url;
+
+    /**
      * Default constructor
      *
      * @param Config $config The config
@@ -88,6 +96,7 @@ class HttpClient extends AbstractHelper
      * @param Request $request The HTTP request
      * @param Session $session The customer session
      * @param Uri $uri Zend URI helper
+     * @param Url $url URL helper
      */
     public function __construct(
         Config $config,
@@ -97,7 +106,8 @@ class HttpClient extends AbstractHelper
         OauthServiceInterface $oauthServiceInterface,
         Request $request,
         Session $session,
-        Uri $uri
+        Uri $uri,
+        Url $url
     ) {
         $this->config = $config;
         $this->customerSession = $session;
@@ -107,6 +117,7 @@ class HttpClient extends AbstractHelper
         $this->oauthServiceInterface = $oauthServiceInterface;
         $this->request = $request;
         $this->uri = $uri;
+        $this->url = $url;
     }
 
     /**
@@ -196,7 +207,7 @@ class HttpClient extends AbstractHelper
     ) {
         $response = null;
         try {
-            $uri = $this->config->getNS8MiddlewareUrl($route);
+            $uri = $this->url->getNS8MiddlewareUrl($route);
 
             $httpClient = new Client();
             $httpClient->setUri($uri);
@@ -312,77 +323,5 @@ class HttpClient extends AbstractHelper
             'ip' => $this->request->getClientIp(),
             'userAgent' => $this->header->getHttpUserAgent(),
         ];
-    }
-
-    /**
-     * Get an EQ8 Score from an order id. If it does not exist locally, fetch it from the API and store it.
-     * @param string|null $orderId
-     * @return int|null An EQ8 Score for this order Id
-     */
-    public function getEQ8Score(string $orderId = null): ?int
-    {
-        $order = $this->config->getOrder($orderId);
-        if (!isset($order)) {
-            throw new UnexpectedValueException('Order Id: '.$orderId.' could not be found');
-        }
-        $eq8Score = $order->getData('eq8_score');
-        if (isset($eq8Score)) {
-            return $eq8Score;
-        }
-
-        $orderIncId = $order->getIncrementId();
-        $uri = sprintf('/orders/order-name/%s', $this->config->base64UrlEncode($orderIncId));
-        $req = $this->get($uri);
-
-        if (!isset($req->fraudAssessments)) {
-            return null;
-        }
-
-        // The goal here is to look in the fraudAssessments array and return the first score we find that's an EQ8.
-        $eq8Score = array_reduce($req->fraudAssessments, function (?int $foundScore, \stdClass $fraudAssessment): ?int {
-            if (!empty($foundScore)) {
-                return $foundScore;
-            }
-            return $fraudAssessment->providerType === 'EQ8' ? $fraudAssessment->score : null;
-        });
-        if (!isset($eq8Score)) {
-            return null;
-        }
-
-        $this->setEQ8Score($eq8Score, $order);
-        return $eq8Score;
-    }
-
-    /**
-     * Sets the EQ8 Score on an order
-     * @param int $eq8Score The score to persist
-     * @param OrderInterface $order The order to update
-     * @return int The saved EQ8 Score
-     */
-    public function setEQ8Score(int $eq8Score, $order) : int
-    {
-        $order
-            ->setData('eq8_score', $eq8Score)
-            ->save();
-
-        return $eq8Score;
-    }
-
-    /**
-     * Get an EQ8 Score from an order id. If it does not exist locally, fetch it from the API and store it.
-     * @param string|null $orderId
-     * @return string An EQ8 Score link for this order
-     */
-    public function getEQ8ScoreLink(string $orderId = null): string
-    {
-        if (!isset($orderId)) {
-            return 'NA';
-        }
-        $eq8Score = $this->getEQ8Score($orderId);
-        if (!isset($eq8Score)) {
-            return 'NA';
-        }
-        $link = $this->config->getNS8IframeUrl($orderId);
-        return '<a href="'.$link.'">'.$eq8Score.'</a>';
     }
 }

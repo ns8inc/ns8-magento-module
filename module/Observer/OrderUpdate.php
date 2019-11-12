@@ -11,6 +11,7 @@ use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
+use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\SwitchActionType;
 
 /**
@@ -44,6 +45,11 @@ class OrderUpdate implements ObserverInterface
     protected $order;
 
     /**
+     * @var Order
+     */
+    protected $orderHelper;
+
+    /**
      * @var Http
      */
     protected $request;
@@ -55,6 +61,7 @@ class OrderUpdate implements ObserverInterface
      * @param Http $request
      * @param HttpClient $httpClient
      * @param Logger $logger
+     * @param Order $orderHelper
      * @param OrderInterface $order
      * @param Session $session
      */
@@ -63,6 +70,7 @@ class OrderUpdate implements ObserverInterface
         Http $request,
         HttpClient $httpClient,
         Logger $logger,
+        Order $orderHelper,
         OrderInterface $order,
         Session $session
     ) {
@@ -71,6 +79,7 @@ class OrderUpdate implements ObserverInterface
         $this->httpClient = $httpClient;
         $this->logger = $logger;
         $this->order = $order;
+        $this->orderHelper = $orderHelper;
         $this->request = $request;
     }
 
@@ -126,11 +135,10 @@ class OrderUpdate implements ObserverInterface
 
             if (isset($oldStatus) || !$isNew) {
                 $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
-                $extensionAttributes = $order->getExtensionAttributes();
-                $eq8Score = $extensionAttributes->getEq8Score();
+                $eq8Score = $order->getData('eq8_score');
                 //If we haven't cached the EQ8 Score, get it now
-                if(!isset($eq8Score)) {
-                    $this->httpClient->getEQ8Score($order->getId());
+                if (!isset($eq8Score)) {
+                    $this->orderHelper->getEQ8Score($order->getId());
                 }
             } else {
                 $params = ['action'=>SwitchActionType::CREATE_ORDER_ACTION];
