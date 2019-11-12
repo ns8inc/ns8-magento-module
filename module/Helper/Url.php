@@ -86,7 +86,7 @@ class Url extends AbstractHelper
             throw new UnexpectedValueException('Cannot use Production URLs right now.');
         }
         if (!empty($route)) {
-            $route =  rtrim(ltrim(trim($route), '/'), '/');
+            $route =  str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
             $url = $url.'/'.$route;
         }
         return $url;
@@ -144,7 +144,7 @@ class Url extends AbstractHelper
      */
     public function getNS8MiddlewareUrl(string $route = '') : string
     {
-        $route = rtrim(trim($route), '/');
+        $route = str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
         $routeSlug = 'api'.'/'.$route;
         return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_DEV_URL_CLIENT, $routeSlug);
     }
