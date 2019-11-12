@@ -5,7 +5,7 @@ namespace NS8\Protect\Ui\Component\Listing\Column;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use NS8\Protect\Helper\HttpClient;
+use NS8\Protect\Helper\Order;
 
 /**
  * EQ8Score Column Class
@@ -18,27 +18,27 @@ class EQ8Score extends Column
     /**
      * The HTTP client helper.
      *
-     * @var HttpClient
+     * @var Order
      */
-    private $httpClient;
+    private $order;
 
     /**
      * Constructor
      *
      * @param ContextInterface $context The Magento Context
      * @param UiComponentFactory $uiComponentFactory The UI Component Factory
-     * @param HttpClient $httpClient Protect's HTTP client
+     * @param Order $order Protect's HTTP client
      * @param array $components The components
      * @param array $data The data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        HttpClient $httpClient,
+        Order $order,
         array $components = [],
         array $data = []
     ) {
-        $this->httpClient = $httpClient;
+        $this->order = $order;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -56,7 +56,7 @@ class EQ8Score extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                $item['eq8_score'] = $this->httpClient->getEQ8ScoreLink($item['entity_id']);
+                $item['eq8_score'] = $this->order->getEQ8ScoreLink($item['entity_id']);
             }
         }
         return $dataSource;

@@ -1,8 +1,9 @@
 <script type="text/javascript">
   require(['NS8_Protect/js/postmate.min'], function(Postmate) {
+    const clientOrderUrl = '<?= $block->escapeUrl($block->url->getNS8ClientOrderUrl($block->order->getOrderIncrementId())); ?>';
     const handshake = new Postmate({
       container: document.getElementById('ns8-protect-wrapper'),
-      url: '<?= $block->escapeUrl($block->getNS8ClientOrderUrl()); ?>',
+      url: clientOrderUrl,
       classListArray: ['ns8-protect-client-iframe']
     });
 
@@ -39,8 +40,18 @@
       window.setInterval(() => matchIframeHeightToContent(iframe), 200);
     };
 
+    const navigateToMagentoOrderDetails = (orderId) => {
+      const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
+      const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
+      window.location.href = orderUrl;
+    }
+
     handshake.then(
-      child => child.on('ns8-protect-client-connected', () => beginIframeHeightMatching(child))
+      child => {
+        child.on('ns8-protect-client-connected', () => beginIframeHeightMatching(child));
+
+        child.on('order-detail-name-click', (data) => navigateToOrderDetail(data.orderId));
+      }
     );
   });
 </script>
