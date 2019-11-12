@@ -62,7 +62,7 @@ class VerifyOrder extends Template
      * There's a lot of hardcoded Shopify-specific stuff in the templates that the service spits out, so we need to
      * hack them up a bit to get them to work in Magento. We really need to fix it up in the Template Service.
      *
-     * @throws RuntimeException If a valid view was not specified in the URL.
+     * @throws RuntimeException If a valid view was not specified in the URL
      *
      * @return string The template (HTML)
      */
@@ -78,22 +78,22 @@ class VerifyOrder extends Template
         ];
 
         if (!in_array($params['view'] ?? null, $validViews)) {
-            throw new RuntimeException('No valid view was specified in the URL.');
+            throw new RuntimeException('No valid view was specified in the URL');
         }
 
-        if ($this->request->isPost()) {
-            $postFields = array_merge($params, (array)$this->request->getPost(), [
-                'returnUri' => implode('/', [
-                    $this->getBaseUrl(),
-                    'ns8protect',
-                    'order',
-                    'verify',
-                    'orderId', '{orderId}',
-                    'verificationId', '{verificationId}',
-                    'view', '{view}',
-                ]),
-            ]);
+        $params['returnUri'] = implode('/', [
+            $this->getBaseUrl(),
+            'ns8protect',
+            'order',
+            'verify',
+            'orderId', ':orderId',
+            'token', ':token',
+            'verificationId', ':verificationId',
+            'view', ':view',
+        ]);
 
+        if ($this->request->isPost()) {
+            $postFields = array_merge($params, (array)$this->request->getPost());
             $response = $this->httpClient->post('merchant/template', $postFields);
         } else {
             $response = $this->httpClient->get(sprintf('merchant/template?%s', http_build_query($params)));
@@ -101,7 +101,25 @@ class VerifyOrder extends Template
 
         return isset($response->location)
             ? $this->redirect($response->location)
-            : $this->unShopifyNS8Template($response->html);
+            : $this->getTemplateBody($response->html);
+    }
+
+    /**
+     * Extract the contents of the <body> tag from an NS8 template.
+     *
+     * @param string $template The NS8 template
+     *
+     * @throws RuntimeException If no <body> tag was found in the template
+     *
+     * @return string The body
+     */
+    private function getTemplateBody(string $template): string
+    {
+        if (preg_match('/<body>(.*)(<\/body>)/is', $template, $matches)) {
+            return $matches[1];
+        }
+
+        throw new RuntimeException('No <body> tag was found in the NS8 template');
     }
 
     /**
@@ -114,34 +132,5 @@ class VerifyOrder extends Template
     private function redirect(string $url): string
     {
         return sprintf('<script>window.location.replace("%s");</script>', $this->escapeHtml($url));
-    }
-
-    /**
-     * This is a crappy, hopefully temporary method to remove all Shopify-specific stuff from the NS8 template
-     * and replace it with something more palatable to Magento.
-     *
-     * @param string $template The NS8 template
-     *
-     * @return string The converted template
-     */
-    private function unShopifyNS8Template(string $template): string
-    {
-        // If we find an HTML body tag, we're only interested in the stuff inside it (not the html/head/etc. tags).
-        if (preg_match('/<body>(.*)(<\/body>)/s', $template, $matches)) {
-            $template = $matches[1];
-        }
-
-        $template = preg_replace_callback(
-            '#"(/apps/ns8-protect.*?)"#',
-            function (array $matches): string {
-                $uri = new Uri($matches[1]);
-                $query = str_replace(['=', '&'], '/', $uri->getQuery());
-
-                return sprintf('%s/ns8protect/order/verify/%s', $this->getBaseUrl(), $query);
-            },
-            $template
-        );
-
-        return $template;
     }
 }
