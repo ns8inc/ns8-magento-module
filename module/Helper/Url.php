@@ -76,11 +76,7 @@ class Url extends AbstractHelper
     private function getNS8Url(string $envVarName, string $defaultUrl, string $route = '') : string
     {
         $url = $this->config->getEnvironmentVariable($envVarName) ?: '';
-        $url = trim($url);
-
-        if (substr($url, -1) === '/') {
-            $url = substr($url, 0, -1);
-        }
+        $url = rtrim(trim($url), '/');
 
         if (empty($url)) {
             $url = $defaultUrl;
@@ -90,13 +86,7 @@ class Url extends AbstractHelper
             throw new UnexpectedValueException('Cannot use Production URLs right now.');
         }
         if (!empty($route)) {
-            $route = trim($route);
-            if (substr($route, -1) === '/') {
-                $route = substr($route, 0, -1);
-            }
-            if (substr($route, 0, 1) === '/') {
-                $route = substr($route, 1);
-            }
+            $route =  rtrim(ltrim(trim($route), '/'), '/');
             $url = $url.'/'.$route;
         }
         return $url;
@@ -154,9 +144,7 @@ class Url extends AbstractHelper
      */
     public function getNS8MiddlewareUrl(string $route = '') : string
     {
-        if (substr($route, 0, 1) === '/') {
-            $route = substr($route, 1);
-        }
+        $route = rtrim(trim($route), '/');
         $routeSlug = 'api'.'/'.$route;
         return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_DEV_URL_CLIENT, $routeSlug);
     }
