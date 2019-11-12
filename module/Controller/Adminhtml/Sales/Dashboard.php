@@ -56,7 +56,7 @@ class Dashboard extends Action
     // @codingStandardsIgnoreStart (This is an inherited method)
     protected function _isAllowed()
     {
-        return $this->context->getAuthorization()->isAllowed(Config::NS8_MODULE_NAME.'::admin');
+        return $this->config->isAllowed($this->context);
     }
     // @codingStandardsIgnoreEnd
 

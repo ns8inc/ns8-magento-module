@@ -199,4 +199,14 @@ class Config extends AbstractHelper
         }
         return $username;
     }
+
+    /**
+     * Determines if the current user is allowed to see a custom Protect UI element
+     * @param mixed $context A Page/Controller context
+     * @return boolean
+     */
+    public function isAllowed($context)
+    {
+        return $context->getAuthorization()->isAllowed(Config::NS8_MODULE_NAME.'::admin');
+    }
 }
