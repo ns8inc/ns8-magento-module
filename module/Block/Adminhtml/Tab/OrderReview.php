@@ -48,6 +48,7 @@ class OrderReview extends Template implements TabInterface
      * @param Context $context
      * @param Registry $registry
      * @param Config $config
+     * @param Url $url
      * @param array $data
      */
     public function __construct(
