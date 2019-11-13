@@ -82,10 +82,6 @@ class Url extends AbstractHelper
         if (empty($url)) {
             $url = $defaultUrl;
         }
-        if ($url === Url::NS8_PRODUCTION_URL_API ||
-            $url === Url::NS8_PRODUCTION_URL_CLIENT) {
-            throw new UnexpectedValueException('Cannot use Production URLs right now.');
-        }
         if (!empty($route)) {
             $route =  str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
             $url = $url.'/'.$route;
@@ -95,28 +91,26 @@ class Url extends AbstractHelper
 
     /**
      * Gets the current protect API URL based on the environment variables.
-     * For now, defaults to Development.
-     * @todo Revisit defaults on preparation to release to Production
+     * Defaults to Production.
      *
      * @param string $route
      * @return string The NS8 Protect URL in use for this instance.
      */
     public function getApiBaseUrl(string $route = '') : string
     {
-        return $this->getNS8Url(Config::NS8_ENV_NAME_API_URL, self::NS8_DEV_URL_API, $route);
+        return $this->getNS8Url(Config::NS8_ENV_NAME_API_URL, self::NS8_PRODUCTION_URL_API, $route);
     }
 
     /**
      * Gets the current protect Client URL based on the environment variables.
-     * For now, defaults to Development.
-     * @todo Revisit defaults on preparation to release to Production
+     * Defaults to Production.
      *
      * @param string $route
      * @return string The NS8 Protect Client URL in use for this instance.
      */
     public function getNS8ClientUrl(string $route = '') : string
     {
-        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_DEV_URL_CLIENT, $route);
+        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_PRODUCTION_URL_CLIENT, $route);
     }
 
     /**
@@ -137,8 +131,7 @@ class Url extends AbstractHelper
 
     /**
      * Gets the current protect Middleware URL based on the environment variables.
-     * For now, defaults to Development.
-     * @todo Revisit defaults on preparation to release to Production
+     * Defaults to Production.
      *
      * @param string $route
      * @return string The NS8 Protect Middleware URL in use for this instance.
@@ -147,7 +140,7 @@ class Url extends AbstractHelper
     {
         $route = str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
         $routeSlug = 'api'.'/'.$route;
-        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_DEV_URL_CLIENT, $routeSlug);
+        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_PRODUCTION_URL_CLIENT, $routeSlug);
     }
 
     /**
