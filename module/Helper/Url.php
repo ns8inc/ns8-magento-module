@@ -17,11 +17,12 @@ class Url extends AbstractHelper
     /**
      * The URL to the Development Protect API
      */
-    const NS8_DEV_URL_API = 'http://magento-v2-api.ngrok.io';
+    const NS8_DEV_URL_API = 'https://test-protect.ns8.com/protect';
+
     /**
      * The URL to the Development Client API
      */
-    const NS8_DEV_URL_CLIENT = 'http://magento-v2-client.ngrok.io';
+    const NS8_DEV_URL_CLIENT = 'https://test-protect-client.ns8.com/';
 
     /**
      * The URL to the Production Protect API

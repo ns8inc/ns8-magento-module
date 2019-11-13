@@ -2,7 +2,7 @@ import { env } from './loadEnv';
 import { writeFileSync } from 'fs';
 
 const destFolder = 'module/etc/integration/config.xml';
-const productionApiUrl = 'https://magento-v2-client.ngrok.io';
+const productionApiUrl = 'https://test-protect.ns8.com/protect';
 const productionEmail = 'apps@ns8.com';
 
 const getConfigXml = (email: string, apiUrl: string): string => {
