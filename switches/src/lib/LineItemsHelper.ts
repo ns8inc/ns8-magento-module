@@ -1,4 +1,4 @@
-import { HelperBase } from './HelperBase';
+import { HelperBase } from '.';
 import { LineItem } from 'ns8-protect-models';
 
 /**
