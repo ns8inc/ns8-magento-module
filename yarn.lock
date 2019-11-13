@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@ns8/magento2-rest-client@0.2.28":
-  version "0.2.28"
-  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.28.tgz#93529a7b635b073afd2c4ae40932c91fc9b47b24"
-  integrity sha512-3u+vYllzmLYlPa8kCpVNwgeJa35H9RX1Bet3OT7ursFBnbdvFd40gPBdq/aO7B3RGmdl5DnacSbUm2ZZ1DmSYw==
+"@ns8/magento2-rest-client@0.2.29":
+  version "0.2.29"
+  resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.29.tgz#17a2921a79258762567624a8b52dc0cd92ad1014"
+  integrity sha512-58kATDYzvf6aJdgOjBuYoD3QXaJ48ndNebuXGK/UwUSNLoqY1jxwrVXZ9ZDusTUfU3+TrxP/2pMqiEpbyImZeQ==
 
 "@ns8/ns8-protect-sdk@0.1.19":
   version "0.1.19"
