@@ -36,10 +36,10 @@ export class MerchantHelper {
         const names: string[] = (generalIdInfo.name && generalIdInfo.name.value) ? generalIdInfo.name.value.split(' ') : [];
         ret.contact.firstName = names.shift();
         ret.contact.lastName = names.join(' ');
-        ret.contact.email = (generalIdInfo.email) ? generalIdInfo.email.value : ;
+        ret.contact.email = (generalIdInfo.email) ? generalIdInfo.email.value : undefined;
       }
 
-      if ((configData.groups.unsecure && configData.groups.unsecure.fields) || (configData.groups.secure && configData.groups.secure.fields) {
+      if ((configData.groups.unsecure && configData.groups.unsecure.fields) || (configData.groups.secure && configData.groups.secure.fields)) {
         const unsecureBaseUrl: string | undefined = (configData.groups.unsecure &&
           configData.groups.unsecure.fields &&
           configData.groups.unsecure.fields.base_url) ?
