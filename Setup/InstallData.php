@@ -4,32 +4,25 @@ namespace NS8\Protect\Setup;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
-use Magento\Integration\Model\ConfigBasedIntegrationManager;
-use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\CustomStatus;
+use NS8\Protect\Helper\Setup;
 
+/**
+ * Install the Protect data model extensions on first install
+ */
 class InstallData implements InstallDataInterface
 {
     /**
-     * @var CustomStatus
+     * @var Setup
      */
-    protected $customStatus;
+    protected $setupHelper;
 
     /**
-     * @var ConfigBasedIntegrationManager
-     */
-    protected $integrationManager;
-
-    /**
-     * @param ConfigBasedIntegrationManager $integrationManager
-     * @param CustomStatus $customStatus
+     * @param Setup $setupHelper
      */
     public function __construct(
-        ConfigBasedIntegrationManager $integrationManager,
-        CustomStatus $customStatus
+        Setup $setupHelper
     ) {
-        $this->customStatus = $customStatus;
-        $this->integrationManager = $integrationManager;
+        $this->setupHelper = $setupHelper;
     }
 
     /**
@@ -37,7 +30,6 @@ class InstallData implements InstallDataInterface
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        $this->customStatus->setCustomStatuses('Running Data Install');
-        $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
+        $this->setupHelper->upgradeData('install', $setup, $context);
     }
 }

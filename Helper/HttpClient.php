@@ -9,7 +9,9 @@ use Magento\Framework\HTTP\PhpEnvironment\Request;
 use Magento\Framework\HTTP\ZendClientFactory;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
+use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\Url;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
@@ -77,6 +79,13 @@ class HttpClient extends AbstractHelper
     protected $uri;
 
     /**
+     * URL Helper
+     *
+     * @var Url
+     */
+    protected $url;
+
+    /**
      * Default constructor
      *
      * @param Config $config The config
@@ -87,6 +96,7 @@ class HttpClient extends AbstractHelper
      * @param Request $request The HTTP request
      * @param Session $session The customer session
      * @param Uri $uri Zend URI helper
+     * @param Url $url URL helper
      */
     public function __construct(
         Config $config,
@@ -96,7 +106,8 @@ class HttpClient extends AbstractHelper
         OauthServiceInterface $oauthServiceInterface,
         Request $request,
         Session $session,
-        Uri $uri
+        Uri $uri,
+        Url $url
     ) {
         $this->config = $config;
         $this->customerSession = $session;
@@ -106,6 +117,7 @@ class HttpClient extends AbstractHelper
         $this->oauthServiceInterface = $oauthServiceInterface;
         $this->request = $request;
         $this->uri = $uri;
+        $this->url = $url;
     }
 
     /**
@@ -140,6 +152,22 @@ class HttpClient extends AbstractHelper
         $data['session'] = $this->getSessionData();
         $data['username'] = $this->config->getAuthenticatedUserName();
         return $this->executeWithAuth($url, $data, "POST", $parameters, $headers, $timeout);
+    }
+
+    /**
+     * Makes an HTTP PUT request
+     *
+     * @param string $url URL to target.
+     * @param mixed $data Data to include in the request body.
+     * @param array $parameters Optional array of request parameters.
+     * @param array $headers Optional array of request headers.
+     * @param integer $timeout Optional timeout value. Default 30.
+     * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
+     * @return mixed the XHR reponse object.
+     */
+    public function put($url, $data = [], $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
+    {
+        return $this->executeWithAuth($url, $data, "PUT", $parameters, $headers, $timeout);
     }
 
     /**
@@ -195,7 +223,7 @@ class HttpClient extends AbstractHelper
     ) {
         $response = null;
         try {
-            $uri = $this->config->getNS8MiddlewareUrl($route);
+            $uri = $this->url->getNS8MiddlewareUrl($route);
 
             $httpClient = new Client();
             $httpClient->setUri($uri);

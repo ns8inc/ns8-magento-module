@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="urn:magento:framework:Ui/etc/ui_configuration.xsd">
+  <columns name="sales_order_columns"
+    class="NS8\Protect\Ui\Component\Listing\Column\EQ8Score">
+    <column name="eq8_score">
+      <argument name="data"
+        xsi:type="array">
+        <item name="config"
+          xsi:type="array">
+          <item name="bodyTmpl"
+            xsi:type="string">ui/grid/cells/html</item>
+          <item name="filter"
+            xsi:type="string">textRange</item>
+          <item name="label"
+            xsi:type="string"
+            translate="true">EQ8 Score</item>
+          <item name="sortable"
+            xsi:type="boolean">false</item>
+          <item name="sortOrder"
+            xsi:type="number">200</item>
+        </item>
+      </argument>
+    </column>
+  </columns>
+</listing>

@@ -3,49 +3,23 @@
 namespace NS8\Protect\Helper;
 
 use Exception;
-use UnexpectedValueException;
 use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\UrlInterface;
 use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\ProductMetadataInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\State;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
-use Magento\Framework\Stdlib\CookieManagerInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
+use UnexpectedValueException;
 
 /**
  * Generic Helper/Utility class with convenience methods for common ops
  */
 class Config extends AbstractHelper
 {
-    /**
-     * The URL to the Development Protect API
-     */
-    const NS8_DEV_URL_API = 'http://magento-v2-api.ngrok.io';
-    /**
-     * The URL to the Development Client API
-     */
-    const NS8_DEV_URL_CLIENT = 'http://magento-v2-client.ngrok.io';
-
-    /**
-     * The URL to the Production Protect API
-     */
-    const NS8_PRODUCTION_URL_API = 'https://protect.ns8.com';
-
-    /**
-     * The URL to the Production Client API
-     */
-    const NS8_PRODUCTION_URL_CLIENT = 'https://protect-client.ns8.com';
-
     /**
      * The Environment Variable name for development Protect API URL value
      */
@@ -67,11 +41,6 @@ class Config extends AbstractHelper
     const NS8_MODULE_NAME = 'NS8_Protect';
 
     /**
-     * @var TypeListInterface
-     */
-    protected $typeList;
-
-    /**
      * @var Context
      */
     protected $context;
@@ -82,24 +51,19 @@ class Config extends AbstractHelper
     protected $encryptor;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @var ModuleList
      */
     protected $moduleList;
 
     /**
-     * @var OrderRepositoryInterface
-     */
-    protected $orderRepository;
-
-    /**
      * @var ProductMetadataInterface
      */
     protected $productMetadata;
-
-    /**
-     * @var RequestInterface
-     */
-    protected $request;
 
     /**
      * @var ScopeConfigInterface
@@ -112,15 +76,18 @@ class Config extends AbstractHelper
     protected $scopeWriter;
 
     /**
+     * @var TypeListInterface
+     */
+    protected $typeList;
+
+    /**
      * Default constructor
      *
      * @param Context $context
      * @param EncryptorInterface $encryptor
      * @param LoggerInterface $loggerInterface
      * @param ModuleList $moduleList
-     * @param OrderRepositoryInterface $orderRepository
      * @param ProductMetadataInterface $productMetadata
-     * @param RequestInterface $request
      * @param ScopeConfigInterface $scopeConfig
      * @param TypeListInterface $typeList
      * @param WriterInterface $scopeWriter
@@ -130,9 +97,7 @@ class Config extends AbstractHelper
         EncryptorInterface $encryptor,
         LoggerInterface $loggerInterface,
         ModuleList $moduleList,
-        OrderRepositoryInterface $orderRepository,
         ProductMetadataInterface $productMetadata,
-        RequestInterface $request,
         ScopeConfigInterface $scopeConfig,
         TypeListInterface $typeList,
         WriterInterface $scopeWriter
@@ -141,9 +106,7 @@ class Config extends AbstractHelper
         $this->encryptor = $encryptor;
         $this->logger = $loggerInterface;
         $this->moduleList = $moduleList;
-        $this->orderRepository = $orderRepository;
         $this->productMetadata = $productMetadata;
-        $this->request = $request;
         $this->scopeConfig = $scopeConfig;
         $this->scopeWriter = $scopeWriter;
         $this->typeList = $typeList;
@@ -155,7 +118,7 @@ class Config extends AbstractHelper
      * @param string $envVarName Variable name. Must be `NS8_CLIENT_URL` OR `NS8_PROTECT_URL`.
      * @return string|null In production, this should always return null.
      */
-    private function getEnvironmentVariable(string $envVarName): ?string
+    public function getEnvironmentVariable(string $envVarName): ?string
     {
         $ret = null;
         try {
@@ -167,86 +130,8 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Assembles the URL using environment variables and handles parsing extra `/`
-     *
-     * @param string $envVarName
-     * @param string $defaultUrl
-     * @param string $route
-     * @return string The final URL
-     */
-    private function getNS8Url(string $envVarName, string $defaultUrl, string $route = '') : string
-    {
-        $url = $this->getEnvironmentVariable($envVarName) ?: '';
-        $url = trim($url);
-
-        if (substr($url, -1) === '/') {
-            $url = substr($url, 0, -1);
-        }
-
-        if (empty($url)) {
-            $url = $defaultUrl;
-        }
-        if ($url === Config::NS8_PRODUCTION_URL_API ||
-            $url === Config::NS8_PRODUCTION_URL_CLIENT) {
-            throw new UnexpectedValueException('Cannot use Production URLs right now.');
-        }
-        if (!empty($route)) {
-            $route = trim($route);
-            if (substr($route, -1) === '/') {
-                $route = substr($route, 0, -1);
-            }
-            if (substr($route, 0, 1) === '/') {
-                $route = substr($route, 1);
-            }
-            $url = $url.'/'.$route;
-        }
-        return $url;
-    }
-
-    /**
-     * Gets the current protect API URL based on the environment variables.
-     * For now, defaults to Development.
-     * @todo Revisit defaults on preparation to release to Production
-     *
-     * @param string $route
-     * @return string The NS8 Protect URL in use for this instance.
-     */
-    public function getApiBaseUrl(string $route = '') : string
-    {
-        return $this->getNS8Url(Config::NS8_ENV_NAME_API_URL, Config::NS8_DEV_URL_API, $route);
-    }
-
-    /**
-     * Gets the current protect Client URL based on the environment variables.
-     * For now, defaults to Development.
-     * @todo Revisit defaults on preparation to release to Production
-     *
-     * @param string $route
-     * @return string The NS8 Protect Client URL in use for this instance.
-     */
-    public function getNS8ClientUrl(string $route = '') : string
-    {
-        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, Config::NS8_DEV_URL_CLIENT, $route);
-    }
-
-    /**
-     * Gets the current protect Middleware URL based on the environment variables.
-     * For now, defaults to Development.
-     * @todo Revisit defaults on preparation to release to Production
-     *
-     * @param string $route
-     * @return string The NS8 Protect Middleware URL in use for this instance.
-     */
-    public function getNS8MiddlewareUrl(string $route = '') : string
-    {
-        if (substr($route, 0, 1) === '/') {
-            $route = substr($route, 1);
-        }
-        $routeSlug = 'api'.'/'.$route;
-        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, Config::NS8_DEV_URL_CLIENT, $routeSlug);
-    }
-
-    /**
+        // TODO: this needs to be more robust. Circle back and bullet proof this with backing tests.
+        $ret = join('/', $segments).'/order_id';
      * Gets an access token.
      *
      * @return string|null The NS8 Protect Access Token.
@@ -318,22 +203,12 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Get the Order display id from the requested order
-     * @param string|null $orderId
-     * @return string|null An order increment id
+     * Determines if the current user is allowed to see a custom Protect UI element
+     * @param mixed $context A Page/Controller context
+     * @return boolean
      */
-    public function getOrderIncrementId(string $orderId = null): ?string
+    public function isAllowed($context)
     {
-        $ret = null;
-        try {
-            if (!isset($orderId)) {
-                $orderId = $this->request->getParam('order_id');
-            }
-            $order = $this->orderRepository->get($orderId);
-            $ret = $order->getIncrementId();
-        } catch (Exception $e) {
-            $this->logger->log('ERROR', 'Failed to get order '.$orderId, ['error'=>$e]);
-        }
-        return $ret;
+        return $context->getAuthorization()->isAllowed(Config::NS8_MODULE_NAME.'::admin');
     }
 }
