@@ -1,4 +1,5 @@
 <?php
+
 namespace NS8\Protect\Helper;
 
 use Exception;
@@ -6,10 +7,9 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\HTTP\Header;
 use Magento\Framework\HTTP\PhpEnvironment\Request;
-use Magento\Framework\HTTP\ZendClientFactory;
+use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
-use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Url;
 use Psr\Log\LoggerInterface;
@@ -72,6 +72,13 @@ class HttpClient extends AbstractHelper
     protected $request;
 
     /**
+     * The Core session.
+     *
+     * @var SessionManagerInterface
+     */
+    protected $session;
+
+    /**
      * Zend URI helper
      *
      * @var Uri
@@ -94,7 +101,8 @@ class HttpClient extends AbstractHelper
      * @param LoggerInterface $logger The logger
      * @param OauthServiceInterface $oauthServiceInterface The OAuth service interface
      * @param Request $request The HTTP request
-     * @param Session $session The customer session
+     * @param Session $customerSession The customer session
+     * @param SessionManagerInterface $session The Core session
      * @param Uri $uri Zend URI helper
      * @param Url $url URL helper
      */
@@ -105,17 +113,19 @@ class HttpClient extends AbstractHelper
         LoggerInterface $logger,
         OauthServiceInterface $oauthServiceInterface,
         Request $request,
-        Session $session,
+        Session $customerSession,
+        SessionManagerInterface $session,
         Uri $uri,
         Url $url
     ) {
         $this->config = $config;
-        $this->customerSession = $session;
+        $this->customerSession = $customerSession;
         $this->header = $header;
         $this->integrationServiceInterface = $integrationServiceInterface;
         $this->logger = $logger;
         $this->oauthServiceInterface = $oauthServiceInterface;
         $this->request = $request;
+        $this->session = $session;
         $this->uri = $uri;
         $this->url = $url;
     }
@@ -247,7 +257,7 @@ class HttpClient extends AbstractHelper
 
             $response = $decodeJson ? Decoder::decode($body) : $body;
         } catch (Exception $e) {
-            $this->logger->error('Failed to execute API call', ['error'=>$e]);
+            $this->logger->error('Failed to execute API call', ['error' => $e]);
         }
         return $response;
     }
@@ -260,7 +270,7 @@ class HttpClient extends AbstractHelper
      *
      * @return string|null Oauth access token.
      */
-    private function extractOauthTokenFromAuthString($accessTokenString) : ?string
+    private function extractOauthTokenFromAuthString($accessTokenString): ?string
     {
         $this->uri->setQuery($accessTokenString);
         $parsedToken = $this->uri->getQueryAsArray();
@@ -276,7 +286,7 @@ class HttpClient extends AbstractHelper
      *
      * @return string|null
      */
-    private function getAccessToken() : ?string
+    private function getAccessToken(): ?string
     {
         $storedToken = $this->config->getAccessToken();
         if (!empty($storedToken)) {
@@ -306,7 +316,7 @@ class HttpClient extends AbstractHelper
      *
      * @return string|null Protect access token.
      */
-    private function getProtectAccessToken($consumerId, $accessToken) : ?string
+    private function getProtectAccessToken($consumerId, $accessToken): ?string
     {
         $getParams = [
             'oauth_consumer_key' => $consumerId,
@@ -331,12 +341,14 @@ class HttpClient extends AbstractHelper
      *
      * @return array The session data
      */
-    private function getSessionData() : array
+    private function getSessionData(): array
     {
         return [
             'acceptLanguage' => $this->header->getHttpAcceptLanguage(),
             'id' => $this->customerSession->getSessionId(),
             'ip' => $this->request->getClientIp(),
+            'screenHeight' => $this->session->getScreenHeight(),
+            'screenWidth' => $this->session->getScreenWidth(),
             'userAgent' => $this->header->getHttpUserAgent(),
         ];
     }
