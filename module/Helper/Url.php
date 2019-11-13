@@ -174,6 +174,18 @@ class Url extends AbstractHelper
     }
 
     /**
+     * Get the URL to the Session Data route
+     * Called by the front-end to add things like
+     * screenHeight and screenWidth to Session Data
+     *
+     * @return string The URL
+     */
+    public function getMagentoNS8SessionDataUrl(): string
+    {
+        return $this->url->getUrl('ns8protectfrontend/sessiondata');
+    }
+
+    /**
      * Encode a string using base64 in URL mode.
      *
      * @link https://en.wikipedia.org/wiki/Base64#URL_applications

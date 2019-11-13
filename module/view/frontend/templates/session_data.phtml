@@ -1,0 +1,12 @@
+<script type="text/javascript">
+  require(['jquery'], function($) {
+    var hasSessionData = <?= $block->hasSessionData() ? 'true' : 'false' ?>;
+
+    if (!hasSessionData) {
+      $.post('<?= $block->escapeUrl($block->url->getMagentoNS8SessionDataUrl()) ?>', {
+        screenHeight: window.screen.height,
+        screenWidth: window.screen.width
+      });
+    }
+  });
+</script>
