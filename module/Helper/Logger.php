@@ -1,8 +1,8 @@
 <?php
+
 namespace NS8\Protect\Helper;
 
 use Exception;
-use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Helper\AbstractHelper;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\HttpClient;
@@ -27,14 +27,14 @@ class Logger extends AbstractHelper
      * Default constructor
      *
      * @param HttpClient $httpClient
-     * @param LoggerInterface $loggerInterface
+     * @param LoggerInterface $logger
      */
     public function __construct(
         HttpClient $httpClient,
-        LoggerInterface $loggerInterface
+        LoggerInterface $logger
     ) {
         $this->httpClient = $httpClient;
-        $this->logger = $loggerInterface;
+        $this->logger = $logger;
     }
 
     /**
@@ -45,7 +45,7 @@ class Logger extends AbstractHelper
      * @param string $function
      * @return void Logging never fails.
      */
-    public function error($message, $data = null, $function = 'Unknown') : void
+    public function error($message, $data = null, $function = 'Unknown'): void
     {
         $this->log('ERROR', $message, $data, $function);
     }
@@ -58,7 +58,7 @@ class Logger extends AbstractHelper
      * @param string $function
      * @return void Logging never fails.
      */
-    public function debug($message, $data = null, $function = 'Unknown') : void
+    public function debug($message, $data = null, $function = 'Unknown'): void
     {
         $this->log('DEBUG', $message, $data, $function);
     }
@@ -71,7 +71,7 @@ class Logger extends AbstractHelper
      * @param string $function
      * @return void Logging never fails.
      */
-    public function warn($message, $data = null, $function = 'Unknown') : void
+    public function warn($message, $data = null, $function = 'Unknown'): void
     {
         $this->log('WARN', $message, $data, $function);
     }
@@ -84,7 +84,7 @@ class Logger extends AbstractHelper
      * @param string $function
      * @return void Logging never fails.
      */
-    public function info($message, $data = null, $function = 'Unknown') : void
+    public function info($message, $data = null, $function = 'Unknown'): void
     {
         $this->log('INFO', $message, $data, $function);
     }
@@ -98,16 +98,16 @@ class Logger extends AbstractHelper
      * @param string $function Option method name.
      * @return void Logging never fails.
      */
-    private function log($level = 'ERROR', $message = 'Log Message', $data = null, $function = 'Unknown') : void
+    private function log($level = 'ERROR', $message = 'Log Message', $data = null, $function = 'Unknown'): void
     {
         try {
             //Log to Magento
-            $this->logger->log($level, $message, ['data'=>$data]);
+            $this->logger->log($level, $message, ['data' => $data]);
 
             //Structure some data for our API to consume later
             $data = [
                 'level' => $level,
-                'category' => 'magento '.Config::NS8_INTEGRATION_NAME,
+                'category' => 'magento ' . Config::NS8_INTEGRATION_NAME,
                 'data' => [
                     'platform' => 'magento',
                     'function' => $function,
@@ -120,7 +120,7 @@ class Logger extends AbstractHelper
             //Log to our own API
             $this->httpClient->post('/util/log-client-error', $data);
         } catch (Exception $e) {
-            $this->logger->log('ERROR', Config::NS8_MODULE_NAME.'.log: '.$e->getMessage(), ['error'=>$e]);
+            $this->logger->log('ERROR', Config::NS8_MODULE_NAME . '.log: ' . $e->getMessage(), ['error' => $e]);
         }
     }
 }

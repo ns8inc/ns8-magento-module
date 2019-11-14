@@ -14,7 +14,6 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
 use Psr\Log\LoggerInterface;
-use UnexpectedValueException;
 
 /**
  * Generic Helper/Utility class with convenience methods for common ops
@@ -91,7 +90,7 @@ class Config extends AbstractHelper
      *
      * @param Context $context
      * @param EncryptorInterface $encryptor
-     * @param LoggerInterface $loggerInterface
+     * @param LoggerInterface $logger
      * @param ModuleList $moduleList
      * @param ProductMetadataInterface $productMetadata
      * @param RequestInterface $request
@@ -102,7 +101,7 @@ class Config extends AbstractHelper
     public function __construct(
         Context $context,
         EncryptorInterface $encryptor,
-        LoggerInterface $loggerInterface,
+        LoggerInterface $logger,
         ModuleList $moduleList,
         ProductMetadataInterface $productMetadata,
         RequestInterface $request,
@@ -112,7 +111,7 @@ class Config extends AbstractHelper
     ) {
         $this->context = $context;
         $this->encryptor = $encryptor;
-        $this->logger = $loggerInterface;
+        $this->logger = $logger;
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
         $this->request = $request;
@@ -145,7 +144,7 @@ class Config extends AbstractHelper
      *
      * @return string|null The NS8 Protect Access Token.
      */
-    public function getAccessToken() : ?string
+    public function getAccessToken(): ?string
     {
         $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/protect/token'));
         return $storedToken;
@@ -156,7 +155,7 @@ class Config extends AbstractHelper
      * @param string $accessToken
      * @return void
      */
-    public function setAccessToken(string $accessToken) : void
+    public function setAccessToken(string $accessToken): void
     {
         $this->scopeWriter->save('ns8/protect/token', $this->encryptor->encrypt($accessToken));
         $this->flushConfigCache();
@@ -167,7 +166,7 @@ class Config extends AbstractHelper
      *
      * @return void
      */
-    public function flushConfigCache() : void
+    public function flushConfigCache(): void
     {
         $this->typeList->cleanType(CacheTypeConfig::TYPE_IDENTIFIER);
     }
@@ -177,7 +176,7 @@ class Config extends AbstractHelper
      *
      * @return string
      */
-    public function getMagentoVersion() : string
+    public function getMagentoVersion(): string
     {
         return $this->productMetadata->getVersion();
     }
@@ -187,7 +186,7 @@ class Config extends AbstractHelper
      *
      * @return string|null
      */
-    public function getProtectVersion() : ?string
+    public function getProtectVersion(): ?string
     {
         return $this->moduleList->getOne(Config::NS8_MODULE_NAME)['setup_version'];
     }
@@ -196,7 +195,7 @@ class Config extends AbstractHelper
      * Get's the authenticated user name for the admin user
      * @return string|null
      */
-    public function getAuthenticatedUserName() : ?string
+    public function getAuthenticatedUserName(): ?string
     {
         $username = null;
         try {
@@ -206,7 +205,7 @@ class Config extends AbstractHelper
                 $username = $loginUser->getUserName();
             }
         } catch (Exception $e) {
-            $this->logger->log('ERROR', 'Failed to get username', ['error'=>$e]);
+            $this->logger->log('ERROR', 'Failed to get username', ['error' => $e]);
         }
         return $username;
     }
