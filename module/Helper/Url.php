@@ -74,7 +74,7 @@ class Url extends AbstractHelper
      * @param string $route
      * @return string The final URL
      */
-    private function getNS8Url(string $envVarName, string $defaultUrl, string $route = '') : string
+    private function getNS8Url(string $envVarName, string $defaultUrl, string $route = ''): string
     {
         $url = $this->config->getEnvironmentVariable($envVarName) ?: '';
         $url = rtrim(trim($url), '/');
@@ -84,7 +84,7 @@ class Url extends AbstractHelper
         }
         if (!empty($route)) {
             $route =  str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
-            $url = $url.'/'.$route;
+            $url = $url . '/' . $route;
         }
         return $url;
     }
@@ -96,7 +96,7 @@ class Url extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect URL in use for this instance.
      */
-    public function getApiBaseUrl(string $route = '') : string
+    public function getApiBaseUrl(string $route = ''): string
     {
         return $this->getNS8Url(Config::NS8_ENV_NAME_API_URL, self::NS8_PRODUCTION_URL_API, $route);
     }
@@ -108,7 +108,7 @@ class Url extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect Client URL in use for this instance.
      */
-    public function getNS8ClientUrl(string $route = '') : string
+    public function getNS8ClientUrl(string $route = ''): string
     {
         return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_PRODUCTION_URL_CLIENT, $route);
     }
@@ -136,10 +136,10 @@ class Url extends AbstractHelper
      * @param string $route
      * @return string The NS8 Protect Middleware URL in use for this instance.
      */
-    public function getNS8MiddlewareUrl(string $route = '') : string
+    public function getNS8MiddlewareUrl(string $route = ''): string
     {
         $route = str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
-        $routeSlug = 'api'.'/'.$route;
+        $routeSlug = 'api' . '/' . $route;
         return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_PRODUCTION_URL_CLIENT, $routeSlug);
     }
 
@@ -169,7 +169,7 @@ class Url extends AbstractHelper
         // If $ret does not end with the slug `/sales/order/view`, then the alogirthm is wrong
         $segments = array_splice($segments, 0, -3);
         // TODO: this needs to be more robust. Circle back and bullet proof this with backing tests.
-        $ret = join('/', $segments).'/order_id';
+        $ret = join('/', $segments) . '/order_id';
         return $ret;
     }
 
@@ -182,7 +182,7 @@ class Url extends AbstractHelper
      */
     public function getMagentoNS8SessionDataUrl(): string
     {
-        return $this->url->getUrl('ns8protectfrontend/sessiondata');
+        return $this->url->getUrl('ns8protect/sessiondata');
     }
 
     /**
