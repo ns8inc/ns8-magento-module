@@ -9,7 +9,7 @@ use Magento\Framework\Session\SessionManagerInterface;
 use NS8\Protect\Helper\Logger;
 
 /**
- * The NS8 Protect Dashboard page
+ * The Session Data POST action
  */
 class Index extends Action
 {
@@ -50,21 +50,27 @@ class Index extends Action
     }
 
     /**
-     * Load the page defined in view/frontend/layout/sessiondata.xml
+     * Set Session Data values based on POST request
      *
      * @return JsonFactory
      */
     public function execute()
     {
+        // Retrieve desired session data values from POST body
         $request = $this->getRequest();
-        $result = $this->jsonResultFactory->create();
-
         $screenHeight = $request->getPost('screenHeight');
         $screenWidth = $request->getPost('screenWidth');
 
-        $this->session->setScreenHeight($screenHeight);
-        $this->session->setScreenWidth($screenWidth);
+        // Set Session data values
+        if (isset($screenHeight)) {
+            $this->session->setScreenHeight($screenHeight);
+        }
+        if (isset($screenWidth)) {
+            $this->session->setScreenWidth($screenWidth);
+        }
 
+        // Create and return desired JSON response
+        $result = $this->jsonResultFactory->create();
         $result->setData($this->session->getData());
         return $result;
     }
