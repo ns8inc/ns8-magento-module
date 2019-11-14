@@ -1,511 +1,862 @@
 #!/bin/bash
 
-# DATA
+# TODO:
+# keep track of installed state in config file so you can tell user what to do next: uninstalled, configured, installed.
+# add a double-check loop for user-supplied URLS, because if they're wrong, that's BAAAAAAAAD.
+# parameterize magento platform .zip version, setting a default to current
+
+# Testbox Config/etc
 EC2_USER_HOME='/home/ec2-user'
 TESTBOX_DATA_DIR="$EC2_USER_HOME/.testbox"
-TESTBOX_CONFIG="$TESTBOX_DATA_DIR/testbox_config"
-INIT_LOG="$TESTBOX_DATA_DIR/testbox-init.log"
-INIT_ERROR_LOG="$TESTBOX_DATA_DIR/testbox-init-error.log"
-BUILD_LOG="$TESTBOX_DATA_DIR/testbox-build.log"
-BUILD_ERROR_LOG="$TESTBOX_DATA_DIR/testbox-build-error.log"
+TESTBOX_LOG_DIR="$TESTBOX_DATA_DIR/logs"
+TESTBOX_CONFIG="$TESTBOX_DATA_DIR/config"
+API_LOG="$TESTBOX_LOG_DIR/api_log"
+CLIENT_LOG="$TESTBOX_LOG_DIR/client_log"
+NGROK_API_LOG="$TESTBOX_LOG_DIR/ngrok_api_log"
+NGROK_CLIENT_LOG="$TESTBOX_LOG_DIR/ngrok_client_log"
 
-# REPOS
-API='ns8-protect-api'
-CLIENT='ns8-protect-client'
-MAGENTO='ns8-magento-platform'
+# Repos
+API_REPO='ns8-protect-api'
+CLIENT_REPO='ns8-protect-client'
+MAGENTO_REPO='ns8-magento-platform'
+
+# Config Files and Values
+API_SEED_FILENAME='32472162000000-seedMerchantsForNs8LocalDev.ts'
+CLIENT_MIDDLEWARE_ENV="middleware-client-env"
+MAGENTO_ENV="magento-env"
+PROTECT_DOCKER_MYSQL_PORT=3307
+AWS_DEV_SUFFIX=''
 
 # URL RELATED
-PROTECT_API_SUBDOMAIN='magento-v2-api'
-PROTECT_CLIENT_SUBDOMAIN='magento-v2-client'
-LIGHTSAIL_SUBDOMAIN='magento-v2'
-NS8_PROTECT_URL="https://$PROTECT_API_SUBDOMAIN.ngrok.io"
-NS8_CLIENT_URL="https://$PROTECT_CLIENT_SUBDOMAIN.ngrok.io"
-DEV_LIGHTSAIL_DOMAIN="http://$LIGHTSAIL_SUBDOMAIN.ns8demos.com"
-
-# SERVICES
-DOCKER_MYSQL_PORT=3307
-MAGENTO_BUILD_CONFIG=$EC2_USER_HOME/$MAGENTO/build/module/etc/integration/config.dev.xml
+PROTECT_API_SUBDOMAIN_DEFAULT='magento-v2-api'
+PROTECT_CLIENT_SUBDOMAIN_DEFAULT='magento-v2-client'
+LIGHTSAIL_SUBDOMAIN_DEFAULT='magento-v2'
 
 
 function print_banner() {
 
-    printf "
-
-    Welcome to ....
-
-
-        ███        ▄████████    ▄████████     ███     ▀█████████▄   ▄██████▄  ▀████    ▐████▀
-    ▀█████████▄   ███    ███   ███    ███ ▀█████████▄   ███    ███ ███    ███   ███▌   ████▀
-       ▀███▀▀██   ███    █▀    ███    █▀     ▀███▀▀██   ███    ███ ███    ███    ███  ▐███
-        ███   ▀  ▄███▄▄▄       ███            ███   ▀  ▄███▄▄▄██▀  ███    ███    ▀███▄███▀
-        ███     ▀▀███▀▀▀     ▀███████████     ███     ▀▀███▀▀▀██▄  ███    ███    ████▀██▄
-        ███       ███    █▄           ███     ███       ███    ██▄ ███    ███   ▐███  ▀███
-        ███       ███    ███    ▄█    ███     ███       ███    ███ ███    ███  ▄███     ███▄
-       ▄████▀     ██████████  ▄████████▀     ▄████▀   ▄█████████▀   ▀██████▀  ████       ███▄
-
-
-    "
-
-}
-
-function usage() {
-
-    printf "usage: testbox <init> | <configure> [-f,--file] | <pull> [-y,--yes] | <build> | <banner>
-    NOTE: Run init and configure, in that order, before running pull and build.
-    <init>
-        Initialize the lightsail instance by running through the standard Magento2 lightsail setup script.
-    <configure>
-        Run through requisite service authorizations.
-        -f, --config-file
-    <pull>
-        git clone the latest code from the 'ns8-magento-platform', 'ns8-protect-api' and 'ns8-protect-client' platforms.
-        -y, --yes
-        Do not prompt for repo branch or commit hash, use defaults (branch: master, commit: HEAD).
-    <build>
-        Install and serve each repo from scratch.
-    <banner>
-        Print augmented usage banner (for testbox logins)
+  printf "
+................................................... 
+................................................... 
+............... Welcome to Testbox  ............... 
+................................................... 
+...................................................
 
 "
 
 }
 
 fail_with_msg () {
-    echo "[ testbox ERROR ]: $1"
-    exit 1
+
+  echo "[ testbox ERROR ]: $1"
+  exit 1
+
 }
 
+function start_api() {
 
-function init() {
+  cd $EC2_USER_HOME/$API_REPO || fail_with_msg "can't cd to $EC2_USER_HOME/$API_REPO. directory doesn't exist."
 
-    if [ "$(whoami)" != root ]
-    then
-        fail_with_msg "please run 'testbox init' with sudo."
-    fi
+  # clear out previous logs
+  echo "" > $API_LOG
+  echo "" > $NGROK_API_LOG
 
-    # Magento
-    # Create SWAP file; 2GB
-    dd if=/dev/zero of=/swapfile bs=1M count=2048
-    mkswap /swapfile
-    chmod 600 /swapfile
-    swapon /swapfile
-    echo "swap /swapfile swap defaults 0 0" >> /etc/fstab
+  # start docker containers if they're not already running
+  if docker top protect-api-mysql > /dev/null 2>&1
+  then
+    echo 'docker mysql container is running'
+  else
+    echo 'starting docker mysql container...'
+    sh scripts/start-mysql.sh
+    echo 'done!'
+  fi
 
-    # Add nodejs repository
-    curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash -
+  if docker top protect-api-dynamodb > /dev/null 2>&1
+  then
+    echo 'docker dynamodb container is running'
+  else
+    echo 'starting docker dynamodb container...'
+    sh scripts/start-dynamodb.sh
+    echo 'done!'
 
-    # Update packages
-    yum update -y
+    echo 'creating dynamodb tables ...'
+    sh scripts/create-dynamodb-tables.sh
+    echo 'done!'
+  fi
 
-    # Install LAMP
-    yum install -y \
-    git \
-    httpd24 \
-    nodejs \
-    php71 \
-    php71-bcmath \
-    php71-gd \
-    php71-intl \
-    php71-mbstring \
-    php71-mcrypt \
-    php71-mysqlnd \
-    php71-soap \
-    php71-zip \
-    mysql57-server
+  # start named and detached tmux windows for ngrok and api server that log to files
+  if tmux has-session -t api 2>/dev/null
+  then
+    echo 'api is already running'
+    tmux ls
+  else
+    tmux new -s api -d "yarn start:dev > $API_LOG 2>&1"
+    echo "See $API_LOG or run 'testbox logstream api' for more details."
+  fi
 
-    # Configure Web and DB servers to start on boot
-    chkconfig httpd on
-    chkconfig mysqld on
+  if tmux has-session -t ngrok-api 2>/dev/null
+  then
+    echo 'ngrok is already running for the api'
+  else
+    tmux new -s ngrok-api -d "ngrok http -subdomain=$PROTECT_API_SUBDOMAIN --log=$NGROK_API_LOG 8080"
+    echo "See $NGROK_API_LOG or run 'testbox logstream ngrok-api' for more details."
+  fi
 
-    chmod ugo+rwx /var/www/html
-
-    # Change PHP memory limit // Magento wants > 2GB
-    sed -i 's/memory_limit = 128M/memory_limit = 4096M/g' /etc/php-*.ini
-
-    # Change Apache to allow Overrides
-    sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
-
-    # Set Composer path
-    echo "COMPOSER_HOME=/var/www/html/var/composer_home" >> /etc/environment
-
-    # Set NS8_PROTECT_URL environment variable
-    echo "SetEnv NS8_CLIENT_URL $NS8_CLIENT_URL" >> /var/www/html/.htaccess
-    echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL" >> /var/www/html/.htaccess
-
-    # Set file permissions (Force the group apache on all files and give RWX permissions)
-    chown -R apache:apache /var/www/html
-    #chmod -R 2775 /var/www/html
-    setfacl -Rdm g:apache:rwx /var/www/html
-
-    # Start Web and DB server
-    service httpd start
-    service mysqld start
-
-    # Create database
-    mysql -u root -e "CREATE DATABASE magento2"
-    mysql -u root -e "CREATE USER 'magento_db_user'@'localhost' IDENTIFIED BY 'magento_db_password'"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON magento2.* TO 'magento_db_user'@'localhost'"
-    mysql -u root -e "FLUSH PRIVILEGES"
-
-    # Download installer
-    # With sample data and copy sample data to webroot
-    cd /var/www
-    curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.2_sample_data.zip
-
-    # Unzip Magento files to web root
-    unzip -oqq /var/www/Magento-* -d /var/www/html
-
-    # Install Magento via CLI
-    php /var/www/html/bin/magento setup:install \
-    --language=en_US \
-    --timezone=America/Los_Angeles \
-    --db-name=magento2 \
-    --db-user=magento_db_user \
-    --db-password=magento_db_password \
-    --backend-frontname=admin_demo \
-    --admin-firstname=Development \
-    --admin-lastname=Testing \
-    --admin-email=dev@ns8demos.com \
-    --admin-user=development \
-    --admin-password=YzbLenbGRGN6fxqNsz.ti \
-    --base-url=$DEV_LIGHTSAIL_DOMAIN
-
-    # Update Composer Auth
-    cp /var/www/html/auth.json.sample /var/www/html/auth.json
-
-    #### Need to remove git section
-    sed -i '/github/d' /var/www/html/auth.json
-    sed -i '/},$/d' /var/www/html/auth.json
-    sed -i 's/<public-key>/1b8325eb6d792fe22c0fb83f65150281/' /var/www/html/auth.json
-    sed -i 's/<private-key>/d68ff7618b2f3118a0342d7f914848c8/' /var/www/html/auth.json
-
-    # Create the directory where we will test the Protect extension
-    mkdir -p /var/www/html/app/code/NS8/Protect
-
-    # Make the magento command executable
-    chmod +x /var/www/html/bin/magento
-
-    # Allow the ec2-user to write to the magento install
-    chmod -R ugo+rwx /var/www/html
-
-    # Allow password login -- Is this necessary?
-    sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-    service sshd restart
-
-    # docker
-    echo 'installing docker ...'
-    yum -y install docker
-    service docker start
-    chkconfig docker on
-
-    usermod -aG docker ec2-user
-
-    # ngrok
-    echo 'installing ngrok ...'
-    curl -O https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-    unzip ngrok-stable-linux-amd64.zip
-
-    mv ngrok /usr/bin/
-    rm -f ngrok-stable-linux-amd64.zip
-
-    # yarn
-    echo 'installing yarn ...'
-    curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo >> /etc/yum.repos.d/yarn.repo
-    yum -y install yarn
-
-    # .bashrc
-    echo "testbox banner" >> $EC2_USER_HOME/.bashrc
-    echo "export AWS_REGION=us-west-2" >> $EC2_USER_HOME/.bashrc
-    echo "export AWS_SDK_LOAD_CONFIG=1" >> $EC2_USER_HOME/.bashrc
-
-    # testbox data directory
-    if [ -d $TESTBOX_DATA_DIR ]
-    then
-        rm -rf $TESTBOX_DATA_DIR
-    fi
-    mkdir $TESTBOX_DATA_DIR
-    chown -R ec2-user:ec2-user $TESTBOX_DATA_DIR
-
-    echo "testbox init complete! Please LOG OUT and LOG IN again so the proper groups take effect!"
 }
 
-function build() {
+function stop_api() {
 
-    check_config
+  # NOTE: leaving docker api containers running
+  # kill those with stop_docker_services
 
-    # 'import' variables from $CONFIG_FILE produced in 'init' command
-    . $TESTBOX_CONFIG
+  tmux kill-session -t api && echo "api stopped" || echo "api not running"
+  tmux kill-session -t ngrok-api && echo "ngrok api stopped" || echo "api ngrok tunnel not running"
 
-    ###### API SETUP ######
+}
 
-    echo 'installing api dependencies ...'
-    cd $EC2_USER_HOME/$API || _exit_with_error "No $EC2_USER_HOME/$API directory"
-    yarn install
+function start_client() {
 
-    # switch docker mysql port to 3307 because magento runs on 3306
-    sed -i "s/mysql:\/\/localhost:3306/mysql:\/\/localhost:$DOCKER_MYSQL_PORT/" $EC2_USER_HOME/$API/config/dev.yml
-    sed -i "s/3306:3306/3307:3306/" $EC2_USER_HOME/$API/scripts/start-mysql.sh
+  cd $EC2_USER_HOME/$CLIENT_REPO || fail_with_msg "can't cd to $EC2_USER_HOME/$CLIENT_REPO. directory doesn't exist."
 
-    # STOP, KILL and RESTART DOCKER CONTAINERS
-    # TODO: use 'docker top 2&>1 /dev/null' to check if needs to be stopped to prevent
-    # warnings that aren't actually script failures
-    docker stop protect-api-dynamodb
-    docker rm protect-api-dynamodb
-
-    docker stop protect-api-mysql
-    docker rm protect-api-mysql
-
-    # run docker start scripts to start mysql, dynamodb, and create dynamodb tables
-    echo 'running docker start scripts for: mysql, dynamodb, and create dynamodb tables ...'
-    sh $EC2_USER_HOME/$API/scripts/start-mysql.sh
-    sh $EC2_USER_HOME/$API/scripts/start-dynamodb.sh
-    sh $EC2_USER_HOME/$API/scripts/create-dynamodb-tables.sh
+  # clear out previous logs
+  echo "" > $CLIENT_LOG
+  echo "" > $NGROK_CLIENT_LOG
+ 
+  # start named and detached tmux windows for ngrok and client in full-build mode that log to files
+  if tmux has-session -t client 2>/dev/null
+  then
+    echo 'client is already running'
+  else
+    tmux new -s client -d "yarn local-full-build > $CLIENT_LOG 2>&1"
+    echo "See $CLIENT_LOG or run 'testbox logstream client' for more details."
+  fi
 
 
-    ###### CLIENT SETUP ######
+  if tmux has-session -t ngrok-client 2>/dev/null
+  then
+    echo 'ngrok is already running for the client'
+    tmux ls
+  else
+    tmux new -s ngrok-client -d "ngrok http -subdomain=$PROTECT_CLIENT_SUBDOMAIN --log=$NGROK_CLIENT_LOG 4000"
+    echo "See $NGROK_CLIENT_LOG or run 'testbox logstream ngrok-client' for more details."
+  fi
 
-    # install client client app
-    echo 'installing client/client dependencies ...'
-    cd $EC2_USER_HOME/$CLIENT/client || fail_with_msg "can't cd to $EC2_USER_HOME/$CLIENT/client. It doesn't exist."
-    yarn install --frozen-lockfile
+}
 
-    # install client middleware app
-    echo 'installing client/middleware dependencies ...'
-    cd $EC2_USER_HOME/$CLIENT/middleware || fail_with_msg "$EC2_USER_HOME/$CLIENT/middleware does not exist."
+function stop_client() {
 
-    # add protect token to middleware env
-    cp $EC2_USER_HOME/$CLIENT/middleware/template.env $EC2_USER_HOME/$CLIENT/middleware/.env
-    sed -i "s/^TEST_ACCESS_TOKEN=.*$/TEST_ACCESS_TOKEN=$PROTECT_TOKEN/" $EC2_USER_HOME/$CLIENT/middleware/.env
+  tmux kill-session -t client && echo "client stopped" || echo "client not running"
+  tmux kill-session -t ngrok-client && echo "ngrok client stopped" || echo "client ngrok tunnel not running"
 
-    yarn install --frozen-lockfile
+}
 
+function stop_docker() {
 
-    ##### RUN API AND MIDDLEWARE SERVERS ######
+  cd $EC2_USER_HOME/$API_REPO ||  fail_with_msg "can't cd to $EC2_USER_HOME/$API_REPO. directory doesn't exist."
 
-    # run local build that serves a react client from api middleware route
-    echo 'starting local build for client/client and client/middleware servers ...'
-    cd $EC2_USER_HOME/$CLIENT
-    yarn local-full-build & # builds AND runs
+  if docker top protect-api-dynamodb > /dev/null 2>&1
+  then
+    sh scripts/stop-mysql.sh
+  else
+    echo "docker mysql container isn't running services running"
+  fi
 
-    # start api's dev server
-    echo 'starting api dev server ...'
-    cd $EC2_USER_HOME/$API
-    yarn start:dev &
-
-    # start ngrok
-    # note on running ngrok in background: https://github.com/inconshreveable/ngrok/issues/57
-    echo 'starting ngrok protect and client urls ...'
-    ngrok http -log=stdout -subdomain=$PROTECT_API_SUBDOMAIN 4000 > /dev/null &
-    ngrok http -log=stdout -subdomain=$PROTECT_CLIENT_SUBDOMAIN 8080 > /dev/null &
-
-
-
-    ###### MAGENTO ######
-
-    # replace default config.dev.xml params
-    sed -i "s#<email>.*</email>#<email>$NS8_EMAIL</email>#" $MAGENTO_BUILD_CONFIG
-    sed -i "s#<endpoint_url>.*</endpoint_url>#<endpoint_url>$OAUTH_ENDPOINT_URL</endpoint_url>#" $MAGENTO_BUILD_CONFIG
-    sed -i "s#<identity_link_url>.*</identity_link_url>#<identity_link_url>$OAUTH_IDENTITY_LINK_URL</identity_link_url>#" $MAGENTO_BUILD_CONFIG
-
-    # run build:dev script to build proper module data with our newly edited config.dev.xml file
-    cd $EC2_USER_HOME/$MAGENTO || fail_with_msg "can't cd to $EC2_USER_HOME/$MAGENTO. It doesn't exist."
-    yarn install
-    yarn build:dev
-
-    # copy magento/module to protect dir
-    cp -R $EC2_USER_HOME/$MAGENTO/module/*  /var/www/html/app/code/NS8/Protect/
-
-    cd /var/www/html
-    php bin/magento setup:upgrade
-    bin/magento cache:clean
-
-    # enable magento developer mode
-    php bin/magento deploy:mode:set developer
-
-    # enable PHP display errors
-    sed -i "s/#ini_set('display_errors', 1);/ini_set('display_errors', 1);/" /var/www/html/app/bootstrap.php
-
-    # Enable Magento 2 display errors
-    mv /var/www/html/pub/errors/local.xml.sample /var/www/html/pub/errors/local.xml
+  if docker top protect-api-dynamodb > /dev/null 2>&1
+  then
+    sh scripts/stop-dynamodb.sh
+  else
+    echo "docker dynamodb container isn't running services running"
+  fi
 
 }
 
 function check_config() {
 
-    # some sanity checks before we go to the trouble of starting everything up
+  # some sanity checks before we go to the trouble of starting everything up
 
-    if [ -z "$(groups | grep docker)" ]
-    then
-        echo "Did you log out and log back in after running 'sudo ./testbox init' ? You are not part of the docker group."
-    fi
+  if [ ! -f "$TESTBOX_CONFIG" ]
+  then
+      fail_with_msg "No config file exists at $CONFIG_FILE.  Run 'testbox init first."
+  fi
 
-    if [ ! -f "$TESTBOX_CONFIG" ]
-    then
-        fail_with_msg "No config file exists at $CONFIG_FILE.  Run 'testbox init first."
-    fi
+  if ! groups | grep -q docker
+  then
+      fail_with_msg "Did you log out and log back in after running 'sudo ./testbox init' ? You are not part of the docker group."
+  fi
 
-    if [ !  -d "$EC2_USER_HOME/$MAGENTO" ]
-    then
-        fail_with_msg "the $MAGENTO repo doesn't exist at $EC2_USER_HOME/$MAGENTO."
-    fi
+  if [ !  -d "$EC2_USER_HOME/.aws" ]
+  then
+      fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws directory missing."
+  fi
 
-    if [ !  -d "$EC2_USER_HOME/$CLIENT" ]
-    then
-        fail_with_msg "the $CLIENT repo doesn't exist at $EC2_USER_HOME/$CLIENT."
-    fi
+  if [ !  -s "$EC2_USER_HOME/.aws/config" ]
+  then
+      fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/config missing."
+  fi
 
-    if [ !  -d "$EC2_USER_HOME/$API" ]
-    then
-        fail_with_msg "the $API repo doesn't exist at $EC2_USER_HOME/$API."
-    fi
+  if [ !  -s "$EC2_USER_HOME/.aws/credentials" ]
+  then
+      fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/credentials missing."
+  fi
 
-    if [ !  -d "$EC2_USER_HOME/.aws" ]
-    then
-        fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws directory missing."
-    fi
+  if [ !  -s "$EC2_USER_HOME/.ngrok2/ngrok.yml" ]
+  then
+      fail_with_msg "ngrok authtoken not configured properly. file $EC2_USER_HOME/.ngrok2/ngrok.yml doesn't exist."
+  fi
 
-    if [ !  -s "$EC2_USER_HOME/.aws/config" ]
-    then
-        fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/config missing."
-    fi
+  if [ ! -f "$EC2_USER_HOME/.npmrc" ]
+  then
+      fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't exist."
+  fi
 
-    if [ !  -s "$EC2_USER_HOME/.aws/credentials" ]
-    then
-        fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/credentials missing."
-    fi
-
-    if [ !  -s "$EC2_USER_HOME/.ngrok2/ngrok.yml" ]
-    then
-        fail_with_msg "ngrok authtoken not configured properly. file $EC2_USER_HOME/.ngrok2/ngrok.yml doesn't exist."
-    fi
-
-    if [ ! -f "$EC2_USER_HOME/.npmrc" ]
-    then
-        fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't exist."
-    fi
-
-    if ! grep -q "//registry.npmjs.org/:_authToken=" "$EC2_USER_HOME/.npmrc"
-    then
-        fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't have an authToken value."
-    fi
+  if ! grep -q "//registry.npmjs.org/:_authToken=" "$EC2_USER_HOME/.npmrc"
+  then
+      fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't have an authToken value."
+  fi
 
 }
 
-function configure() {
+function pull_client() {
 
-    # CLEAR OUT PREVIOUS STATE
-    rm -rf $TESTBOX_CONFIG
-    rm -rf $EC2_USER_HOME/.ngrok2/ngrok.yml
 
-    # MAGENTO EXTENSION CONFIG DATA
-    printf "\n[ Magento NS8 Protect extension configuration info ]\n"
-    read -rep "enter your ns8 email: " NS8_EMAIL
-    read -rep "enter your lightsail subdomain (<SUBDOMAIN>.ns8demos.com): " LIGHTSAIL_SUBDOMAIN
+  # if middleware/.env exists, save and backup
+  # otherwise, assume we've pulled client for the first time. so move template to .env and add protect token
+  # TODO: improve error handling here, think about how this could get out of a known state
+  if [ -f $EC2_USER_HOME/$CLIENT_REPO/middleware/.env ]
+  then
+    mv $EC2_USER_HOME/$CLIENT_REPO/middleware/.env $TESTBOX_DATA_DIR/$CLIENT_MIDDLEWARE_ENV
+  fi
 
-    # NGROK
-    printf "\n[ Connect NGROK account, see https://dashboard.ngrok.com/get-started ] \n\n"
-    read -rs -p "enter your ngrok auth key (step 3 at https://dashboard.ngrok.com/get-started): " NGROK_AUTHTOKEN
-    echo ""
-    read -erp "enter your ngrok.io protect api subdomain (https://<SUBDOMAIN>.ngrok.io): " PROTECT_API_SUBDOMAIN
-    read -erp "enter your ngrok.io protect client subdomain (https://<SUBDOMAIN>.ngrok.io): " PROTECT_CLIENT_SUBDOMAIN
-    OAUTH_ENDPOINT_URL="https://$PROTECT_API_SUBDOMAIN.ngrok.io/protect/magento/callback"
-    OAUTH_IDENTITY_LINK_URL="https://$PROTECT_API_SUBDOMAIN.ngrok.io/protect/magento/identity"
+  # specify correct branch and commit.  replace current client repo
+  read -erp "COMMIT HASH for $CLIENT_REPO [ default is HEAD ]:" COMMIT
+  read -erp "branch for $CLIENT_REPO [ default is master ]:" BRANCH
+  [ -z "$BRANCH" ] && BRANCH=master
 
-    # PERSIST CONFIG VALUES
-    echo "OAUTH_ENDPOINT_URL=$OAUTH_ENDPOINT_URL" >> $TESTBOX_CONFIG
-    echo "OAUTH_IDENTITY_LINK_URL=$OAUTH_IDENTITY_LINK_URL" >> $TESTBOX_CONFIG
-    echo "NS8_EMAIL=$NS8_EMAIL" >> $TESTBOX_CONFIG
-    echo "LIGHTSAIL_DOMAIN=http://$LIGHTSAIL_SUBDOMAIN.ns8demos.com" >> $TESTBOX_CONFIG
-    echo "PROTECT_API_SUBDOMAIN=$PROTECT_API_SUBDOMAIN" >> $TESTBOX_CONFIG
-    echo "PROTECT_CLIENT_SUBDOMAIN=$PROTECT_CLIENT_SUBDOMAIN" >> $TESTBOX_CONFIG
-    echo "PROTECT_TOKEN=$(cat /proc/sys/kernel/random/uuid)" >> $TESTBOX_CONFIG
+  cd $EC2_USER_HOME || fail_with_msg "can't cd to dir $EC2_USER_HOME. It doesn't exist."
+  rm -rf "${EC2_USER_HOME:?}/${CLIENT_REPO:?}"
+  git clone git@github.com:ns8inc/$CLIENT_REPO --single-branch --branch $BRANCH $EC2_USER_HOME/$CLIENT_REPO \
+    || fail_with_msg "git clone of the client repo failed.  Did you copy $EC2_USER_HOME/.ssh/id_rsa.pub to https://github.com/settings/keys?"
 
-    echo "[ NPM login ]"
-    npm login
+  # checkout to commit, if user supplied it
+  cd $EC2_USER_HOME/$CLIENT_REPO || fail_with_msg "can't cd to dir $EC2_USER_HOME/$CLIENT_REPO. It does not exist."
+  if [ -z "$COMMIT" ]
+  then
+    git checkout
+  else
+    git checkout "$COMMIT"
+  fi
 
-    ngrok authtoken "$NGROK_AUTHTOKEN"
+  # install client client app
+  echo 'installing client/client dependencies ...'
+  cd $EC2_USER_HOME/$CLIENT_REPO/client || fail_with_msg "can't cd to $EC2_USER_HOME/$CLIENT_REPO/client. It doesn't exist."
+  yarn install --frozen-lockfile
 
-    printf "\n[ AWS Config, see https://internal-dev-docs.readme.io/docs/aws ]\n\n"
-    aws configure
+  # install client middleware app
+  echo 'installing client/middleware dependencies ...'
+  cd $EC2_USER_HOME/$CLIENT_REPO/middleware || fail_with_msg "$EC2_USER_HOME/$CLIENT_REPO/middleware does not exist."
+  yarn install --frozen-lockfile
 
-    if [ ! -f  $EC2_USER_HOME/.ssh/id_rsa ]
-    then
-        ssh-keygen -q -t rsa -N "" -f "$EC2_USER_HOME/.ssh/id_rsa"
-        chown -R ec2-user:ec2-user ~/.ssh/id_rsa*
-        echo "SSH key created a public and private key pair:
-            private: $EC2_USER_HOME/.ssh/id_rsa,
-            public: $EC2_USER_HOME/.ssh/id_rsa.pub."
-    fi
-    echo "If you haven't already, please add your SSH public key '~/.ssh/id_rsa.pub' to your Github SSH keys before proceeding."
-    echo "See: https://github.com/settings/keys."
-    echo "You will need this to clone NS8 Protect repos."
+  # restore client middleware env file if we backed it up.
+  # otherwise write protect token to that file
+  if [ -f $TESTBOX_DATA_DIR/$CLIENT_MIDDLEWARE_ENV ]
+  then
+    mv $TESTBOX_DATA_DIR/$CLIENT_MIDDLEWARE_ENV $EC2_USER_HOME/$CLIENT_REPO/middleware/.env
+  else
+    mv $EC2_USER_HOME/$CLIENT_REPO/middleware/template.env $EC2_USER_HOME/$CLIENT_REPO/middleware/.env
+    sed -i "s/^TEST_ACCESS_TOKEN=.*$/TEST_ACCESS_TOKEN=$PROTECT_TOKEN/" $EC2_USER_HOME/$CLIENT_REPO/middleware/.env
+  fi
 
-    printf "\nMost of the fields are editable, in case you mis-entered any information.  See %s" $TESTBOX_CONFIG
+}
+
+function pull_api() {
+
+  read -erp "COMMIT HASH for $API_REPO [ default is HEAD ]:" COMMIT
+  read -erp "branch for $API_REPO [ default is master ]:" BRANCH
+
+  [ -z "$BRANCH" ] && BRANCH=master
+
+  # save seed file
+  if [ -f $EC2_USER_HOME/$API_REPO/src/migrations/run/$API_SEED_FILENAME ]
+  then
+    cp $EC2_USER_HOME/$API_REPO/src/migrations/run/$API_SEED_FILENAME $TESTBOX_DATA_DIR/$API_SEED_FILENAME
+  fi
+
+  # replace previous code
+  cd $EC2_USER_HOME || fail_with_msg "can't cd to dir $EC2_USER_HOME."
+  rm -rf "${EC2_USER_HOME:?}/${API_REPO:?}"
+  git clone git@github.com:ns8inc/$API_REPO --single-branch --branch $BRANCH $EC2_USER_HOME/$API_REPO \
+    || fail_with_msg "git clone of the private api repo failed.  Did you copy $EC2_USER_HOME/.ssh/id_rsa.pub to https://github.com/settings/keys?"
+
+  # checkout to commit, if user supplied it
+  cd $EC2_USER_HOME/$API_REPO || fail_with_msg "can't cd to dir $EC2_USER_HOME/$API_REPO."
+  if [ -z "$COMMIT" ]
+  then
+    git checkout
+  else
+    git checkout "$COMMIT"
+  fi
+
+  # switch docker mysql port to 3307 because magento runs on 3306
+  sed -i "s/mysql:\/\/localhost:3306/mysql:\/\/localhost:$PROTECT_DOCKER_MYSQL_PORT/" $EC2_USER_HOME/$API_REPO/config/dev.yml
+  sed -i "s/3306:3306/3307:3306/" $EC2_USER_HOME/$API_REPO/scripts/start-mysql.sh
+
+  # enter new repo dir and install with yarn
+  yarn install
+
+  # restore seed file
+  if [ -f $TESTBOX_DATA_DIR/$API_SEED_FILENAME ]
+  then
+    mv $TESTBOX_DATA_DIR/$API_SEED_FILENAME $EC2_USER_HOME/$API_REPO/src/migrations/run/$API_SEED_FILENAME
+  fi
+
+}
+
+function pull_magento() {
+
+  # source config because we need some of those values for the env
+  . $TESTBOX_CONFIG
+
+  # get branch / commit prefs
+  read -erp "COMMIT HASH for $MAGENTO_REPO [ default is HEAD ]:" COMMIT
+  read -erp "branch for $MAGENTO_REPO [ default is master ]:" BRANCH
+  [ -z "$BRANCH" ] && BRANCH=master
+
+  # replace current magento repo with new repo
+  rm -rf "${EC2_USER_HOME:?}/${MAGENTO_REPO:?}"
+  git clone git@github.com:ns8inc/$MAGENTO_REPO --single-branch --branch $BRANCH $EC2_USER_HOME/$MAGENTO_REPO \
+    || fail_with_msg "git clone of the magento platform repo failed.  Did you copy $EC2_USER_HOME/.ssh/id_rsa.pub \
+       to https://github.com/settings/keys?"
+
+
+  # checkout target branch
+  cd $EC2_USER_HOME/$MAGENTO_REPO || fail_with_msg "can't cd to dir $EC2_USER_HOME/$MAGENTO_REPO. It does not exist."
+  if [ -z "$COMMIT" ]
+  then
+    git checkout
+  else
+    git checkout "$COMMIT"
+  fi
+
+  # clear out .env file
+  echo "" >  $EC2_USER_HOME/$MAGENTO_REPO/.env
+
+  # write values to it
+  echo "DEV_EMAIL=$NS8_EMAIL" >> $EC2_USER_HOME/$MAGENTO_REPO/.env
+  echo "DEV_SUFFIX=$AWS_DEV_SUFFIX" >> $EC2_USER_HOME/$MAGENTO_REPO/.env
+  echo "MAGENTO_BASE_URL=$LIGHTSAIL_SUBDOMAIN" >> $EC2_USER_HOME/$MAGENTO_REPO/.env
+  echo "MAGENTO_URL=$LIGHTSAIL_SUBDOMAIN/index.php/rest" >> $EC2_USER_HOME/$MAGENTO_REPO/.env
+  echo "NODE_ENV=dev" >> $EC2_USER_HOME/$MAGENTO_REPO/.env
+  echo "NS8_CLIENT_URL=$NS8_CLIENT_URL" >> $EC2_USER_HOME/$MAGENTO_REPO/.env
+  echo "NS8_PROTECT_URL=$NS8_PROTECT_URL" >> $EC2_USER_HOME/$MAGENTO_REPO/.env
+
+  yarn build
+  yarn switchboard:deploy --stage=$AWS_DEV_SUFFIX
+
+  # copy magento/module to protect dir
+  cp -R $EC2_USER_HOME/$MAGENTO_REPO/module/*  /var/www/html/app/code/NS8/Protect/
+
+  cd /var/www/html || fail_with_msg "can't cd to /var/www/html."
+
+  # enable magento developer mode
+  php bin/magento deploy:mode:set developer
+
+  # update magento, clean cache
+  php bin/magento setup:upgrade
+  bin/magento cache:clean
+
+  # enable PHP display errors
+  sed -i "s/#ini_set('display_errors', 1);/ini_set('display_errors', 1);/" /var/www/html/app/bootstrap.php
+
+  # Enable Magento 2 display errors
+  if [ -f /var/www/html/pub/errors/local.xml.sample ]
+  then
+    mv /var/www/html/pub/errors/local.xml.sample /var/www/html/pub/errors/local.xml
+  fi
+
 
 }
 
 function pull() {
 
-    # -y or --yes checks out HEAD of master
-    # otherwise, you can specify branch and commit for each repo
-    YES_FLAG="$1"
+  # pull commands will:
+  # - save any necessary config files to the ~/.testbox directory
+  # - replace existing repo with newly cloned bare repo, optional branch/commit selection
+  # - restore config files
+  # - yarn install if possible after fetching repo. In the case of client, yarn local-full-build does both the install AND serving.
 
-    # rm repo, clone again, checkout
-    for repo in ns8-protect-api ns8-protect-client ns8-magento-platform
-    do
-        # thank you, shellcheck .... https://github.com/koalaman/shellcheck/wiki/SC2114
-        rm -rf "${EC2_USER_HOME:?}/${repo:?}"
+  REPO="$1"
+  [ "$REPO" = "api" ] && pull_api
+  [ "$REPO" = "client" ] && pull_client
+  [ "$REPO" = "magento" ] && pull_magento
 
-        if [ "$YES_FLAG" = "-y" ] || [ "$YES_FLAG" == "--yes" ]
-        then
-            git clone git@github.com:ns8inc/$repo --single-branch --branch master $EC2_USER_HOME/$repo
-            cd $EC2_USER_HOME/$repo || fail_with_msg "can't cd to dir $EC2_USER_HOME/$repo. It does not exist."
-            git checkout
+}
 
-        else
-            read -erp "COMMIT HASH for $repo [ default is HEAD ]:" COMMIT_HASH
-            read -erp "branch for $repo [ default is master ]:" REPO_BRANCH
+function start() {
 
-            if [ -z "$REPO_BRANCH" ]
-            then
-                REPO_BRANCH=master
-            fi
+  SERVICE="$1"
 
-            git clone git@github.com:ns8inc/$repo --single-branch --branch $REPO_BRANCH $EC2_USER_HOME/$repo
-            cd $EC2_USER_HOME/$repo || fail_with_msg "can't cd to dir $EC2_USER_HOME/$repo. It does not exist."
+  if [ -z "$SERVICE" ]
+  then
+    usage
+    exit 1
+  fi
 
-            if [ -z "$COMMIT_HASH" ]
-            then
-                git checkout
-            else
-                git checkout "$COMMIT_HASH"
-            fi
-        fi
-    done
+  [ "$SERVICE" = "api" ] && start_api && tmux ls
+  [ "$SERVICE" = "client" ] && start_client && tmux ls
+
+}
+
+function stop() {
+
+  SERVICE="$1"
+
+  if [ "$SERVICE" = "api" ]
+  then
+    stop_api
+  elif [ "$SERVICE" = "client" ]
+  then
+    stop_client
+  elif [ "$SERVICE" = "docker" ]
+  then
+    stop_docker
+  fi
+
+}
+
+function init() {
+
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]
+  then
+      usage init
+      exit 0
+  fi
+
+  if [ "$(whoami)" != root ]
+  then
+      fail_with_msg "please run 'testbox init' with sudo."
+  fi
+
+  # setup ~/.testbox/{config,logs}
+  if [ -d $TESTBOX_DATA_DIR ]
+  then
+    rm -rf $TESTBOX_DATA_DIR
+  fi
+
+  mkdir $TESTBOX_DATA_DIR
+  mkdir $TESTBOX_LOG_DIR
+  rm -rf $TESTBOX_CONFIG
+  touch $TESTBOX_CONFIG
+  touch $API_LOG
+  touch $CLIENT_LOG
+  touch $NGROK_API_LOG
+  touch $NGROK_CLIENT_LOG
+  chown -R ec2-user:ec2-user $TESTBOX_DATA_DIR
+
+  # allow user to pass in subdomain values on init
+  echo "Please enter your ngrok.io and ns8demos.com subdomains below."
+  read -erp "Protect API subdomain [defaults to 'magento-v2-api']: " PROTECT_API_SUBDOMAIN
+  read -erp "Protect Client subdomain [defaults to 'magento-v2-client']: " PROTECT_CLIENT_SUBDOMAIN
+  read -erp "Lightsail subdomain [defaults to 'magento-v2']: " LIGHTSAIL_SUBDOMAIN
+  read -erp "Your step functions AWS dev suffix (must be unique, ask your team lead):" AWS_DEV_SUFFIX
+
+  # assign defaults for empty values
+  [ -z "$PROTECT_API_SUBDOMAIN" ] && PROTECT_API_SUBDOMAIN=$PROTECT_API_SUBDOMAIN_DEFAULT
+  [ -z "$PROTECT_CLIENT_SUBDOMAIN" ] && PROTECT_CLIENT_SUBDOMAIN=$PROTECT_CLIENT_SUBDOMAIN_DEFAULT
+  [ -z "$LIGHTSAIL_SUBDOMAIN" ] && LIGHTSAIL_SUBDOMAIN=$LIGHTSAIL_SUBDOMAIN_DEFAULT
+  OAUTH_ENDPOINT_URL="https://$PROTECT_API_SUBDOMAIN.ngrok.io/protect/magento/callback"
+  OAUTH_IDENTITY_LINK_URL="https://$PROTECT_API_SUBDOMAIN.ngrok.io/protect/magento/identity"
+  NS8_PROTECT_URL="https://$PROTECT_API_SUBDOMAIN.ngrok.io"
+  NS8_CLIENT_URL="https://$PROTECT_CLIENT_SUBDOMAIN.ngrok.io"
+  LIGHTSAIL_DOMAIN="http://$LIGHTSAIL_SUBDOMAIN.ns8demos.com"
+
+  # write values to ~/.testbox/config
+  echo "PROTECT_API_SUBDOMAIN=$PROTECT_API_SUBDOMAIN" >> $TESTBOX_CONFIG
+  echo "PROTECT_CLIENT_SUBDOMAIN=$PROTECT_CLIENT_SUBDOMAIN" >> $TESTBOX_CONFIG
+  echo "NS8_PROTECT_URL=$NS8_PROTECT_URL" >> $TESTBOX_CONFIG
+  echo "NS8_CLIENT_URL=$NS8_CLIENT_URL" >> $TESTBOX_CONFIG
+  echo "LIGHTSAIL_DOMAIN=$LIGHTSAIL_DOMAIN" >> $TESTBOX_CONFIG
+  echo "AWS_DEV_SUFFIX=$AWS_DEV_SUFFIX" >> $TESTBOX_CONFIG
+  echo "OAUTH_ENDPOINT_URL=$OAUTH_ENDPOINT_URL" >> $TESTBOX_CONFIG
+  echo "OAUTH_IDENTITY_LINK_URL=$OAUTH_IDENTITY_LINK_URL" >> $TESTBOX_CONFIG
+
+  # Magento
+  # Create SWAP file; 2GB
+  dd if=/dev/zero of=/swapfile bs=1M count=2048
+  mkswap /swapfile
+  chmod 600 /swapfile
+  swapon /swapfile
+  echo "swap /swapfile swap defaults 0 0" >> /etc/fstab
+
+  # Add nodejs repository
+  curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash -
+
+  # Update packages
+  yum update -y
+
+  # Install LAMP
+  yum install -y \
+  git \
+  httpd24 \
+  nodejs \
+  php71 \
+  php71-bcmath \
+  php71-gd \
+  php71-intl \
+  php71-mbstring \
+  php71-mcrypt \
+  php71-mysqlnd \
+  php71-soap \
+  php71-zip \
+  mysql57-server\
+  tmux\
+  composer
+
+
+  # install composer and make globally available
+  curl -sS https://getcomposer.org/installer | php
+  chmod +x composer.phar
+  mv composer.phar /usr/local/bin/composer
+
+  # Configure Web and DB servers to start on boot
+  chkconfig httpd on
+  chkconfig mysqld on
+
+  chmod ugo+rwx /var/www/html
+
+  # Change PHP memory limit // Magento wants > 2GB
+  sed -i 's/memory_limit = 128M/memory_limit = 4096M/g' /etc/php-*.ini
+
+  # Change Apache to allow Overrides
+  sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
+
+  # Set Composer path
+  echo "COMPOSER_HOME=/var/www/html/var/composer_home" >> /etc/environment
+
+
+  # Set file permissions (Force the group apache on all files and give RWX permissions)
+  chown -R apache:apache /var/www/html
+  #chmod -R 2775 /var/www/html
+  setfacl -Rdm g:apache:rwx /var/www/html
+
+  # Start Web and DB server
+  service httpd start
+  service mysqld start
+
+  # Create database
+  mysql -u root -e "CREATE DATABASE magento2"
+  mysql -u root -e "CREATE USER 'magento_db_user'@'localhost' IDENTIFIED BY 'magento_db_password'"
+  mysql -u root -e "GRANT ALL PRIVILEGES ON magento2.* TO 'magento_db_user'@'localhost'"
+  mysql -u root -e "FLUSH PRIVILEGES"
+
+  # Download installer
+  # With sample data and copy sample data to webroot
+  cd /var/www || fail_with_msg "can't cd to /var/www."
+  curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.2_sample_data.zip
+
+  # Unzip Magento files to web root
+  unzip -oqq /var/www/Magento-* -d /var/www/html
+
+  # Install Magento via CLI
+  php /var/www/html/bin/magento setup:install \
+  --language=en_US \
+  --timezone=America/Los_Angeles \
+  --db-name=magento2 \
+  --db-user=magento_db_user \
+  --db-password=magento_db_password \
+  --backend-frontname=admin_demo \
+  --admin-firstname=Development \
+  --admin-lastname=Testing \
+  --admin-email=dev@ns8demos.com \
+  --admin-user=development \
+  --admin-password=YzbLenbGRGN6fxqNsz.ti \
+  --base-url="$LIGHTSAIL_DOMAIN"
+
+  # Update Composer Auth
+  cp /var/www/html/auth.json.sample /var/www/html/auth.json
+
+  #### Need to remove git section
+  sed -i '/github/d' /var/www/html/auth.json
+  sed -i '/},$/d' /var/www/html/auth.json
+  sed -i 's/<public-key>/1b8325eb6d792fe22c0fb83f65150281/' /var/www/html/auth.json
+  sed -i 's/<private-key>/d68ff7618b2f3118a0342d7f914848c8/' /var/www/html/auth.json
+
+  # Create the directory where we will test the Protect extension
+  mkdir -p /var/www/html/app/code/NS8/Protect
+
+  # Make the magento command executable
+  chmod +x /var/www/html/bin/magento
+
+  # Allow the ec2-user to write to the magento install
+  chmod -R ugo+rwx /var/www/html
+
+  # Allow password login -- Is this necessary?
+  sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  service sshd restart
+
+  # docker
+  echo 'installing docker ...'
+  yum -y install docker
+  service docker start
+  chkconfig docker on
+  usermod -aG docker ec2-user
+
+  # ngrok
+  echo 'installing ngrok ...'
+  curl -O https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+  unzip ngrok-stable-linux-amd64.zip
+
+  mv ngrok /usr/bin/
+  rm -f ngrok-stable-linux-amd64.zip
+
+  # yarn
+  echo 'installing yarn ...'
+  curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo >> /etc/yum.repos.d/yarn.repo
+  yum -y install yarn
+
+
+  # TODO: verify that this works.  doesn't seem to work.
+  # Set NS8_PROTECT_URL environment variable -- OVERWRITING
+  echo "SetEnv NS8_CLIENT_URL $NS8_CLIENT_URL" > /var/www/html/.htaccess
+  echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL" >> /var/www/html/.htaccess
+
+  # .bashrc
+  echo "export AWS_REGION=us-west-2" >> $EC2_USER_HOME/.bashrc
+  echo "export AWS_SDK_LOAD_CONFIG=1" >> $EC2_USER_HOME/.bashrc
+
+  echo "testbox init complete!
+
+  Please LOG OUT and LOG IN again so the proper groups take effect!
+  "
+}
+
+function logstream() {
+
+  SERVICE="$1"
+
+  # stream log for particular service from log file
+  [ "$SERVICE" = "client" ] && tail -f "$CLIENT_LOG"
+  [ "$SERVICE" = "ngrok-client" ] && tail -f "$NGROK_CLIENT_LOG"
+  [ "$SERVICE" = "api" ] && tail -f "$API_LOG"
+  [ "$SERVICE" = "ngrok-api" ] && tail -f "$NGROK_API_LOG"
+
+}
+
+
+function configure() {
+
+  # source config
+  . $TESTBOX_CONFIG
+
+  # CLEAR OUT PREVIOUS STATE
+  rm -rf $EC2_USER_HOME/.ngrok2/ngrok.yml
+
+  # MAGENTO EXTENSION CONFIG DATA
+  printf "\n[ Magento NS8 Protect extension configuration info ]\n"
+  read -rep "enter your ns8 email: " NS8_EMAIL
+
+  # NGROK
+  printf "\n[ Connect NGROK account, see https://dashboard.ngrok.com/get-started ] \n\n"
+  read -r -p "enter your ngrok auth key (step 3 at https://dashboard.ngrok.com/get-started): " NGROK_AUTHTOKEN
+  echo ""
+
+  # PERSIST CONFIG VALUES
+  echo "NS8_EMAIL=$NS8_EMAIL" >> $TESTBOX_CONFIG
+  echo "PROTECT_TOKEN=$(cat /proc/sys/kernel/random/uuid)" >> $TESTBOX_CONFIG
+
+  echo "[ NPM login ]"
+  npm login
+
+  ngrok authtoken "$NGROK_AUTHTOKEN"
+
+  printf "\n[ AWS Config, see https://internal-dev-docs.readme.io/docs/aws ]\n\n"
+  aws configure
+
+  if [ ! -f  $EC2_USER_HOME/.ssh/id_rsa ]
+  then
+      ssh-keygen -q -t rsa -N "" -f "$EC2_USER_HOME/.ssh/id_rsa"
+      chown -R ec2-user:ec2-user ~/.ssh/id_rsa*
+      printf "SSH key created a public and private key pair:
+          private: %s/.ssh/id_rsa,
+          public: $EC2_USER_HOME/.ssh/id_rsa.pub." $EC2_USER_HOME $EC2_USER_HOME
+      echo "YOUR NEW RSA PUBLIC SSH KEY:"
+      cat $EC2_USER_HOME/.ssh/id_rsa.pub
+
+  fi
+
+  printf "INFO:
+  Did you copy %s/.ssh/id_rsa.pub private key to https://github/settings/keys?
+  See: https://github.com/settings/keys. You will need this to clone private NS8 Protect repos.
+  " $EC2_USER_HOME
+
+  printf "INFO:
+  Most of the testbox config fields are editable, in case you mis-entered any information.  See %s\n" $TESTBOX_CONFIG
+
+}
+
+function usage() {
+
+  printf "testbox usage: testbox [sub-command [args]]
+
+  On first run you need to:
+    - run init
+    - log out and back in
+    - run configure
+    - copy your public key to your github keys (instructions appear after configure is run)
+
+  After that, commands can then be run in any order.
+
+  Testbox sub-commands:
+
+    <configure>
+        Run through requisite service authorizations.
+
+    <init>
+        Initialize the lightsail instance by running through the standard Magento2 lightsail setup script.
+
+    <logstream> [ api | client | ngrok-api | ngrok-client ]
+        stream log file from service
+
+    <pull [ api | client | magento ] >
+        git clone the latest code from the 'ns8-magento-platform', 'ns8-protect-api' and 'ns8-protect-client' platforms.
+        Back up any pre-existing config files, install repo, then restore config files.
+
+    <start> [api | client ]
+        start all supporting services related to api, client or ngrok. each service is started in a detached tmux screen.
+
+    <status>
+        list status of everything testbox related
+
+    <stop>  [api | client | docker ]
+        stop all background supporting services related to api, client or ngrok. Exception: docker must be stopped separately.
+
+"
+
+}
+
+function status() {
+
+  # docker
+  for service in protect-api-mysql protect-api-dynamodb
+  do
+    if docker inspect -f '{{.State.Running}}' $service > /dev/null 2>&1
+    then
+      echo "$service is running: yes"
+    else
+      echo "$service is running: no"
+    fi
+  done
+
+  # node and ngrok
+  for service in api ngrok-api client ngrok-client
+  do
+    if tmux has-session -t $service 2>/dev/null
+    then
+      echo "$service is running: yes"
+    else
+      echo "$service is running: no"
+    fi
+  done
+
+}
+
+function check_config() {
+
+  # some sanity checks before we go to the trouble of starting everything up
+
+  if [ ! -f "$TESTBOX_CONFIG" ]
+  then
+      fail_with_msg "No config file exists at $CONFIG_FILE.  Run 'testbox init first."
+  fi
+
+  if ! groups | grep -q docker
+  then
+      fail_with_msg "Did you log out and log back in after running 'sudo ./testbox init' ? You are not part of the docker group."
+  fi
+
+  if [ !  -d "$EC2_USER_HOME/.aws" ] || [ !  -s "$EC2_USER_HOME/.aws/config" ]
+  then
+      fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws directory missing."
+  fi
+
+  if [ !  -s "$EC2_USER_HOME/.aws/config" ]
+  then
+      fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/config missing."
+  fi
+
+  if [ !  -s "$EC2_USER_HOME/.aws/credentials" ]
+  then
+      fail_with_msg "aws not configured properly: $EC2_USER_HOME/.aws/credentials missing."
+  fi
+
+  if [ !  -s "$EC2_USER_HOME/.ngrok2/ngrok.yml" ]
+  then
+      fail_with_msg "ngrok authtoken not configured properly. file $EC2_USER_HOME/.ngrok2/ngrok.yml doesn't exist."
+  fi
+
+  if [ ! -f "$EC2_USER_HOME/.ssh/id_rsa.pub" ]
+  then
+    fail_with_msg "you don't have a public RSA key.  run 'testbox configure' and copy that key to github (instructions after you run configure)."
+  fi
+
+
+  if [ ! -f "$EC2_USER_HOME/.npmrc" ]
+  then
+      fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't exist."
+  fi
+
+  if ! grep -q "//registry.npmjs.org/:_authToken=" "$EC2_USER_HOME/.npmrc"
+  then
+      fail_with_msg "did you run npm login ? $EC2_USER_HOME/.npmrc doesn't have an authToken value."
+  fi
 
 }
 
 function main() {
 
-    if [ "$1" = "init" ]
-    then
-        init
-    elif [ "$1" = "configure" ]
-    then
-        configure
-    elif [ "$1" = "pull" ]
-    then
-        pull "$2"
-    elif [ "$1" = "build" ]
-    then
-        build
-    elif [ "$1" = "banner" ]
-    then
-        print_banner
-        usage
-    else
-        usage
-    fi
+  if [ "$1" = "init" ]
+  then
+
+    init "$@"
+
+  elif [ "$1" = "status" ]
+  then
+
+    status
+
+  elif [ "$1" = "logstream" ]
+  then
+
+    logstream "$2"
+
+  elif [ "$1" = "configure" ]
+  then
+
+    . $TESTBOX_CONFIG
+    configure
+
+  elif [ "$1" = "pull" ]
+  then
+
+    . $TESTBOX_CONFIG
+    pull "$2"
+
+  elif [ "$1" = "start" ]
+  then
+
+    . $TESTBOX_CONFIG
+    start "$2"
+
+  elif [ "$1" = "stop" ]
+  then
+
+    stop "$2"
+
+  elif [ "$1" = "banner" ]
+  then
+    print_banner
+  else
+    usage
+  fi
 
 }
 
