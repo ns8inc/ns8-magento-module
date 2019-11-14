@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Helper Utility for Session Data
  */
-class SessionData extends AbstractHelper
+class Session extends AbstractHelper
 {
     /**
      * @var LoggerInterface
@@ -36,13 +36,13 @@ class SessionData extends AbstractHelper
     }
 
     /**
-     * Set Session Data values based on POST request
+     * Set Session Data values based on POST request body
      *
      * @param array $postBody
      *
      * @return array
      */
-    public function saveSessionDataFromRequest(array $postBody)
+    public function saveSessionDataFromPostBody(array $postBody)
     {
         // Retrieve desired session data values from POST body
         $screenHeight = $postBody['screenHeight'];

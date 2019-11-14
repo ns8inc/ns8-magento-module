@@ -1,12 +1,12 @@
 <?php
 
-namespace NS8\Protect\Controller\SessionData;
+namespace NS8\Protect\Controller\Sessiondata;
 
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Session\SessionManagerInterface;
 use NS8\Protect\Helper\Logger;
+use NS8\Protect\Helper\Session as SessionHelper;
 
 /**
  * The Session Data POST action
@@ -24,9 +24,9 @@ class Index extends Action
     protected $logger;
 
     /**
-     * @var SessionManagerInterface
+     * @var SessionHelper
      */
-    protected $session;
+    protected $sessionHelper;
 
     /**
      * Constructor
@@ -34,19 +34,19 @@ class Index extends Action
      * @param Context $context
      * @param JsonFactory $jsonResultFactory
      * @param Logger $logger
-     * @param SessionManagerInterface $session
+     * @param SessionHelper $sessionHelper
      */
     public function __construct(
         Context $context,
-        Logger $logger,
         JsonFactory $jsonResultFactory,
-        SessionManagerInterface $session
+        Logger $logger,
+        SessionHelper $sessionHelper
     ) {
         parent::__construct($context);
         $this->context = $context;
         $this->jsonResultFactory = $jsonResultFactory;
         $this->logger = $logger;
-        $this->session = $session;
+        $this->sessionHelper = $sessionHelper;
     }
 
     /**
@@ -57,21 +57,20 @@ class Index extends Action
     public function execute()
     {
         // Retrieve desired session data values from POST body
-        $request = $this->getRequest();
-        $screenHeight = $request->getPost('screenHeight');
-        $screenWidth = $request->getPost('screenWidth');
+        $postBody = $this->getRequest()->getPost()->getArrayCopy();
 
-        // Set Session data values
-        if (isset($screenHeight)) {
-            $this->session->setScreenHeight($screenHeight);
-        }
-        if (isset($screenWidth)) {
-            $this->session->setScreenWidth($screenWidth);
+        $result = [];
+        $savedSessionData = $this->sessionHelper->saveSessionDataFromPostBody($postBody);
+        $result['data'] = $savedSessionData;
+        if (count($savedSessionData) > 0) {
+            $result['status'] = 'ok';
+        } else {
+            $result['status'] = 'no change';
         }
 
         // Create and return desired JSON response
-        $result = $this->jsonResultFactory->create();
-        $result->setData($this->session->getData());
-        return $result;
+        $response = $this->jsonResultFactory->create();
+        $response->setData($result);
+        return $response;
     }
 }
