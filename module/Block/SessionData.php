@@ -41,7 +41,7 @@ class SessionData extends Template
      *
      * @param Context $context The Magento context
      * @param SessionManagerInterface $session The Session
-     * @param Url url The URL Helper
+     * @param Url $url The URL Helper
      * @param array $data The data to pass to the Template constructor (optional)
      */
     public function __construct(
