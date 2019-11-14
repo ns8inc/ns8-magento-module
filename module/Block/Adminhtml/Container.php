@@ -14,6 +14,8 @@ use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\View\Result\PageFactory;
+use Magento\Integration\Api\IntegrationServiceInterface;
+use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Url;
@@ -47,6 +49,13 @@ class Container extends Template
     protected $httpClient;
 
     /**
+     * The integration service.
+     *
+     * @var IntegrationServiceInterface
+     */
+    protected $integrationService;
+
+    /**
      * The request.
      *
      * @var Http
@@ -73,6 +82,7 @@ class Container extends Template
      * @param Context $context The context
      * @param Http $request The request
      * @param HttpClient $httpClient The HTTP client
+     * @param IntegrationServiceInterface $integrationService The integration service
      * @param Order $order The order helper
      * @param PageFactory $resultPageFactory The page factory
      * @param Url $url URL helper class
@@ -81,6 +91,7 @@ class Container extends Template
         Context $context,
         Http $request,
         HttpClient $httpClient,
+        IntegrationServiceInterface $integrationService,
         Order $order,
         PageFactory $resultPageFactory,
         Url $url
@@ -88,9 +99,22 @@ class Container extends Template
         parent::__construct($context);
         $this->context = $context;
         $this->httpClient = $httpClient;
+        $this->integrationService = $integrationService;
         $this->order = $order;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
         $this->url = $url;
+    }
+
+    /**
+     * Check whether the NS8 Protect extension is activated.
+     *
+     * @return bool True if activated, False otherwise.
+     */
+    public function isActivated(): bool
+    {
+        $integration = $this->integrationService->findByName(Config::NS8_INTEGRATION_NAME);
+
+        return $integration->getStatus() === $integration::STATUS_ACTIVE;
     }
 }
