@@ -2,9 +2,9 @@
 
 namespace NS8\Protect\Controller\Adminhtml\Sales;
 
-use \Magento\Backend\App\Action;
-use \Magento\Backend\App\Action\Context;
-use \Magento\Framework\View\Result\PageFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
 use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Config;
@@ -32,8 +32,11 @@ class Dashboard extends Action
     /**
      * Constructor
      *
-     * @param Context $context
-     * @param PageFactory $resultPageFactory
+     * @param Context $context The context
+     * @param PageFactory $resultPageFactory The result page factory
+     * @param HttpClient $httpClient The HTTP client
+     * @param Logger $logger The logger
+     * @param Config $config The config
      */
     public function __construct(
         Context $context,
