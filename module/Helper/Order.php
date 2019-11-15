@@ -178,7 +178,7 @@ class Order extends AbstractHelper
         if (!isset($eq8Score)) {
             return 'NA';
         }
-        $link = $this->url->getNS8IframeUrl($orderId);
+        $link = $this->urlHelper->getNS8IframeUrl($orderId);
         return '<a href="'.$link.'">'.$eq8Score.'</a>';
     }
 }
