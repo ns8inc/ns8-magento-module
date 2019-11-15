@@ -10,6 +10,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
 use Psr\Log\LoggerInterface;
@@ -66,6 +67,11 @@ class Config extends AbstractHelper
     protected $productMetadata;
 
     /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
      * @var ScopeConfigInterface
      */
     protected $scopeConfig;
@@ -88,6 +94,7 @@ class Config extends AbstractHelper
      * @param LoggerInterface $loggerInterface
      * @param ModuleList $moduleList
      * @param ProductMetadataInterface $productMetadata
+     * @param RequestInterface $request
      * @param ScopeConfigInterface $scopeConfig
      * @param TypeListInterface $typeList
      * @param WriterInterface $scopeWriter
@@ -98,6 +105,7 @@ class Config extends AbstractHelper
         LoggerInterface $loggerInterface,
         ModuleList $moduleList,
         ProductMetadataInterface $productMetadata,
+        RequestInterface $request,
         ScopeConfigInterface $scopeConfig,
         TypeListInterface $typeList,
         WriterInterface $scopeWriter
@@ -107,6 +115,7 @@ class Config extends AbstractHelper
         $this->logger = $loggerInterface;
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
+        $this->request = $request;
         $this->scopeConfig = $scopeConfig;
         $this->scopeWriter = $scopeWriter;
         $this->typeList = $typeList;
@@ -120,12 +129,12 @@ class Config extends AbstractHelper
      */
     public function getEnvironmentVariable(string $envVarName): ?string
     {
-        $ret = null;
-        try {
-            $ret = $_SERVER[$envVarName];
-        } catch (Exception $e) {
+        $ret = $this->request->getServer($envVarName);
+
+        if (!isset($ret)) {
             $this->logger->log('DEBUG', 'Failed to get environment variable "'.$envVarName.'"', ['error'=>$e]);
         }
+
         return $ret;
     }
 
