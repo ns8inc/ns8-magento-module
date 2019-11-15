@@ -50,8 +50,7 @@
         handshake.then(
           child => {
             child.on('ns8-protect-client-connected', () => beginIframeHeightMatching(child));
-
-            child.on('order-detail-name-click', (data) => navigateToOrderDetail(data.orderId));
+            child.on('order-detail-name-click', (data) => navigateToMagentoOrderDetails(data.orderId));
           }
         );
       });
