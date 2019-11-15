@@ -19,6 +19,8 @@
             xsi:type="boolean">false</item>
           <item name="sortOrder"
             xsi:type="number">200</item>
+          <item name="fieldAction"
+            xsi:type="boolean">false</item>
         </item>
       </argument>
     </column>

@@ -5,7 +5,6 @@ namespace NS8\Protect\Helper;
 use Exception;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\UrlInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use NS8\Protect\Helper\HttpClient;
@@ -39,14 +38,9 @@ class Order extends AbstractHelper
     protected $request;
 
     /**
-     * @var UrlInterface
-     */
-    protected $url;
-
-    /**
      * @var Url
      */
-    protected $urlHelper;
+    protected $url;
 
     /**
      * Default constructor
@@ -55,23 +49,20 @@ class Order extends AbstractHelper
      * @param Logger $logger
      * @param OrderRepositoryInterface $orderRepository
      * @param RequestInterface $request
-     * @param Url $urlHelper
-     * @param UrlInterface $url
+     * @param Url $url
      */
     public function __construct(
         HttpClient $httpClient,
         Logger $logger,
         OrderRepositoryInterface $orderRepository,
         RequestInterface $request,
-        Url $urlHelper,
-        UrlInterface $url
+        Url $url
     ) {
         $this->httpClient = $httpClient;
         $this->logger = $logger;
         $this->orderRepository = $orderRepository;
         $this->request = $request;
         $this->url = $url;
-        $this->urlHelper = $urlHelper;
     }
 
     /**
@@ -127,7 +118,7 @@ class Order extends AbstractHelper
         }
 
         $orderIncId = $order->getIncrementId();
-        $uri = sprintf('/orders/order-name/%s', $this->urlHelper->base64UrlEncode($orderIncId));
+        $uri = sprintf('/orders/order-name/%s', $this->url->base64UrlEncode($orderIncId));
         $req = $this->httpClient->get($uri);
 
         if (!isset($req->fraudAssessments)) {
@@ -178,7 +169,7 @@ class Order extends AbstractHelper
         if (!isset($eq8Score)) {
             return 'NA';
         }
-        $link = $this->urlHelper->getNS8IframeUrl($orderId);
+        $link = $this->url->getNS8IframeUrl($orderId);
         return '<a href="'.$link.'">'.$eq8Score.'</a>';
     }
 }
