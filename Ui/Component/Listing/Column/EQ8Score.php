@@ -16,7 +16,7 @@ use NS8\Protect\Helper\Order;
 class EQ8Score extends Column
 {
     /**
-     * The HTTP client helper.
+     * The order.
      *
      * @var Order
      */
@@ -27,7 +27,7 @@ class EQ8Score extends Column
      *
      * @param ContextInterface $context The Magento Context
      * @param UiComponentFactory $uiComponentFactory The UI Component Factory
-     * @param Order $order Protect's HTTP client
+     * @param Order $order The order
      * @param array $components The components
      * @param array $data The data
      */

@@ -1,6 +1,6 @@
 <integrations>
   <integration name="NS8 Protect">
-    <email>christopher.froehlich@ns8.com</email>
+    <email>no-reply@ns8.com</email>
     <endpoint_url>https://test-protect.ns8.com/protect/magento/callback</endpoint_url>
     <identity_link_url>https://test-protect.ns8.com/protect/magento/identity</identity_link_url>
   </integration>
