@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="urn:magento:framework:Ui/etc/ui_configuration.xsd">
-  <columns name="sales_order_columns"
-    class="NS8\Protect\Ui\Component\Listing\Column\EQ8Score">
-    <column name="eq8_score">
+  xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+  <columns name="sales_order_columns">
+    <column name="eq8_score"
+      class="NS8\Protect\Ui\Component\Listing\Column\EQ8Score">
       <argument name="data"
         xsi:type="array">
         <item name="config"
           xsi:type="array">
           <item name="bodyTmpl"
             xsi:type="string">ui/grid/cells/html</item>
+          <item name="fieldAction"
+            xsi:type="boolean">false</item>
           <item name="filter"
             xsi:type="string">textRange</item>
           <item name="label"
@@ -19,8 +21,6 @@
             xsi:type="boolean">false</item>
           <item name="sortOrder"
             xsi:type="number">200</item>
-          <item name="fieldAction"
-            xsi:type="boolean">false</item>
         </item>
       </argument>
     </column>
