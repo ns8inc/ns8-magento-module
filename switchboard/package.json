@@ -6,7 +6,7 @@
     "aws-lambda": "0.1.2",
     "serverless-pseudo-parameters": "2.5.0",
     "serverless-step-functions": "2.10.1",
-    "typescript": "3.6.4"
+    "typescript": "3.7.2"
   },
   "scripts": {
     "build": "yarn install && tsc -d",
