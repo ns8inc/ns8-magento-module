@@ -111,7 +111,7 @@ class OrderUpdate implements ObserverInterface
                     ->save();
             }
         } catch (Exception $e) {
-            $this->logger->error('Add Status History failed', $e);
+            $this->logger->error('Add Status History failed', ['error' => $e]);
         }
         return $oldStatus;
     }
@@ -147,7 +147,7 @@ class OrderUpdate implements ObserverInterface
             $data = ['order'=>$orderData];
             $response = $this->httpClient->post('/switch/executor', $data, $params);
         } catch (Exception $e) {
-            $this->logger->error('The order update could not be processed', $e);
+            $this->logger->error('The order update could not be processed', ['error' => $e]);
         }
     }
 }

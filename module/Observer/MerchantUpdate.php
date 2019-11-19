@@ -67,7 +67,7 @@ class MerchantUpdate implements ObserverInterface
         try {
             $eventData = $observer->getEvent()->getData();
         } catch (Exception $e) {
-            $this->logger->error('The event data could not be retrieved', $e);
+            $this->logger->error('The event data could not be retrieved', ['error' => $e]);
             return;
         }
 
@@ -77,7 +77,7 @@ class MerchantUpdate implements ObserverInterface
         try {
             $this->httpClient->post('/switch/executor', $data, $params);
         } catch (Exception $e) {
-            $this->logger->error('The merchant update could not be processed', $e);
+            $this->logger->error('The merchant update could not be processed', ['error' => $e]);
         }
     }
 }
