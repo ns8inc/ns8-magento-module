@@ -113,7 +113,7 @@ class CustomStatus extends AbstractHelper
      * @param string $upgradeMode
      * @return void
      */
-    public function setCustomStatuses($upgradeMode) : void
+    public function setCustomStatuses(string $upgradeMode) : void
     {
         $this->logger->debug($upgradeMode);
         $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);

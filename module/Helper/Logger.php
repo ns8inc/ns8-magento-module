@@ -58,7 +58,7 @@ class Logger extends AbstractHelper
      * @param string $function
      * @return void Logging never fails.
      */
-    public function debug(string $message, array $data = null, string $function = 'Unknown') : void
+    public function debug(string $message, $data = null, string $function = 'Unknown') : void
     {
         $this->log('DEBUG', $message, $data, $function);
     }
@@ -71,7 +71,7 @@ class Logger extends AbstractHelper
      * @param string $function
      * @return void Logging never fails.
      */
-    public function warn(string $message, array $data = null, string $function = 'Unknown') : void
+    public function warn(string $message, $data = null, string $function = 'Unknown') : void
     {
         $this->log('WARN', $message, $data, $function);
     }
@@ -84,7 +84,7 @@ class Logger extends AbstractHelper
      * @param string $function
      * @return void Logging never fails.
      */
-    public function info(string $message, array $data = null, string $function = 'Unknown') : void
+    public function info(string $message, $data = null, string $function = 'Unknown') : void
     {
         $this->log('INFO', $message, $data, $function);
     }
