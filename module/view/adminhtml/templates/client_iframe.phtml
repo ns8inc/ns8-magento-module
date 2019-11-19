@@ -1,75 +1,59 @@
 <?php if ($block->isActivated()) : ?>
-    <script type="text/javascript">
-      require(['NS8_Protect/js/postmate.min'], function(Postmate) {
-        const clientOrderUrl = '<?= $block->escapeUrl($block->url->getNS8ClientOrderUrl($block->order->getOrderIncrementId())); ?>';
-        const handshake = new Postmate({
-          container: document.getElementById('ns8-protect-wrapper'),
-          url: clientOrderUrl,
-          classListArray: ['ns8-protect-client-iframe'],
-        });
-
-        const matchIframeHeightToContent = (iframe) => iframe.get('height')
-          .then(height => iframe.frame.style.height = `${height}px`);
-
-        const beginIframeHeightMatching = (iframe) => {
-          iframe.call('setStyle', {
-            selector: 'html',
-            property: 'overflow',
-            value: 'hidden'
-          });
-
-          iframe.call('setStyle', {
-            selector: 'html',
-            property: 'height',
-            value: 'auto'
-          });
-
-          iframe.call('setStyle', {
-            selector: 'body',
-            property: 'overflow-y',
-            value: 'hidden'
-          });
-
-          matchIframeHeightToContent(iframe);
-
-          /*
-          * Unfortunately, there is no "natural" way to detect the
-          * height change of a document, so for now we resort to polling
-          * 200 ms seems fast enough to feel automatic without
-          * bogging down the browser.
-          */
-          window.setInterval(() => matchIframeHeightToContent(iframe), 200);
-        };
-
-        const navigateToMagentoOrderDetails = (orderId) => {
-          const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
-          const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
-          window.location.href = orderUrl;
-        }
-
-        handshake.then(
-          child => {
-            child.on('ns8-protect-client-connected', () => beginIframeHeightMatching(child));
-            child.on('order-detail-name-click', (data) => navigateToMagentoOrderDetails(data.orderId));
-          }
-        );
+  <script type="text/javascript">
+    require(['NS8_Protect/js/postmate.min'], function(Postmate) {
+      const iframeWrapperElement = document.getElementById('ns8-protect-wrapper');
+      const clientOrderUrl = '<?= $block->escapeUrl($block->url->getNS8ClientOrderUrl($block->order->getOrderIncrementId())); ?>';
+      const handshake = new Postmate({
+        container: iframeWrapperElement,
+        url: clientOrderUrl,
+        classListArray: ['ns8-protect-client-iframe'],
       });
-    </script>
+
+      const adjustIframeHeight = (iframe) => {
+        iframe.frame.style.height = `calc(100vh - ${iframeWrapperElement.offsetTop}px - 20px)`;
+      };
+
+      const beginIframeHeightWatching = (iframe) => {
+        adjustIframeHeight(iframe);
+
+        /*
+         * Unfortunately, there is no "natural" way to detect the
+         * height change of a document, so for now we resort to polling
+         * 200 ms seems fast enough to feel automatic without
+         * bogging down the browser.
+         */
+        window.setInterval(() => adjustIframeHeight(iframe), 200);
+      };
+
+      const navigateToMagentoOrderDetails = (orderId) => {
+        const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
+        const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
+        window.location.href = orderUrl;
+      }
+
+      handshake.then(
+        child => {
+          child.on('ns8-protect-client-connected', () => beginIframeHeightWatching(child));
+          child.on('order-detail-name-click', (data) => navigateToMagentoOrderDetails(data.orderId));
+        }
+      );
+    });
+  </script>
 <?php endif ?>
 
 <div id="ns8-protect-wrapper">
-    <?php if (!$block->isActivated()) : ?>
-        <h3>To Activate Your Integration, Follow These Steps:</h3>
+  <?php if (!$block->isActivated()) : ?>
+    <h3>To Activate Your Integration, Follow These Steps:</h3>
 
-        <div class="activation-steps">
-            <ul>
-                <li>Log Into Your Magento Admin</li>
-                <li>Navigate to "System"</li>
-                <li>Navigate to "Integrations"</li>
-                <li>Find "NS8 Integration" line item</li>
-                <li>Click "Authorize" link</li>
-                <li>On the next screen, click the "Authorize" button</li>
-            </ul>
-        </div>
-    <?php endif ?>
+    <div class="activation-steps">
+      <ul>
+        <li>Log Into Your Magento Admin</li>
+        <li>Navigate to "System"</li>
+        <li>Navigate to "Integrations"</li>
+        <li>Find "NS8 Integration" line item</li>
+        <li>Click "Authorize" link</li>
+        <li>On the next screen, click the "Authorize" button</li>
+      </ul>
+    </div>
+  <?php endif ?>
 </div>
