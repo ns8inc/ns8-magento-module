@@ -13,6 +13,7 @@ use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
+use \Magento\Framework\ObjectManager\ContextInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -215,7 +216,7 @@ class Config extends AbstractHelper
      * @param mixed $context A Page/Controller context
      * @return boolean
      */
-    public function isAllowed($context)
+    public function isAllowed(ContextInterface $context)
     {
         return $context->getAuthorization()->isAllowed(Config::NS8_MODULE_NAME.'::admin');
     }

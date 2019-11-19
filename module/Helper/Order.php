@@ -146,7 +146,7 @@ class Order extends AbstractHelper
      * @param OrderInterface $order The order to update
      * @return int The saved EQ8 Score
      */
-    public function setEQ8Score(int $eq8Score, $order) : int
+    public function setEQ8Score(int $eq8Score, OrderInterface $order) : int
     {
         $order
             ->setData('eq8_score', $eq8Score)

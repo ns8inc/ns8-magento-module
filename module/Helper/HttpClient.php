@@ -141,7 +141,7 @@ class HttpClient extends AbstractHelper
      * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    public function get($url, $data = [], $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
+    public function get(string $url, array $data = [], array $parameters = [], array $headers = [], int $timeout = 30, bool $decodeJson = true)
     {
         return $this->executeWithAuth($url, $data, "GET", $parameters, $headers, $timeout, $decodeJson);
     }
@@ -157,7 +157,7 @@ class HttpClient extends AbstractHelper
      * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    public function post($url, $data = [], $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
+    public function post(string $url, array $data = [], array $parameters = [], array $headers = [], int $timeout = 30, bool $decodeJson = true)
     {
         $data['session'] = $this->getSessionData();
         $data['username'] = $this->config->getAuthenticatedUserName();
@@ -175,7 +175,7 @@ class HttpClient extends AbstractHelper
      * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    public function put($url, $data = [], $parameters = [], $headers = [], $timeout = 30, $decodeJson = true)
+    public function put(string $url, array $data = [], array $parameters = [], array $headers = [], int $timeout = 30, bool $decodeJson = true)
     {
         return $this->executeWithAuth($url, $data, "PUT", $parameters, $headers, $timeout);
     }
@@ -193,13 +193,13 @@ class HttpClient extends AbstractHelper
      * @return mixed the XHR reponse object.
      */
     private function executeWithAuth(
-        $url,
-        $data,
-        $method = "POST",
-        $parameters = [],
-        $headers = [],
-        $timeout = 30,
-        $decodeJson = true
+        string $url,
+        array $data,
+        string $method = "POST",
+        array $parameters = [],
+        array $headers = [],
+        int $timeout = 30,
+        bool $decodeJson = true
     ) {
         $accessToken = $this->getAccessToken();
 
@@ -223,13 +223,13 @@ class HttpClient extends AbstractHelper
      * @return mixed the XHR reponse object.
      */
     private function execute(
-        $route,
-        $data = [],
-        $method = "POST",
-        $parameters = [],
-        $headers = [],
-        $timeout = 30,
-        $decodeJson = true
+        string $route,
+        array $data = [],
+        string $method = "POST",
+        array $parameters = [],
+        array $headers = [],
+        int $timeout = 30,
+        bool $decodeJson = true
     ) {
         $response = null;
         try {
@@ -270,7 +270,7 @@ class HttpClient extends AbstractHelper
      *
      * @return string|null Oauth access token.
      */
-    private function extractOauthTokenFromAuthString($accessTokenString): ?string
+    private function extractOauthTokenFromAuthString(string $accessTokenString = null) : ?string
     {
         $this->uri->setQuery($accessTokenString);
         $parsedToken = $this->uri->getQueryAsArray();
@@ -316,7 +316,7 @@ class HttpClient extends AbstractHelper
      *
      * @return string|null Protect access token.
      */
-    private function getProtectAccessToken($consumerId, $accessToken): ?string
+    private function getProtectAccessToken(string $consumerId = null, string $accessToken = null) : ?string
     {
         $getParams = [
             'oauth_consumer_key' => $consumerId,

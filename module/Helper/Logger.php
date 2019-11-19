@@ -45,7 +45,7 @@ class Logger extends AbstractHelper
      * @param string $function
      * @return void Logging never fails.
      */
-    public function error($message, $data = null, $function = 'Unknown'): void
+    public function error(string $message, $data = null, string $function = 'Unknown') : void
     {
         $this->log('ERROR', $message, $data, $function);
     }
@@ -54,11 +54,11 @@ class Logger extends AbstractHelper
      * Logs a debug
      *
      * @param string $message
-     * @param mixed $data
+     * @param array $data
      * @param string $function
      * @return void Logging never fails.
      */
-    public function debug($message, $data = null, $function = 'Unknown'): void
+    public function debug(string $message, array $data = null, string $function = 'Unknown') : void
     {
         $this->log('DEBUG', $message, $data, $function);
     }
@@ -71,7 +71,7 @@ class Logger extends AbstractHelper
      * @param string $function
      * @return void Logging never fails.
      */
-    public function warn($message, $data = null, $function = 'Unknown'): void
+    public function warn(string $message, array $data = null, string $function = 'Unknown') : void
     {
         $this->log('WARN', $message, $data, $function);
     }
@@ -84,7 +84,7 @@ class Logger extends AbstractHelper
      * @param string $function
      * @return void Logging never fails.
      */
-    public function info($message, $data = null, $function = 'Unknown'): void
+    public function info(string $message, array $data = null, string $function = 'Unknown') : void
     {
         $this->log('INFO', $message, $data, $function);
     }
@@ -98,7 +98,7 @@ class Logger extends AbstractHelper
      * @param string $function Option method name.
      * @return void Logging never fails.
      */
-    private function log($level = 'ERROR', $message = 'Log Message', $data = null, $function = 'Unknown'): void
+    private function log(string $level = 'ERROR', string $message = 'Log Message', $data = null, string $function = 'Unknown') : void
     {
         try {
             //Log to Magento

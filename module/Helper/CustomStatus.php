@@ -87,10 +87,10 @@ class CustomStatus extends AbstractHelper
      * Creates new order processing status and assigns it to a state
      * @param string $statusName
      * @param string $statusLabel
-     * @param mixed $state
+     * @param string $state
      * @return void
      */
-    protected function addCustomStatus($statusName, $statusLabel, $state) : void
+    protected function addCustomStatus(string $statusName, string $statusLabel, string $state) : void
     {
         /** @var StatusResource $statusResource */
         $statusResource = $this->statusResourceFactory->create();
