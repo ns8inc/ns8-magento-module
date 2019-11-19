@@ -13,7 +13,7 @@ use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
-use \Magento\Framework\ObjectManager\ContextInterface;
+use Magento\Framework\ObjectManager\ContextInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -213,7 +213,7 @@ class Config extends AbstractHelper
 
     /**
      * Determines if the current user is allowed to see a custom Protect UI element
-     * @param mixed $context A Page/Controller context
+     * @param ContextInterface $context A Page/Controller context
      * @return boolean
      */
     public function isAllowed(ContextInterface $context)

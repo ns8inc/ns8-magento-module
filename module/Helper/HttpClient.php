@@ -141,8 +141,14 @@ class HttpClient extends AbstractHelper
      * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    public function get(string $url, array $data = [], array $parameters = [], array $headers = [], int $timeout = 30, bool $decodeJson = true)
-    {
+    public function get(
+        string $url,
+        array $data = [],
+        array $parameters = [],
+        array $headers = [],
+        int $timeout = 30,
+        bool $decodeJson = true
+    ) {
         return $this->executeWithAuth($url, $data, "GET", $parameters, $headers, $timeout, $decodeJson);
     }
 
@@ -157,8 +163,14 @@ class HttpClient extends AbstractHelper
      * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    public function post(string $url, array $data = [], array $parameters = [], array $headers = [], int $timeout = 30, bool $decodeJson = true)
-    {
+    public function post(
+        string $url,
+        array $data = [],
+        array $parameters = [],
+        array $headers = [],
+        int $timeout = 30,
+        bool $decodeJson = true
+    ) {
         $data['session'] = $this->getSessionData();
         $data['username'] = $this->config->getAuthenticatedUserName();
         return $this->executeWithAuth($url, $data, "POST", $parameters, $headers, $timeout);
@@ -168,15 +180,21 @@ class HttpClient extends AbstractHelper
      * Makes an HTTP PUT request
      *
      * @param string $url URL to target.
-     * @param mixed $data Data to include in the request body.
+     * @param array $data Data to include in the request body.
      * @param array $parameters Optional array of request parameters.
      * @param array $headers Optional array of request headers.
      * @param integer $timeout Optional timeout value. Default 30.
      * @param bool $decodeJson Whether the response JSON should be decoded (defaults to True)
      * @return mixed the XHR reponse object.
      */
-    public function put(string $url, array $data = [], array $parameters = [], array $headers = [], int $timeout = 30, bool $decodeJson = true)
-    {
+    public function put(
+        string $url,
+        array $data = [],
+        array $parameters = [],
+        array $headers = [],
+        int $timeout = 30,
+        bool $decodeJson = true
+    ) {
         return $this->executeWithAuth($url, $data, "PUT", $parameters, $headers, $timeout);
     }
 

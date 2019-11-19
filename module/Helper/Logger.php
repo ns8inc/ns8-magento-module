@@ -98,8 +98,12 @@ class Logger extends AbstractHelper
      * @param string $function Option method name.
      * @return void Logging never fails.
      */
-    private function log(string $level = 'ERROR', string $message = 'Log Message', $data = null, string $function = 'Unknown') : void
-    {
+    private function log(
+        string $level = 'ERROR',
+        string $message = 'Log Message',
+        $data = null,
+        string $function = 'Unknown'
+    ) : void {
         try {
             //Log to Magento
             $this->logger->log($level, $message, ['data' => $data]);
