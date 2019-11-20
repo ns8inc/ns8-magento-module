@@ -1,8 +1,8 @@
 <?php
+
 namespace NS8\Protect\Helper;
 
 use Exception;
-use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Helper\AbstractHelper;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\HttpClient;
@@ -27,25 +27,25 @@ class Logger extends AbstractHelper
      * Default constructor
      *
      * @param HttpClient $httpClient
-     * @param LoggerInterface $loggerInterface
+     * @param LoggerInterface $logger
      */
     public function __construct(
         HttpClient $httpClient,
-        LoggerInterface $loggerInterface
+        LoggerInterface $logger
     ) {
         $this->httpClient = $httpClient;
-        $this->logger = $loggerInterface;
+        $this->logger = $logger;
     }
 
     /**
      * Logs an error
      *
      * @param string $message
-     * @param mixed $data
+     * @param array $data
      * @param string $function
      * @return void Logging never fails.
      */
-    public function error($message, $data = null, $function = 'Unknown') : void
+    public function error(string $message, array $data = null, string $function = 'Unknown') : void
     {
         $this->log('ERROR', $message, $data, $function);
     }
@@ -54,11 +54,11 @@ class Logger extends AbstractHelper
      * Logs a debug
      *
      * @param string $message
-     * @param mixed $data
+     * @param array $data
      * @param string $function
      * @return void Logging never fails.
      */
-    public function debug($message, $data = null, $function = 'Unknown') : void
+    public function debug(string $message, array $data = null, string $function = 'Unknown') : void
     {
         $this->log('DEBUG', $message, $data, $function);
     }
@@ -67,11 +67,11 @@ class Logger extends AbstractHelper
      * Logs a warn
      *
      * @param string $message
-     * @param mixed $data
+     * @param array $data
      * @param string $function
      * @return void Logging never fails.
      */
-    public function warn($message, $data = null, $function = 'Unknown') : void
+    public function warn(string $message, array $data = null, string $function = 'Unknown') : void
     {
         $this->log('WARN', $message, $data, $function);
     }
@@ -80,11 +80,11 @@ class Logger extends AbstractHelper
      * Logs an info
      *
      * @param string $message
-     * @param mixed $data
+     * @param array $data
      * @param string $function
      * @return void Logging never fails.
      */
-    public function info($message, $data = null, $function = 'Unknown') : void
+    public function info(string $message, array $data = null, string $function = 'Unknown') : void
     {
         $this->log('INFO', $message, $data, $function);
     }
@@ -94,20 +94,24 @@ class Logger extends AbstractHelper
      *
      * @param string $level Verbosity. Default 'ERROR'. Accepts 'INFO','WARN','DEBUG','ERROR'.
      * @param string $message Any log message content.
-     * @param mixed $data Optional object data.
+     * @param array $data Optional object data.
      * @param string $function Option method name.
      * @return void Logging never fails.
      */
-    private function log($level = 'ERROR', $message = 'Log Message', $data = null, $function = 'Unknown') : void
-    {
+    private function log(
+        string $level = 'ERROR',
+        string $message = 'Log Message',
+        array $data = null,
+        string $function = 'Unknown'
+    ) : void {
         try {
             //Log to Magento
-            $this->logger->log($level, $message, ['data'=>$data]);
+            $this->logger->log($level, $message, ['data' => $data]);
 
             //Structure some data for our API to consume later
             $data = [
                 'level' => $level,
-                'category' => 'magento '.Config::NS8_INTEGRATION_NAME,
+                'category' => 'magento ' . Config::NS8_INTEGRATION_NAME,
                 'data' => [
                     'platform' => 'magento',
                     'function' => $function,
@@ -120,7 +124,7 @@ class Logger extends AbstractHelper
             //Log to our own API
             $this->httpClient->post('/util/log-client-error', $data);
         } catch (Exception $e) {
-            $this->logger->log('ERROR', Config::NS8_MODULE_NAME.'.log: '.$e->getMessage(), ['error'=>$e]);
+            $this->logger->log('ERROR', Config::NS8_MODULE_NAME . '.log: ' . $e->getMessage(), ['error' => $e]);
         }
     }
 }

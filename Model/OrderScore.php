@@ -35,7 +35,7 @@ class OrderScore implements OrderScoreInterface
      * @param int $eq8
      * @return bool true if the update succeeded
      */
-    public function score($orderId, $eq8) : bool
+    public function score(string $orderId, int $eq8) : bool
     {
         $order = $this->order->getOrder($orderId);
         return $eq8 == $this->order->setEQ8Score($eq8, $order);

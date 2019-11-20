@@ -1,0 +1,12 @@
+html, body {
+  overflow-y: hidden;
+}
+
+#ns8-protect-wrapper > .activation-steps {
+  padding-left: 50px;
+}
+
+#ns8-protect-wrapper > .ns8-protect-client-iframe {
+  border: none;
+  width: 100%;
+}

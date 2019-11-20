@@ -65,7 +65,7 @@ class Setup extends AbstractHelper
             // Run the base integration config method. This does not trigger activation.
             $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
         } catch (Exception $e) {
-            $this->logger->error('Protect '.$mode.' failed', $e);
+            $this->logger->error('Protect '.$mode.' failed', ['error' => $e]);
         } finally {
             //Essential step.
             $setup->endSetup();
@@ -119,7 +119,7 @@ class Setup extends AbstractHelper
                 ['eq8_score']
             );
         } catch (Exception $e) {
-            $this->logger->error('Protect '.$mode.' failed', $e);
+            $this->logger->error('Protect '.$mode.' failed', ['error' => $e]);
         } finally {
             //Essential step.
             $setup->endSetup();

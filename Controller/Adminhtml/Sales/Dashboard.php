@@ -70,7 +70,7 @@ class Dashboard extends Action
      */
     public function execute()
     {
-        $merchant = $this->httpClient->get('/merchant/current', '');
+        $merchant = $this->httpClient->get('/merchant/current');
         $resultPage = $this->resultPageFactory->create();
 
         if (empty($merchant)) {
