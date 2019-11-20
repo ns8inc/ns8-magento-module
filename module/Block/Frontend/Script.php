@@ -41,12 +41,15 @@ class Script extends Template
     }
 
     /**
-     * Get the TrueStats tracking script (JS code).
+     * Get the TrueStats tracking script (wrapped in HTML <script> tags).
      *
      * @return string The tracking script
      */
-    public function getScript(): string
+    public function getScriptHtml(): string
     {
-        return $this->httpClient->get('/init/script', [], [], [], 30, false);
+        return sprintf(
+            '<script>%s</script>',
+            $this->httpClient->post('/init/script', [], [], [], 30, false)
+        );
     }
 }
