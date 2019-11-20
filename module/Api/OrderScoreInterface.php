@@ -10,7 +10,7 @@ interface OrderScoreInterface
      * @api
      * @param string $orderId An Order Id
      * @param int $eq8 An EQ8 score
-     * @return string returns a score.
+     * @return bool returns if score was successfully set.
      */
-    public function score($orderId, $eq8);
+    public function score(string $orderId, int $eq8);
 }
