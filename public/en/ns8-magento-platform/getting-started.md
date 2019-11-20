@@ -1,4 +1,6 @@
-# Development Guide
+# Getting Started
+
+## Repos
 
 Required repos:
 
@@ -14,7 +16,7 @@ Repos you may need at some point during development:
 * `ns8-protect-models`
 * `ns8-switchboard-operator`
 
-# Getting Started
+## Setup
 
 * Follow the directions for getting started with the protect-api and protect-client.
   * Start both the protect-api and the protect-client
@@ -140,7 +142,7 @@ These tools are located in the platform switches package.json and are specific t
 
 Ensuring that you have a valid merchant is a critical step in setting up your development environment, and one that requires some routine maintenance as the seed values can change over time. The relationship between environment variables and the seed definition are described elsewhere, but for additional clarity they are mapped again in this functional example from `src\migrations\run\32472162000000-seedMerchantsForNs8LocalDev.ts` in protect-api:
 
-```
+```ts
     seedStores.push(
       // Christopher: Magento
       new SeedStore({
@@ -231,7 +233,7 @@ If you are testing the installation of the extension via composer to test instal
 
 If you are testing Marketplace development, the uninstall process is what customers will trigger when they uninstall the Protect extension from the Admin UI. This process only relates to Marketplace development. For local development, see Deleting.
 
-### Marketplace development
+### Marketplace development uninstall
 
 If you are testing the installation of the extension via composer to test installation through the Marketplace, this is how to uninstall the extension via the command line:
 
@@ -250,7 +252,7 @@ Frequently over the course of Magento development, you will need to delete the e
 
 Depending on whether you are testing the extension in "normal" local environment development or you are testing the Marketplace installation, your steps may vary.
 
-### Normal local development
+### Normal local development delete
 
 If you are using the standard development flow, this is how to delete the extension.
 
@@ -262,7 +264,7 @@ If you are using the standard development flow, this is how to delete the extens
 * `$ sudo bin/magento module:status`
 * Confirm that NS8 Protect is no longer listed
 
-### Marketplace development
+### Marketplace development delete
 
 If you are testing the installation of the extension via composer to test installation through the Marketplace, this is how to delete the extension.
 
@@ -297,6 +299,15 @@ In platform:
 * Upload to the Marketplace
   * Many TBD items to be placed here
 
+### Install composer
+
+```bash
+$ cd ~
+sudo curl -sS https://getcomposer.org/installer | sudo php
+sudo mv composer.phar /usr/local/bin/composer
+sudo ln -s /usr/local/bin/composer /usr/bin/composer
+```
+
 ### Configure PHP Lint
 
 To get your local development environment configured to quality test for submission, follow these steps. These steps are in addition to the [Magento Coding Standard steps](https://github.com/magento/magento-coding-standard)
@@ -310,11 +321,11 @@ To get your local development environment configured to quality test for submiss
 
 #### Resources
 
-* https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-files-and-folders
-* https://linuxize.com/post/how-to-install-and-use-composer-on-ubuntu-18-04
-* https://www.php.net/manual/en/simplexml.installation.php
-* https://stackoverflow.com/questions/31690561/composer-error-while-installing-laravel-mbstring-is-missing for help
-* https://magento.stackexchange.com/questions/111085/how-to-fix-warnings-errors-raised-by-the-magento-marketplace-technical-review
+* <https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-files-and-folders>
+* <https://linuxize.com/post/how-to-install-and-use-composer-on-ubuntu-18-04>
+* <https://www.php.net/manual/en/simplexml.installation.php>
+* <https://stackoverflow.com/questions/31690561/composer-error-while-installing-laravel-mbstring-is-missing> for help
+* <https://magento.stackexchange.com/questions/111085/how-to-fix-warnings-errors-raised-by-the-magento-marketplace-technical-review>
 
 ## Troubleshooting
 
