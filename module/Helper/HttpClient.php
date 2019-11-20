@@ -365,8 +365,6 @@ class HttpClient extends AbstractHelper
             'acceptLanguage' => $this->header->getHttpAcceptLanguage(),
             'id' => $this->customerSession->getSessionId(),
             'ip' => $this->request->getClientIp(),
-            'screenHeight' => $this->session->getScreenHeight(),
-            'screenWidth' => $this->session->getScreenWidth(),
             'userAgent' => $this->header->getHttpUserAgent(),
         ];
     }
