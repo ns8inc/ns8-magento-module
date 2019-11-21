@@ -57,5 +57,5 @@
     "version:patch": "ts-node ./build/incrementVersion.ts && yarn switches:publish && yarn build",
     "version:patch:dev": "cross-env PATCH_MODE=dev && yarn version:patch"
   },
-  "version": "2.0.18"
+  "version": "2.0.19"
 }
