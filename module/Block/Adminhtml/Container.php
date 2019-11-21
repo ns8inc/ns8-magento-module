@@ -107,16 +107,6 @@ class Container extends Template
     }
 
     /**
-     * Get the iframe URL.
-     *
-     * @return string The URL
-     */
-    public function getIframeUrl(): string
-    {
-        return $this->url->getNS8IframeUrl($this->request->getParams());
-    }
-
-    /**
      * Get the URL of the iframe that holds the NS8 Protect client.
      *
      * @return string The URL
