@@ -56,7 +56,7 @@ class EQ8Score extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                $item['eq8_score'] = $this->order->getEQ8ScoreLink($item['entity_id']);
+                $item['eq8_score'] = $this->order->getEQ8ScoreLinkHtml($item['entity_id']);
             }
         }
         return $dataSource;

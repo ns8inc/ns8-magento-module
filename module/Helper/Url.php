@@ -4,7 +4,6 @@ namespace NS8\Protect\Helper;
 
 use Exception;
 use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\UrlInterface;
 use NS8\Protect\Helper\Config;
 use UnexpectedValueException;
@@ -40,93 +39,22 @@ class Url extends AbstractHelper
     protected $config;
 
     /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
      * @var UrlInterface
      */
     protected $url;
 
     /**
-     * Default constructor
+     * The constructor.
      *
      * @param Config $config
-     * @param RequestInterface $request
      * @param UrlInterface $url
      */
     public function __construct(
         Config $config,
-        RequestInterface $request,
         UrlInterface $url
     ) {
         $this->config = $config;
-        $this->request = $request;
         $this->url = $url;
-    }
-
-    /**
-     * Assembles the URL using environment variables and handles parsing extra `/`
-     *
-     * @param string $envVarName
-     * @param string $defaultUrl
-     * @param string $route
-     * @return string The final URL
-     */
-    private function getNS8Url(string $envVarName, string $defaultUrl, string $route = ''): string
-    {
-        $url = $this->config->getEnvironmentVariable($envVarName) ?: '';
-        $url = rtrim(trim($url), '/');
-
-        if (empty($url)) {
-            $url = $defaultUrl;
-        }
-        if (!empty($route)) {
-            $route =  str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
-            $url = $url . '/' . $route;
-        }
-        return $url;
-    }
-
-    /**
-     * Gets the current protect API URL based on the environment variables.
-     * Defaults to Production.
-     *
-     * @param string $route
-     * @return string The NS8 Protect URL in use for this instance.
-     */
-    public function getApiBaseUrl(string $route = ''): string
-    {
-        return $this->getNS8Url(Config::NS8_ENV_NAME_API_URL, self::NS8_PRODUCTION_URL_API, $route);
-    }
-
-    /**
-     * Gets the current protect Client URL based on the environment variables.
-     * Defaults to Production.
-     *
-     * @param string $route
-     * @return string The NS8 Protect Client URL in use for this instance.
-     */
-    public function getNS8ClientUrl(string $route = ''): string
-    {
-        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_PRODUCTION_URL_CLIENT, $route);
-    }
-
-    /**
-     * Get the NS8 client order URL. If the order_id parameter is specified in the URL,
-     * then point to that specific order. Otherwise, just point to the main dashboard page.
-     * @param string|null $orderIncrementId
-     * @return string The URL
-     */
-    public function getNS8ClientOrderUrl(string $orderIncrementId = null): string
-    {
-        return sprintf(
-            '%s%s?access_token=%s',
-            $this->getNS8ClientUrl(),
-            isset($orderIncrementId) ? '/order-details/' . $this->base64UrlEncode($orderIncrementId) : '',
-            $this->config->getAccessToken()
-        );
     }
 
     /**
@@ -134,6 +62,7 @@ class Url extends AbstractHelper
      * Defaults to Production.
      *
      * @param string $route
+     *
      * @return string The NS8 Protect Middleware URL in use for this instance.
      */
     public function getNS8MiddlewareUrl(string $route = ''): string
@@ -141,17 +70,6 @@ class Url extends AbstractHelper
         $route = str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
         $routeSlug = 'api' . '/' . $route;
         return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_PRODUCTION_URL_CLIENT, $routeSlug);
-    }
-
-    /**
-     * Get the URL of the iframe that holds the NS8 Protect client.
-     * @param string|null $orderId
-     * @return string The URL
-     */
-    public function getNS8IframeUrl(string $orderId = null): string
-    {
-        $orderId = $orderId ?: $this->request->getParam('order_id');
-        return $this->url->getUrl('ns8protectadmin/sales/dashboard', isset($orderId) ? ['order_id' => $orderId] : []);
     }
 
     /**
@@ -186,6 +104,20 @@ class Url extends AbstractHelper
     }
 
     /**
+     * Get the URL of the iframe that holds the NS8 Protect client.
+     *
+     * @param array $params The query parameters
+     *
+     * @return string The URL
+     */
+    public function getNS8IframeUrl(array $params = []): string
+    {
+        unset($params['key']);
+
+        return $this->url->getUrl('ns8protectadmin/sales/dashboard', $params);
+    }
+
+    /**
      * Encode a string using base64 in URL mode.
      *
      * @link https://en.wikipedia.org/wiki/Base64#URL_applications
@@ -197,5 +129,82 @@ class Url extends AbstractHelper
     public function base64UrlEncode(string $data): string
     {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+    /**
+     * Get the NS8 client page URL.
+     *
+     * @param string|null $page The page to visit inside the iframe (defaults to the dashboard)
+     * @param string|null $orderIncrementId The order increment ID (if visiting the order details page)
+     *
+     * @throws UnexpectedValueException If an unknown page was requested.
+     *
+     * @return string The URL
+     */
+    public function getNS8ClientPageUrl(?string $page, ?string $orderIncrementId): string
+    {
+        $query = ['accessToken' => $this->config->getAccessToken()];
+
+        switch ($page) {
+            case null:
+            case 'dashboard':
+                $route = '';
+                $query['noredirect'] = 1;
+                break;
+            case 'order_details':
+                $route = 'order-details/' . $this->base64UrlEncode($orderIncrementId);
+                break;
+            case 'order_rules':
+                $route = 'rules';
+                break;
+            case 'suspicious_orders':
+                $route = 'report/suspicious-orders';
+                break;
+            default:
+                throw new UnexpectedValueException('Unrecognized page requested: ' . $page);
+        }
+
+        return sprintf(
+            '%s?%s',
+            $this->getNS8ClientUrl($route),
+            http_build_query($query)
+        );
+    }
+
+    /**
+     * Gets the current protect Client URL based on the environment variables.
+     * Defaults to Production.
+     *
+     * @param string $route
+     *
+     * @return string The NS8 Protect Client URL in use for this instance.
+     */
+    private function getNS8ClientUrl(string $route = ''): string
+    {
+        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_PRODUCTION_URL_CLIENT, $route);
+    }
+
+    /**
+     * Assemble the URL using environment variables and handles parsing extra `/`
+     *
+     * @param string $envVarName
+     * @param string $defaultUrl
+     * @param string $route
+     *
+     * @return string The final URL
+     */
+    private function getNS8Url(string $envVarName, string $defaultUrl, string $route = ''): string
+    {
+        $url = $this->config->getEnvironmentVariable($envVarName) ?: '';
+        $url = rtrim(trim($url), '/');
+
+        if (empty($url)) {
+            $url = $defaultUrl;
+        }
+        if (!empty($route)) {
+            $route =  str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
+            $url = $url . '/' . $route;
+        }
+        return $url;
     }
 }

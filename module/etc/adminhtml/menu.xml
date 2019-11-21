@@ -17,5 +17,21 @@
       action="ns8protectadmin/sales/dashboard" 
       resource="NS8_Protect::admin" 
       parent="NS8_Protect::ns8_sales_menu" />
+    <add id="NS8_Protect::ns8_order_rules"
+      title="Order Rules"
+      module="NS8_Protect"
+      sortOrder="20"
+      dependsOnModule="NS8_Protect"
+      action="ns8protectadmin/sales/dashboard/page/order_rules"
+      resource="NS8_Protect::admin"
+      parent="NS8_Protect::ns8_sales_menu" />
+    <add id="NS8_Protect::ns8_suspicious_orders"
+      title="Suspicious Orders"
+      module="NS8_Protect"
+      sortOrder="30"
+      dependsOnModule="NS8_Protect"
+      action="ns8protectadmin/sales/dashboard/page/suspicious_orders"
+      resource="NS8_Protect::admin"
+      parent="NS8_Protect::ns8_sales_menu" />
   </menu>
 </config>
