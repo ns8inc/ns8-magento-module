@@ -7,7 +7,7 @@
     <service class="NS8\Protect\Api\OrderScoreInterface"
       method="score" />
     <resources>
-      <resource ref="Magento_Sales::hold" />
+      <resource ref="NS8_Protect::admin" />
     </resources>
   </route>
 </routes>

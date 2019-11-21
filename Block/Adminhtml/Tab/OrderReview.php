@@ -126,7 +126,9 @@ class OrderReview extends Template implements TabInterface
      */
     public function getTabUrl() : string
     {
-        $order = $this->getOrder();
-        return $this->url->getNS8IframeUrl($order->getId());
+        return $this->url->getNS8IframeUrl([
+            'order_id' => $this->getOrder()->getId(),
+            'page' => 'order_details',
+        ]);
     }
 }

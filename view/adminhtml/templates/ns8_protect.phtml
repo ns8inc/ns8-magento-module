@@ -1,7 +1,5 @@
 <tr>
-  <th>NS8 EQ8 Score</th>
+    <th>NS8 EQ8 Score</th>
 
-  <td>
-    <a href="<?= $block->escapeUrl($block->url->getNS8IframeUrl()) ?>"><?= $block->escapeHtml($block->order->getEQ8Score()) ?></a>
-  </td>
+    <td><?= $block->order->getEQ8ScoreLinkHtml($block->order->getOrder()->getId()) ?></td>
 </tr>

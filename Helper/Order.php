@@ -83,7 +83,7 @@ class Order extends AbstractHelper
     /**
      * Get an Order from an order id
      * @param string|null $orderId
-     * @return OrderInterface An order
+     * @return OrderInterface|null An order
      */
     public function getOrder(string $orderId = null)
     {
@@ -160,7 +160,7 @@ class Order extends AbstractHelper
      * @param string|null $orderId
      * @return string An EQ8 Score link for this order
      */
-    public function getEQ8ScoreLink(string $orderId = null): string
+    public function getEQ8ScoreLinkHtml(string $orderId = null): string
     {
         if (!isset($orderId)) {
             return 'NA';
@@ -169,7 +169,8 @@ class Order extends AbstractHelper
         if (!isset($eq8Score)) {
             return 'NA';
         }
-        $link = $this->url->getNS8IframeUrl($orderId);
+        $link = $this->url->getNS8IframeUrl(['page' => 'order_details', 'order_id' => $orderId]);
+
         return '<a href="'.$link.'">'.$eq8Score.'</a>';
     }
 }

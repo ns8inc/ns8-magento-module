@@ -107,6 +107,20 @@ class Container extends Template
     }
 
     /**
+     * Get the URL of the iframe that holds the NS8 Protect client.
+     *
+     * @return string The URL
+     */
+    public function getNS8ProtectUrl(): string
+    {
+        $orderId = $this->request->getParam('order_id');
+        $orderIncrementId = $orderId ? $this->order->getOrderIncrementId($orderId) : null;
+        $page = $orderIncrementId ? 'order_details' : $this->request->getParam('page');
+
+        return $this->url->getNS8ClientPageUrl($page, $orderIncrementId);
+    }
+
+    /**
      * Check whether the NS8 Protect extension is activated.
      *
      * @return bool True if activated, False otherwise.

@@ -5,6 +5,7 @@
  *
  * This handles the loading of the TrueStats tracking script.
  */
+
 declare(strict_types=1);
 
 namespace NS8\Protect\Block\Frontend;
@@ -47,9 +48,8 @@ class Script extends Template
      */
     public function getScriptHtml(): string
     {
-        return sprintf(
-            '<script>%s</script>',
-            $this->httpClient->post('/init/script', [], [], [], 30, false)
-        );
+        $script = $this->httpClient->post('/init/script', [], [], [], 30, false);
+
+        return is_string($script) ? sprintf('<script>%s</script>', $script) : '';
     }
 }
