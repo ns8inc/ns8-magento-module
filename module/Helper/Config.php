@@ -132,7 +132,7 @@ class Config extends AbstractHelper
         $ret = $this->request->getServer($envVarName);
 
         if (!isset($ret)) {
-            $this->logger->log('DEBUG', 'Failed to get environment variable "'.$envVarName.'"', ['error'=>$e]);
+            $this->logger->log('DEBUG', 'Failed to get environment variable "'.$envVarName.'"');
         }
 
         return $ret;
