@@ -18,6 +18,7 @@ use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
+use Zend\Json\Decoder;
 use Zend\Uri\Uri;
 
 /**
@@ -129,7 +130,6 @@ class Config extends AbstractHelper
      * Default constructor
      *
      * @param Context $context
-     * @param Decoder $decoder
      * @param EncryptorInterface $encryptor
      * @param IntegrationServiceInterface $integrationService
      * @param LoggerInterface $logger
