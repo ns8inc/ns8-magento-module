@@ -14,13 +14,27 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
 use Magento\Framework\ObjectManager\ContextInterface;
+use Magento\Integration\Api\IntegrationServiceInterface;
+use Magento\Integration\Api\OauthServiceInterface;
 use Psr\Log\LoggerInterface;
+use Zend\Http\Client;
+use Zend\Uri\Uri;
 
 /**
  * Generic Helper/Utility class with convenience methods for common ops
  */
 class Config extends AbstractHelper
 {
+    /**
+     * The URL to the Development Protect API
+     */
+    const NS8_DEV_URL_API = 'https://test-protect.ns8.com/protect';
+
+    /**
+     * The URL to the Development Client API
+     */
+    const NS8_DEV_URL_CLIENT = 'https://test-protect-client.ns8.com/';
+
     /**
      * The Environment Variable name for development Protect API URL value
      */
@@ -42,6 +56,16 @@ class Config extends AbstractHelper
     const NS8_MODULE_NAME = 'NS8_Protect';
 
     /**
+     * The URL to the Production Protect API
+     */
+    const NS8_PRODUCTION_URL_API = 'https://protect.ns8.com';
+
+    /**
+     * The URL to the Production Client API
+     */
+    const NS8_PRODUCTION_URL_CLIENT = 'https://protect-client.ns8.com';
+
+    /**
      * @var Context
      */
     protected $context;
@@ -52,6 +76,11 @@ class Config extends AbstractHelper
     protected $encryptor;
 
     /**
+     * @var IntegrationServiceInterface
+     */
+    protected $integrationService;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
@@ -60,6 +89,11 @@ class Config extends AbstractHelper
      * @var ModuleList
      */
     protected $moduleList;
+
+    /**
+     * @var OauthServiceInterface
+     */
+    protected $oauthService;
 
     /**
      * @var ProductMetadataInterface
@@ -87,38 +121,53 @@ class Config extends AbstractHelper
     protected $typeList;
 
     /**
+     * @var Uri
+     */
+    protected $uri;
+
+    /**
      * Default constructor
      *
      * @param Context $context
+     * @param Decoder $decoder
      * @param EncryptorInterface $encryptor
+     * @param IntegrationServiceInterface $integrationService
      * @param LoggerInterface $logger
      * @param ModuleList $moduleList
+     * @param OauthServiceInterface $oauthService
      * @param ProductMetadataInterface $productMetadata
      * @param RequestInterface $request
      * @param ScopeConfigInterface $scopeConfig
      * @param TypeListInterface $typeList
+     * @param Uri $uri
      * @param WriterInterface $scopeWriter
      */
     public function __construct(
         Context $context,
         EncryptorInterface $encryptor,
+        IntegrationServiceInterface $integrationService,
         LoggerInterface $logger,
         ModuleList $moduleList,
+        OauthServiceInterface $oauthService,
         ProductMetadataInterface $productMetadata,
         RequestInterface $request,
         ScopeConfigInterface $scopeConfig,
         TypeListInterface $typeList,
-        WriterInterface $scopeWriter
+        WriterInterface $scopeWriter,
+        Uri $uri
     ) {
         $this->context = $context;
         $this->encryptor = $encryptor;
+        $this->integrationService = $integrationService;
         $this->logger = $logger;
+        $this->oauthService = $oauthService;
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
         $this->request = $request;
         $this->scopeConfig = $scopeConfig;
         $this->scopeWriter = $scopeWriter;
         $this->typeList = $typeList;
+        $this->uri = $uri;
     }
 
     /**
@@ -139,6 +188,45 @@ class Config extends AbstractHelper
     }
 
     /**
+     * Gets the current protect Middleware URL based on the environment variables.
+     * Defaults to Production.
+     *
+     * @param string $route
+     *
+     * @return string The NS8 Protect Middleware URL in use for this instance.
+     */
+    public function getNS8MiddlewareUrl(string $route = ''): string
+    {
+        $apiRoute = 'api/' . str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
+
+        return $this->getNS8Url($apiRoute);
+    }
+
+    /**
+     * Assemble the URL using environment variables and handles parsing extra `/`
+     *
+     * @param string $envVarName
+     * @param string $defaultUrl
+     * @param string $route
+     *
+     * @return string The final URL
+     */
+    public function getNS8Url(string $route = ''): string
+    {
+        $url = $this->getEnvironmentVariable(self::NS8_ENV_NAME_CLIENT_URL) ?: '';
+        $url = rtrim(trim($url), '/');
+
+        if (empty($url)) {
+            $url = self::NS8_PRODUCTION_URL_CLIENT;
+        }
+        if (!empty($route)) {
+            $route =  str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
+            $url = $url . '/' . $route;
+        }
+        return $url;
+    }
+
+    /**
         // TODO: this needs to be more robust. Circle back and bullet proof this with backing tests.
         $ret = join('/', $segments).'/order_id';
      * Gets an access token.
@@ -148,6 +236,22 @@ class Config extends AbstractHelper
     public function getAccessToken(): ?string
     {
         $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/protect/token'));
+
+        if (!empty($storedToken)) {
+            return $storedToken;
+        }
+
+        $consumerId = $this->integrationService->findByName(self::NS8_INTEGRATION_NAME)->getConsumerId();
+        $consumer = $this->oauthService->loadConsumer($consumerId);
+        $accessTokenString = $this->oauthService->getAccessToken($consumerId);
+        $accessToken = $this->extractOauthTokenFromAuthString($accessTokenString);
+        $protectAccessToken = $this->getProtectAccessToken($consumer->getKey(), $accessToken);
+
+        if (isset($protectAccessToken)) {
+            $this->setAccessToken($protectAccessToken);
+            $storedToken = $protectAccessToken;
+        }
+
         return $storedToken;
     }
 
@@ -189,7 +293,7 @@ class Config extends AbstractHelper
      */
     public function getProtectVersion(): ?string
     {
-        return $this->moduleList->getOne(Config::NS8_MODULE_NAME)['setup_version'];
+        return $this->moduleList->getOne(self::NS8_MODULE_NAME)['setup_version'];
     }
 
     /**
@@ -218,6 +322,59 @@ class Config extends AbstractHelper
      */
     public function isAllowed(ContextInterface $context)
     {
-        return $context->getAuthorization()->isAllowed(Config::NS8_MODULE_NAME.'::admin');
+        return $context->getAuthorization()->isAllowed(self::NS8_MODULE_NAME.'::admin');
+    }
+
+    /**
+     * Auth string has a format of oauth_token=ABC&oauth_token_secret=XYZ. This method
+     * extracts the oauth_token string.
+     *
+     * @param string $authString
+     *
+     * @return string|null Oauth access token.
+     */
+    private function extractOauthTokenFromAuthString(string $accessTokenString = null) : ?string
+    {
+        $this->uri->setQuery($accessTokenString);
+        $parsedToken = $this->uri->getQueryAsArray();
+
+        return $parsedToken['oauth_token'] ?? null;
+    }
+
+    /**
+     * Call protect endpoint to exchange Magento creds for a protect access token.
+     *
+     * @param string $consumerKey
+     * @param string $accessToken
+     *
+     * @return string|null Protect access token.
+     */
+    private function getProtectAccessToken(string $consumerKey = null, string $accessToken = null) : ?string
+    {
+        $client = new Client();
+        $client->setUri($this->getNS8MiddlewareUrl('init/magento/access-token'));
+        $client->setMethod('GET');
+
+        $client->setParameterGet([
+            'access_token' => $accessToken,
+            'oauth_consumer_key' => $consumerKey,
+        ]);
+
+        $client->setHeaders([
+            'extension-version' => $this->getProtectVersion(),
+            'magento-version' => $this->getMagentoVersion(),
+        ]);
+
+        try {
+            $response = Decoder::decode($client->send()->getBody());
+        } catch (Exception $e) {
+            $this->logger->error('Failed to execute API call', ['error' => $e]);
+        }
+
+        if (!isset($response) || !isset($response->token)) {
+            return null;
+        }
+
+        return $response->token;
     }
 }
