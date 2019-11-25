@@ -356,7 +356,7 @@ class Config extends AbstractHelper
         $client->setMethod('GET');
 
         $client->setParameterGet([
-            'access_token' => $accessToken,
+            'authorization' => $accessToken,
             'oauth_consumer_key' => $consumerKey,
         ]);
 
