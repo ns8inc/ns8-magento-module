@@ -1,58 +1,58 @@
-<?php if ($block->isActivated()) : ?>
-  <script type="text/javascript">
-    require(['NS8_Protect/js/postmate.min'], function(Postmate) {
-      const container = document.getElementById('ns8-protect-wrapper');
-      const url = '<?= /* @noEscape because URL may contain an ampersand */ $block->getNS8ProtectUrl() ?>';
-      const handshake = new Postmate({
-        container,
-        url,
-        classListArray: ['ns8-protect-client-iframe']
+<?php if ($block->isActivated()): ?>
+    <script type="text/javascript">
+      require(['NS8_Protect/js/postmate.min'], function(Postmate) {
+        const container = document.getElementById('ns8-protect-wrapper');
+        const url = '<?= /* @noEscape because URL may contain an ampersand */ $block->getNS8ProtectUrl() ?>';
+        const handshake = new Postmate({
+          container,
+          url,
+          classListArray: ['ns8-protect-client-iframe']
+        });
+
+        const fillRemainingViewportHeight = (element) => {
+          element.style.height = `calc(100vh - ${element.offsetTop}px - 20px)`;
+        };
+
+        const navigateToMagentoOrderDetails = (orderId) => {
+          const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
+          const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
+          window.location.href = orderUrl;
+        };
+
+        fillRemainingViewportHeight(container);
+        /*
+        * Here, we have a few options for keeping the viewport height full of an element
+        * 1. Listen for window.onresize
+        *    - This may not account for changes in content height caused by the platform
+        * 2. Use window.requestAnimationFrame
+        *    - This seems like overkill given that we don't really need 60Hz for a iframe height change
+        * 3. Poll every so often and run the function to fill the viewport height
+        *    - We've gone with this approach using a 200ms interval for now
+        */
+        window.setInterval(() => fillRemainingViewportHeight(container), 200);
+
+        handshake.then(
+          child => {
+            child.on('order-detail-name-click', (data) => navigateToMagentoOrderDetails(data.orderId));
+          }
+        );
       });
-
-      const fillRemainingViewportHeight = (element) => {
-        element.style.height = `calc(100vh - ${element.offsetTop}px - 20px)`;
-      };
-
-      const navigateToMagentoOrderDetails = (orderId) => {
-        const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
-        const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
-        window.location.href = orderUrl;
-      };
-
-      fillRemainingViewportHeight(container);
-      /*
-       * Here, we have a few options for keeping the viewport height full of an element
-       * 1. Listen for window.onresize
-       *    - This may not account for changes in content height caused by the platform
-       * 2. Use window.requestAnimationFrame
-       *    - This seems like overkill given that we don't really need 60Hz for a iframe height change
-       * 3. Poll every so often and run the function to fill the viewport height
-       *    - We've gone with this approach using a 200ms interval for now
-       */
-      window.setInterval(() => fillRemainingViewportHeight(container), 200);
-
-      handshake.then(
-        child => {
-          child.on('order-detail-name-click', (data) => navigateToMagentoOrderDetails(data.orderId));
-        }
-      );
-    });
-  </script>
+    </script>
 <?php endif ?>
 
 <div id="ns8-protect-wrapper">
-  <?php if (!$block->isActivated()) : ?>
-    <h3>To Activate Your Integration, Follow These Steps:</h3>
+    <?php if (!$block->isActivated()): ?>
+        <h3>To Activate Your Integration, Follow These Steps:</h3>
 
-    <div class="activation-steps">
-      <ul>
-        <li>Log Into Your Magento Admin</li>
-        <li>Navigate to "System"</li>
-        <li>Navigate to "Integrations"</li>
-        <li>Find "NS8 Integration" line item</li>
-        <li>Click "Authorize" link</li>
-        <li>On the next screen, click the "Authorize" button</li>
-      </ul>
-    </div>
-  <?php endif ?>
+        <div class="activation-steps">
+            <ul>
+                <li>Log Into Your Magento Admin</li>
+                <li>Navigate to "System"</li>
+                <li>Navigate to "Integrations"</li>
+                <li>Find "NS8 Integration" line item</li>
+                <li>Click "Authorize" link</li>
+                <li>On the next screen, click the "Authorize" button</li>
+            </ul>
+        </div>
+    <?php endif ?>
 </div>
