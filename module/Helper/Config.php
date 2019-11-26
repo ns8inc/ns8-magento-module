@@ -197,7 +197,7 @@ class Config extends AbstractHelper
      */
     public function getNS8MiddlewareUrl(string $route = ''): string
     {
-        return $this->getNS8Url('api/' . $apiRoute);
+        return $this->getNS8Url('api/' . $route);
     }
 
     /**
