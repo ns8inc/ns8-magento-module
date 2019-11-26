@@ -10,7 +10,7 @@
       <referenceBlock name="sales_order_tabs">
         <action method="addTab">
           <argument name="name"
-            xsi:type="string">ns8_order_review</argument>
+            xsi:type="string">ns8_protect_order_review</argument>
           <argument name="block"
             xsi:type="string">NS8\Protect\Block\Adminhtml\Tab\OrderReview</argument>
         </action>
