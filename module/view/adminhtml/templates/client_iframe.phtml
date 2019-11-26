@@ -13,19 +13,6 @@
         element.style.height = `calc(100vh - ${element.offsetTop}px - 20px)`;
       };
 
-      const keepRemainingVHFullOfElement = (element) => {
-        /*
-         * Here, we have a few options for keeping the viewport height full of an element
-         * 1. Listen for window.onresize
-         *    - This may not account for changes in content height caused by the platform
-         * 2. Use window.requestAnimationFrame
-         *    - This seems like overkill given that we don't really need 60Hz for a iframe height change
-         * 3. Poll every so often and run the function to fill the viewport height
-         *    - We've gone with this approach using a 200ms interval for now
-         */
-        window.setInterval(() => fillRemainingViewportHeight(element), 200);
-      };
-
       const navigateToMagentoOrderDetails = (orderId) => {
         const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
         const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
@@ -33,10 +20,19 @@
       };
 
       fillRemainingViewportHeight(container);
+      /*
+       * Here, we have a few options for keeping the viewport height full of an element
+       * 1. Listen for window.onresize
+       *    - This may not account for changes in content height caused by the platform
+       * 2. Use window.requestAnimationFrame
+       *    - This seems like overkill given that we don't really need 60Hz for a iframe height change
+       * 3. Poll every so often and run the function to fill the viewport height
+       *    - We've gone with this approach using a 200ms interval for now
+       */
+      window.setInterval(() => fillRemainingViewportHeight(container), 200);
 
       handshake.then(
         child => {
-          child.on('ns8-protect-client-connected', () => keepRemainingVHFullOfElement(container));
           child.on('order-detail-name-click', (data) => navigateToMagentoOrderDetails(data.orderId));
         }
       );
