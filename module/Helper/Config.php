@@ -29,7 +29,7 @@ class Config extends AbstractHelper
     /**
      * The URL to the Development Protect API
      */
-    const NS8_DEV_URL_API = 'https://test-protect.ns8.com/protect';
+    const NS8_DEV_URL_API = 'https://test-protect.ns8.com/';
 
     /**
      * The URL to the Development Client API
