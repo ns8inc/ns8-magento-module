@@ -1,4 +1,4 @@
-<?php if ($block->isActivated()): ?>
+<?php if ($block->isActivated()) : ?>
     <script type="text/javascript">
       require(['NS8_Protect/js/postmate.min'], function(Postmate) {
         const container = document.getElementById('ns8-protect-wrapper');
@@ -41,7 +41,7 @@
 <?php endif ?>
 
 <div id="ns8-protect-wrapper">
-    <?php if (!$block->isActivated()): ?>
+    <?php if (!$block->isActivated()) : ?>
         <h3>To Activate Your Integration, Follow These Steps:</h3>
 
         <div class="activation-steps">
