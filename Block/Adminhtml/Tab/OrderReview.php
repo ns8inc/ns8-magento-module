@@ -83,11 +83,20 @@ class OrderReview extends Template implements TabInterface
     public function getTabLabel() : string
     {
         $order = $this->getOrder();
-        $label = 'NS8 Order Review';
-        if (isset($order['eq8_score'])) {
-            $label = $label.' ('.$order['eq8_score'].')';
+        $html = '';
+        if (isset($order['ns8_status'])) {
+            $html = '<div class="ns8-order-tab-title ns8-'.$order['ns8_status'].'-badge">'
+                .' <div class="ns8-order-score">'.$order['eq8_score'].'</div>'
+                .' <div class="ns8-order-tab-status">'.$order['ns8_status'].'</div>'
+                .'</div>';
         }
-        return __($label);
+
+        $label =  __('NS8 Order Review');
+        if ($this->coreRegistry->registry('ns8_order_review_tab_exists')) {
+            $label = $label .__(' V2');
+        }
+
+        return $label.$html;
     }
 
     /**

@@ -8,14 +8,11 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\HTTP\Header;
 use Magento\Framework\HTTP\PhpEnvironment\Request;
 use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Integration\Api\IntegrationServiceInterface;
-use Magento\Integration\Api\OauthServiceInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Url;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
-use Zend\Uri\Uri;
 
 /**
  * General purpose HTTP/REST client for making API calls
@@ -44,20 +41,6 @@ class HttpClient extends AbstractHelper
     protected $header;
 
     /**
-     * The integration service interface.
-     *
-     * @var IntegrationServiceInterface
-     */
-    protected $integrationServiceInterface;
-
-    /**
-     * The OAuth service interface.
-     *
-     * @var OauthServiceInterface
-     */
-    protected $oauthServiceInterface;
-
-    /**
      * The logger.
      *
      * @var LoggerInterface
@@ -72,20 +55,6 @@ class HttpClient extends AbstractHelper
     protected $request;
 
     /**
-     * The Core session.
-     *
-     * @var SessionManagerInterface
-     */
-    protected $session;
-
-    /**
-     * Zend URI helper
-     *
-     * @var Uri
-     */
-    protected $uri;
-
-    /**
      * URL Helper
      *
      * @var Url
@@ -97,36 +66,24 @@ class HttpClient extends AbstractHelper
      *
      * @param Config $config The config
      * @param Header $header The HTTP header
-     * @param IntegrationServiceInterface $integrationServiceInterface The IS interface
      * @param LoggerInterface $logger The logger
-     * @param OauthServiceInterface $oauthServiceInterface The OAuth service interface
      * @param Request $request The HTTP request
      * @param Session $customerSession The customer session
-     * @param SessionManagerInterface $session The Core session
-     * @param Uri $uri Zend URI helper
      * @param Url $url URL helper
      */
     public function __construct(
         Config $config,
         Header $header,
-        IntegrationServiceInterface $integrationServiceInterface,
         LoggerInterface $logger,
-        OauthServiceInterface $oauthServiceInterface,
         Request $request,
         Session $customerSession,
-        SessionManagerInterface $session,
-        Uri $uri,
         Url $url
     ) {
         $this->config = $config;
         $this->customerSession = $customerSession;
         $this->header = $header;
-        $this->integrationServiceInterface = $integrationServiceInterface;
         $this->logger = $logger;
-        $this->oauthServiceInterface = $oauthServiceInterface;
         $this->request = $request;
-        $this->session = $session;
-        $this->uri = $uri;
         $this->url = $url;
     }
 
@@ -219,7 +176,7 @@ class HttpClient extends AbstractHelper
         int $timeout = 30,
         bool $decodeJson = true
     ) {
-        $accessToken = $this->getAccessToken();
+        $accessToken = $this->config->getAccessToken();
 
         $authHeaderString = 'Bearer ' . $accessToken;
 
@@ -251,7 +208,7 @@ class HttpClient extends AbstractHelper
     ) {
         $response = null;
         try {
-            $uri = $this->url->getNS8MiddlewareUrl($route);
+            $uri = $this->config->getNS8MiddlewareUrl($route);
 
             $httpClient = new Client();
             $httpClient->setUri($uri);
@@ -278,80 +235,6 @@ class HttpClient extends AbstractHelper
             $this->logger->error('Failed to execute API call', ['error' => $e]);
         }
         return $response;
-    }
-
-    /**
-     * Auth string has a format of oauth_token=ABC&oauth_token_secret=XYZ. This method
-     * extracts the oauth_token string.
-     *
-     * @param string $authString
-     *
-     * @return string|null Oauth access token.
-     */
-    private function extractOauthTokenFromAuthString(string $accessTokenString = null) : ?string
-    {
-        $this->uri->setQuery($accessTokenString);
-        $parsedToken = $this->uri->getQueryAsArray();
-        if ($parsedToken) {
-            return $parsedToken['oauth_token'];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Gets a Protect Access Token if the OAuth has succeeded
-     *
-     * @return string|null
-     */
-    private function getAccessToken(): ?string
-    {
-        $storedToken = $this->config->getAccessToken();
-        if (!empty($storedToken)) {
-            return $storedToken;
-        } else {
-            $integration = $this->integrationServiceInterface->findByName(Config::NS8_INTEGRATION_NAME);
-            $consumerId = $integration->getConsumerId();
-            $consumer = $this->oauthServiceInterface->loadConsumer($consumerId);
-            $accessTokenString = $this->oauthServiceInterface->getAccessToken($consumerId);
-            $accessToken = $this->extractOauthTokenFromAuthString($accessTokenString);
-
-            $protectAccessToken = $this->getProtectAccessToken($consumer->getKey(), $accessToken);
-            if (isset($protectAccessToken)) {
-                $this->config->setAccessToken($protectAccessToken);
-                $storedToken = $protectAccessToken;
-            }
-        }
-
-        return $storedToken;
-    }
-
-    /**
-     * Call protect endpoint to exchange Magento creds for a protect access token.
-     *
-     * @param string $consumerId
-     * @param string $accessToken
-     *
-     * @return string|null Protect access token.
-     */
-    private function getProtectAccessToken(string $consumerId = null, string $accessToken = null) : ?string
-    {
-        $getParams = [
-            'oauth_consumer_key' => $consumerId,
-            'access_token' => $accessToken
-        ];
-        $response = $this->execute('init/magento/access-token', [], 'GET', $getParams);
-        if (null == $response) {
-            return null;
-        }
-        if (isset($response->statusCode) && $response->statusCode >= 400) {
-            return null;
-        }
-        if (isset($response->token)) {
-            return $response->token;
-        } else {
-            return null;
-        }
     }
 
     /**

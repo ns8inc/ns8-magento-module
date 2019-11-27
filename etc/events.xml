@@ -9,4 +9,7 @@
   <event name="admin_system_config_save">
     <observer name="ns8_system_config_update" instance="NS8\Protect\Observer\MerchantUpdate" />
   </event>
+  <event name="adminhtml_block_html_before">
+    <observer name="ns8_sales_order_view_update" instance="NS8\Protect\Observer\Order\ViewUpdate" />
+  </event>
 </config>

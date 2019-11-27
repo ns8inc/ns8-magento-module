@@ -3,22 +3,14 @@
       require(['NS8_Protect/js/postmate.min'], function(Postmate) {
         const container = document.getElementById('ns8-protect-wrapper');
         const url = '<?= /* @noEscape because URL may contain an ampersand */ $block->getNS8ProtectUrl() ?>';
-        const handshake = new Postmate({container, url, classListArray: ['ns8-protect-client-iframe']});
+        const handshake = new Postmate({
+          container,
+          url,
+          classListArray: ['ns8-protect-client-iframe']
+        });
 
-        const adjustIframeHeight = (iframe) => {
-          iframe.frame.style.height = `calc(100vh - ${container.offsetTop}px - 20px)`;
-        };
-
-        const beginIframeHeightWatching = (iframe) => {
-          adjustIframeHeight(iframe);
-
-          /*
-           * Unfortunately, there is no "natural" way to detect the
-           * height change of a document, so for now we resort to polling
-           * 200 ms seems fast enough to feel automatic without
-           * bogging down the browser.
-           */
-          window.setInterval(() => adjustIframeHeight(iframe), 200);
+        const fillRemainingViewportHeight = (element) => {
+          element.style.height = `calc(100vh - ${element.offsetTop}px - 20px)`;
         };
 
         const navigateToMagentoOrderDetails = (orderId) => {
@@ -27,14 +19,25 @@
           window.location.href = orderUrl;
         };
 
+        fillRemainingViewportHeight(container);
+        /*
+        * Here, we have a few options for keeping the viewport height full of an element
+        * 1. Listen for window.onresize
+        *    - This may not account for changes in content height caused by the platform
+        * 2. Use window.requestAnimationFrame
+        *    - This seems like overkill given that we don't really need 60Hz for a iframe height change
+        * 3. Poll every so often and run the function to fill the viewport height
+        *    - We've gone with this approach using a 200ms interval for now
+        */
+        window.setInterval(() => fillRemainingViewportHeight(container), 200);
+
         handshake.then(
           child => {
-            child.on('ns8-protect-client-connected', () => beginIframeHeightWatching(child));
             child.on('order-detail-name-click', (data) => navigateToMagentoOrderDetails(data.orderId));
           }
         );
-    });
-  </script>
+      });
+    </script>
 <?php endif ?>
 
 <div id="ns8-protect-wrapper">

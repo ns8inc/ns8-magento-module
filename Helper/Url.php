@@ -14,26 +14,6 @@ use UnexpectedValueException;
 class Url extends AbstractHelper
 {
     /**
-     * The URL to the Development Protect API
-     */
-    const NS8_DEV_URL_API = 'https://test-protect.ns8.com/protect';
-
-    /**
-     * The URL to the Development Client API
-     */
-    const NS8_DEV_URL_CLIENT = 'https://test-protect-client.ns8.com/';
-
-    /**
-     * The URL to the Production Protect API
-     */
-    const NS8_PRODUCTION_URL_API = 'https://protect.ns8.com';
-
-    /**
-     * The URL to the Production Client API
-     */
-    const NS8_PRODUCTION_URL_CLIENT = 'https://protect-client.ns8.com';
-
-    /**
      * @var Config
      */
     protected $config;
@@ -55,21 +35,6 @@ class Url extends AbstractHelper
     ) {
         $this->config = $config;
         $this->url = $url;
-    }
-
-    /**
-     * Gets the current protect Middleware URL based on the environment variables.
-     * Defaults to Production.
-     *
-     * @param string $route
-     *
-     * @return string The NS8 Protect Middleware URL in use for this instance.
-     */
-    public function getNS8MiddlewareUrl(string $route = ''): string
-    {
-        $route = str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
-        $routeSlug = 'api' . '/' . $route;
-        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_PRODUCTION_URL_CLIENT, $routeSlug);
     }
 
     /**
@@ -166,45 +131,8 @@ class Url extends AbstractHelper
 
         return sprintf(
             '%s?%s',
-            $this->getNS8ClientUrl($route),
+            $this->config->getNS8Url($route),
             http_build_query($query)
         );
-    }
-
-    /**
-     * Gets the current protect Client URL based on the environment variables.
-     * Defaults to Production.
-     *
-     * @param string $route
-     *
-     * @return string The NS8 Protect Client URL in use for this instance.
-     */
-    private function getNS8ClientUrl(string $route = ''): string
-    {
-        return $this->getNS8Url(Config::NS8_ENV_NAME_CLIENT_URL, self::NS8_PRODUCTION_URL_CLIENT, $route);
-    }
-
-    /**
-     * Assemble the URL using environment variables and handles parsing extra `/`
-     *
-     * @param string $envVarName
-     * @param string $defaultUrl
-     * @param string $route
-     *
-     * @return string The final URL
-     */
-    private function getNS8Url(string $envVarName, string $defaultUrl, string $route = ''): string
-    {
-        $url = $this->config->getEnvironmentVariable($envVarName) ?: '';
-        $url = rtrim(trim($url), '/');
-
-        if (empty($url)) {
-            $url = $defaultUrl;
-        }
-        if (!empty($route)) {
-            $route =  str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
-            $url = $url . '/' . $route;
-        }
-        return $url;
     }
 }

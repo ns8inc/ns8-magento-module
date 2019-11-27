@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   overflow-y: hidden;
 }
 
@@ -8,5 +9,10 @@ html, body {
 
 #ns8-protect-wrapper > .ns8-protect-client-iframe {
   border: none;
+  height: 100%;
   width: 100%;
+}
+
+.page-footer {
+  display: none;
 }

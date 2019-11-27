@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+  <head>
+    <css src="NS8_Protect::css/order_details_styles.css" />
+  </head>
   <body>
     <referenceBlock name="order_info">
       <block class="NS8\Protect\Block\Adminhtml\Container"
@@ -10,7 +13,7 @@
       <referenceBlock name="sales_order_tabs">
         <action method="addTab">
           <argument name="name"
-            xsi:type="string">ns8_order_review</argument>
+            xsi:type="string">ns8_protect_order_review</argument>
           <argument name="block"
             xsi:type="string">NS8\Protect\Block\Adminhtml\Tab\OrderReview</argument>
         </action>
