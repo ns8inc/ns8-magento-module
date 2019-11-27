@@ -15,6 +15,10 @@ class ViewUpdate implements ObserverInterface
      */
     protected $coreRegistry;
 
+    /**
+     * Default constructor
+     * @param Registry $registry
+     */
     public function __construct(
         Registry $registry
     ) {

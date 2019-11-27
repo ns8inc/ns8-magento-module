@@ -1,0 +1,47 @@
+.ns8-order-tab-title {
+  margin-left:10px;
+  font-weight: 200;
+  display: inline-block;
+  text-align: center;
+  border-radius: 2px;
+  white-space: nowrap;
+  padding: 4px 8px;
+}
+
+.ns8-order-tab-status {
+  display: inline-block;
+  margin-left:5px;
+}
+
+.ns8-accept-badge {
+  background-color: #61a247;
+  color: #fff;
+}
+
+.ns8-approved-badge {
+  background-color: #61a247;
+  color: #fff;
+}
+
+.ns8-cancel-badge {
+  background-color: #d0664c;
+  color: #fff;
+}
+
+.ns8-canceled-badge {
+  background-color: #d0664c;
+  color: #fff;
+}
+
+.ns8-investigate-badge {
+  background-color: #e09f00;
+  color: #fff;
+}
+
+.ns8-order-grid-score {
+  padding-right: 5px;
+  width: 32px;
+  display: inline-block;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+

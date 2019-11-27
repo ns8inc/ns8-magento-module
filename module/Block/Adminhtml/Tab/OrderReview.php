@@ -93,7 +93,7 @@ class OrderReview extends Template implements TabInterface
 
         $label =  __('NS8 Order Review');
         if ($this->coreRegistry->registry('ns8_order_review_tab_exists')) {
-                $label = $label .__(' V2');
+            $label = $label .__(' V2');
         }
 
         return $label.$html;
