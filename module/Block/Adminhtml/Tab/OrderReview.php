@@ -87,6 +87,11 @@ class OrderReview extends Template implements TabInterface
         if (isset($order['eq8_score'])) {
             $label = $label.' ('.$order['eq8_score'].')';
         }
+        
+        if ($this->coreRegistry->registry('ns8_order_review_tab_exists')) {
+                $label = $label .' V2';
+        }
+
         return __($label);
     }
 
