@@ -96,7 +96,7 @@ class Order extends AbstractHelper
                 $ret = $this->orderRepository->get($orderId);
             }
         } catch (Exception $e) {
-            $this->logger->log('ERROR', 'Failed to get order '.$orderId, ['error'=>$e]);
+            $this->logger->error('Failed to get order '.$orderId, ['error'=>$e]);
         }
         return $ret;
     }
