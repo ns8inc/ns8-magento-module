@@ -30,7 +30,7 @@ class ViewUpdate implements ObserverInterface
     public function execute(Observer $observer) : void
     {
         $block = $observer->getBlock();
-        if ($block->getId() == 'ns8_order_review') {
+        if ($block->getId() == 'ns8_order_review' && !$this->coreRegistry->registry('ns8_order_review_tab_exists')) {
             $this->coreRegistry->register('ns8_order_review_tab_exists', true);
         }
     }
