@@ -85,7 +85,7 @@ class OrderReview extends Template implements TabInterface
         $order = $this->getOrder();
         $html = '';
         if (isset($order['ns8_status'])) {
-            $html = '<div class="ns8-order-tab-title ns8-badge ns8-'.$order['ns8_status'].'-badge">'
+            $html = '<div class="ns8-order-tab-title ns8-'.$order['ns8_status'].'-badge">'
                 .' <div class="ns8-order-score">'.$order['eq8_score'].'</div>'
                 .' <div class="ns8-order-tab-status">'.$order['ns8_status'].'</div>'
                 .'</div>';
