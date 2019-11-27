@@ -13,32 +13,23 @@
   margin-left:5px;
 }
 
-.ns8-accept-badge {
+.ns8-badge {
+  color: #fff;
+}
+
+.ns8-accept-badge, .ns8-approved-badge {
   background-color: #61a247;
-  color: #fff;
 }
 
-.ns8-approved-badge {
-  background-color: #61a247;
-  color: #fff;
-}
-
-.ns8-cancel-badge {
+.ns8-cancel-badge, .ns8-canceled-badge {
   background-color: #d0664c;
-  color: #fff;
-}
-
-.ns8-canceled-badge {
-  background-color: #d0664c;
-  color: #fff;
 }
 
 .ns8-investigate-badge {
   background-color: #e09f00;
-  color: #fff;
 }
 
-.ns8-order-grid-score {
+.ns8-order-score {
   padding-right: 5px;
   width: 32px;
   display: inline-block;
