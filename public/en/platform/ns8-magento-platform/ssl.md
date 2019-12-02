@@ -30,6 +30,7 @@ This guide should enable a Magento instance running on Amazon Linux 1 on Lightsa
   * `$ sudo bin/magento setup:store-config:set --use-secure-admin=1`
   * `$ sudo bin/magento setup:store-config:set --use-secure=1`
   * `$ sudo bin/magento setup:store-config:set --base-url-secure=https://example.com`
+  * `$ sudo bin/magento cache:clean`
 * Restart Apache
   * `$ sudo service httpd restart`
 
