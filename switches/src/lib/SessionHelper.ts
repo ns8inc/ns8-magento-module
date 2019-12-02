@@ -10,7 +10,7 @@ export class SessionHelper extends HelperBase {
    */
   public toSession = (): Session => {
     if (this.SwitchContext.data && this.SwitchContext.data.session) {
-      let sessionData = this.SwitchContext.data.session;
+      const sessionData = this.SwitchContext.data.session;
       if (sessionData.screenHeight) {
         sessionData.screenHeight = parseInt(sessionData.screenHeight);
       }
