@@ -10,7 +10,16 @@ export class SessionHelper extends HelperBase {
    */
   public toSession = (): Session => {
     if (this.SwitchContext.data && this.SwitchContext.data.session) {
-      return new Session(this.SwitchContext.data.session);
+      let sessionData = this.SwitchContext.data.session;
+      if (sessionData.screenHeight) {
+        sessionData.screenHeight = parseInt(sessionData.screenHeight);
+      }
+
+      if (sessionData.screenWidth) {
+        sessionData.screenWidth = parseInt(sessionData.screenWidth);
+      }
+
+      return new Session(sessionData);
     }
 
     //NOTE: for mock purposes, this must be any real value that is not localhost, 127.0.0.1 or otherwise a reserved "localhost" IP address
