@@ -2,7 +2,7 @@
 
 namespace NS8\Protect\Helper;
 
-use Exception;
+use Throwable;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\RequestInterface;
 use Magento\Sales\Api\Data\OrderInterface;
@@ -95,7 +95,7 @@ class Order extends AbstractHelper
             if (isset($orderId)) {
                 $ret = $this->orderRepository->get($orderId);
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Failed to get order '.$orderId, ['error'=>$e]);
         }
         return $ret;

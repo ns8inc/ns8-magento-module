@@ -2,7 +2,7 @@
 
 namespace NS8\Protect\Helper;
 
-use Exception;
+use Throwable;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
 use Magento\Framework\App\Cache\TypeListInterface;
@@ -307,7 +307,7 @@ class Config extends AbstractHelper
             if (isset($loginUser)) {
                 $username = $loginUser->getUserName();
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->log('ERROR', 'Failed to get username', ['error' => $e]);
         }
         return $username;
@@ -366,7 +366,7 @@ class Config extends AbstractHelper
 
         try {
             $response = Decoder::decode($client->send()->getBody());
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Failed to execute API call', ['error' => $e]);
         }
 

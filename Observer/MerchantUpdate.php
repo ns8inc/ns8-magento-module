@@ -2,7 +2,7 @@
 
 namespace NS8\Protect\Observer;
 
-use Exception;
+use Throwable;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Event\Observer;
@@ -66,7 +66,7 @@ class MerchantUpdate implements ObserverInterface
     {
         try {
             $eventData = $observer->getEvent()->getData();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('The event data could not be retrieved', ['error' => $e]);
             return;
         }
@@ -76,7 +76,7 @@ class MerchantUpdate implements ObserverInterface
 
         try {
             $this->httpClient->post('/switch/executor', $data, $params);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('The merchant update could not be processed', ['error' => $e]);
         }
     }

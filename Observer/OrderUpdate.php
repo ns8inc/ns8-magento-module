@@ -1,6 +1,7 @@
 <?php
 namespace NS8\Protect\Observer;
 
+use Throwable;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\Request\DataPersistorInterface;
@@ -110,7 +111,7 @@ class OrderUpdate implements ObserverInterface
                     ->setIsVisibleOnFront(false)
                     ->save();
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Add Status History failed', ['error' => $e]);
         }
         return $oldStatus;
@@ -146,7 +147,7 @@ class OrderUpdate implements ObserverInterface
 
             $data = ['order'=>$orderData];
             $response = $this->httpClient->post('/switch/executor', $data, $params);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('The order update could not be processed', ['error' => $e]);
         }
     }

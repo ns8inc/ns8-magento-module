@@ -2,7 +2,7 @@
 
 namespace NS8\Protect\Helper;
 
-use Exception;
+use Throwable;
 use Magento\Framework\App\Helper\AbstractHelper;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\HttpClient;
@@ -123,7 +123,7 @@ class Logger extends AbstractHelper
             ];
             //Log to our own API
             $this->httpClient->post('/util/log-client-error', $data);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->log('ERROR', Config::NS8_MODULE_NAME . '.log: ' . $e->getMessage(), ['error' => $e]);
         }
     }

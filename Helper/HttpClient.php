@@ -2,7 +2,7 @@
 
 namespace NS8\Protect\Helper;
 
-use Exception;
+use Throwable;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\HTTP\Header;
@@ -241,7 +241,7 @@ class HttpClient extends AbstractHelper
             $body = $httpClient->send()->getBody();
 
             $response = $decodeJson ? Decoder::decode($body) : $body;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Failed to execute API call', ['error' => $e]);
         }
         return $response;
