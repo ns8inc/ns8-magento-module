@@ -2,6 +2,7 @@
 
 namespace NS8\Protect\Controller\Adminhtml\Sales;
 
+use Throwable;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
@@ -70,20 +71,23 @@ class Dashboard extends Action
      */
     public function execute()
     {
-        $merchant = $this->httpClient->get('/merchant/current');
         $resultPage = $this->resultPageFactory->create();
 
-        if (empty($merchant)) {
-            $this->logger->error('Request to Protect failed to GET /merchant/current');
-            return $resultPage;
-        }
+        try {
+            $merchant = $this->httpClient->get('/merchant/current');
+            if (empty($merchant)) {
+                $this->logger->error('Request to Protect failed to GET /merchant/current');
+                return $resultPage;
+            }
 
-        if (empty($merchant->error)) {
-            $this->logger->debug('MERCHANT ==> ' . $merchant->name);
-        } else {
-            $this->logger->error($merchant->statusCode . ' ' . $merchant->error);
+            if (empty($merchant->error)) {
+                $this->logger->debug('MERCHANT ==> ' . $merchant->name);
+            } else {
+                $this->logger->error($merchant->statusCode . ' '     . $merchant->error);
+            }
+        } catch(Throwable $e) {
+            $this->logger->error('The merchant could not be fetched', ['error' => $e]);
         }
-
         return $resultPage;
     }
 }

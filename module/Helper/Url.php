@@ -2,7 +2,6 @@
 
 namespace NS8\Protect\Helper;
 
-use Exception;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\UrlInterface;
 use Magento\Backend\Model\UrlInterface as BackendUrlInterface;

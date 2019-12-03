@@ -64,7 +64,7 @@ class Setup extends AbstractHelper
             $this->customStatus->setCustomStatuses('Running Data '.$mode);
             // Run the base integration config method. This does not trigger activation.
             $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Protect '.$mode.' failed', ['error' => $e]);
         } finally {
             //Essential step.
@@ -118,7 +118,7 @@ class Setup extends AbstractHelper
                 $setup->getIdxName('sales_order_grid', ['eq8_score']),
                 ['eq8_score']
             );
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Protect '.$mode.' failed', ['error' => $e]);
         } finally {
             //Essential step.
