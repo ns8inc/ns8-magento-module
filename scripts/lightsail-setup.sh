@@ -26,6 +26,7 @@ yum update -y
 yum install -y \
 git \
 httpd24 \
+mod24_ssl \
 nodejs \
 php71 \
 php71-bcmath \
