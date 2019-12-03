@@ -5,6 +5,9 @@ namespace NS8\Protect\Helper;
 use Exception;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\UrlInterface;
+use Magento\Backend\Model\UrlInterface as BackendUrlInterface;
+use Magento\Framework\App\State;
+use Magento\Framework\App\Area;
 use NS8\Protect\Helper\Config;
 use UnexpectedValueException;
 
@@ -24,17 +27,34 @@ class Url extends AbstractHelper
     protected $url;
 
     /**
+     * @var UrlInterface
+     */
+    protected $backendUrl;
+
+    /**
+     * @var State
+     */
+    protected $state;
+
+    /**
      * The constructor.
      *
      * @param Config $config
      * @param UrlInterface $url
+     * @param BackendUrlInterface $backendUrl
+     * @param State $state
+     *
      */
     public function __construct(
         Config $config,
-        UrlInterface $url
+        UrlInterface $url,
+        BackendUrlInterface $backendUrl,
+        State $state
     ) {
         $this->config = $config;
         $this->url = $url;
+        $this->backendUrl = $backendUrl;
+        $this->state = $state;
     }
 
     /**
@@ -65,7 +85,12 @@ class Url extends AbstractHelper
      */
     public function getMagentoNS8SessionDataUrl(): string
     {
-        return $this->url->getUrl('ns8protect/sessiondata');
+        $sessionDataUrl = $this->url->getUrl('ns8protect/sessiondata');
+        if ($this->state->getAreaCode() == Area::AREA_ADMINHTML) {
+            $sessionDataUrl = $this->backendUrl->getUrl('ns8protectadmin/sessiondata');
+        }
+
+        return $sessionDataUrl;
     }
 
     /**

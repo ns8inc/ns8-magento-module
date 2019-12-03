@@ -62,6 +62,13 @@ class HttpClient extends AbstractHelper
     protected $url;
 
     /**
+     * The Core session.
+     *
+     * @var SessionManagerInterface
+     */
+    protected $session;
+
+    /**
      * Default constructor
      *
      * @param Config $config The config
@@ -69,6 +76,7 @@ class HttpClient extends AbstractHelper
      * @param LoggerInterface $logger The logger
      * @param Request $request The HTTP request
      * @param Session $customerSession The customer session
+     * @param SessionManagerInterface $session The Core session
      * @param Url $url URL helper
      */
     public function __construct(
@@ -77,10 +85,12 @@ class HttpClient extends AbstractHelper
         LoggerInterface $logger,
         Request $request,
         Session $customerSession,
+        SessionManagerInterface $session,
         Url $url
     ) {
         $this->config = $config;
         $this->customerSession = $customerSession;
+        $this->session = $session;
         $this->header = $header;
         $this->logger = $logger;
         $this->request = $request;
@@ -240,7 +250,7 @@ class HttpClient extends AbstractHelper
     /**
      * Get the session data.
      *
-     * @return array The session data
+     * @return array The session data passed in
      */
     private function getSessionData(): array
     {
@@ -248,6 +258,8 @@ class HttpClient extends AbstractHelper
             'acceptLanguage' => $this->header->getHttpAcceptLanguage(),
             'id' => $this->customerSession->getSessionId(),
             'ip' => $this->request->getClientIp(),
+            'screenHeight' => $this->session->getScreenHeight(),
+            'screenWidth' => $this->session->getScreenWidth(),
             'userAgent' => $this->header->getHttpUserAgent(),
         ];
     }
