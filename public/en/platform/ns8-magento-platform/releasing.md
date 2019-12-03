@@ -17,3 +17,5 @@ In order to manually release a new version, follow these steps.
 * Once the PR is merged, switch to master and pull latest
 * Tag master with the latest version
 * Push the tag
+* Create the release package by running `$ yarn module:release`
+  * Send the release ZIP file to the SCs for upload to Magento Marketplace
