@@ -85,9 +85,9 @@ stepFunctions:
           OnInstallEventStart:
             <<: *retryDefault
             End: true
-            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-onInstallEventStart'
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-onInstallEvent'
             Type: Task
-      name: '${self:custom.integrationName}-onInstallEventStart'
+      name: '${self:custom.integrationName}-onInstallEvent'
     UninstallAction:
       definition:
         StartAt: UninstallActionStart
