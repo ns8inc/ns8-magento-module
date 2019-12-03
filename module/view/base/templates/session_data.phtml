@@ -5,7 +5,10 @@
     if (!hasSessionData) {
       $.post('<?= $block->escapeUrl($block->url->getMagentoNS8SessionDataUrl()) ?>', {
         screenHeight: window.screen.height,
-        screenWidth: window.screen.width
+        screenWidth: window.screen.width,
+        <?php if ($block->shouldAddFormKey()): ?>
+        form_key: '<?= $block->getFormKey(); ?>',
+        <?php endif; ?>
       });
     }
   });

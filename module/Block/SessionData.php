@@ -13,6 +13,9 @@ namespace NS8\Protect\Block;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\Data\Form\FormKey;
+use Magento\Framework\App\State;
+use Magento\Framework\App\Area;
 use NS8\Protect\Helper\Url;
 
 /**
@@ -37,6 +40,18 @@ class SessionData extends Template
     public $url;
 
     /**
+     * The URL Helper
+     *
+     * @var FormKey
+     */
+    protected $formKey;
+
+    /**
+     * @var State
+     */
+    protected $state;
+
+    /**
      * The constructor.
      *
      * @param Context $context The Magento context
@@ -48,11 +63,15 @@ class SessionData extends Template
         Context $context,
         SessionManagerInterface $session,
         Url $url,
+        FormKey $formKey,
+        State $state,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->session = $session;
         $this->url = $url;
+        $this->formKey = $formKey;
+        $this->state = $state;
     }
 
     /**
@@ -71,5 +90,23 @@ class SessionData extends Template
         }
 
         return true;
+    }
+
+    /**
+     * Return form key used for request
+     *
+     * @return string
+     */
+    public function getFormKey(): string
+    {
+        return $this->formKey->getFormKey();
+    }
+
+    /**
+     * Determines if a form key should be added to the block HTML
+     */
+    public function shouldAddFormKey(): bool
+    {
+        return $this->state->getAreaCode() == Area::AREA_ADMINHTML;
     }
 }
