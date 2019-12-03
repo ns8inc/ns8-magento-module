@@ -104,6 +104,8 @@ class SessionData extends Template
 
     /**
      * Determines if a form key should be added to the block HTML
+     *
+     * @return bool
      */
     public function shouldAddFormKey(): bool
     {

@@ -41,6 +41,9 @@ class Url extends AbstractHelper
      *
      * @param Config $config
      * @param UrlInterface $url
+     * @param BackendUrlInterface $backendUrl
+     * @param State $state
+     *
      */
     public function __construct(
         Config $config,
