@@ -40,6 +40,7 @@
     "build:prod": "cross-env NODE_ENV=prod yarn build",
     "build:root": "yarn && yarn compile && yarn beautify && yarn module:config",
     "clean": "rimraf dist",
+    "certbot": "./scripts/ssl_cert.sh",
     "compile": "tsc -d",
     "lint": "eslint --ext=ts switchboard switches",
     "module:build": "cd module && composer install",
