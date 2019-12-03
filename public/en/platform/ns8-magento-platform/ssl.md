@@ -25,7 +25,7 @@ This guide should enable a Magento instance running on Amazon Linux 1 on Lightsa
 
 * Create the certificate
   * `$ sudo /usr/local/bin/certbot-auto --apache --debug`
-  * Press 'Enter' to obtain certificates for both your regular domain and its www-prefixed CNAME
+  * Press 'Enter' to obtain certificates for both your regular domain and its www-prefixed CNAME.
   * Press '2' to allow `certbot` to configure apache to redirect your HTTP traffic to HTTPS.
   * Optionally, follow the steps to setup autorenewal: <https://certbot.eff.org/lets-encrypt/centosrhel8-apache>
 * Configure Magento to use SSL
