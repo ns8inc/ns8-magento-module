@@ -7,7 +7,7 @@
     "@ns8/ns8-protect-sdk": "0.1.19",
     "@ns8/ns8-switchboard-operator": "1.0.103",
     "@types/jest": "24.0.21",
-    "@types/node": "12.12.3",
+    "@types/node": "12.12.14",
     "awesome-typescript-loader": "5.2.1",
     "aws-lambda": "0.1.2",
     "cross-env": "6.0.3",
@@ -19,8 +19,8 @@
     "ns8-switchboard-interfaces": "1.0.87",
     "rimraf": "3.0.0",
     "ts-jest": "24.1.0",
-    "ts-node": "8.4.1",
-    "typescript": "3.7.2",
+    "ts-node": "8.5.4",
+    "typescript": "3.7.3",
     "url": "0.11.0",
     "webpack": "4.41.2",
     "webpack-cli": "3.3.10",
@@ -45,5 +45,5 @@
     "test": "jest",
     "test:debug": "node --inspect-brk=9230 ./node_modules/jest/bin/jest.js --runInBand"
   },
-  "version": "2.0.24"
+  "version": "2.0.26"
 }
