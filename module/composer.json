@@ -16,7 +16,7 @@
   "description": "",
   "license": "MIT",
   "minimum-stability": "dev",
-  "name": "ns8/protect",
+  "name": "ns8/protect-magento",
   "require": {
     "php": "~7.0"
   },
