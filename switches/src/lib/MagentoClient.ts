@@ -47,7 +47,7 @@ export class MagentoClient {
     }
   }
 
-  public getApiUrl = () => this.apiUrl;
+  public getApiUrl = (): string => this.apiUrl;
 
   /**
    * Convenience method to get a [[MagentoOrder]] by OrderId from the Magento API.
