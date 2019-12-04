@@ -35,7 +35,7 @@ export class MagentoClient {
         .replace(/\/*(index.php)?\/*$/, '') + '/index.php/rest';
       Logger.log(`API URL: "${this.apiUrl}"`);
       this.client = new RestClient({
-        url: `${this.apiUrl}`,
+        url: this.apiUrl,
         consumerKey: si.identityToken,
         consumerSecret: si.identitySecret,
         accessToken: si.token,
