@@ -28,11 +28,8 @@ export class MagentoClient {
       if (!siTemp) throw new Error('No Magento Service Integration defined on this merchant');
       const si: ServiceIntegration = siTemp;
 
-      let apiUrl: string = this.SwitchContext.merchant.storefrontUrl || `https://${this.SwitchContext.merchant.domain}`;
-      if (apiUrl.endsWith('index.php')) {
-        apiUrl = apiUrl.replace('index.php', '');
-      }
-      apiUrl = apiUrl.replace(/\/$/, '');
+      const apiUrl: string = (this.SwitchContext.merchant.storefrontUrl || `https://${this.SwitchContext.merchant.domain}`)
+        .replace(/\/*(index.php)?\/*$/, '');
       const parsedUrl: url.UrlWithStringQuery = url.parse(apiUrl);
       this.client = new RestClient({
         // TODO: refactor this to handle cases where these assumptions cannot be made
