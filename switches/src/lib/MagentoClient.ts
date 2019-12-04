@@ -18,6 +18,8 @@ export class MagentoClient {
   private SwitchContext: SwitchContext;
   public client: RestClient;
 
+  private apiUrl: string;
+
   //Constructing the REST client has no side effects. OAuth does not take place until an API call is made.
   constructor(switchContext: SwitchContext) {
     try {
@@ -28,22 +30,24 @@ export class MagentoClient {
       if (!siTemp) throw new Error('No Magento Service Integration defined on this merchant');
       const si: ServiceIntegration = siTemp;
 
-      const apiUrl: string = (this.SwitchContext.merchant.storefrontUrl || `https://${this.SwitchContext.merchant.domain}`)
-        .replace(/\/*(index.php)?\/*$/, '');
-      const parsedUrl: url.UrlWithStringQuery = url.parse(apiUrl);
+      // TODO: refactor this to handle cases where these assumptions cannot be made
+      this.apiUrl = (this.SwitchContext.merchant.storefrontUrl || `https://${this.SwitchContext.merchant.domain}`)
+        .replace(/\/*(index.php)?\/*$/, '') + '/index.php/rest';
+      Logger.log(`API URL: "${this.apiUrl}"`);
       this.client = new RestClient({
-        // TODO: refactor this to handle cases where these assumptions cannot be made
-        url: `${parsedUrl.href}/index.php/rest`,
+        url: `${this.apiUrl}`,
         consumerKey: si.identityToken,
         consumerSecret: si.identitySecret,
         accessToken: si.token,
         accessTokenSecret: si.secret,
         logLevel: RestLogLevel.NONE,
-      })
+      });
     } catch (e) {
       Logger.error('Failed to construct RestClient', e);
     }
   }
+
+  public getApiUrl = () => this.apiUrl;
 
   /**
    * Convenience method to get a [[MagentoOrder]] by OrderId from the Magento API.
