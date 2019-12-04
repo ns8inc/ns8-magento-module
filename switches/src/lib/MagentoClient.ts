@@ -1,5 +1,6 @@
+import * as url from 'url';
 import { Customer as MagentoCustomer, RestLogLevel } from '@ns8/magento2-rest-client';
-import { handleApiError, validateBooleanHttpResponse, RetryConfig } from '.';
+import { handleApiError, RetryConfig, validateBooleanHttpResponse } from '.';
 import { Logger } from '@ns8/ns8-protect-sdk';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { RestClient } from '@ns8/magento2-rest-client';
@@ -16,6 +17,8 @@ export class MagentoClient {
 
   private SwitchContext: SwitchContext;
   public client: RestClient;
+
+  //Constructing the REST client has no side effects. OAuth does not take place until an API call is made.
   constructor(switchContext: SwitchContext) {
     try {
       this.SwitchContext = switchContext;
@@ -25,9 +28,10 @@ export class MagentoClient {
       if (!siTemp) throw new Error('No Magento Service Integration defined on this merchant');
       const si: ServiceIntegration = siTemp;
 
-      //Constructing the REST client has no side effects. OAuth does not take place until an API call is made.
+      const parsedUrl: url.UrlWithStringQuery = url.parse(this.SwitchContext.merchant.storefrontUrl);
       this.client = new RestClient({
-        url: `${this.SwitchContext.merchant.storefrontUrl}/index.php/rest`,
+        // TODO: refactor this to handle cases where these assumptions cannot be made
+        url: `${parsedUrl.protocol}//${parsedUrl.hostname}/index.php/rest`,
         consumerKey: si.identityToken,
         consumerSecret: si.identitySecret,
         accessToken: si.token,
