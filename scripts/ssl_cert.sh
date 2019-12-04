@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Begin interactive certbot certification
-sudo /usr/local/bin/certbot-auto --apache --redirect
+sudo /usr/local/bin/certbot-auto --apache --redirect --debug
 # Ensure certification was successful before moving on
 RETURN_CODE=$?
 if [ $RETURN_CODE != 0 ]
