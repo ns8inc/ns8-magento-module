@@ -42,19 +42,6 @@ export class OrderHelper {
   }
 
   /**
-   * Determines whether or not to process this order.
-   * TODO: update this logic when we have a better understanding of status/state in Magento
-   */
-  public process = (state: ProtectOrderUpdateStatus): Boolean => {
-    switch (state) {
-      case ProtectOrderUpdateStatus.CREATED:
-        return this.SwitchContext.data.order.status === 'pending' || this.SwitchContext.data.state === 'new';
-      default:
-        return true;
-    }
-  }
-
-  /**
    * Attempts to get the Magento order ID.
    * NOTE: there is significant confusion around the difference between the `entity_id`, `id` and `increment_id` concepts as Magento provides different and sometimes conflicting ID representations of the same entity.
    * @see https://magento.stackexchange.com/questions/26250/confusion-with-order-id-order-increment-id-and-i-am-not-getting-order-id-as-200
@@ -114,9 +101,6 @@ export class OrderHelper {
     this.Order = new Order();
     try {
       await this._ready;
-      if (!this.process(ProtectOrderUpdateStatus.CREATED)) {
-        throw new Error('Cannot call Create Order unless the order is new.');
-      }
       const orderId = this.getOrderId();
       const magentoOrderData = this.SwitchContext.data as OrderActionData;
       this.Order = new Order({
