@@ -133,18 +133,27 @@ class OrderUpdate implements ObserverInterface
             $status = $order->getStatus();
             $oldStatus = $this->addStatusHistory($order);
             $isNew = $state == 'new' || $status == 'pending';
+            $action = SwitchActionType::CREATE_ORDER_ACTION;
 
             if (isset($oldStatus) || !$isNew) {
-                $params = ['action'=>SwitchActionType::UPDATE_ORDER_STATUS_ACTION];
-                $eq8Score = $order->getData('eq8_score');
-                //If we haven't cached the EQ8 Score, get it now
-                if (!isset($eq8Score)) {
-                    $this->orderHelper->getEQ8Score($order->getId());
+                // For some reason, credit card orders using Authorize.net will start in a state of "processing"
+                // and Magento will automatically create a status history record. There is no sane way to know if
+                // this order is new or not. This logic ensures that we treat the order as new by first testing if
+                // we already have a score.
+                try {
+                    $eq8Score = $order->getData('eq8_score');
+                    // If we haven't cached the EQ8 Score, get it now
+                    if (!isset($eq8Score)) {
+                        // This will fail if the order does not exist, and we'll remain in a CREATE_ORDER_ACTION state
+                        $this->orderHelper->getEQ8Score($order->getId());
+                    }
+                    $action = SwitchActionType::UPDATE_ORDER_STATUS_ACTION;
+                } catch (Throwable $e) {
+                    $this->logger->error('Could not retrieve the EQ8 Score', ['error' => $e]);
                 }
-            } else {
-                $params = ['action'=>SwitchActionType::CREATE_ORDER_ACTION];
             }
 
+            $params = ['action'=>$action];
             $data = ['order'=>$orderData];
             $response = $this->httpClient->post('/switch/executor', $data, $params);
         } catch (Throwable $e) {
