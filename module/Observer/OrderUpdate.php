@@ -142,8 +142,9 @@ class OrderUpdate implements ObserverInterface
                 // we already have a score.
                 try {
                     $eq8Score = $order->getData('eq8_score');
-                    //If we haven't cached the EQ8 Score, get it now
+                    // If we haven't cached the EQ8 Score, get it now
                     if (!isset($eq8Score)) {
+                        // This will fail if the order does not exist, and we'll remain in a CREATE_ORDER_ACTION state
                         $this->orderHelper->getEQ8Score($order->getId());
                     }
                     $action = SwitchActionType::UPDATE_ORDER_STATUS_ACTION;
