@@ -17,20 +17,20 @@ import { SwitchContext } from 'ns8-switchboard-interfaces';
  * Utility class for working with Magento Orders
  */
 export class OrderHelper {
-  public MagentoOrder: MagentoOrder;
-  public Order: Order;
+  public MagentoOrder: MagentoOrder | undefined;
+  public Order: Order | undefined;
   public SwitchContext: SwitchContext;
 
   //Helper classes
-  public AddressHelper: AddressHelper;
-  public CustomerHelper: CustomerHelper;
-  public LineItemsHelper: LineItemsHelper;
+  public AddressHelper: AddressHelper | undefined;
+  public CustomerHelper: CustomerHelper | undefined;
+  public LineItemsHelper: LineItemsHelper | undefined;
   public MagentoClient: MagentoClient;
-  public SessionHelper: SessionHelper;
-  public TransactionHelper: TransactionHelper;
+  public SessionHelper: SessionHelper | undefined;
+  public TransactionHelper: TransactionHelper | undefined;
 
   protected _ready: Promise<MagentoOrder>;
-  private _orderId: number;
+  private _orderId: number | undefined;
   /**
    * Constructor will call init() which sets a _ready Promise.
    * Any methods on this instance which require access to the Magento Order should wait on _ready.
@@ -100,25 +100,24 @@ export class OrderHelper {
   public createProtectOrder = async (): Promise<Order> => {
     this.Order = new Order();
     try {
-      await this._ready;
+      const order: MagentoOrder = await this._ready;
       const orderId = this.getOrderId();
       const magentoOrderData = this.SwitchContext.data as OrderActionData;
       this.Order = new Order({
         name: magentoOrderData.order.increment_id,
-        currency: this.MagentoOrder.order_currency_code,
+        currency: order.order_currency_code,
         merchantId: this.SwitchContext.merchant.id,
-        session: this.SessionHelper.toSession(),
-        addresses: this.AddressHelper.toOrderAddresses(),
+        session: this.SessionHelper?.toSession(),
+        addresses: this.AddressHelper?.toOrderAddresses(),
         platformId: `${orderId}`,
-        platformCreatedAt: new Date(this.MagentoOrder.created_at),
-        transactions: await this.TransactionHelper.toTransactions(),
-        lineItems: this.LineItemsHelper.toLineItems(),
-        createdAt: new Date(this.MagentoOrder.created_at),
-        customer: await this.CustomerHelper.toCustomer(),
+        platformCreatedAt: new Date(order.created_at),
+        transactions: await this.TransactionHelper?.toTransactions(),
+        lineItems: this.LineItemsHelper?.toLineItems(),
+        createdAt: new Date(order.created_at),
+        customer: await this.CustomerHelper?.toCustomer(),
         hasGiftCard: false,
-        platformStatus: '', //TODO: what is this?
-        totalPrice: this.MagentoOrder.base_grand_total,
-        updatedAt: new Date(this.MagentoOrder.updated_at)
+        totalPrice: order.base_grand_total,
+        updatedAt: new Date(order.updated_at)
       });
     } catch (e) {
       Logger.error('Failed to create order', e);

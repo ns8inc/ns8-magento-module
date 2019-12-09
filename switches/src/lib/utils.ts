@@ -8,7 +8,7 @@ export class RetryConfig {
     this.maxRetry = partial.maxRetry || 5
     this.waitMs = partial.waitMs || 2000
   }
-  key: number | string;
+  key: number | string | undefined;
   attempts: number;
   maxRetry: number;
   waitMs: number;
