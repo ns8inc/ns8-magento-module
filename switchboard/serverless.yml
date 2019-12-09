@@ -54,7 +54,7 @@ provider:
       Resource: 'arn:aws:s3:::protect-api-switch-data-${self:provider.stage}/*'
   name: aws
   region: us-west-2
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   stage: '${opt:stage, env:DEV_NAME}'
   timeout: 60
   versionFunctions: false

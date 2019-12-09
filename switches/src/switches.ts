@@ -1,4 +1,6 @@
 import * as operatorModule from '@ns8/ns8-switchboard-operator';
+import { Order, OrderUpdate } from 'ns8-protect-models';
+
 import {
   CreateOrderAction,
   OnInstallEvent,
@@ -9,9 +11,7 @@ import {
   UpdateOrderRiskEvent,
   UpdateOrderStatusAction,
   UpdateOrderStatusEvent
-  } from '.';
-import { Order } from 'ns8-protect-models';
-import { OrderUpdate } from 'ns8-protect-models';
+} from '.';
 
 /*
   The concept of this file is to explicitly export the function that the AWS Lambda will execute,
@@ -24,12 +24,32 @@ import { OrderUpdate } from 'ns8-protect-models';
   On the consumer side (in Switchboard), we simply import these `*Switch` methods and then export them using the step naming convention.
 */
 
-export const CreateOrderActionSwitch: (event: any) => Promise<Order> = (() => new operatorModule.CreateOrderActionOperator([new CreateOrderAction()]).handle)();
-export const OnInstallEventSwitch: (event: any) => Promise<any> = (() => new operatorModule.EventOperator([new OnInstallEvent()]).handle)();
-export const UninstallActionSwitch: (event: any) => Promise<any> = (() => new operatorModule.UninstallActionOperator([new UninstallAction()]).handle)();
-export const UpdateCustVerifyStatusEventSwitch: (event: any) => Promise<any> = (() => new operatorModule.EventOperator([new UpdateCustVerifyStatusEvent()]).handle)();
-export const UpdateEQ8ScoreEventSwitch: (event: any) => Promise<any> = (() => new operatorModule.EventOperator([new UpdateEQ8ScoreEvent()]).handle)();
-export const UpdateMerchantActionSwitch: (event: any) => Promise<any> = (() => new operatorModule.UpdateMerchantActionOperator([new UpdateMerchantAction()]).handle)();
-export const UpdateOrderRiskEventSwitch: (event: any) => Promise<any> = (() => new operatorModule.EventOperator([new UpdateOrderRiskEvent()]).handle)();
-export const UpdateOrderStatusActionSwitch: (event: any) => Promise<OrderUpdate> = (() => new operatorModule.UpdateOrderStatusActionOperator([new UpdateOrderStatusAction()]).handle)();
-export const UpdateOrderStatusEventSwitch: (event: any) => Promise<OrderUpdate> = (() => new operatorModule.EventOperator([new UpdateOrderStatusEvent()]).handle)();
+export const CreateOrderActionSwitch: (event: any) => Promise<Order> = (() =>
+  new operatorModule.CreateOrderActionOperator([new CreateOrderAction()])
+    .handle)();
+export const OnInstallEventSwitch: (event: any) => Promise<any> = (() =>
+  new operatorModule.EventOperator([new OnInstallEvent()]).handle)();
+export const UninstallActionSwitch: (event: any) => Promise<any> = (() =>
+  new operatorModule.UninstallActionOperator([new UninstallAction()]).handle)();
+export const UpdateCustVerifyStatusEventSwitch: (
+  event: any
+) => Promise<any> = (() =>
+  new operatorModule.EventOperator([new UpdateCustVerifyStatusEvent()])
+    .handle)();
+export const UpdateEQ8ScoreEventSwitch: (event: any) => Promise<any> = (() =>
+  new operatorModule.EventOperator([new UpdateEQ8ScoreEvent()]).handle)();
+export const UpdateMerchantActionSwitch: (event: any) => Promise<any> = (() =>
+  new operatorModule.UpdateMerchantActionOperator([new UpdateMerchantAction()])
+    .handle)();
+export const UpdateOrderRiskEventSwitch: (event: any) => Promise<any> = (() =>
+  new operatorModule.EventOperator([new UpdateOrderRiskEvent()]).handle)();
+export const UpdateOrderStatusActionSwitch: (
+  event: any
+) => Promise<OrderUpdate> = (() =>
+  new operatorModule.UpdateOrderStatusActionOperator([
+    new UpdateOrderStatusAction()
+  ]).handle)();
+export const UpdateOrderStatusEventSwitch: (
+  event: any
+) => Promise<OrderUpdate> = (() =>
+  new operatorModule.EventOperator([new UpdateOrderStatusEvent()]).handle)();

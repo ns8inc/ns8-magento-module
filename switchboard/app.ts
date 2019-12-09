@@ -8,7 +8,7 @@ import {
   UpdateOrderRiskEventSwitch as UpdateOrderRiskEvent,
   UpdateOrderStatusActionSwitch as UpdateOrderStatusAction,
   UpdateOrderStatusEventSwitch as UpdateOrderStatusEvent
-  } from '@ns8/ns8-magento2-switches';
+} from '@ns8/ns8-magento2-switches';
 
 /*
  The purpose of this module is 3 fold.
@@ -32,5 +32,5 @@ export {
   UpdateMerchantAction,
   UpdateOrderRiskEvent,
   UpdateOrderStatusAction,
-  UpdateOrderStatusEvent,
-}
+  UpdateOrderStatusEvent
+};

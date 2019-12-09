@@ -7,7 +7,6 @@ import { Logger } from '@ns8/ns8-protect-sdk';
  * Utlity method for handling merchant update events
  */
 export class MerchantHelper {
-
   public SwitchContext: SwitchContext;
 
   constructor(switchContext: SwitchContext) {
@@ -18,9 +17,10 @@ export class MerchantHelper {
     const ret = new MerchantUpdate(this.SwitchContext.merchant);
     try {
       ret.contact = new Contact(ret.contact);
-      const configData: MagentoMerchantUpdate | undefined = (this.SwitchContext.data.eventData?.configData) ?
-        this.SwitchContext.data.eventData.configData :
-        this.SwitchContext.data.configData;
+      const configData: MagentoMerchantUpdate | undefined = this.SwitchContext
+        .data.eventData?.configData
+        ? this.SwitchContext.data.eventData.configData
+        : this.SwitchContext.data.configData;
 
       if (!configData?.groups) return ret;
 
@@ -39,11 +39,19 @@ export class MerchantHelper {
         ret.contact.email = generalIdInfo.email?.value;
       }
 
-      if (configData.groups.unsecure?.fields || configData.groups.secure?.fields) {
-        const unsecureBaseUrl: string | undefined = configData.groups.unsecure?.fields?.base_url?.value;
-        const secureBaseUrl: string | undefined = configData.groups.secure?.fields?.base_url?.value;
-        const useSecureBaseUrl: boolean | undefined = configData.groups.secure?.fields?.use_in_frontend?.value === '1';
-        const storefrontUrl: string | undefined = useSecureBaseUrl ? secureBaseUrl : unsecureBaseUrl;
+      if (
+        configData.groups.unsecure?.fields ||
+        configData.groups.secure?.fields
+      ) {
+        const unsecureBaseUrl: string | undefined =
+          configData.groups.unsecure?.fields?.base_url?.value;
+        const secureBaseUrl: string | undefined =
+          configData.groups.secure?.fields?.base_url?.value;
+        const useSecureBaseUrl: boolean | undefined =
+          configData.groups.secure?.fields?.use_in_frontend?.value === '1';
+        const storefrontUrl: string | undefined = useSecureBaseUrl
+          ? secureBaseUrl
+          : unsecureBaseUrl;
         if (storefrontUrl) {
           ret.storefrontUrl = storefrontUrl.replace(/\/$/, '');
         }
@@ -52,5 +60,5 @@ export class MerchantHelper {
       Logger.error(`Failed to create Merchant update event`, e);
     }
     return ret;
-  }
+  };
 }

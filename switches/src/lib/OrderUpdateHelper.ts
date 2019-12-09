@@ -1,8 +1,11 @@
 import { Logger } from '@ns8/ns8-protect-sdk';
 import { NamedOrderUpdate } from 'ns8-switchboard-interfaces';
-import { OrderHelper } from './OrderHelper';
 import { Status } from 'ns8-protect-models';
-import { StatusHistory, OrderState as MagentoOrderState } from '@ns8/magento2-rest-client';
+import {
+  StatusHistory,
+  OrderState as MagentoOrderState
+} from '@ns8/magento2-rest-client';
+import { OrderHelper } from './OrderHelper';
 import { OrderActionData } from '..';
 import { OrderUpdateEventData } from '../models';
 import { ProtectOrderState, isValidMagentoState } from './utils';
@@ -10,7 +13,6 @@ import { ProtectOrderState, isValidMagentoState } from './utils';
  * Utility class for working with Protect Named Order Updates
  */
 export class OrderUpdateHelper extends OrderHelper {
-
   /**
    * This will process the Switchboard Context for an Order Update Action and then execute the necessary steps to handle the Order.
    * This executes in response to Order changes **from** Magento. The Magento side Action triggers this step function logic.
@@ -23,25 +25,30 @@ export class OrderUpdateHelper extends OrderHelper {
       ret.orderName = data.order.increment_id;
 
       if (!isValidMagentoState(data.order.state)) {
-        throw new Error(`The state of this order (${data.order.status}) is not recognized.`);
+        throw new Error(
+          `The state of this order (${data.order.status}) is not recognized.`
+        );
       }
-      //We currently have only 3 concepts on the Protect side for Order status: Canceled, Approved and Merchant Review
-      //This attempts to normalize the multitude of states an order can have from within Magento into our very narrow concepts.
-      if (data.order.state == MagentoOrderState.CANCELED || data.order.state == MagentoOrderState.CLOSED) {
-        //Cancelled indicates the order has been proactively cancelled. Closed indicates the order is terminated and the customer has been refunded.
+      // We currently have only 3 concepts on the Protect side for Order status: Canceled, Approved and Merchant Review
+      // This attempts to normalize the multitude of states an order can have from within Magento into our very narrow concepts.
+      if (
+        data.order.state === MagentoOrderState.CANCELED ||
+        data.order.state === MagentoOrderState.CLOSED
+      ) {
+        // Cancelled indicates the order has been proactively cancelled. Closed indicates the order is terminated and the customer has been refunded.
         ret.status = Status.CANCELLED;
-      } else if (data.order.state == MagentoOrderState.COMPLETE) {
-        //If the order is complete, then the merchant has approved it.
+      } else if (data.order.state === MagentoOrderState.COMPLETE) {
+        // If the order is complete, then the merchant has approved it.
         ret.status = Status.APPROVED;
       } else {
-        //All other Magento statuses indicate the order is pending or on hold.
+        // All other Magento statuses indicate the order is pending or on hold.
         ret.status = Status.MERCHANT_REVIEW;
       }
     } catch (e) {
       Logger.error('Failed to get named order', e);
     }
     return ret;
-  }
+  };
 
   /**
    * This will process the Switchboard Context for an Order Update Event and then execute the necessary steps to handle the Order.
@@ -55,9 +62,11 @@ export class OrderUpdateHelper extends OrderHelper {
 
       // If the order has already been terminated, refunded or fulfilled,
       // then do nothing.
-      if (magentoOrder.state === MagentoOrderState.CANCELED ||
-        magentoOrder.state == MagentoOrderState.CLOSED ||
-        magentoOrder.state == MagentoOrderState.COMPLETE) {
+      if (
+        magentoOrder.state === MagentoOrderState.CANCELED ||
+        magentoOrder.state === MagentoOrderState.CLOSED ||
+        magentoOrder.state === MagentoOrderState.COMPLETE
+      ) {
         return ret;
       }
 
@@ -78,36 +87,51 @@ export class OrderUpdateHelper extends OrderHelper {
           ret.platformStatus = MagentoOrderState.CANCELED;
           comment.comment = 'NS8 Protect Order Cancelled';
           comment.status = MagentoOrderState.CANCELED;
-          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, comment);
+          await this.MagentoClient.postOrderComment(
+            magentoOrder.entity_id,
+            comment
+          );
           break;
         case Status.APPROVED:
-          if (magentoOrder.state == MagentoOrderState.ON_HOLD) {
-            //There are various ways this can fail; try for now and move on if we don't succeed
+          if (magentoOrder.state === MagentoOrderState.ON_HOLD) {
+            // There are various ways this can fail; try for now and move on if we don't succeed
             try {
               await this.MagentoClient.unholdOrder(magentoOrder.entity_id);
-            } catch { }
+            } catch (e) {
+              Logger.error('Failed to unhold order', e);
+            }
           }
           ret.platformStatus = ProtectOrderState.APPROVED;
           comment.comment = 'NS8 Protect Order Approved';
           comment.status = ProtectOrderState.APPROVED;
-          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, comment);
+          await this.MagentoClient.postOrderComment(
+            magentoOrder.entity_id,
+            comment
+          );
           break;
         case Status.MERCHANT_REVIEW:
-          if (magentoOrder.state != MagentoOrderState.ON_HOLD) {
-            //There are various ways this can fail; try for now and move on if we don't succeed
+          if (magentoOrder.state !== MagentoOrderState.ON_HOLD) {
+            // There are various ways this can fail; try for now and move on if we don't succeed
             try {
               await this.MagentoClient.holdOrder(magentoOrder.entity_id);
-            } catch { }
+            } catch (e) {
+              Logger.error('Failed to hold order', e);
+            }
           }
           ret.platformStatus = ProtectOrderState.MERCHANT_REVIEW;
           comment.comment = 'NS8 Protect Order Requires Review';
           comment.status = ProtectOrderState.MERCHANT_REVIEW;
-          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, comment);
+          await this.MagentoClient.postOrderComment(
+            magentoOrder.entity_id,
+            comment
+          );
+          break;
+        default:
           break;
       }
     } catch (e) {
       Logger.error('Failed to get named order', e);
     }
     return ret;
-  }
+  };
 }

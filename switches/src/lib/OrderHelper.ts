@@ -1,36 +1,44 @@
+import { Logger } from '@ns8/ns8-protect-sdk';
+import { Order } from 'ns8-protect-models';
+import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
 import {
   AddressHelper,
   CustomerHelper,
   LineItemsHelper,
   MagentoClient,
   OrderActionData,
-  ProtectOrderUpdateStatus,
   SessionHelper,
   TransactionHelper
 } from '..';
-import { Logger } from '@ns8/ns8-protect-sdk';
-import { Order } from 'ns8-protect-models';
-import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
-import { SwitchContext } from 'ns8-switchboard-interfaces';
 
 /**
  * Utility class for working with Magento Orders
  */
 export class OrderHelper {
   public MagentoOrder: MagentoOrder | undefined;
+
   public Order: Order | undefined;
+
   public SwitchContext: SwitchContext;
 
-  //Helper classes
+  // Helper classes
   public AddressHelper: AddressHelper | undefined;
+
   public CustomerHelper: CustomerHelper | undefined;
+
   public LineItemsHelper: LineItemsHelper | undefined;
+
   public MagentoClient: MagentoClient;
+
   public SessionHelper: SessionHelper | undefined;
+
   public TransactionHelper: TransactionHelper | undefined;
 
   protected _ready: Promise<MagentoOrder>;
+
   private _orderId: number | undefined;
+
   /**
    * Constructor will call init() which sets a _ready Promise.
    * Any methods on this instance which require access to the Magento Order should wait on _ready.
@@ -55,21 +63,21 @@ export class OrderHelper {
     if (this._orderId) return this._orderId;
 
     let ret: number | undefined;
-    const data = this.SwitchContext.data;
+    const { data } = this.SwitchContext;
     if (data) {
       if (data.order) {
         if (data.order.entity_id) {
-          ret = parseInt(data.order.entity_id);
+          ret = parseInt(data.order.entity_id, 10);
         }
       }
       if (!ret && data.platformId) {
-        //We control the `platformId`; it should be correct if we have already set it
-        ret = parseInt(data.platformId);
+        // We control the `platformId`; it should be correct if we have already set it
+        ret = parseInt(data.platformId, 10);
       }
     }
     if (ret) this._orderId = ret;
     return ret;
-  }
+  };
 
   /**
    * Initialze this instance with the Magento Order returned from the platform API
@@ -79,18 +87,45 @@ export class OrderHelper {
 
     const orderId = this.getOrderId();
     if (!orderId) throw new Error(`No Magento OrderId could be found`);
-    const order: MagentoOrder | null = await this.MagentoClient.getOrder(orderId);
-    if (null === order) throw new Error(`Order "${this.SwitchContext.data.order.increment_id}" could not be loaded by entity_id: ${orderId} from ${this.MagentoClient.getApiUrl()}`);
+    const order: MagentoOrder | null = await this.MagentoClient.getOrder(
+      orderId
+    );
+    if (order === null)
+      throw new Error(
+        `Order "${
+          this.SwitchContext.data.order.increment_id
+        }" could not be loaded by entity_id: ${orderId} from ${this.MagentoClient.getApiUrl()}`
+      );
     this.MagentoOrder = order;
 
-    this.AddressHelper = new AddressHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
-    this.CustomerHelper = new CustomerHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
-    this.LineItemsHelper = new LineItemsHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
-    this.SessionHelper = new SessionHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
-    this.TransactionHelper = new TransactionHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
+    this.AddressHelper = new AddressHelper(
+      this.SwitchContext,
+      this.MagentoClient,
+      this.MagentoOrder
+    );
+    this.CustomerHelper = new CustomerHelper(
+      this.SwitchContext,
+      this.MagentoClient,
+      this.MagentoOrder
+    );
+    this.LineItemsHelper = new LineItemsHelper(
+      this.SwitchContext,
+      this.MagentoClient,
+      this.MagentoOrder
+    );
+    this.SessionHelper = new SessionHelper(
+      this.SwitchContext,
+      this.MagentoClient,
+      this.MagentoOrder
+    );
+    this.TransactionHelper = new TransactionHelper(
+      this.SwitchContext,
+      this.MagentoClient,
+      this.MagentoOrder
+    );
 
     return this.MagentoOrder;
-  }
+  };
 
   /**
    * Converts a Magento Order into a Protect Order. This should exclusively be called on Order Create.
@@ -124,7 +159,7 @@ export class OrderHelper {
     }
 
     return this.Order;
-  }
+  };
 
   /**
    * Get the Magento version of this Order

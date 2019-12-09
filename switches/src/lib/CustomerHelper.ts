@@ -1,7 +1,7 @@
 import { Customer } from 'ns8-protect-models';
 import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
-import { HelperBase } from './HelperBase';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
+import { HelperBase } from './HelperBase';
 
 /**
  * Utility class for converting Magento Customer model to Protect Customer
@@ -21,7 +21,7 @@ export class CustomerHelper extends HelperBase {
       default:
         return 'U';
     }
-  }
+  };
 
   /**
    * Attempt to parse a phone number into a standardized format.
@@ -30,16 +30,22 @@ export class CustomerHelper extends HelperBase {
   private getPhoneNumber = (customer: MagentoCustomer): string => {
     let phoneNumber = '';
     if (customer.addresses) {
-      const defaultBilling = customer.addresses.find((a) => a.telephone && a.default_billing === true);
-      const defaultShipping = customer.addresses.find((a) => a.telephone && a.default_shipping === true);
-      const anyPhoneNumber = customer.addresses.find((a) => a.telephone);
-      const addressWithPhone = defaultBilling || defaultShipping || anyPhoneNumber;
+      const defaultBilling = customer.addresses.find(
+        a => a.telephone && a.default_billing === true
+      );
+      const defaultShipping = customer.addresses.find(
+        a => a.telephone && a.default_shipping === true
+      );
+      const anyPhoneNumber = customer.addresses.find(a => a.telephone);
+      const addressWithPhone =
+        defaultBilling || defaultShipping || anyPhoneNumber;
       if (addressWithPhone && addressWithPhone.telephone) {
-        phoneNumber = ModelTools.formatPhoneNumber(addressWithPhone.telephone) || '';
+        phoneNumber =
+          ModelTools.formatPhoneNumber(addressWithPhone.telephone) || '';
       }
     }
     return phoneNumber;
-  }
+  };
 
   /**
    * Converts a Magento Customer to a Protect customer
@@ -48,10 +54,11 @@ export class CustomerHelper extends HelperBase {
     let ret: Customer = new Customer();
     try {
       // If a user is creating an order as a guest, the order will not have a customer id
-      let customer: MagentoCustomer | null = (this.MagentoOrder.customer_id > 0)
-        ? await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id)
-        : null;
-      if (null === customer) {
+      let customer: MagentoCustomer | null =
+        this.MagentoOrder.customer_id > 0
+          ? await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id)
+          : null;
+      if (customer === null) {
         // If we are here, the customer is a guest. We cannot assume anything except an email address.
         // Even email address may not always be guaranteed?
         const guestName = 'N/A';
@@ -67,9 +74,9 @@ export class CustomerHelper extends HelperBase {
       }
 
       ret = new Customer({
-        //Protect throws an error when trying to assign a value to birthday.
-        //TODO: investigate and restore this
-        //birthday: Utilities.toDate(customer.dob),
+        // Protect throws an error when trying to assign a value to birthday.
+        // TODO: investigate and restore this
+        // birthday: Utilities.toDate(customer.dob),
         email: customer.email,
         firstName: customer.firstname,
         gender: this.getGender(customer.gender),
@@ -82,6 +89,5 @@ export class CustomerHelper extends HelperBase {
     }
 
     return ret;
-  }
-
+  };
 }

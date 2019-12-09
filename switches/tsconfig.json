@@ -19,8 +19,8 @@
     "removeComments": false,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "strictNullChecks": true,
-    "target": "ES2017",
+    "strict": true,
+    "target": "es2019",
     "types": [
       "jest"
     ]

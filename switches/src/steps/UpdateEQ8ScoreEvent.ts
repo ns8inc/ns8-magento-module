@@ -1,5 +1,5 @@
-import { EventSwitch } from 'ns8-switchboard-interfaces';
-import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { EventSwitch, SwitchContext } from 'ns8-switchboard-interfaces';
+
 import { ScoreHelper } from '..';
 
 export class UpdateEQ8ScoreEvent implements EventSwitch {
