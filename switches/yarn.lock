@@ -291,26 +291,26 @@
   resolved "https://registry.yarnpkg.com/@ns8/magento2-rest-client/-/magento2-rest-client-0.2.29.tgz#17a2921a79258762567624a8b52dc0cd92ad1014"
   integrity sha512-58kATDYzvf6aJdgOjBuYoD3QXaJ48ndNebuXGK/UwUSNLoqY1jxwrVXZ9ZDusTUfU3+TrxP/2pMqiEpbyImZeQ==
 
-"@ns8/ns8-protect-sdk@0.1.22":
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.22.tgz#bafba3a2f169a7df6efe3659e0e2d4e4f4f5e8b3"
-  integrity sha512-bOp/0+pgn3TaOUJAfkV5Qs2cZPGE66G0fK8XAwuy45cDuB4nBnuoAZWy3olkiSoWQPoUfg/SxTMPDlyXSw14Gg==
+"@ns8/ns8-protect-sdk@0.1.23":
+  version "0.1.23"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-protect-sdk/-/ns8-protect-sdk-0.1.23.tgz#978c760e4e98a4438ddc32cf5638c4a96a68d745"
+  integrity sha512-YiWWG94WPGcHt14cAfARW3UI79sO26y7afr7nd/DY3bCW39OZjkov1671gyd7M92AMPzzy0JUHPCNjtNruYs4A==
 
-"@ns8/ns8-switchboard-operator@1.0.110":
-  version "1.0.110"
-  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.110.tgz#3c7c6a0f3a08fb5226c690370f3913465c88e333"
-  integrity sha512-l3ttpbO9HeMvIYw8lFZsIS6XFQlEQOMd+qatVKXNaCG1RNyyQBKpBv4kyF9siehmjMGI16wX+DgdXC2FOXhZdw==
+"@ns8/ns8-switchboard-operator@1.0.111":
+  version "1.0.111"
+  resolved "https://registry.yarnpkg.com/@ns8/ns8-switchboard-operator/-/ns8-switchboard-operator-1.0.111.tgz#7a20843f330e8a9374ecfcc1501ef6827d92ecce"
+  integrity sha512-bB/R3VJRC1JXFN8UBObUmlhaHcTBYwDnOoA4uj6tvV5eNf+r11EqSrSl3e9pRMGgbNW2Y4lf5kPy3d91AuzOug==
   dependencies:
     aws-lambda "0.1.2"
-    aws-sdk "2.572.0"
+    aws-sdk "2.585.0"
     isomorphic-fetch "2.2.1"
-    ns8-protect-models "1.0.213"
-    ns8-switchboard-interfaces "1.0.90"
+    ns8-protect-models "1.0.216"
+    ns8-switchboard-interfaces "1.0.92"
 
-"@types/aws-lambda@8.10.3":
-  version "8.10.3"
-  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.3.tgz#ced41eb465181d941f64cefef514b1ee9d0491e0"
-  integrity sha512-p6pNNZ/VERiboy/S9ygkmimqZC082RzDE9SXcTUbsKRW5p0kbq+Yrt8IVlf49CM/F45nRPdCCPJtGembGHYtWg==
+"@types/aws-lambda@8.10.37":
+  version "8.10.37"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.37.tgz#f68d2fa5bddde5b09c20c8f4f235003e24681291"
+  integrity sha512-sdOuz+VMgISw1+a3LtqMdhLBgvv54Q+QmLIGsJimZVBKD6iDzsw1QoinZ7c95pVNU6XsyYsGn8j8w/qWyAS+nQ==
 
 "@types/babel__core@^7.1.0":
   version "7.1.3"
@@ -409,15 +409,15 @@
   resolved "https://registry.yarnpkg.com/@types/mkdirp/-/mkdirp-0.3.29.tgz#7f2ad7ec55f914482fc9b1ec4bb1ae6028d46066"
   integrity sha1-fyrX7FX5FEgvybHsS7GuYCjUYGY=
 
-"@types/node@*", "@types/node@12.12.15":
+"@types/node@*", "@types/node@12.12.16":
+  version "12.12.16"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.16.tgz#3ebcbd7bf978fa4c5120fee8be57083271a8b3ac"
+  integrity sha512-vRuMyoOr5yfNf8QWxXegOjeyjpWJxFePzHzmBOIzDIzo+rSqF94RW0PkS6y4T2+VjAWLXHWrfbIJY3E3aS7lUw==
+
+"@types/node@12.12.15":
   version "12.12.15"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.15.tgz#8dfb6ce22fedd469128137640a3aa8f17415422f"
   integrity sha512-Pv+vWicyFd07Hw/SmNnTUguqrHgDfMtjabvD9sQyxeqbpCEg8CmViLBaVPHtNsoBgZECrRf5/pgV6FJIBrGSjw==
-
-"@types/node@12.12.7":
-  version "12.12.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.7.tgz#01e4ea724d9e3bd50d90c11fd5980ba317d8fa11"
-  integrity sha512-E6Zn0rffhgd130zbCbAr/JdXfXkoOUFAKNs/rF8qnafSJ8KYaA/j3oz7dcwal+lYjLA7xvdd5J4wdYpCTlP8+w==
 
 "@types/node@8.0.0":
   version "8.0.0"
@@ -857,25 +857,25 @@ aws-lambda@0.1.2:
     commander "^2.5.0"
     dotenv "^0.4.0"
 
-aws-sdk@2.572.0:
-  version "2.572.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.572.0.tgz#80c82c075bdfb21fad7c66d7efbb14e75b970284"
-  integrity sha512-sE9SdbnJoQTr2+rLjLlHQTfSunayhi0FuI18MmrJVgbzBu54UZoHhD9MNTYhhZqU8/vBa25Ji99BWStIwuu5Vw==
-  dependencies:
-    buffer "^4.9.1"
-    events "^1.1.1"
-    ieee754 "^1.1.13"
-    jmespath "^0.15.0"
-    querystring "^0.2.0"
-    sax "^1.2.1"
-    url "^0.10.3"
-    uuid "^3.3.2"
-    xml2js "^0.4.19"
-
-aws-sdk@^*:
+aws-sdk@2.585.0:
   version "2.585.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.585.0.tgz#37769eca99690edd0a66f49766232fda274937c0"
   integrity sha512-T3JG4JZUmELqxT4hwJa93xns/TWIllaeYoyhRPGwXUj78vhCYJUiigtU6WRYLu84AMoZAGT/pVkARH7vfxpq9Q==
+  dependencies:
+    buffer "4.9.1"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
+aws-sdk@^*:
+  version "2.586.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.586.0.tgz#71e7882f2ce970e02e417bcf04055524032c62e2"
+  integrity sha512-Y5AGW8qRaa81jD1YahzLZLpQY62u3pmi2nlBNDMMR0Z4Ra5H90RgPAomKQe2JX+5Z6fzGFU7nNkYaScsZ6XFqw==
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -1156,7 +1156,7 @@ buffer@4.9.1:
     ieee754 "^1.1.4"
     isarray "^1.0.0"
 
-buffer@^4.3.0, buffer@^4.9.1:
+buffer@^4.3.0:
   version "4.9.2"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-4.9.2.tgz#230ead344002988644841ab0244af8c44bbe3ef8"
   integrity sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==
@@ -2047,7 +2047,7 @@ eventemitter3@^4.0.0:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.0.tgz#d65176163887ee59f386d64c82610b696a4a74eb"
   integrity sha512-qerSRB0p+UDEssxTtm6EDKcE7W4OaoisfIMl4CngyEhjpYglocpNg6UEqCvemdGhosAsg4sO2dXJOdyBifPGCg==
 
-events@1.1.1, events@^1.1.1:
+events@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
   integrity sha1-nr23Y1rQmccNzEwqH1AEKI6L2SQ=
@@ -2781,7 +2781,7 @@ iconv-lite@0.4.24, iconv-lite@^0.4.4, iconv-lite@~0.4.13:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
-ieee754@1.1.13, ieee754@^1.1.13, ieee754@^1.1.4:
+ieee754@1.1.13, ieee754@^1.1.4:
   version "1.1.13"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.13.tgz#ec168558e95aa181fd87d37f55c32bbcb6708b84"
   integrity sha512-4vf7I2LYV/HaWerSo3XmlMkp5eZ83i+/CDluXi/IGTs/O1sejBNhTtnxzmRZfvOUqj7lZjqHkeTvpgSFDlWZTg==
@@ -3533,7 +3533,7 @@ jest@24.9.0:
     import-local "^2.0.0"
     jest-cli "^24.9.0"
 
-jmespath@0.15.0, jmespath@^0.15.0:
+jmespath@0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
   integrity sha1-o/Iiqarp+Wb10nx5ZRDigJF2Qhc=
@@ -4261,13 +4261,6 @@ ns8-billing-core@^1.0.128:
   resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.814.tgz#ed6f10557125f359071a7e396a25142a6c486620"
   integrity sha512-oDHHFLQflWjBNMNSElBRvRd8Apy2z12KUaj7KEyG3vf8VNEfMWAoTc7+LD4rFCafdxaqOtcqdACoMy5n7n2qAw==
 
-ns8-protect-models@1.0.213:
-  version "1.0.213"
-  resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.213.tgz#dfef0aa461a2b8744558849febab0607fd231522"
-  integrity sha512-mQfmRSGNOqMflZ5ml9PGuY/G/ktab7J/y5TNryZejRhqOiwHh1HBTufTePuJ2ioBcdZ7TsPrWrU8tqQJ78Nq4A==
-  dependencies:
-    ns8-billing-core "^1.0.128"
-
 ns8-protect-models@1.0.216:
   version "1.0.216"
   resolved "https://registry.yarnpkg.com/ns8-protect-models/-/ns8-protect-models-1.0.216.tgz#805af665dadf462c9fc60b10dcd190b2ef9b0944"
@@ -4275,21 +4268,13 @@ ns8-protect-models@1.0.216:
   dependencies:
     ns8-billing-core "^1.0.128"
 
-ns8-switchboard-interfaces@1.0.90:
-  version "1.0.90"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.90.tgz#682599e5847ba631aaccca41739a206a75c86851"
-  integrity sha512-Km5zEaqyCuVmXyWyIN89XLN3wZJW3MQLNWs5UyN8NfSi8HuGp96fNrbFpa5lH/3/PejHjkVE/tduUK9dJB6D1g==
+ns8-switchboard-interfaces@1.0.92:
+  version "1.0.92"
+  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.92.tgz#8101abd7776f171ef7bb674b7931c599f36a5b66"
+  integrity sha512-+vc3WR9/4E8sopWVvrwwBGqyj2umu/2UsFDliScosOI/I0T7EaAVimO4PVimNDHIiBQ4UAdly5LNjeMVLNYWgA==
   dependencies:
-    "@types/node" "12.12.7"
-    ns8-protect-models "1.0.213"
-
-ns8-switchboard-interfaces@1.0.91:
-  version "1.0.91"
-  resolved "https://registry.yarnpkg.com/ns8-switchboard-interfaces/-/ns8-switchboard-interfaces-1.0.91.tgz#e2b84444be78ca94bdab59ecef32c5e815afef32"
-  integrity sha512-IgU9TMaozzCzM6Fu50C9tNm7cQzaeWZS6op5JJEqvIGesKFBg+kTMX4YmRO5Ngy4zvpCs/uBbw0E+r8nIcgbpw==
-  dependencies:
-    "@types/node" "12.12.7"
-    ns8-protect-models "1.0.213"
+    "@types/node" "12.12.15"
+    ns8-protect-models "1.0.216"
 
 number-is-nan@^1.0.0:
   version "1.0.1"
@@ -4820,7 +4805,7 @@ querystring-es3@^0.2.0:
   resolved "https://registry.yarnpkg.com/querystring-es3/-/querystring-es3-0.2.1.tgz#9ec61f79049875707d69414596fd907a4d711e73"
   integrity sha1-nsYfeQSYdXB9aUFFlv2Qek1xHnM=
 
-querystring@0.2.0, querystring@^0.2.0:
+querystring@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
   integrity sha1-sgmEkgO7Jd+CDadW50cAWHhSFiA=
@@ -5145,7 +5130,7 @@ sax@1.2.1:
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.1.tgz#7b8e656190b228e81a66aea748480d828cd2d37a"
   integrity sha1-e45lYZCyKOgaZq6nSEgNgozS03o=
 
-sax@>=0.6.0, sax@^1.2.1, sax@^1.2.4:
+sax@>=0.6.0, sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
@@ -5957,7 +5942,7 @@ url-parse@^1.4.3:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
-url@0.10.3, url@^0.10.3:
+url@0.10.3:
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/url/-/url-0.10.3.tgz#021e4d9c7705f21bbf37d03ceb58767402774c64"
   integrity sha1-Ah5NnHcF8hu/N9A861h2dAJ3TGQ=
@@ -5983,7 +5968,7 @@ util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
 
-util.promisify@^1.0.0, util.promisify@~1.0.0:
+util.promisify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/util.promisify/-/util.promisify-1.0.0.tgz#440f7165a459c9a16dc145eb8e72f35687097030"
   integrity sha512-i+6qA2MPhvoKLuxnJNpXAGhg7HphQOSUq2LKMZD0m15EiskXUkMvKdF4Uui0WYeCUGea+o2cw/ZuwehtfsrNkA==
@@ -6386,20 +6371,6 @@ xml2js@0.4.19:
   dependencies:
     sax ">=0.6.0"
     xmlbuilder "~9.0.1"
-
-xml2js@^0.4.19:
-  version "0.4.22"
-  resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.22.tgz#4fa2d846ec803237de86f30aa9b5f70b6600de02"
-  integrity sha512-MWTbxAQqclRSTnehWWe5nMKzI3VmJ8ltiJEco8akcC6j3miOhjjfzKum5sId+CWhfxdOs/1xauYr8/ZDBtQiRw==
-  dependencies:
-    sax ">=0.6.0"
-    util.promisify "~1.0.0"
-    xmlbuilder "~11.0.0"
-
-xmlbuilder@~11.0.0:
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-11.0.1.tgz#be9bae1c8a046e76b31127726347d0ad7002beb3"
-  integrity sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==
 
 xmlbuilder@~9.0.1:
   version "9.0.7"

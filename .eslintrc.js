@@ -38,7 +38,8 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'import/extensions': ['error', { '.ts': 'ignorePackages' }],
     camelcase: 'off',
-    '@typescript-eslint/camelcase': ['error', { properties: 'never' }]
+    '@typescript-eslint/camelcase': ['error', { properties: 'never' }],
+    '@typescript-eslint/no-explicit-any': 'off'
   },
   settings: {
     'import/resolver': {
