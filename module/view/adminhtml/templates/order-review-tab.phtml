@@ -1,6 +1,4 @@
 <section class="admin__page-section custom-tab-content">
-<?php
-echo $this->getLayout()->createBlock('NS8\Protect\Block\Adminhtml\Container')->setTemplate('NS8_Protect::client_iframe.phtml')->toHtml();
-?>
+<?= $block->getLayout()->createBlock('NS8\Protect\Block\Adminhtml\Container')->setTemplate('NS8_Protect::client_iframe.phtml')->toHtml(); ?>
 </section>
 
