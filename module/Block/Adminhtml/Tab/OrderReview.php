@@ -127,17 +127,4 @@ class OrderReview extends Template implements TabInterface
     {
         return !$this->canShowTab();
     }
-
-    /**
-     * Gets the URL to launch when the tab is clicked
-     *
-     * @return string
-     */
-    public function getTabUrl() : string
-    {
-        return $this->url->getNS8IframeUrl([
-            'order_id' => $this->getOrder()->getId(),
-            'page' => 'order_details',
-        ]);
-    }
 }
