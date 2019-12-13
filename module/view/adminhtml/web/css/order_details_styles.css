@@ -36,9 +36,9 @@
 }
 
 #sales_order_view_tabs_ns8_protect_order_review_content #ns8-protect-wrapper {
-    position: relative;
-    overflow: hidden;
-    padding-top: 56.25%; /* Percentage from a height of 9 & a width of 16 */
+  position: relative;
+  overflow: hidden;
+  padding-top: 56.25%; /* Percentage from a height of 9 & a width of 16 */
 }
 #sales_order_view_tabs_ns8_protect_order_review_content #ns8-protect-wrapper iframe.ns8-protect-client-iframe {
   position: absolute;
