@@ -195,8 +195,12 @@ export class TransactionHelper extends HelperBase {
             payment.cc_trans_id || payment.last_trans_id
           );
           if (customer !== null && magentoTrans !== null) {
+            const cardExpiration =
+              payment.cc_exp_month && payment.cc_exp_year
+                ? `${payment.cc_exp_month}/${payment.cc_exp_year}`
+                : '';
             trans.creditCard = new CreditCard({
-              cardExpiration: `${payment.cc_exp_month}/${payment.cc_exp_year}`,
+              cardExpiration,
               cardHolder: `${customer.firstname} ${customer.lastname}`,
               creditCardBin: '', // Magento does not give us the full credit card number, so we cannot currently calculate the Bin (and it is not provided)
               creditCardCompany: payment.cc_type,
