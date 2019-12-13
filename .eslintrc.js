@@ -39,7 +39,8 @@ module.exports = {
     'import/extensions': ['error', { '.ts': 'ignorePackages' }],
     camelcase: 'off',
     '@typescript-eslint/camelcase': ['error', { properties: 'never' }],
-    '@typescript-eslint/no-explicit-any': 'off'
+    '@typescript-eslint/no-explicit-any': 'off',
+    'import/no-duplicates': 'off'
   },
   settings: {
     'import/resolver': {

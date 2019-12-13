@@ -1,7 +1,5 @@
-import {
-  CreateOrderActionSwitch,
-  SwitchContext
-} from 'ns8-switchboard-interfaces';
+import { CreateOrderActionSwitch } from 'ns8-switchboard-interfaces';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { Order } from 'ns8-protect-models';
 import { OrderHelper } from '..';
 

@@ -1,15 +1,12 @@
-import {
-  Customer as MagentoCustomer,
-  RestLogLevel,
-  Order as MagentoOrder,
-  RestClient,
-  StatusHistory as MagentoComment,
-  Transaction as MagentoTransaction
-} from '@ns8/magento2-rest-client';
+import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
 import { Logger } from '@ns8/ns8-protect-sdk';
+import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
+import { RestClient } from '@ns8/magento2-rest-client';
+import { RestLogLevel } from '@ns8/magento2-rest-client';
+import { StatusHistory as MagentoComment } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
 import { handleApiError, RetryConfig, validateBooleanHttpResponse } from '.';
-
 /**
  * A wrapper around the Magento2 REST Client for convience and error handling.
  * TODO: as the number of these convenience methods continues to grow, it would be worth factoring out some of the boilerplate into a private method to improve readability/maintainability.

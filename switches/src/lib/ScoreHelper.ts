@@ -1,5 +1,5 @@
 import { FraudAssessment, ProviderType } from 'ns8-protect-models';
-import { OrderHelper } from './OrderHelper';
+import { OrderHelper } from '..';
 
 export class ScoreHelper extends OrderHelper {
   public processScore = async (): Promise<void> => {
