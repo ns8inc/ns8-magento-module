@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@ns8/ns8-magento2-switches": "2.0.28"
+    "@ns8/ns8-magento2-switches": "2.0.29"
   },
   "devDependencies": {
     "aws-lambda": "0.1.2",
@@ -14,5 +14,5 @@
     "deploy": "sls deploy",
     "undeploy": "sls remove"
   },
-  "version": "2.0.28"
+  "version": "2.0.29"
 }
