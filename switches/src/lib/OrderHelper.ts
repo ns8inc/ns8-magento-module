@@ -2,15 +2,13 @@ import { Logger } from '@ns8/ns8-protect-sdk';
 import { Order } from 'ns8-protect-models';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
-import {
-  AddressHelper,
-  CustomerHelper,
-  LineItemsHelper,
-  MagentoClient,
-  OrderActionData,
-  SessionHelper,
-  TransactionHelper
-} from '..';
+import { AddressHelper } from './AddressHelper';
+import { CustomerHelper } from './CustomerHelper';
+import { LineItemsHelper } from './LineItemsHelper';
+import { MagentoClient } from './MagentoClient';
+import { TransactionHelper } from './TransactionHelper';
+import { SessionHelper } from './SessionHelper';
+import { OrderActionData } from '../models/OrderActionData';
 
 /**
  * Utility class for working with Magento Orders

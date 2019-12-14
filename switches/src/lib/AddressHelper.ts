@@ -3,7 +3,7 @@ import { Address as MagentoAddress } from '@ns8/magento2-rest-client';
 import { Region as MagentoRegion } from '@ns8/magento2-rest-client';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
 import { Utilities } from '@ns8/ns8-protect-sdk';
-import { HelperBase } from '..';
+import { HelperBase } from './HelperBase';
 
 /**
  * Utility class for working with Magento Addresses

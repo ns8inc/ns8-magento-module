@@ -12,7 +12,7 @@
     "awesome-typescript-loader": "5.2.1",
     "aws-lambda": "0.1.2",
     "cross-env": "6.0.3",
-    "dotenv": "8.2.0",
+    "dotenv-extended": "2.6.0",
     "dts-bundle": "0.7.3",
     "hard-source-webpack-plugin": "0.13.1",
     "jest": "24.9.0",

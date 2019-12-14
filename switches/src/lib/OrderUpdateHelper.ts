@@ -3,13 +3,11 @@ import { NamedOrderUpdate } from 'ns8-switchboard-interfaces';
 import { OrderState as MagentoOrderState } from '@ns8/magento2-rest-client';
 import { Status } from 'ns8-protect-models';
 import { StatusHistory } from '@ns8/magento2-rest-client';
-import {
-  isValidMagentoState,
-  OrderActionData,
-  OrderUpdateEventData,
-  OrderHelper,
-  ProtectOrderState
-} from '..';
+import { OrderHelper } from './OrderHelper';
+import { OrderActionData } from '../models/OrderActionData';
+import { isValidMagentoState, ProtectOrderState } from './utils';
+import { OrderUpdateEventData } from '../models/OrderUpdateEventData';
+
 
 /**
  * Utility class for working with Protect Named Order Updates

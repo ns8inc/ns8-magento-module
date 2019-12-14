@@ -1,5 +1,5 @@
 import { LineItem } from 'ns8-protect-models';
-import { HelperBase } from '.';
+import { HelperBase } from './HelperBase';
 
 /**
  * Utlity method for converting Magento Items to Protect Line Items
