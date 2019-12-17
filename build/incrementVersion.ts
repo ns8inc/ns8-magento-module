@@ -4,6 +4,7 @@ import { writeFileSync } from 'fs';
 import composer from '../module/composer.json';
 import rootPackage from '../package.json';
 import switchboardPackage from '../switchboard/package.json';
+import switchboardJson from '../switchboard/switchboard.json';
 import switchesPackage from '../switches/package.json';
 import { env } from './loadEnv';
 
@@ -72,6 +73,15 @@ const incrementVersion = (): void => {
     JSON.stringify(switchboardPackage, null, 2)
   );
   console.log(`Updated switchboard ${currentVersion} to ${nextPackageVersion}`);
+
+  switchboardJson.modules[0].version = nextPackageVersion;
+  writeFileSync(
+    'switches/switchboard.json',
+    JSON.stringify(switchboardJson, null, 2)
+  );
+  console.log(
+    `Updated switchboard JSON ${currentVersion} to ${nextPackageVersion}`
+  );
 
   switchesPackage.version = nextPackageVersion;
   writeFileSync(

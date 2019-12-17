@@ -44,23 +44,6 @@ export const handleApiError = async (
   return false;
 };
 
-/**
- * Safely handle boolean responses and throw an Error if we do not get an expected result
- * @param httpResponse
- */
-export const validateBooleanHttpResponse = (httpResponse: any): boolean => {
-  // The response may not be strongly typed; but we expect `httpResponse == true` or `httpResponse == 'true'` or `httpResponse == '1'` or `httpResponse == 1`;
-  // If we get anything else, it is probably an error?
-  const ret =
-    httpResponse === true ||
-    httpResponse === 'true' ||
-    httpResponse === 'True' ||
-    httpResponse === '1' ||
-    httpResponse === 1;
-  if (!ret) throw new Error('Failed to get an expected boolean response.');
-  return ret;
-};
-
 export enum ProtectOrderUpdateStatus {
   CREATED = 'created',
   UPDATED = 'updated'

@@ -83,7 +83,11 @@ export class OrderUpdateHelper extends OrderHelper {
 
       switch (data.status) {
         case Status.CANCELLED:
-          await this.MagentoClient.cancelOrder(magentoOrder.entity_id);
+          try {
+            await this.MagentoClient.cancelOrder(magentoOrder.entity_id);
+          } catch (e) {
+            Logger.error('Failed to cancel order', e);
+          }
           ret.platformStatus = MagentoOrderState.CANCELED;
           comment.comment = 'NS8 Protect Order Cancelled';
           comment.status = MagentoOrderState.CANCELED;

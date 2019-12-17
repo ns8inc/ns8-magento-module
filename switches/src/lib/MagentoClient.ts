@@ -6,11 +6,7 @@ import { RestLogLevel } from '@ns8/magento2-rest-client';
 import { StatusHistory as MagentoComment } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
-import {
-  handleApiError,
-  RetryConfig,
-  validateBooleanHttpResponse
-} from './utils';
+import { handleApiError, RetryConfig } from './utils';
 
 /**
  * A wrapper around the Magento2 REST Client for convience and error handling.
@@ -115,11 +111,8 @@ export class MagentoClient {
   ): Promise<boolean> => {
     let ret = false;
     try {
-      const httpResponse = await this.client.orders.postComment(
-        orderId,
-        comment
-      );
-      ret = validateBooleanHttpResponse(httpResponse);
+      await this.client.orders.postComment(orderId, comment);
+      ret = true;
     } catch (e) {
       Logger.error(
         `Failed to add comment to Order Id:${orderId} in Magento API`,
@@ -135,8 +128,8 @@ export class MagentoClient {
   public cancelOrder = async (orderId: number): Promise<boolean> => {
     let ret = false;
     try {
-      const httpResponse = await this.client.orders.cancel(orderId);
-      ret = validateBooleanHttpResponse(httpResponse);
+      await this.client.orders.cancel(orderId);
+      ret = true;
     } catch (e) {
       Logger.error(`Failed to cancel Order Id:${orderId} in Magento API`, e);
     }
@@ -150,8 +143,8 @@ export class MagentoClient {
   public holdOrder = async (orderId: number): Promise<boolean> => {
     let ret = false;
     try {
-      const httpResponse = await this.client.orders.hold(orderId);
-      ret = validateBooleanHttpResponse(httpResponse);
+      await this.client.orders.hold(orderId);
+      ret = true;
     } catch (e) {
       Logger.error(`Failed to hold Order Id:${orderId} in Magento API`, e);
     }
@@ -166,7 +159,7 @@ export class MagentoClient {
     let ret = false;
     try {
       const httpResponse = await this.client.orders.unhold(orderId);
-      ret = validateBooleanHttpResponse(httpResponse);
+      ret = true;
     } catch (e) {
       Logger.error(`Failed to hold Order Id:${orderId} in Magento API`, e);
     }
