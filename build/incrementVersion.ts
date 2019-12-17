@@ -1,10 +1,11 @@
+/* eslint-disable no-console, import/extensions */
+import semver, { ReleaseType } from 'semver';
+import { writeFileSync } from 'fs';
 import composer from '../module/composer.json';
 import rootPackage from '../package.json';
-import semver, { ReleaseType } from 'semver';
 import switchboardPackage from '../switchboard/package.json';
 import switchesPackage from '../switches/package.json';
 import { env } from './loadEnv';
-import { writeFileSync } from 'fs';
 
 const getModuleXml = (nextVersion: string): string => `<?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -24,16 +25,32 @@ const getModuleXml = (nextVersion: string): string => `<?xml version="1.0" ?>
  * e.g. `2.0.1` would increment to `2.0.2-abc.0`
  * `2.0.2-abc.0` would increment to `2.0.2-abc.1`
  */
-const incrementVersion = () => {
-  const devSuffix: string = (process.env.DEV_SUFFIX) ? process.env.DEV_SUFFIX.trim().toLowerCase() : 'none';
-  const patchMode: string = (process.env.PATCH_MODE) ? process.env.PATCH_MODE.trim().toLowerCase() : 'patch';
-  const releaseType: ReleaseType = (devSuffix !== 'none' && patchMode === 'dev') ? 'prerelease' : 'patch';
+const incrementVersion = (): void => {
+  const devSuffix: string = process.env.DEV_SUFFIX
+    ? process.env.DEV_SUFFIX.trim().toLowerCase()
+    : 'none';
+  const patchMode: string = process.env.PATCH_MODE
+    ? process.env.PATCH_MODE.trim().toLowerCase()
+    : 'patch';
+  const releaseType: ReleaseType =
+    devSuffix !== 'none' && patchMode === 'dev' ? 'prerelease' : 'patch';
   const currentVersion: string = rootPackage.version;
-  const nextPackageVersion: string | null = semver.inc(currentVersion, releaseType, false, devSuffix);
-  if (!nextPackageVersion) throw new Error('Could not increment package version');
-  //This is a temporary workaround for working with prerelease versions in order to comply with the Magento version standards
-  const nextMagentoVersion: string | null = semver.inc(currentVersion, 'patch', false);
-  if (!nextMagentoVersion) throw new Error('Could not increment magento version');
+  const nextPackageVersion: string | null = semver.inc(
+    currentVersion,
+    releaseType,
+    false,
+    devSuffix
+  );
+  if (!nextPackageVersion)
+    throw new Error('Could not increment package version');
+  // This is a temporary workaround for working with prerelease versions in order to comply with the Magento version standards
+  const nextMagentoVersion: string | null = semver.inc(
+    currentVersion,
+    'patch',
+    false
+  );
+  if (!nextMagentoVersion)
+    throw new Error('Could not increment magento version');
 
   rootPackage.version = nextPackageVersion;
   writeFileSync('package.json', JSON.stringify(rootPackage, null, 2));
@@ -46,13 +63,21 @@ const incrementVersion = () => {
   writeFileSync('module/composer.json', JSON.stringify(composer, null, 2));
   console.log(`Updated composer ${currentVersion} to ${nextPackageVersion}`);
 
-  switchboardPackage.dependencies['@ns8/ns8-magento2-switches'] = nextPackageVersion;
+  switchboardPackage.dependencies[
+    '@ns8/ns8-magento2-switches'
+  ] = nextPackageVersion;
   switchboardPackage.version = nextPackageVersion;
-  writeFileSync('switchboard/package.json', JSON.stringify(switchboardPackage, null, 2));
+  writeFileSync(
+    'switchboard/package.json',
+    JSON.stringify(switchboardPackage, null, 2)
+  );
   console.log(`Updated switchboard ${currentVersion} to ${nextPackageVersion}`);
 
   switchesPackage.version = nextPackageVersion;
-  writeFileSync('switches/package.json', JSON.stringify(switchesPackage, null, 2));
+  writeFileSync(
+    'switches/package.json',
+    JSON.stringify(switchesPackage, null, 2)
+  );
   console.log(`Updated switches ${currentVersion} to ${nextPackageVersion}`);
 };
 

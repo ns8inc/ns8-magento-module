@@ -1,15 +1,41 @@
+/* eslint-disable @typescript-eslint/no-var-requires, import/extensions, no-console */
+import {
+  createWriteStream,
+  mkdirSync,
+  existsSync,
+  readdirSync,
+  lstatSync,
+  unlinkSync,
+  rmdirSync
+} from 'fs';
+import Path from 'path';
 import composer from '../module/composer.json';
-import rimraf from 'rimraf';
-import { createWriteStream, mkdirSync } from 'fs';
+
 const archiver = require('archiver');
+
+const deleteFolderRecursive = (path): void => {
+  if (existsSync(path)) {
+    readdirSync(path).forEach(file => {
+      const curPath = Path.join(path, file);
+      if (lstatSync(curPath).isDirectory()) {
+        // recurse
+        deleteFolderRecursive(curPath);
+      } else {
+        // delete file
+        unlinkSync(curPath);
+      }
+    });
+    rmdirSync(path);
+  }
+};
 
 /**
  * Generates a zip file with the right naming conventions
  * @see https://devdocs.magento.com/guides/v2.3/extension-dev-guide/package/package_module.html#packaging
  */
-export const moduleRelease = () => {
+export const moduleRelease = (): void => {
   // Cleanup any old zip files we may have
-  rimraf.sync('release');
+  deleteFolderRecursive('release');
   mkdirSync('release');
 
   const fileName = `release/NS8_Protect-${composer.version}.zip`;
@@ -20,7 +46,7 @@ export const moduleRelease = () => {
     console.log(`${fileName}: ${archive.pointer()} total bytes`);
   });
 
-  archive.on('error', (err) => {
+  archive.on('error', err => {
     throw err;
   });
 
@@ -30,7 +56,7 @@ export const moduleRelease = () => {
     ignore: ['**/vendor/**']
   });
   archive.finalize();
-}
+};
 
 try {
   moduleRelease();

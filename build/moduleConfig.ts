@@ -1,9 +1,11 @@
-import { env } from './loadEnv';
+/* eslint-disable no-console */
 import { writeFileSync } from 'fs';
+import { env } from './loadEnv';
 
 const destFolder = 'module/etc/integration/config.xml';
 const productionApiUrl = 'https://protect.ns8.com';
-const productionEmail = 'no-reply@ns8.com';
+const testApiUrl = 'https://test-protect.ns8.com';
+const ns8Email = 'no-reply@ns8.com';
 
 const getConfigXml = (email: string, apiUrl: string): string => {
   return `<integrations>
@@ -14,7 +16,7 @@ const getConfigXml = (email: string, apiUrl: string): string => {
   </integration>
 </integrations>
 `;
-}
+};
 
 /**
  * Generates a `config.xml` file in the correct location for Magento.
@@ -25,19 +27,31 @@ const getConfigXml = (email: string, apiUrl: string): string => {
  * `NS8_PROTECT_URL`: your ngrok URL for the protect api
  */
 export const moduleConfig = (): void => {
-  let email = productionEmail;
+  let email = ns8Email;
   let apiUrl = productionApiUrl;
   // If we are not in prod mode, use the .env variables
-  if (process.env.NODE_ENV && process.env.NODE_ENV.trim().toLocaleLowerCase() !== 'prod') {
-    if (process.env.DEV_EMAIL) {
-      email = process.env.DEV_EMAIL;
-    }
-    if (process.env.NS8_PROTECT_URL) {
-      apiUrl = process.env.NS8_PROTECT_URL;
+  if (process.env.NODE_ENV) {
+    switch (process.env.NODE_ENV.trim().toLowerCase()) {
+      case 'prod':
+        // Accept the defaults for production
+        break;
+      case 'test':
+        apiUrl = testApiUrl;
+        break;
+      default:
+        if (process.env.DEV_EMAIL) {
+          email = process.env.DEV_EMAIL;
+        }
+        if (process.env.NS8_PROTECT_URL) {
+          apiUrl = process.env.NS8_PROTECT_URL;
+        }
+        break;
     }
   }
   writeFileSync(destFolder, getConfigXml(email, apiUrl));
-  console.info(`Set integration XML ${destFolder} with email='${email}'; apiUrl='${apiUrl}'.`);
+  console.info(
+    `Set integration XML ${destFolder} with email='${email}'; apiUrl='${apiUrl}'.`
+  );
 };
 
 try {

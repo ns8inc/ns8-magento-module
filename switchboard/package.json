@@ -11,6 +11,7 @@
   "scripts": {
     "build": "yarn install && tsc -d",
     "build:dev": "yarn build && yarn link @ns8/ns8-magento2-switches",
+    "clean": "rm -rf .serverless dist node_modules",
     "deploy": "sls deploy",
     "undeploy": "sls remove"
   },
