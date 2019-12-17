@@ -5,7 +5,7 @@ import { PaymentAdditionalInfo as MagentoPaymentAdditionalInfo } from '@ns8/mage
 import { Transaction } from 'ns8-protect-models';
 import { TransactionMethod } from 'ns8-protect-models';
 import { TransactionStatus } from 'ns8-protect-models';
-import { HelperBase } from '..';
+import { HelperBase } from './HelperBase';
 
 /**
  * Utility class for working with Magento Transaction data

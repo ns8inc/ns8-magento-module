@@ -1,7 +1,7 @@
 import { Customer } from 'ns8-protect-models';
 import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
-import { HelperBase } from '..';
+import { HelperBase } from './HelperBase';
 
 /**
  * Utility class for converting Magento Customer model to Protect Customer

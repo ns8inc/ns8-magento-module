@@ -1,5 +1,5 @@
 import { Session } from 'ns8-protect-models';
-import { HelperBase } from '..';
+import { HelperBase } from './HelperBase';
 
 export class SessionHelper extends HelperBase {
   /**

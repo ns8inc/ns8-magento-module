@@ -1,7 +1,7 @@
 import { Logger } from '@ns8/ns8-protect-sdk';
 import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
-import { MagentoClient } from '.';
+import { MagentoClient } from './MagentoClient';
 
 export class HelperBase {
   public SwitchContext: SwitchContext;
