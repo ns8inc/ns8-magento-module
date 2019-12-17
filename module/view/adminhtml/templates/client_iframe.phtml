@@ -19,7 +19,7 @@
           window.location.href = orderUrl;
         };
 
-        fillRemainingViewportHeight(container);
+        //fillRemainingViewportHeight(container);
         /*
         * Here, we have a few options for keeping the viewport height full of an element
         * 1. Listen for window.onresize
@@ -29,7 +29,7 @@
         * 3. Poll every so often and run the function to fill the viewport height
         *    - We've gone with this approach using a 200ms interval for now
         */
-        window.setInterval(() => fillRemainingViewportHeight(container), 200);
+        //window.setInterval(() => fillRemainingViewportHeight(container), 200);
 
         handshake.then(
           child => {
