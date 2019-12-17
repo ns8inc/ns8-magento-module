@@ -10,6 +10,11 @@
         });
 
         const fillRemainingViewportHeight = (element) => {
+          const salesOrderContainerElement = document.getElementById('sales_order_view_tabs_ns8_protect_order_review_content');
+          if (salesOrderContainerElement) {
+            element.style.paddingTop = '419px'; 
+            return;
+          }
           element.style.height = `calc(100vh - ${element.offsetTop}px - 20px)`;
         };
 
@@ -29,7 +34,6 @@
         * 3. Poll every so often and run the function to fill the viewport height
         *    - We've gone with this approach using a 200ms interval for now
         */
-        window.setInterval(() => fillRemainingViewportHeight(container), 200);
 
         handshake.then(
           child => {
