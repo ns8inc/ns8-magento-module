@@ -2,11 +2,11 @@
 
 ## Set Variables!! You MUST set these!!
 
-# https://<YOUR DEV URL>.ngrok.io, e.g. https://dev-jdoe-magento.ngrok.io
-NS8_PROTECT_URL=
-# https://<YOUR NS8 PROTECT CLIENT APP DEV URL>.ngrok.io, e.g. https://david-local-protect.ngrok.io/#
-NS8_CLIENT_URL=
-# <YOUR DEV DOMAIN>, e.g. dev-jdoe-Magento-2.3.2.ns8demos.com
+# http://<YOUR DEV URL>.ngrok.io, e.g. http://dev-jdoe-magento.ngrok.io
+NS8_PROTECT_URL=https://test-protect.ns8.com
+# http://<YOUR NS8 PROTECT CLIENT APP DEV URL>.ngrok.io, e.g. https://david-local-protect.ngrok.io/#
+NS8_CLIENT_URL=https://test-protect-client.ns8.com
+# <YOUR DEV DOMAIN>, e.g. http://dev-jdoe-Magento-2.3.2.ns8demos.com/
 DEV_LIGHTSAIL_DOMAIN=
 
 ## BEGIN--SCRIPT ##
@@ -26,7 +26,6 @@ yum update -y
 yum install -y \
 git \
 httpd24 \
-mod24_ssl \
 nodejs \
 php71 \
 php71-bcmath \
@@ -38,16 +37,6 @@ php71-mysqlnd \
 php71-soap \
 php71-zip \
 mysql57-server
-
-# Enable the Extra Packages for Enterprise Linux (EPEL) repository from the Fedora project
-yum-config-manager --enable epel
-
-# Install Certbot
-wget https://dl.eff.org/certbot-auto
-mv certbot-auto /usr/local/bin/certbot-auto
-chown root /usr/local/bin/certbot-auto
-chmod 0755 /usr/local/bin/certbot-auto
-
 # Configure Web and DB servers to start on boot
 chkconfig httpd on
 chkconfig mysqld on
@@ -65,10 +54,6 @@ echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL" | sudo tee -a /var/www/html/.htac
 chown -R apache:apache /var/www/html
 chmod -R 2775 /var/www/html
 setfacl -Rdm g:apache:rwx /var/www/html
-
-# Add VirtualHost for your domain
-sed -i "s/^Listen 80$/Listen 80\n<VirtualHost *:80>\n  ServerName $DEV_LIGHTSAIL_DOMAIN\n  DocumentRoot \"\/var\/www\/html\"\n<\/VirtualHost>/" /etc/httpd/conf/httpd.conf
-
 # Start Web and DB server
 service httpd start
 service mysqld start
@@ -107,8 +92,7 @@ sudo -u apache php /var/www/html/bin/magento setup:install \
 --admin-email=dev@ns8demos.com \
 --admin-user=development \
 --admin-password=YzbLenbGRGN6fxqNsz.ti \
---base-url=http://$DEV_LIGHTSAIL_DOMAIN/
---base-url-secure=https://$DEV_LIGHTSAIL_DOMAIN/
+--base-url=$DEV_LIGHTSAIL_DOMAIN
 # Setup Magento CRON jobs
 sudo -u apache php /var/www/html/bin/magento cron:install
 # Set Magento Admin password to not expire
