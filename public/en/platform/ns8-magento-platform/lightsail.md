@@ -82,3 +82,42 @@ Some server configuration is done via Environment Variables. You may have alread
 
 * In development and test, the extension will live in `/var/www/html/app/code/NS8/Protect`
 * In production environments, the extension will live in `/var/www/html/vendor/NS8/Protect`
+
+## Configure Magento for Debugging
+
+Magento install lives under `/var/www/html/`
+
+* Enable Magento Development Mode
+  * `$ php bin/magento deploy:mode:set developer`
+* Enable PHP Display Errors
+  * Open `app/bootstrap.php`
+  * Uncomment the line `ini_set('display_errors', 1);`
+* Enable Magento 2 Display Errors
+  * Rename `pub/errors/local.xml.sample` > `/pub/errors/local.xml`
+* Enable Template Path Hints
+  * Open <http://your_subdomain.ns8demos.com/index.php/admin_demo>
+  * Click Stores > Configuration > Advanced > Developer > Debug
+  * Enable all options
+
+## Xdebug
+
+* Install pecl
+  * `$ sudo yum -y install php7-pear php71-devel gcc`
+  * `$ sudo pecl7 channel-update pecl.php.net`
+* `$ sudo pecl7 install xdebug`
+* Edit `/etc/php.ini`
+  * Add
+
+```bash
+[xdebug]
+zend_extension=/usr/lib64/php/7.1/modules/xdebug.so
+xdebug.remote_enable = 1
+xdebug.remote_port = 9000
+xdebug.remote_autostart = 1
+xdebug.remote_host = 127.0.0.1
+xdebug.remote_connect_back = 0
+```
+
+* Verify that xdebug is loaded
+  * `$ php --version`
+  * Expect output: "PHP 7.0.33 (cli) (built: Jan  9 2019 22:04:26) ... with Xdebug v2.7.2..."
