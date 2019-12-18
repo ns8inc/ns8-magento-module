@@ -8,7 +8,6 @@ import { OrderActionData } from '../models/OrderActionData';
 import { isValidMagentoState, ProtectOrderState } from './utils';
 import { OrderUpdateEventData } from '../models/OrderUpdateEventData';
 
-
 /**
  * Utility class for working with Protect Named Order Updates
  */

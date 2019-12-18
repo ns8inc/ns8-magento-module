@@ -158,7 +158,7 @@ export class MagentoClient {
   public unholdOrder = async (orderId: number): Promise<boolean> => {
     let ret = false;
     try {
-      const httpResponse = await this.client.orders.unhold(orderId);
+      await this.client.orders.unhold(orderId);
       ret = true;
     } catch (e) {
       Logger.error(`Failed to hold Order Id:${orderId} in Magento API`, e);

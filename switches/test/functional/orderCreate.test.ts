@@ -50,10 +50,12 @@ beforeAll(done => {
             )
           );
         } catch (e) {
+          /* eslint-disable-next-line no-console */
           console.error(e);
         }
       });
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(e);
     }
     done();
@@ -66,13 +68,13 @@ test('Assert that order creation succeeds', done => {
   const first = switchboardData[0];
   first.data.order.state = MagentoState.PENDING;
   first.data.order.status = MagentoStatus.PENDING;
-  const order = new CreateOrderAction()
+  new CreateOrderAction()
     .create(first)
-    .then(data => {
+    .then(() => {
       expect.anything();
       done();
     })
-    .catch(reason => {
+    .catch(() => {
       done();
     });
 });
@@ -83,13 +85,13 @@ test('Assert that order cancellation succeeds', done => {
   const first = switchboardData[0];
   first.data.order.state = MagentoState.CANCELED;
   first.data.order.status = MagentoStatus.CANCELED;
-  const order = new UpdateOrderStatusAction()
+  new UpdateOrderStatusAction()
     .update(first)
-    .then(data => {
+    .then(() => {
       expect.anything();
       done();
     })
-    .catch(reason => {
+    .catch(() => {
       done();
     });
 });
