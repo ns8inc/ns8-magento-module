@@ -112,6 +112,8 @@ class Logger extends AbstractHelper
             $data = [
                 'level' => $level,
                 'category' => 'magento ' . Config::NS8_INTEGRATION_NAME,
+                'errString' => $message,
+                'stackTrace' => '', // TODO: when we implement the logging SDK, send the $exception->getTraceAsString()
                 'data' => [
                     'platform' => 'magento',
                     'function' => $function,
