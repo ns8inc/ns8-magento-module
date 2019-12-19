@@ -85,7 +85,7 @@ class Dashboard extends Action
             } else {
                 $this->logger->error($merchant->statusCode . ' '     . $merchant->error);
             }
-        } catch(Throwable $e) {
+        } catch (Throwable $e) {
             $this->logger->error('The merchant could not be fetched', ['error' => $e]);
         }
         return $resultPage;
