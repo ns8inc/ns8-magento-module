@@ -109,22 +109,22 @@ class Logger extends AbstractHelper
             $this->logger->log($level, $message, ['data' => $data]);
 
             //Structure some data for our API to consume later
-            $data = [
-                'level' => $level,
-                'category' => 'magento ' . Config::NS8_INTEGRATION_NAME,
-                'errString' => $message,
-                'stackTrace' => '', // TODO: when we implement the logging SDK, send the $exception->getTraceAsString()
-                'data' => [
-                    'platform' => 'magento',
-                    'function' => $function,
-                    'message' => $message,
-                    'data' => $data,
-                    'phpVersion' => PHP_VERSION,
-                    'phpOS' => PHP_OS
-                ]
-            ];
-            //Log to our own API
-            $this->httpClient->post('/util/log-client-error', $data);
+            // $data = [
+            //     'level' => $level,
+            //     'category' => 'magento ' . Config::NS8_INTEGRATION_NAME,
+            //     'errString' => $message,
+            //     'stackTrace' => '', // TODO: when we implement the logging SDK, send the $exception->getTraceAsString()
+            //     'data' => [
+            //         'platform' => 'magento',
+            //         'function' => $function,
+            //         'message' => $message,
+            //         'data' => $data,
+            //         'phpVersion' => PHP_VERSION,
+            //         'phpOS' => PHP_OS
+            //     ]
+            // ];
+            // TODO: create a dedicated endpoint for failure logs in protect
+            // $this->httpClient->post('/util/log-client-error', $data);
         } catch (Throwable $e) {
             $this->logger->log('ERROR', Config::NS8_MODULE_NAME . '.log: ' . $e->getMessage(), ['error' => $e]);
         }
