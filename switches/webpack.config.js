@@ -37,7 +37,7 @@ if (
 console.log(`Compiling in ${process.env.NODE_ENV}:${mode} mode`);
 
 const config = {
-  entry: './index.ts',
+  entry: './src/index.ts',
   mode,
   output: {
     path: path.resolve(__dirname, 'dist'),
