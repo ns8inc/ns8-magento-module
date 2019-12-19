@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 import 'jest';
 import { RestClient } from '@ns8/magento2-rest-client';
 import * as fs from 'fs';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { env } from '../../../build/loadEnv';
 import {
   CreateOrderAction,
   MagentoState,
@@ -11,7 +13,6 @@ import {
 import { createSwitchboardContextMock } from '../lib';
 
 const switchboardData: SwitchContext[] = [];
-require('dotenv').config();
 
 beforeAll(done => {
   const options = {

@@ -1,17 +1,16 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import * as operatorModule from '@ns8/ns8-switchboard-operator';
 import { Order } from 'ns8-protect-models';
 import { OrderUpdate } from 'ns8-protect-models';
-import {
-  CreateOrderAction,
-  OnInstallEvent,
-  UninstallAction,
-  UpdateCustVerifyStatusEvent,
-  UpdateEQ8ScoreEvent,
-  UpdateMerchantAction,
-  UpdateOrderRiskEvent,
-  UpdateOrderStatusAction,
-  UpdateOrderStatusEvent
-} from '.';
+import { CreateOrderAction } from './steps/CreateOrderAction';
+import { OnInstallEvent } from './steps/OnInstallEvent';
+import { UninstallAction } from './steps/UninstallAction';
+import { UpdateCustVerifyStatusEvent } from './steps/UpdateCustVerifyStatusEvent';
+import { UpdateEQ8ScoreEvent } from './steps/UpdateEQ8ScoreEvent';
+import { UpdateMerchantAction } from './steps/UpdateMerchantAction';
+import { UpdateOrderRiskEvent } from './steps/UpdateOrderRiskEvent';
+import { UpdateOrderStatusAction } from './steps/UpdateOrderStatusAction';
+import { UpdateOrderStatusEvent } from './steps/UpdateOrderStatusEvent';
 
 /*
   The concept of this file is to explicitly export the function that the AWS Lambda will execute,

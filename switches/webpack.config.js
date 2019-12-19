@@ -1,12 +1,14 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable func-names */
-/* eslint-disable global-require */
+/* eslint-disable
+  @typescript-eslint/explicit-function-return-type,
+  @typescript-eslint/no-empty-function,
+  @typescript-eslint/no-var-requires,
+  func-names,
+  no-console,
+  global-require */
 const path = require('path');
 // This plugin can increase the performance of the build by caching and incrementally building
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-const env = require('dotenv-extended').load();
+require('dotenv-extended').load();
 
 /**
  * This is the webpack plugin that compiles the TSD file for use in the final bundle.
@@ -33,7 +35,6 @@ if (
 ) {
   mode = 'development';
 }
-// eslint-disable-next-line no-console
 console.log(`Compiling in ${process.env.NODE_ENV}:${mode} mode`);
 
 const config = {

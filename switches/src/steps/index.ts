@@ -2,6 +2,7 @@ export * from './CreateOrderAction';
 export * from './OnInstallEvent';
 export * from './UninstallAction';
 export * from './UpdateCustVerifyStatusEvent';
+export * from './UpdateCustomer';
 export * from './UpdateEQ8ScoreEvent';
 export * from './UpdateMerchantAction';
 export * from './UpdateOrderRiskEvent';
