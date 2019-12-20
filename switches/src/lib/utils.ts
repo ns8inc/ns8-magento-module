@@ -30,7 +30,10 @@ export const handleApiError = async (
   retryCallback: any,
   retryConfig: RetryConfig = new RetryConfig()
 ): Promise<any> => {
-  if (error.statusCode === 404 && retryConfig.attempts < retryConfig.maxRetry) {
+  if (
+    error?.statusCode === 404 &&
+    retryConfig.attempts < retryConfig.maxRetry
+  ) {
     retryConfig.attempts += 1;
     Logger.log(
       `404 fetching key "${retryConfig.key}". Retry #${retryConfig.attempts}/${retryConfig.maxRetry} in ${retryConfig.waitMs}ms`
