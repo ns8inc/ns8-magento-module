@@ -110,7 +110,7 @@ class Logger extends AbstractHelper
 
             $stacktrace = 'No Stack Trace';
             try {
-                if(!empty($data) && !empty($data['error'])) {
+                if (!empty($data) && !empty($data['error'])) {
                     $stacktrace = $data['error']->getTraceAsString();
                 }
             } catch (Throwable $e) {
