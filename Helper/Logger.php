@@ -105,26 +105,33 @@ class Logger extends AbstractHelper
         string $function = 'Unknown'
     ) : void {
         try {
-            //Log to Magento
+            // Log to Magento
             $this->logger->log($level, $message, ['data' => $data]);
 
-            //Structure some data for our API to consume later
-            // $data = [
-            //     'level' => $level,
-            //     'category' => 'magento ' . Config::NS8_INTEGRATION_NAME,
-            //     'errString' => $message,
-            //     'stackTrace' => '', // TODO: when we implement the logging SDK, send the $exception->getTraceAsString()
-            //     'data' => [
-            //         'platform' => 'magento',
-            //         'function' => $function,
-            //         'message' => $message,
-            //         'data' => $data,
-            //         'phpVersion' => PHP_VERSION,
-            //         'phpOS' => PHP_OS
-            //     ]
-            // ];
-            // TODO: create a dedicated endpoint for failure logs in protect
-            // $this->httpClient->post('/util/log-client-error', $data);
+            $stacktrace = 'No Stack Trace';
+            try {
+                if (!empty($data) && !empty($data['error'])) {
+                    $stacktrace = $data['error']->getTraceAsString();
+                }
+            } catch (Throwable $e) {
+                $this->logger->log($level, 'Could not get stack trace');
+            }
+            // Structure some data for our API to consume later
+            $data = [
+                'level' => $level,
+                'category' => 'magento ' . Config::NS8_INTEGRATION_NAME,
+                'errString' => $message,
+                'stackTrace' => $stacktrace,
+                'data' => [
+                    'platform' => 'magento',
+                    'function' => $function,
+                    'message' => $message,
+                    'data' => $data,
+                    'phpVersion' => PHP_VERSION,
+                    'phpOS' => PHP_OS
+                ]
+            ];
+            $this->httpClient->post('/util/log-platform-error', $data);
         } catch (Throwable $e) {
             $this->logger->log('ERROR', Config::NS8_MODULE_NAME . '.log: ' . $e->getMessage(), ['error' => $e]);
         }
