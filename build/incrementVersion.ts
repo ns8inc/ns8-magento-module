@@ -76,7 +76,7 @@ const incrementVersion = (): void => {
 
   switchboardJson.modules[0].version = nextPackageVersion;
   writeFileSync(
-    'switches/switchboard.json',
+    'switchboard/switchboard.json',
     JSON.stringify(switchboardJson, null, 2)
   );
   console.log(
