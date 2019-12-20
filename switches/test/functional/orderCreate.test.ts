@@ -1,61 +1,15 @@
 /* eslint-disable no-console, @typescript-eslint/no-unused-vars */
 import 'jest';
-import { RestClient, OrderState } from '@ns8/magento2-rest-client';
-import * as fs from 'fs';
+import { OrderState } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
-import { OrderState as MagentoOrderState } from '@ns8/magento2-rest-client';
-import { env } from '../../../build/loadEnv';
 import { CreateOrderAction, UpdateOrderStatusAction } from '../../dist';
 import { createSwitchboardContextMock } from '../lib';
 
 const switchboardData: SwitchContext[] = [];
+switchboardData.push(createSwitchboardContextMock());
 
-beforeAll(done => {
-  const options = {
-    url: process.env.MAGENTO_URL || '',
-    consumerKey: process.env.CONSUMER_KEY || '',
-    consumerSecret: process.env.CONSUMER_SECRET || '',
-    accessToken: process.env.ACCESS_TOKEN || '',
-    accessTokenSecret: process.env.ACCESS_TOKEN_SECRET || '',
-    apiBaseUrl: process.env.API_BASE_URL || '',
-    magentoBaseUrl: process.env.MAGENTO_BASE_URL || ''
-  };
-
-  const client = new RestClient(options);
-
-  if (!fs.existsSync('test/mock_data')) fs.mkdirSync('test/mock_data');
-  if (!fs.existsSync('test/mock_data/orders'))
-    fs.mkdirSync('test/mock_data/orders');
-  if (!fs.existsSync('test/mock_data/transactions'))
-    fs.mkdirSync('test/mock_data/transactions');
-
-  return client.orders.list().then(allOrders => {
-    try {
-      allOrders.items.forEach(item => {
-        try {
-          switchboardData.push(
-            createSwitchboardContextMock(
-              {
-                order: {
-                  entity_id: item.entity_id,
-                  increment_id: item.increment_id,
-                  status: item.status,
-                  state: item.state
-                }
-              },
-              options
-            )
-          );
-        } catch (e) {
-          console.error(e);
-        }
-      });
-    } catch (e) {
-      console.error(e);
-    }
-    done();
-  });
-}, 30000);
+/*
+This integration test requires additional work before it can be used
 
 test('Assert that order creation succeeds', done => {
   // Any valid item will do; just grab the first.
@@ -73,6 +27,7 @@ test('Assert that order creation succeeds', done => {
       done();
     });
 });
+*/
 
 test('Assert that order cancellation succeeds', done => {
   // Any valid item will do; just grab the first.
