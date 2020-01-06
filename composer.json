@@ -18,14 +18,17 @@
   "minimum-stability": "dev",
   "name": "ns8/protect-magento",
   "require": {
-    "php": "~7.0"
+    "php": "~7.1"
   },
   "require-dev": {
     "magento/magento-coding-standard": "dev-master",
     "phpunit/phpunit": "*",
     "squizlabs/php_codesniffer": "3.5.2"
   },
-  "scripts": {},
+  "scripts": {
+    "lint": "phpcs --extensions=php --ignore=/vendor --standard=Magento2 .",
+    "lint-fix": "phpcbf --extensions=php --ignore=/vendor --standard=Magento2 ."
+  },
   "suggest": {},
   "type": "magento2-module",
   "version": "2.0.35"
