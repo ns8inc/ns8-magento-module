@@ -60,10 +60,17 @@ export class AddressHelper extends HelperBase {
     try {
       const magentoAddresses = this.getOrderAddresses();
       magentoAddresses.forEach(address => {
+        // Build an "Address Name" we intend to show in Client UI for location information
+        let addressNameValue;
+        if (address.firstname && address.lastname) {
+          addressNameValue = `${address.firstname} ${address.lastname}`;
+        }
+
         const addr = new NS8Address({
           type: ModelTools.stringToProtectAddressType(address.address_type),
           address1: this.getStreetInfo1(address),
           address2: this.getStreetInfo2(address),
+          name: addressNameValue,
           city: address.city,
           company: address.company,
           countryCode: address.country_id,
@@ -75,7 +82,6 @@ export class AddressHelper extends HelperBase {
           // Magento currently has no concept for these
           // latitude: 0,
           // longitude: 0,
-          // name: '',
         });
         ns8Addresses.push(addr);
       });
