@@ -15,9 +15,6 @@ use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\SwitchActionType;
 
-use NS8\ProtectSDK\Actions\Client as ActionsClient;
-use NS8\ProtectSDK\Config\Manager as ConfigManager;
-
 /**
  * Responds to Order Update events
  */
@@ -158,13 +155,7 @@ class OrderUpdate implements ObserverInterface
 
             $params = ['action'=>$action];
             $data = ['order'=>$orderData];
-
-            $configManager = new ConfigManager();
-            ConfigManager::setValue('testing.auth.auth_user', 'magento');
-            ConfigManager::setValue('testing.auth.access_token', $this->config->getAccessToken());
-            ActionClient::setAction($action, $data);
-
-            //$response = $this->httpClient->post('/switch/executor', $data, $params);
+            $response = $this->httpClient->post('/switch/executor', $data, $params);
         } catch (Throwable $e) {
             $this->logger->error('The order update could not be processed', ['error' => $e]);
         }
