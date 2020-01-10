@@ -14,10 +14,10 @@
     }
   },
   "repositories":[
-        {
-            "type": "vcs",
-            "url": "git@github.com:ns8inc/protect-php-sdk.git"
-        }
+    {
+      "type": "vcs",
+      "url": "git@github.com:ns8inc/protect-php-sdk.git"
+    }
   ],
   "description": "",
   "license": "MIT",
