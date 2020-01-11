@@ -5,6 +5,7 @@ namespace NS8\Protect\Ui\Component\Listing\Column;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
+use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Order;
 
 /**
@@ -44,9 +45,6 @@ class EQ8Score extends Column
 
     /**
      * Loop through the Orders and check for an EQ8 Score
-     * If none is present
-     *  - Fetch it from Protect
-     *  - Persist it
      *
      * @param array $dataSource The Orders we'll be looping through
      *
@@ -56,7 +54,8 @@ class EQ8Score extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                $item['eq8_score'] = $this->order->getEQ8ScoreLinkHtml($item['entity_id']);
+                $item['eq8_score'] = $this->order->formatEQ8ScoreLinkHtml(
+                    $item[OrderInterface::ENTITY_ID], $item[Order::EQ8_SCORE_COL]);
             }
         }
         return $dataSource;
