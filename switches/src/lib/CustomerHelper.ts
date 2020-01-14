@@ -1,6 +1,8 @@
 import { Customer } from 'ns8-protect-models';
 import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
+import uuidv4 from 'uuid/v4';
+import uuidv5 from 'uuid/v5';
 import { HelperBase } from './HelperBase';
 
 /**
@@ -58,12 +60,13 @@ export class CustomerHelper extends HelperBase {
         this.MagentoOrder.customer_id > 0
           ? await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id)
           : null;
+      let customerId: string | undefined = customer?.id?.toString();
       if (customer === null) {
         // If we are here, the customer is a guest. We cannot assume anything except an email address.
         // Even email address may not always be guaranteed?
         const guestName = 'N/A';
+        customerId = this.MagentoOrder.customer_id?.toString();
         customer = {
-          id: this.MagentoOrder.customer_id,
           firstname: this.MagentoOrder.customer_firstname || guestName,
           lastname: this.MagentoOrder.customer_lastname || guestName,
           email: this.MagentoOrder.customer_email,
@@ -71,6 +74,17 @@ export class CustomerHelper extends HelperBase {
           dob: this.MagentoOrder.customer_dob,
           gender: this.MagentoOrder.customer_gender
         } as MagentoCustomer;
+      }
+
+      // If we don't yet have a customer's id, generate one
+      if (!customerId) {
+        if (customer.email) {
+          // If we have an email, use the v5 namespace hash
+          customerId = uuidv5(customer.email, uuidv5.URL);
+        } else {
+          // Otherwise, generate a random uuid according to v4
+          customerId = uuidv4();
+        }
       }
 
       ret = new Customer({
@@ -82,7 +96,7 @@ export class CustomerHelper extends HelperBase {
         gender: this.getGender(customer.gender),
         lastName: customer.lastname,
         phone: this.getPhoneNumber(customer),
-        platformId: `${customer.id}`
+        platformId: customerId
       });
     } catch (e) {
       this.error(`Failed to create Customer`, e);
