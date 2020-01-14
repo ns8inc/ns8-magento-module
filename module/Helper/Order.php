@@ -7,9 +7,11 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\RequestInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use NS8\Protect\Helper\HttpClient;
+use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Url;
+use NS8\ProtectSDK\Config\Manager as ConfigManager;
+use NS8\ProtectSDK\Order\Client as OrderClient;
 use UnexpectedValueException;
 
 /**
@@ -21,9 +23,9 @@ class Order extends AbstractHelper
     public const EQ8_SCORE_COL = 'eq8_score';
 
     /**
-     * @var HttpClient
+     * @var Config
      */
-    protected $httpClient;
+    protected $config;
 
     /**
      * @var Logger
@@ -48,20 +50,20 @@ class Order extends AbstractHelper
     /**
      * Default constructor
      *
-     * @param HttpClient $httpClient
+     * @param Config $config
      * @param Logger $logger
      * @param OrderRepositoryInterface $orderRepository
      * @param RequestInterface $request
      * @param Url $url
      */
     public function __construct(
-        HttpClient $httpClient,
+        Config $config,
         Logger $logger,
         OrderRepositoryInterface $orderRepository,
         RequestInterface $request,
         Url $url
     ) {
-        $this->httpClient = $httpClient;
+        $this->config = $config;
         $this->logger = $logger;
         $this->orderRepository = $orderRepository;
         $this->request = $request;
@@ -120,16 +122,18 @@ class Order extends AbstractHelper
             return $eq8Score;
         }
 
-        $orderIncId = $order->getIncrementId();
-        $uri = sprintf('/orders/order-name/%s', $this->url->base64UrlEncode($orderIncId));
-        $req = $this->httpClient->get($uri);
+        // Ensure Config Properties are set
+        $this->config->initSdkConfiguration();
 
-        if (!isset($req->fraudAssessments)) {
+        $orderIncId = $order->getIncrementId();
+        $orderData = OrderClient::getOrderByName($orderIncId);
+
+        if (!isset($orderData->fraudAssessments)) {
             return null;
         }
 
         // The goal here is to look in the fraudAssessments array and return the first score we find that's an EQ8.
-        $eq8Score = array_reduce($req->fraudAssessments, function (?int $foundScore, \stdClass $fraudAssessment): ?int {
+        $eq8Score = array_reduce($orderData->fraudAssessments, function (?int $foundScore, \stdClass $fraudAssessment): ?int {
             if (!empty($foundScore)) {
                 return $foundScore;
             }

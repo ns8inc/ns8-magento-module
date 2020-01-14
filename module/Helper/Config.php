@@ -16,6 +16,8 @@ use Magento\Framework\Module\ModuleList;
 use Magento\Framework\ObjectManager\ContextInterface;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
+use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
+use NS8\ProtectSDK\Security\Client as SecurityClient;
 use Psr\Log\LoggerInterface;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
@@ -350,7 +352,8 @@ class Config extends AbstractHelper
     private function getProtectAccessToken(string $consumerKey = null, string $accessToken = null) : ?string
     {
         $client = new Client();
-        $client->setUri($this->getNS8MiddlewareUrl('init/magento/access-token'));
+        $url = SdkConfigManager::getEnvValue('urls.client_url') . '/init/magento/access-token';
+        $client->setUri($url);
         $client->setMethod('GET');
 
         $client->setParameterGet([
@@ -375,5 +378,20 @@ class Config extends AbstractHelper
         }
 
         return $response->token;
+    }
+
+    /**
+     * Init SDK Configuration class for usage
+     */
+    public function initSdkConfiguration() : void
+    {
+        SdkConfigManager::initConfiguration();
+        $sdkEnv = SdkConfigManager::getEnvironment();
+        SdkConfigManager::setValue('platform_version', 'Magento');
+        SdkConfigManager::setValue(sprintf('%s.authorization.auth_user', $sdkEnv), $this->getAuthenticatedUserName());
+        SdkConfigManager::setValue(sprintf('%s.authorization.access_token', $sdkEnv), '7dd33b91-1556-4dca-a3e9-808e565a461a');
+       //die(print_r(SdkConfigManager::getFullConfigArray(), true));
+       // die('Access token fetched is '.SecurityClient::getNs8AccessToken());
+        //die('Access token: '.$this->getAccessToken().' and Auth User is '.$this->getAuthenticatedUserName());
     }
 }

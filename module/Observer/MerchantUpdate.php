@@ -7,9 +7,12 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\SwitchActionType;
+use NS8\ProtectSDK\Config\Manager as ConfigManager;
+use NS8\ProtectSDK\Actions\Client as ActionsClient;
 
 /**
  * Responds to merchant update events
@@ -17,14 +20,14 @@ use NS8\Protect\Helper\SwitchActionType;
 class MerchantUpdate implements ObserverInterface
 {
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @var Session
      */
     protected $customerSession;
-
-    /**
-     * @var HttpClient
-     */
-    protected $httpClient;
 
     /**
      * @var Logger
@@ -39,19 +42,19 @@ class MerchantUpdate implements ObserverInterface
     /**
      * Default constructor
      *
+     * @param Config $config
      * @param Http $request
-     * @param HttpClient $httpClient
      * @param Logger $logger
      * @param Session $session
      */
     public function __construct(
+        Config $config,
         Http $request,
-        HttpClient $httpClient,
         Logger $logger,
         Session $session
     ) {
+        $this->config = $config;
         $this->customerSession = $session;
-        $this->httpClient = $httpClient;
         $this->logger = $logger;
         $this->request = $request;
     }
@@ -71,11 +74,13 @@ class MerchantUpdate implements ObserverInterface
             return;
         }
 
-        $params = ['action' => SwitchActionType::UPDATE_MERCHANT_ACTION];
         $data = ['eventData' => $eventData];
 
         try {
-            $this->httpClient->post('/switch/executor', $data, $params);
+            $this->config->initSdkConfiguration();
+            
+            // Send Action Update
+            ActionsClient::setAction(ActionsClient::UPDATE_MERCHANT_ACTION, $data);
         } catch (Throwable $e) {
             $this->logger->error('The merchant update could not be processed', ['error' => $e]);
         }
