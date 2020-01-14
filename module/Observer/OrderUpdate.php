@@ -141,7 +141,7 @@ class OrderUpdate implements ObserverInterface
                 // this order is new or not. This logic ensures that we treat the order as new by first testing if
                 // we already have a score.
                 try {
-                    $eq8Score = $order->getData('eq8_score');
+                    $eq8Score = $order->getData(Order::EQ8_SCORE_COL);
                     // If we haven't cached the EQ8 Score, get it now
                     if (!isset($eq8Score)) {
                         // This will fail if the order does not exist, and we'll remain in a CREATE_ORDER_ACTION state
