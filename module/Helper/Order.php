@@ -10,7 +10,6 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Url;
-use NS8\ProtectSDK\Config\Manager as ConfigManager;
 use NS8\ProtectSDK\Order\Client as OrderClient;
 use UnexpectedValueException;
 
@@ -133,12 +132,15 @@ class Order extends AbstractHelper
         }
 
         // The goal here is to look in the fraudAssessments array and return the first score we find that's an EQ8.
-        $eq8Score = array_reduce($orderData->fraudAssessments, function (?int $foundScore, \stdClass $fraudAssessment): ?int {
-            if (!empty($foundScore)) {
-                return $foundScore;
+        $eq8Score = array_reduce(
+            $orderData->fraudAssessments,
+            function (?int $foundScore, \stdClass $fraudAssessment): ?int {
+                if (!empty($foundScore)) {
+                    return $foundScore;
+                }
+                return $fraudAssessment->providerType === 'EQ8' ? $fraudAssessment->score : null;
             }
-            return $fraudAssessment->providerType === 'EQ8' ? $fraudAssessment->score : null;
-        });
+        );
         if (!isset($eq8Score)) {
             return null;
         }

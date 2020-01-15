@@ -25,7 +25,7 @@
   "name": "ns8/protect-magento",
   "require": {
     "php": "~7.1",
-    "ns8/protect-sdk": "^0.0.15"
+    "ns8/protect-sdk": "^0.0.18"
   },
   "require-dev": {
     "magento/magento-coding-standard": "dev-master",

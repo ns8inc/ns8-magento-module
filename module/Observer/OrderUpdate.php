@@ -14,7 +14,6 @@ use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\SwitchActionType;
 use NS8\ProtectSDK\Actions\Client as ActionsClient;
-use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 
 /**
  * Responds to Order Update events

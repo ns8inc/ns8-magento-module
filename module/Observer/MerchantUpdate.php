@@ -8,10 +8,8 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\SwitchActionType;
-use NS8\ProtectSDK\Config\Manager as ConfigManager;
 use NS8\ProtectSDK\Actions\Client as ActionsClient;
 
 /**
@@ -78,7 +76,7 @@ class MerchantUpdate implements ObserverInterface
 
         try {
             $this->config->initSdkConfiguration();
-            
+
             // Send Action Update
             ActionsClient::setAction(ActionsClient::UPDATE_MERCHANT_ACTION, $data);
         } catch (Throwable $e) {

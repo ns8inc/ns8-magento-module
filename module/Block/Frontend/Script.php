@@ -14,7 +14,6 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use NS8\ProtectSDK\Http\Client as HttpClient;
 
-
 /**
  * The Script class.
  *
@@ -22,17 +21,6 @@ use NS8\ProtectSDK\Http\Client as HttpClient;
  */
 class Script extends Template
 {
-    /**
-     * The constructor.
-     *
-     * @param Context $context The Magento context
-     * @param array $data The data to pass to the Template constructor (optional)
-     */
-    public function __construct(Context $context, array $data = [])
-    {
-        parent::__construct($context, $data);
-    }
-
     /**
      * Get the TrueStats tracking script (wrapped in HTML <script> tags).
      *

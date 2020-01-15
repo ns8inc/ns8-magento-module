@@ -389,9 +389,6 @@ class Config extends AbstractHelper
         $sdkEnv = SdkConfigManager::getEnvironment();
         SdkConfigManager::setValue('platform_version', 'Magento');
         SdkConfigManager::setValue(sprintf('%s.authorization.auth_user', $sdkEnv), $this->getAuthenticatedUserName());
-        SdkConfigManager::setValue(sprintf('%s.authorization.access_token', $sdkEnv), '7dd33b91-1556-4dca-a3e9-808e565a461a');
-       //die(print_r(SdkConfigManager::getFullConfigArray(), true));
-       // die('Access token fetched is '.SecurityClient::getNs8AccessToken());
-        //die('Access token: '.$this->getAccessToken().' and Auth User is '.$this->getAuthenticatedUserName());
+        SdkConfigManager::setValue(sprintf('%s.authorization.access_token', $sdkEnv), $this->getAccessToken());
     }
 }
