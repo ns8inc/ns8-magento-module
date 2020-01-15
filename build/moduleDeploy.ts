@@ -3,7 +3,7 @@ import * as client from 'scp2';
 import { env } from './loadEnv';
 
 /**
- * Uses SCP to copy the module folder to the dev location on the magento instace.
+ * Uses SCP to copy the module folder to the dev location on the magento instance.
  *
  * This depends on these `.env` variables to be set:
  * `MAGENTO_IP_ADDRESS`: IP Address for SSH connection to Magento instance

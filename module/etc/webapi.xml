@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 
+<!-- This defines our callback for setting the EQ8 Score for an order -->
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
   <route url="/V1/Protect/score/:orderId/:eq8"
