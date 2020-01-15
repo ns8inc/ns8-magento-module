@@ -29,16 +29,6 @@ use Zend\Uri\Uri;
 class Config extends AbstractHelper
 {
     /**
-     * The URL to the Development Protect API
-     */
-    const NS8_DEV_URL_API = 'https://test-protect.ns8.com/';
-
-    /**
-     * The URL to the Development Client API
-     */
-    const NS8_DEV_URL_CLIENT = 'https://test-protect-client.ns8.com/';
-
-    /**
      * The Environment Variable name for development Protect API URL value
      */
     const NS8_ENV_NAME_API_URL = 'NS8_PROTECT_URL';
@@ -57,16 +47,6 @@ class Config extends AbstractHelper
      * The canonical name of the Magento extension/module name
      */
     const NS8_MODULE_NAME = 'NS8_Protect';
-
-    /**
-     * The URL to the Production Protect API
-     */
-    const NS8_PRODUCTION_URL_API = 'https://protect.ns8.com';
-
-    /**
-     * The URL to the Production Client API
-     */
-    const NS8_PRODUCTION_URL_CLIENT = 'https://protect-client.ns8.com';
 
     /**
      * @var Context
@@ -216,7 +196,8 @@ class Config extends AbstractHelper
         $url = rtrim(trim($url), '/');
 
         if (empty($url)) {
-            $url = self::NS8_PRODUCTION_URL_CLIENT;
+            $this->initSdkConfiguration();
+            $url = SdkConfigManager::getEnvValue('urls.client_url');
         }
         if (!empty($route)) {
             $route =  str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
