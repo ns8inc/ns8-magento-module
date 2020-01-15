@@ -80,7 +80,7 @@ export class CustomerHelper extends HelperBase {
       if (!customerId) {
         if (customer.email) {
           // If we have an email, use the v5 namespace hash
-          customerId = uuidv5(customer.email, uuidv5.URL);
+          customerId = uuidv5(customer.email.toLowerCase().trim(), uuidv5.URL);
         } else {
           // Otherwise, generate a random uuid according to v4
           customerId = uuidv4();
