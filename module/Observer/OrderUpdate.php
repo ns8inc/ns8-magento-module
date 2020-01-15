@@ -10,10 +10,10 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\SwitchActionType;
 use NS8\ProtectSDK\Actions\Client as ActionsClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
 /**
  * Responds to Order Update events
@@ -31,9 +31,9 @@ class OrderUpdate implements ObserverInterface
     protected $customerSession;
 
     /**
-     * @var Logger
+     * @var LoggingClient
      */
-    protected $logger;
+    protected $loggingClient;
 
     /**
      * @var OrderInterface
@@ -55,7 +55,6 @@ class OrderUpdate implements ObserverInterface
      *
      * @param Config $config
      * @param Http $request
-     * @param Logger $logger
      * @param Order $orderHelper
      * @param OrderInterface $order
      * @param Session $session
@@ -63,17 +62,16 @@ class OrderUpdate implements ObserverInterface
     public function __construct(
         Config $config,
         Http $request,
-        Logger $logger,
         Order $orderHelper,
         OrderInterface $order,
         Session $session
     ) {
         $this->config = $config;
         $this->customerSession = $session;
-        $this->logger = $logger;
         $this->order = $order;
         $this->orderHelper = $orderHelper;
         $this->request = $request;
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -104,7 +102,7 @@ class OrderUpdate implements ObserverInterface
                     ->save();
             }
         } catch (Throwable $e) {
-            $this->logger->error('Add Status History failed', ['error' => $e]);
+            $this->loggingClient->error('Add Status History failed', $e);
         }
         return $oldStatus;
     }
@@ -141,14 +139,14 @@ class OrderUpdate implements ObserverInterface
                     }
                     $action = ActionsClient::UPDATE_ORDER_STATUS_ACTION;
                 } catch (Throwable $e) {
-                    $this->logger->error('Could not retrieve the EQ8 Score', ['error' => $e]);
+                    $this->loggingClient->error('Could not retrieve the EQ8 Score', $e);
                 }
             }
 
             $this->config->initSdkConfiguration();
             ActionsClient::setAction($action, ['order'=>$orderData]);
         } catch (Throwable $e) {
-            $this->logger->error('The order update could not be processed', ['error' => $e]);
+            $this->loggingClient->error('The order update could not be processed', $e);
         }
     }
 }

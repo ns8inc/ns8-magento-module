@@ -18,7 +18,7 @@ use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
 use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 use NS8\ProtectSDK\Security\Client as SecurityClient;
-use Psr\Log\LoggerInterface;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
 use Zend\Uri\Uri;
@@ -84,9 +84,9 @@ class Config extends AbstractHelper
     protected $integrationService;
 
     /**
-     * @var LoggerInterface
+     * @var LoggingClient
      */
-    protected $logger;
+    protected $loggingClient;
 
     /**
      * @var ModuleList
@@ -134,7 +134,6 @@ class Config extends AbstractHelper
      * @param Context $context
      * @param EncryptorInterface $encryptor
      * @param IntegrationServiceInterface $integrationService
-     * @param LoggerInterface $logger
      * @param ModuleList $moduleList
      * @param OauthServiceInterface $oauthService
      * @param ProductMetadataInterface $productMetadata
@@ -148,7 +147,6 @@ class Config extends AbstractHelper
         Context $context,
         EncryptorInterface $encryptor,
         IntegrationServiceInterface $integrationService,
-        LoggerInterface $logger,
         ModuleList $moduleList,
         OauthServiceInterface $oauthService,
         ProductMetadataInterface $productMetadata,
@@ -161,7 +159,6 @@ class Config extends AbstractHelper
         $this->context = $context;
         $this->encryptor = $encryptor;
         $this->integrationService = $integrationService;
-        $this->logger = $logger;
         $this->oauthService = $oauthService;
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
@@ -170,6 +167,8 @@ class Config extends AbstractHelper
         $this->scopeWriter = $scopeWriter;
         $this->typeList = $typeList;
         $this->uri = $uri;
+
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -183,7 +182,7 @@ class Config extends AbstractHelper
         $ret = $this->request->getServer($envVarName);
 
         if (!isset($ret)) {
-            $this->logger->log('DEBUG', 'Failed to get environment variable "'.$envVarName.'"');
+            $this->loggingClient->debug('Failed to get environment variable "'.$envVarName.'"');
         }
 
         return $ret;
@@ -310,7 +309,7 @@ class Config extends AbstractHelper
                 $username = $loginUser->getUserName();
             }
         } catch (Throwable $e) {
-            $this->logger->log('ERROR', 'Failed to get username', ['error' => $e]);
+            $this->loggingClient->error('Failed to get username', $e);
         }
         return $username;
     }
@@ -370,7 +369,7 @@ class Config extends AbstractHelper
         try {
             $response = Decoder::decode($client->send()->getBody());
         } catch (Throwable $e) {
-            $this->logger->error('Failed to execute API call', ['error' => $e]);
+            $this->loggingClient->error('Failed to execute API call', $e);
         }
 
         if (!isset($response) || !isset($response->token)) {

@@ -8,9 +8,9 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Url;
 use NS8\ProtectSDK\Order\Client as OrderClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 use UnexpectedValueException;
 
 /**
@@ -27,9 +27,9 @@ class Order extends AbstractHelper
     protected $config;
 
     /**
-     * @var Logger
+     * @var LoggingClient
      */
-    protected $logger;
+    protected $loggingClient;
 
     /**
      * @var OrderRepositoryInterface
@@ -50,23 +50,21 @@ class Order extends AbstractHelper
      * Default constructor
      *
      * @param Config $config
-     * @param Logger $logger
      * @param OrderRepositoryInterface $orderRepository
      * @param RequestInterface $request
      * @param Url $url
      */
     public function __construct(
         Config $config,
-        Logger $logger,
         OrderRepositoryInterface $orderRepository,
         RequestInterface $request,
         Url $url
     ) {
         $this->config = $config;
-        $this->logger = $logger;
         $this->orderRepository = $orderRepository;
         $this->request = $request;
         $this->url = $url;
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -100,7 +98,7 @@ class Order extends AbstractHelper
                 $ret = $this->orderRepository->get($orderId);
             }
         } catch (Throwable $e) {
-            $this->logger->error('Failed to get order '.$orderId, ['error'=>$e]);
+            $this->loggingClient->error('Failed to get order '.$orderId, $e);
         }
         return $ret;
     }
