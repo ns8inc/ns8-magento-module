@@ -5,7 +5,6 @@ namespace NS8\Protect\Controller\Sessiondata;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
-use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Session as SessionHelper;
 
 /**
@@ -14,16 +13,15 @@ use NS8\Protect\Helper\Session as SessionHelper;
 class Index extends Action
 {
     /**
+     * The JSON result factory.
+     *
      * @var JsonFactory
      */
     protected $jsonResultFactory;
 
     /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
+     * The session helper.
+     *
      * @var SessionHelper
      */
     protected $sessionHelper;
@@ -33,19 +31,16 @@ class Index extends Action
      *
      * @param Context $context
      * @param JsonFactory $jsonResultFactory
-     * @param Logger $logger
      * @param SessionHelper $sessionHelper
      */
     public function __construct(
         Context $context,
         JsonFactory $jsonResultFactory,
-        Logger $logger,
         SessionHelper $sessionHelper
     ) {
         parent::__construct($context);
         $this->context = $context;
         $this->jsonResultFactory = $jsonResultFactory;
-        $this->logger = $logger;
         $this->sessionHelper = $sessionHelper;
     }
 

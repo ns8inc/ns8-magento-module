@@ -6,9 +6,9 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UninstallInterface;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\HttpClient;
-use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\SwitchActionType;
+use NS8\ProtectSDK\Http\Client as HttpClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
 /**
  * Uninstall the Protect extension completely
@@ -16,35 +16,36 @@ use NS8\Protect\Helper\SwitchActionType;
 class Uninstall implements UninstallInterface
 {
     /**
-     * @var IntegrationServiceInterface
-     */
-    protected $integrationService;
-
-    /**
+     * The HTTP client.
+     *
      * @var HttpClient
      */
     protected $httpClient;
 
     /**
-     * @var Logger
+     * The integration service interface.
+     *
+     * @var IntegrationServiceInterface
      */
-    protected $logger;
+    protected $integrationService;
+
+    /**
+     * The logging client.
+     *
+     * @var LoggingClient
+     */
+    protected $loggingClient;
 
     /**
      * Default constructor
      *
-     * @param HttpClient $httpClient
      * @param IntegrationServiceInterface $integrationService,
-     * @param Logger $logger
      */
-    public function __construct(
-        HttpClient $httpClient,
-        IntegrationServiceInterface $integrationService,
-        Logger $logger
-    ) {
-        $this->httpClient=$httpClient;
-        $this->integrationService=$integrationService;
-        $this->logger=$logger;
+    public function __construct(IntegrationServiceInterface $integrationService)
+    {
+        $this->integrationService = $integrationService;
+        $this->httpClient = new HttpClient();
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -61,7 +62,7 @@ class Uninstall implements UninstallInterface
                 $integration->delete();
             }
         } catch (Throwable $e) {
-            $this->logger->error('Protect uninstall failed', ['error' => $e]);
+            $this->loggingClient->error('Protect uninstall failed', $e);
         } finally {
             $setup->endSetup();
         }

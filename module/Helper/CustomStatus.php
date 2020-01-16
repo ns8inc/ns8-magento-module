@@ -10,23 +10,13 @@ use Magento\Sales\Model\Order\Status;
 use Magento\Sales\Model\Order\StatusFactory;
 use Magento\Sales\Model\ResourceModel\Order\Status as StatusResource;
 use Magento\Sales\Model\ResourceModel\Order\StatusFactory as StatusResourceFactory;
-use NS8\Protect\Helper\Logger;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
 /**
  * Creates (install/upgrade) or Deletes (uninstall) custom Protect states
  */
 class CustomStatus extends AbstractHelper
 {
-    /**
-     * Custom Holded (state) Merchant Review status code
-     */
-    const MERCHANT_REVIEW_STATUS = 'ns8_merchant_review';
-
-    /**
-     * Custom Holded (state) Merchant Review status label
-     */
-    const MERCHANT_REVIEW_STATUS_LABEL = 'NS8 Merchant Review';
-
     /**
      * Custom Processing (state) Approved status code
      */
@@ -38,56 +28,83 @@ class CustomStatus extends AbstractHelper
     const APPROVED_LABEL = 'NS8 Approved';
 
     /**
-     * Status Factory
+     * Custom Holded (state) Merchant Review status code
+     */
+    const MERCHANT_REVIEW_STATUS = 'ns8_merchant_review';
+
+    /**
+     * Custom Holded (state) Merchant Review status label
+     */
+    const MERCHANT_REVIEW_STATUS_LABEL = 'NS8 Merchant Review';
+
+    /**
+     * The config-based integration manager.
+     *
+     * @var ConfigBasedIntegrationManager
+     */
+    protected $integrationManager;
+
+    /**
+     * The logging client.
+     *
+     * @var LoggingClient
+     */
+    protected $loggingClient;
+
+    /**
+     * The status factory.
      *
      * @var StatusFactory
      */
     protected $statusFactory;
 
     /**
-     * Status Resource Factory
+     * The status resource factory.
      *
      * @var StatusResourceFactory
      */
     protected $statusResourceFactory;
 
     /**
-     * @var ConfigBasedIntegrationManager
-     */
-    protected $integrationManager;
-
-    /**
-     * Logger
-     *
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
      * Default constructor
      *
      * @param ConfigBasedIntegrationManager $integrationManager
-     * @param Logger $logger
      * @param StatusFactory $statusFactory
      * @param StatusResourceFactory $statusResourceFactory
      */
     public function __construct(
         ConfigBasedIntegrationManager $integrationManager,
-        Logger $logger,
         StatusFactory $statusFactory,
         StatusResourceFactory $statusResourceFactory
     ) {
         $this->integrationManager = $integrationManager;
-        $this->logger = $logger;
         $this->statusFactory = $statusFactory;
         $this->statusResourceFactory = $statusResourceFactory;
+        $this->loggingClient = new LoggingClient();
+    }
+
+    /**
+     * Sets the custom Protect states for Magento
+     *
+     * @param string $upgradeMode
+     *
+     * @return void
+     */
+    public function setCustomStatuses(string $upgradeMode) : void
+    {
+        $this->loggingClient->debug($upgradeMode);
+        $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
+        $this->addCustomStatus(self::MERCHANT_REVIEW_STATUS, self::MERCHANT_REVIEW_STATUS_LABEL, Order::STATE_HOLDED);
+        $this->addCustomStatus(self::APPROVED, self::APPROVED_LABEL, Order::STATE_PROCESSING);
     }
 
     /**
      * Creates new order processing status and assigns it to a state
+     *
      * @param string $statusName
      * @param string $statusLabel
      * @param string $state
+     *
      * @return void
      */
     protected function addCustomStatus(string $statusName, string $statusLabel, string $state) : void
@@ -106,18 +123,5 @@ class CustomStatus extends AbstractHelper
             return;
         }
         $status->assignState($state, false, true);
-    }
-
-    /**
-     * Sets the custom Protect states for Magento
-     * @param string $upgradeMode
-     * @return void
-     */
-    public function setCustomStatuses(string $upgradeMode) : void
-    {
-        $this->logger->debug($upgradeMode);
-        $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
-        $this->addCustomStatus(self::MERCHANT_REVIEW_STATUS, self::MERCHANT_REVIEW_STATUS_LABEL, Order::STATE_HOLDED);
-        $this->addCustomStatus(self::APPROVED, self::APPROVED_LABEL, Order::STATE_PROCESSING);
     }
 }
