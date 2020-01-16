@@ -16,6 +16,12 @@ run:
       apt-get update
       apt-get install -y git unzip wget yarnpkg
       echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
+      mkdir -p ~/.ssh
+      ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      # TODO: We can remove the next 2 lines after the ns8inc/protect-php-sdk repo goes public.
+      (umask 177 && echo "${SSH_KEY}" > ~/.ssh/id_rsa)
+      ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
 
       ## TODO: Uncomment when we have tests!
       #pecl install xdebug
