@@ -49,8 +49,8 @@ class VerifyOrder extends Template
      * The constructor.
      *
      * @param Context $context The Magento context
-     * @param Config Config helper to init/set config values
      * @param Http $request The HTTP request
+     * @param Config Config helper to init/set config values
      * @param array $data The data to pass to the Template constructor (optional)
      */
     public function __construct(
