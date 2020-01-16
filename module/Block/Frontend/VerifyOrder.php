@@ -12,6 +12,7 @@ namespace NS8\Protect\Block\Frontend;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use NS8\Protect\Helper\Config;
 use NS8\ProtectSDK\Http\Client as HttpClient;
 use RuntimeException;
 use Zend\Uri\Http as Uri;
@@ -31,6 +32,13 @@ class VerifyOrder extends Template
     protected $httpClient;
 
     /**
+     * The Config helper.
+     *
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * The HTTP request.
      *
      * @var Http
@@ -41,16 +49,19 @@ class VerifyOrder extends Template
      * The constructor.
      *
      * @param Context $context The Magento context
+     * @param Config Config helper to init/set config values
      * @param Http $request The HTTP request
      * @param array $data The data to pass to the Template constructor (optional)
      */
     public function __construct(
         Context $context,
         Http $request,
+        Config $config,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->request = $request;
+        $this->config = $config;
         $this->httpClient = new HttpClient();
     }
 
@@ -90,6 +101,7 @@ class VerifyOrder extends Template
             'view', ':view',
         ]);
 
+        $this->config->initSdkConfiguration();
         if ($this->request->isPost()) {
             $postFields = array_merge($params, (array)$this->request->getPost());
             $response = $this->httpClient->post('merchant/template', $postFields);

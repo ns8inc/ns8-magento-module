@@ -74,7 +74,7 @@ class Dashboard extends Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
-
+        $this->config->initSdkConfiguration();
         try {
             $merchant = $this->httpClient->get('/merchant/current');
             if (empty($merchant)) {

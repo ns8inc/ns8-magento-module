@@ -23,6 +23,13 @@ class Uninstall implements UninstallInterface
     protected $httpClient;
 
     /**
+     * The Config helper.
+     *
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * The integration service interface.
      *
      * @var IntegrationServiceInterface
@@ -40,11 +47,15 @@ class Uninstall implements UninstallInterface
      * Default constructor
      *
      * @param IntegrationServiceInterface $integrationService,
+     * @param Config $config
      */
-    public function __construct(IntegrationServiceInterface $integrationService)
-    {
+    public function __construct(
+        IntegrationServiceInterface $integrationService,
+        Config $config
+    ) {
         $this->integrationService = $integrationService;
         $this->httpClient = new HttpClient();
+        $this->config = $config;
         $this->loggingClient = new LoggingClient();
     }
 
@@ -55,6 +66,7 @@ class Uninstall implements UninstallInterface
     {
         try {
             $setup->startSetup();
+            $this->config->initSdkConfiguration();
             $params = ['action'=>SwitchActionType::UNINSTALL_ACTION];
             $response = $this->httpClient->post('/switch/executor', [], $params);
             $integration = $this->integrationService->findByName(Config::NS8_INTEGRATION_NAME);
