@@ -11,7 +11,6 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
-use NS8\Protect\Helper\SwitchActionType;
 use NS8\ProtectSDK\Actions\Client as ActionsClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
 

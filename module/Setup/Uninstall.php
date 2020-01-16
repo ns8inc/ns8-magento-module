@@ -6,9 +6,9 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UninstallInterface;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\SwitchActionType;
 use NS8\ProtectSDK\Http\Client as HttpClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
+use NS8\ProtectSDK\Actions\Client as ActionsClient;
 
 /**
  * Uninstall the Protect extension completely
@@ -67,7 +67,7 @@ class Uninstall implements UninstallInterface
         try {
             $setup->startSetup();
             $this->config->initSdkConfiguration();
-            $params = ['action'=>SwitchActionType::UNINSTALL_ACTION];
+            $params = ['action'=>ActionsClient::UNINSTALL_ACTION];
             $response = $this->httpClient->post('/switch/executor', [], $params);
             $integration = $this->integrationService->findByName(Config::NS8_INTEGRATION_NAME);
             if ($integration) {
