@@ -332,7 +332,7 @@ class Config extends AbstractHelper
     private function getProtectAccessToken(string $consumerKey = null, string $accessToken = null) : ?string
     {
         $client = new Client();
-        $url = SdkConfigManager::getEnvValue('urls.client_url') . '/init/magento/access-token';
+        $url = SdkConfigManager::getEnvValue('urls.client_url') . '/api/init/magento/access-token';
         $client->setUri($url);
         $client->setMethod('GET');
 
