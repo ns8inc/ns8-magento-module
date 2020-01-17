@@ -58,6 +58,8 @@ provider:
   stage: '${opt:stage, env:DEV_NAME}'
   timeout: 60
   versionFunctions: false
+  deploymentBucket:
+    name: ${ssm:/serverless/deployment/bucket/name}
 RetryDefault: &retryDefault
   Retry:
   - BackoffRate: 2
