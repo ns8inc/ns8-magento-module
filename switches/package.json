@@ -37,10 +37,10 @@
   "name": "@ns8/ns8-magento2-switches",
   "repository": "https://github.com/ns8inc/ns8-magento2-switches.git",
   "scripts": {
-    "build": "rimraf .tmp && yarn generate:exports && tsc -d && yarn bundle",
+    "build": "rm -rf .tmp && yarn generate:exports && tsc -d && yarn bundle",
     "build:dev": "NODE_ENV=development yarn && yarn build && yarn link",
     "bundle": "webpack",
-    "clean": "rimraf .awcache .tmp dist",
+    "clean": "rm -rf .awcache .tmp dist",
     "generate:exports": "yarn cti create ./src -w",
     "lint": "tslint --project .",
     "rebuild": "yarn clean && yarn build",

@@ -41,7 +41,7 @@
     "build:root": "yarn && yarn compile && yarn beautify && yarn module:config",
     "certbot": "./scripts/ssl_cert.sh",
     "certbot:prep": "./scripts/ssl_cert_prep.sh",
-    "clean": "rimraf dist",
+    "clean": "rm -rf dist",
     "compile": "tsc -d",
     "lint": "eslint --ext=ts switchboard switches",
     "lint:fix": "yarn lint --fix",
