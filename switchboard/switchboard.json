@@ -3,7 +3,7 @@
   "modules": [
     {
       "name": "@ns8/ns8-magento2-switches",
-      "version": "2.0.38"
+      "version": "2.0.39"
     }
   ],
   "switches": [
