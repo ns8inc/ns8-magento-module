@@ -28,38 +28,31 @@ export class RetryConfig {
 export const handleApiError = async (
   error: any,
   retryCallback: any,
-  retryConfig: RetryConfig = new RetryConfig()
+  retryConfig: RetryConfig = new RetryConfig(),
 ): Promise<any> => {
-  if (
-    error?.statusCode === 404 &&
-    retryConfig.attempts < retryConfig.maxRetry
-  ) {
+  if (error?.statusCode === 404 && retryConfig.attempts < retryConfig.maxRetry) {
     retryConfig.attempts += 1;
     Logger.log(
-      `404 fetching key "${retryConfig.key}". Retry #${retryConfig.attempts}/${retryConfig.maxRetry} in ${retryConfig.waitMs}ms`
+      `404 fetching key "${retryConfig.key}". Retry #${retryConfig.attempts}/${retryConfig.maxRetry} in ${retryConfig.waitMs}ms`,
     );
     await Utilities.sleep(retryConfig.waitMs);
     return retryCallback();
   }
-  Logger.log(
-    `404 fetching key "${retryConfig.key}". ${retryConfig.maxRetry} retries attempted`
-  );
+  Logger.log(`404 fetching key "${retryConfig.key}". ${retryConfig.maxRetry} retries attempted`);
   return false;
 };
 
 export enum ProtectOrderUpdateStatus {
   CREATED = 'created',
-  UPDATED = 'updated'
+  UPDATED = 'updated',
 }
 
 export enum ProtectOrderState {
   APPROVED = 'ns8_approved',
   CANCELED = 'canceled',
-  MERCHANT_REVIEW = 'ns8_merchant_review'
+  MERCHANT_REVIEW = 'ns8_merchant_review',
 }
 
-export const existsInEnum = (enm: object, key: string): boolean =>
-  Object.values(enm).some(v => v === key);
+export const existsInEnum = (enm: object, key: string): boolean => Object.values(enm).some((v) => v === key);
 
-export const isValidMagentoState = (key: string): boolean =>
-  existsInEnum(MagentoOrderState, key);
+export const isValidMagentoState = (key: string): boolean => existsInEnum(MagentoOrderState, key);

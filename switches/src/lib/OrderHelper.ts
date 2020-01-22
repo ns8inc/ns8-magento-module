@@ -85,42 +85,20 @@ export class OrderHelper {
 
     const orderId = this.getOrderId();
     if (!orderId) throw new Error(`No Magento OrderId could be found`);
-    const order: MagentoOrder | null = await this.MagentoClient.getOrder(
-      orderId
-    );
+    const order: MagentoOrder | null = await this.MagentoClient.getOrder(orderId);
     if (order === null)
       throw new Error(
         `Order "${
           this.SwitchContext.data.order.increment_id
-        }" could not be loaded by entity_id: ${orderId} from ${this.MagentoClient.getApiUrl()}`
+        }" could not be loaded by entity_id: ${orderId} from ${this.MagentoClient.getApiUrl()}`,
       );
     this.MagentoOrder = order;
 
-    this.AddressHelper = new AddressHelper(
-      this.SwitchContext,
-      this.MagentoClient,
-      this.MagentoOrder
-    );
-    this.CustomerHelper = new CustomerHelper(
-      this.SwitchContext,
-      this.MagentoClient,
-      this.MagentoOrder
-    );
-    this.LineItemsHelper = new LineItemsHelper(
-      this.SwitchContext,
-      this.MagentoClient,
-      this.MagentoOrder
-    );
-    this.SessionHelper = new SessionHelper(
-      this.SwitchContext,
-      this.MagentoClient,
-      this.MagentoOrder
-    );
-    this.TransactionHelper = new TransactionHelper(
-      this.SwitchContext,
-      this.MagentoClient,
-      this.MagentoOrder
-    );
+    this.AddressHelper = new AddressHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
+    this.CustomerHelper = new CustomerHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
+    this.LineItemsHelper = new LineItemsHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
+    this.SessionHelper = new SessionHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
+    this.TransactionHelper = new TransactionHelper(this.SwitchContext, this.MagentoClient, this.MagentoOrder);
 
     return this.MagentoOrder;
   };
@@ -150,7 +128,7 @@ export class OrderHelper {
         customer: await this.CustomerHelper?.toCustomer(),
         hasGiftCard: false,
         totalPrice: order.base_grand_total,
-        updatedAt: new Date(order.updated_at)
+        updatedAt: new Date(order.updated_at),
       });
     } catch (e) {
       Logger.error('Failed to create order', e);

@@ -23,40 +23,21 @@ import { UpdateOrderStatusEvent } from './steps/UpdateOrderStatusEvent';
   On the consumer side (in Switchboard), we simply import these `*Switch` methods and then export them using the step naming convention.
 */
 
-export const CreateOrderActionSwitch: (
-  event: any
-) => Promise<Order> = ((): any =>
-  new operatorModule.CreateOrderActionOperator([new CreateOrderAction()])
-    .handle)();
+export const CreateOrderActionSwitch: (event: any) => Promise<Order> = ((): any =>
+  new operatorModule.CreateOrderActionOperator([new CreateOrderAction()]).handle)();
 export const OnInstallEventSwitch: (event: any) => Promise<any> = ((): any =>
   new operatorModule.EventOperator([new OnInstallEvent()]).handle)();
 export const UninstallActionSwitch: (event: any) => Promise<any> = ((): any =>
   new operatorModule.UninstallActionOperator([new UninstallAction()]).handle)();
-export const UpdateCustVerifyStatusEventSwitch: (
-  event: any
-) => Promise<any> = ((): any =>
-  new operatorModule.EventOperator([new UpdateCustVerifyStatusEvent()])
-    .handle)();
-export const UpdateEQ8ScoreEventSwitch: (
-  event: any
-) => Promise<any> = ((): any =>
+export const UpdateCustVerifyStatusEventSwitch: (event: any) => Promise<any> = ((): any =>
+  new operatorModule.EventOperator([new UpdateCustVerifyStatusEvent()]).handle)();
+export const UpdateEQ8ScoreEventSwitch: (event: any) => Promise<any> = ((): any =>
   new operatorModule.EventOperator([new UpdateEQ8ScoreEvent()]).handle)();
-export const UpdateMerchantActionSwitch: (
-  event: any
-) => Promise<any> = ((): any =>
-  new operatorModule.UpdateMerchantActionOperator([new UpdateMerchantAction()])
-    .handle)();
-export const UpdateOrderRiskEventSwitch: (
-  event: any
-) => Promise<any> = ((): any =>
+export const UpdateMerchantActionSwitch: (event: any) => Promise<any> = ((): any =>
+  new operatorModule.UpdateMerchantActionOperator([new UpdateMerchantAction()]).handle)();
+export const UpdateOrderRiskEventSwitch: (event: any) => Promise<any> = ((): any =>
   new operatorModule.EventOperator([new UpdateOrderRiskEvent()]).handle)();
-export const UpdateOrderStatusActionSwitch: (
-  event: any
-) => Promise<OrderUpdate> = ((): any =>
-  new operatorModule.UpdateOrderStatusActionOperator([
-    new UpdateOrderStatusAction()
-  ]).handle)();
-export const UpdateOrderStatusEventSwitch: (
-  event: any
-) => Promise<OrderUpdate> = ((): any =>
+export const UpdateOrderStatusActionSwitch: (event: any) => Promise<OrderUpdate> = ((): any =>
+  new operatorModule.UpdateOrderStatusActionOperator([new UpdateOrderStatusAction()]).handle)();
+export const UpdateOrderStatusEventSwitch: (event: any) => Promise<OrderUpdate> = ((): any =>
   new operatorModule.EventOperator([new UpdateOrderStatusEvent()]).handle)();

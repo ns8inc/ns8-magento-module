@@ -32,18 +32,12 @@ export class CustomerHelper extends HelperBase {
   private getPhoneNumber = (customer: MagentoCustomer): string => {
     let phoneNumber = '';
     if (customer.addresses) {
-      const defaultBilling = customer.addresses.find(
-        a => a.telephone && a.default_billing === true
-      );
-      const defaultShipping = customer.addresses.find(
-        a => a.telephone && a.default_shipping === true
-      );
-      const anyPhoneNumber = customer.addresses.find(a => a.telephone);
-      const addressWithPhone =
-        defaultBilling || defaultShipping || anyPhoneNumber;
+      const defaultBilling = customer.addresses.find((a) => a.telephone && a.default_billing === true);
+      const defaultShipping = customer.addresses.find((a) => a.telephone && a.default_shipping === true);
+      const anyPhoneNumber = customer.addresses.find((a) => a.telephone);
+      const addressWithPhone = defaultBilling || defaultShipping || anyPhoneNumber;
       if (addressWithPhone && addressWithPhone.telephone) {
-        phoneNumber =
-          ModelTools.formatPhoneNumber(addressWithPhone.telephone) || '';
+        phoneNumber = ModelTools.formatPhoneNumber(addressWithPhone.telephone) || '';
       }
     }
     return phoneNumber;
@@ -57,9 +51,7 @@ export class CustomerHelper extends HelperBase {
     try {
       // If a user is creating an order as a guest, the order will not have a customer id
       let customer: MagentoCustomer | null =
-        this.MagentoOrder.customer_id > 0
-          ? await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id)
-          : null;
+        this.MagentoOrder.customer_id > 0 ? await this.MagentoClient.getCustomer(this.MagentoOrder.customer_id) : null;
       let customerId: string | undefined = customer?.id?.toString();
       if (customer === null) {
         // If we are here, the customer is a guest. We cannot assume anything except an email address.
@@ -72,7 +64,7 @@ export class CustomerHelper extends HelperBase {
           email: this.MagentoOrder.customer_email,
           middlename: this.MagentoOrder.customer_middlename,
           dob: this.MagentoOrder.customer_dob,
-          gender: this.MagentoOrder.customer_gender
+          gender: this.MagentoOrder.customer_gender,
         } as MagentoCustomer;
       }
 
@@ -96,7 +88,7 @@ export class CustomerHelper extends HelperBase {
         gender: this.getGender(customer.gender),
         lastName: customer.lastname,
         phone: this.getPhoneNumber(customer),
-        platformId: customerId
+        platformId: customerId,
       });
     } catch (e) {
       this.error(`Failed to create Customer`, e);

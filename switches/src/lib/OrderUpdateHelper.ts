@@ -24,16 +24,11 @@ export class OrderUpdateHelper extends OrderHelper {
       ret.orderName = data.order.increment_id;
 
       if (!isValidMagentoState(data.order.state)) {
-        throw new Error(
-          `The state of this order (${data.order.status}) is not recognized.`
-        );
+        throw new Error(`The state of this order (${data.order.status}) is not recognized.`);
       }
       // We currently have only 3 concepts on the Protect side for Order status: Canceled, Approved and Merchant Review
       // This attempts to normalize the multitude of states an order can have from within Magento into our very narrow concepts.
-      if (
-        data.order.state === MagentoOrderState.CANCELED ||
-        data.order.state === MagentoOrderState.CLOSED
-      ) {
+      if (data.order.state === MagentoOrderState.CANCELED || data.order.state === MagentoOrderState.CLOSED) {
         // Cancelled indicates the order has been proactively cancelled. Closed indicates the order is terminated and the customer has been refunded.
         ret.status = Status.CANCELLED;
       } else if (data.order.state === MagentoOrderState.COMPLETE) {
@@ -77,7 +72,7 @@ export class OrderUpdateHelper extends OrderHelper {
       const comment: StatusHistory = {
         created_at: new Date(),
         status: data.status,
-        comment: ''
+        comment: '',
       };
 
       switch (data.status) {
@@ -90,10 +85,7 @@ export class OrderUpdateHelper extends OrderHelper {
           ret.platformStatus = MagentoOrderState.CANCELED;
           comment.comment = 'NS8 Protect Order Cancelled';
           comment.status = MagentoOrderState.CANCELED;
-          await this.MagentoClient.postOrderComment(
-            magentoOrder.entity_id,
-            comment
-          );
+          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, comment);
           break;
         case Status.APPROVED:
           if (magentoOrder.state === MagentoOrderState.ON_HOLD) {
@@ -107,10 +99,7 @@ export class OrderUpdateHelper extends OrderHelper {
           ret.platformStatus = ProtectOrderState.APPROVED;
           comment.comment = 'NS8 Protect Order Approved';
           comment.status = ProtectOrderState.APPROVED;
-          await this.MagentoClient.postOrderComment(
-            magentoOrder.entity_id,
-            comment
-          );
+          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, comment);
           break;
         case Status.MERCHANT_REVIEW:
           if (magentoOrder.state !== MagentoOrderState.ON_HOLD) {
@@ -124,10 +113,7 @@ export class OrderUpdateHelper extends OrderHelper {
           ret.platformStatus = ProtectOrderState.MERCHANT_REVIEW;
           comment.comment = 'NS8 Protect Order Requires Review';
           comment.status = ProtectOrderState.MERCHANT_REVIEW;
-          await this.MagentoClient.postOrderComment(
-            magentoOrder.entity_id,
-            comment
-          );
+          await this.MagentoClient.postOrderComment(magentoOrder.entity_id, comment);
           break;
         default:
           break;

@@ -17,8 +17,7 @@ export class MerchantHelper {
     const ret = new MerchantUpdate(this.SwitchContext.merchant);
     try {
       ret.contact = new Contact(ret.contact);
-      const configData: MagentoMerchantUpdate | undefined = this.SwitchContext
-        .data.eventData?.configData
+      const configData: MagentoMerchantUpdate | undefined = this.SwitchContext.data.eventData?.configData
         ? this.SwitchContext.data.eventData.configData
         : this.SwitchContext.data.configData;
 
@@ -39,19 +38,11 @@ export class MerchantHelper {
         ret.contact.email = generalIdInfo.email?.value;
       }
 
-      if (
-        configData.groups.unsecure?.fields ||
-        configData.groups.secure?.fields
-      ) {
-        const unsecureBaseUrl: string | undefined =
-          configData.groups.unsecure?.fields?.base_url?.value;
-        const secureBaseUrl: string | undefined =
-          configData.groups.secure?.fields?.base_url?.value;
-        const useSecureBaseUrl: boolean | undefined =
-          configData.groups.secure?.fields?.use_in_frontend?.value === '1';
-        const storefrontUrl: string | undefined = useSecureBaseUrl
-          ? secureBaseUrl
-          : unsecureBaseUrl;
+      if (configData.groups.unsecure?.fields || configData.groups.secure?.fields) {
+        const unsecureBaseUrl: string | undefined = configData.groups.unsecure?.fields?.base_url?.value;
+        const secureBaseUrl: string | undefined = configData.groups.secure?.fields?.base_url?.value;
+        const useSecureBaseUrl: boolean | undefined = configData.groups.secure?.fields?.use_in_frontend?.value === '1';
+        const storefrontUrl: string | undefined = useSecureBaseUrl ? secureBaseUrl : unsecureBaseUrl;
         if (storefrontUrl) {
           ret.storefrontUrl = storefrontUrl.replace(/\/$/, '');
         }

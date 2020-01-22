@@ -10,11 +10,7 @@ export class HelperBase {
 
   public MagentoOrder: MagentoOrder;
 
-  constructor(
-    switchContext: SwitchContext,
-    magentoClient: MagentoClient,
-    magentoOrder: MagentoOrder
-  ) {
+  constructor(switchContext: SwitchContext, magentoClient: MagentoClient, magentoOrder: MagentoOrder) {
     this.SwitchContext = switchContext;
     this.MagentoClient = magentoClient;
     this.MagentoOrder = magentoOrder;

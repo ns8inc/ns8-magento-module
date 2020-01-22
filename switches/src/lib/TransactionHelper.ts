@@ -14,9 +14,7 @@ export class TransactionHelper extends HelperBase {
   /**
    * Convert a Magento Payment into a TransactionMethod enum
    */
-  private getTransactionMethod = (
-    payment: MagentoPayment
-  ): TransactionMethod => {
+  private getTransactionMethod = (payment: MagentoPayment): TransactionMethod => {
     if (payment.cc_type && payment.cc_last4) {
       return TransactionMethod.CC;
     }
@@ -29,10 +27,7 @@ export class TransactionHelper extends HelperBase {
   private getPlatformId = (payment: MagentoPayment): string => {
     let ret = '';
     if (payment) {
-      if (
-        payment.extension_attributes &&
-        payment.extension_attributes.vault_payment_token
-      ) {
+      if (payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
         const vault = payment.extension_attributes.vault_payment_token;
         if (vault.entity_id) {
           ret = `${vault.entity_id}`;
@@ -50,10 +45,7 @@ export class TransactionHelper extends HelperBase {
   private getCustomerId = (payment: MagentoPayment): number | undefined => {
     let ret: number | undefined;
     if (payment) {
-      if (
-        payment.extension_attributes &&
-        payment.extension_attributes.vault_payment_token
-      ) {
+      if (payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
         const vault = payment.extension_attributes.vault_payment_token;
         if (vault.customer_id) {
           ret = vault.customer_id;
@@ -74,10 +66,7 @@ export class TransactionHelper extends HelperBase {
   private getGateway = (payment: MagentoPayment): string | undefined => {
     let ret: string | undefined;
     if (payment) {
-      if (
-        payment.extension_attributes &&
-        payment.extension_attributes.vault_payment_token
-      ) {
+      if (payment.extension_attributes && payment.extension_attributes.vault_payment_token) {
         const vault = payment.extension_attributes.vault_payment_token;
         if (vault.gateway_token) {
           ret = vault.gateway_token;
@@ -92,14 +81,9 @@ export class TransactionHelper extends HelperBase {
    * These `payment_additional_info` properties are Magento's version of EAV structures.
    * Literally any key/value can exist. It is usually safe to assume that the values will always be strings.
    */
-  private getPaymentAdditionalInfo = ():
-    | MagentoPaymentAdditionalInfo[]
-    | undefined => {
+  private getPaymentAdditionalInfo = (): MagentoPaymentAdditionalInfo[] | undefined => {
     let ret: MagentoPaymentAdditionalInfo[] | undefined;
-    if (
-      this.MagentoOrder.extension_attributes &&
-      this.MagentoOrder.extension_attributes.payment_additional_info
-    ) {
+    if (this.MagentoOrder.extension_attributes && this.MagentoOrder.extension_attributes.payment_additional_info) {
       ret = this.MagentoOrder.extension_attributes.payment_additional_info;
     }
     return ret;
@@ -117,7 +101,7 @@ export class TransactionHelper extends HelperBase {
     } else {
       const additionalInfo = this.getPaymentAdditionalInfo();
       if (additionalInfo) {
-        const avs = additionalInfo.find(info => info?.key?.startsWith('avs'));
+        const avs = additionalInfo.find((info) => info?.key?.startsWith('avs'));
         if (avs && avs.value) {
           ret = avs.value;
         }
@@ -134,7 +118,7 @@ export class TransactionHelper extends HelperBase {
     const additionalInfo = this.getPaymentAdditionalInfo();
     if (additionalInfo) {
       // CVV does not consistently exist, nor is in named the same way across payment providers.
-      const cvv = additionalInfo.find(info => info?.key?.startsWith('cvv'));
+      const cvv = additionalInfo.find((info) => info?.key?.startsWith('cvv'));
       if (cvv && cvv.value) {
         ret = cvv.value;
       }
@@ -150,15 +134,11 @@ export class TransactionHelper extends HelperBase {
       const historyCount = this.MagentoOrder.status_histories.length;
       if (historyCount === 1) {
         // If we only have one history, return the status
-        return ModelTools.stringToTransactionStatus(
-          this.MagentoOrder.status_histories[0].status
-        );
+        return ModelTools.stringToTransactionStatus(this.MagentoOrder.status_histories[0].status);
       }
       if (historyCount > 1) {
         // Otherwise, return the last status available
-        return ModelTools.stringToTransactionStatus(
-          this.MagentoOrder.status_histories[historyCount - 1].status
-        );
+        return ModelTools.stringToTransactionStatus(this.MagentoOrder.status_histories[historyCount - 1].status);
       }
     }
     // If all else fails, assume the transaction was a success (for now)
@@ -177,7 +157,7 @@ export class TransactionHelper extends HelperBase {
         // Depending on the payment method, amount can live in different places
         amount: payment.amount_authorized || payment.amount_ordered,
         currency: this.MagentoOrder.order_currency_code,
-        processedAt: new Date(this.MagentoOrder.updated_at)
+        processedAt: new Date(this.MagentoOrder.updated_at),
       });
       trans.method = this.getTransactionMethod(payment);
       if (trans.method === TransactionMethod.CC) {
@@ -186,14 +166,10 @@ export class TransactionHelper extends HelperBase {
           // The Order data received both from the switchboard context and from the Order API is incomplete.
           // Fetch the customer and the Magento transaction from the API in order to continue
           const customer = await this.MagentoClient.getCustomer(customerId);
-          const magentoTrans = await this.MagentoClient.getTransaction(
-            payment.cc_trans_id || payment.last_trans_id
-          );
+          const magentoTrans = await this.MagentoClient.getTransaction(payment.cc_trans_id || payment.last_trans_id);
           if (customer !== null && magentoTrans !== null) {
             const cardExpiration =
-              payment.cc_exp_month && payment.cc_exp_year
-                ? `${payment.cc_exp_month}/${payment.cc_exp_year}`
-                : '';
+              payment.cc_exp_month && payment.cc_exp_year ? `${payment.cc_exp_month}/${payment.cc_exp_year}` : '';
             trans.creditCard = new CreditCard({
               cardExpiration,
               cardHolder: `${customer.firstname} ${customer.lastname}`,
@@ -201,11 +177,9 @@ export class TransactionHelper extends HelperBase {
               creditCardCompany: payment.cc_type,
               creditCardNumber: payment.cc_last4,
               gateway: this.getGateway(payment),
-              transactionType: ModelTools.stringToCreditCardTransactionType(
-                magentoTrans.txn_type
-              ),
+              transactionType: ModelTools.stringToCreditCardTransactionType(magentoTrans.txn_type),
               avsResultCode: this.getAvsResultCode(payment),
-              cvvResultCode: this.getCvvAvsResultCode()
+              cvvResultCode: this.getCvvAvsResultCode(),
             });
           }
         }

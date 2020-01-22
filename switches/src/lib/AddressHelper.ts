@@ -17,17 +17,14 @@ export class AddressHelper extends HelperBase {
     const shippingAssignments = this.MagentoOrder.extension_attributes
       ? this.MagentoOrder.extension_attributes.shipping_assignments || []
       : [];
-    shippingAssignments.forEach(assignment => {
-      const newAddress = assignment.shipping
-        ? assignment.shipping.address
-        : undefined;
+    shippingAssignments.forEach((assignment) => {
+      const newAddress = assignment.shipping ? assignment.shipping.address : undefined;
       if (newAddress) magentoAddresses.push(newAddress);
     });
     return magentoAddresses;
   };
 
-  private getStreetInfo1 = (address: MagentoAddress): string =>
-    address?.street?.[0] || '';
+  private getStreetInfo1 = (address: MagentoAddress): string => address?.street?.[0] || '';
 
   private getStreetInfo2 = (address: MagentoAddress): string => {
     let address2 = '';
@@ -59,7 +56,7 @@ export class AddressHelper extends HelperBase {
 
     try {
       const magentoAddresses = this.getOrderAddresses();
-      magentoAddresses.forEach(address => {
+      magentoAddresses.forEach((address) => {
         // Build an "Address Name" we intend to show in Client UI for location information
         let addressNameValue;
         if (address.firstname && address.lastname) {
@@ -78,7 +75,7 @@ export class AddressHelper extends HelperBase {
           country: Utilities.getCountryNameFromCountryCode(address.country_id),
           region: this.getRegion(address.region),
           zip: address.postcode,
-          regionCode: address.region_code
+          regionCode: address.region_code,
           // Magento currently has no concept for these
           // latitude: 0,
           // longitude: 0,

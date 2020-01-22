@@ -23,7 +23,7 @@ export class SessionHelper extends HelperBase {
 
     // NOTE: for mock purposes, this must be any real value that is not localhost, 127.0.0.1 or otherwise a reserved "localhost" IP address
     return new Session({
-      ip: '1.1.1.1'
+      ip: '1.1.1.1',
     });
   };
 }

@@ -14,7 +14,7 @@ export class LineItemsHelper extends HelperBase {
     const ret: LineItem[] = [];
 
     try {
-      this.MagentoOrder.items.forEach(item => {
+      this.MagentoOrder.items.forEach((item) => {
         // NOTE: Protect will throw inscrutable exceptions if `''` is provided instead of null.
         // Leave the missing properties commented out to be more explicit that we don't yet know how to get this data.
         const i = new LineItem({
@@ -29,7 +29,7 @@ export class LineItemsHelper extends HelperBase {
           quantity: item.qty_ordered,
           sku: item.sku,
           title: item.description,
-          totalDiscount: item.discount_amount
+          totalDiscount: item.discount_amount,
           // upc: '',
           // variantId: '',
           // variantTitle: '',
