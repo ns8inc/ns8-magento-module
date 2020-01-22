@@ -4258,9 +4258,9 @@ npmlog@^4.0.2:
     set-blocking "~2.0.0"
 
 ns8-billing-core@^1.0.128:
-  version "1.0.1013"
-  resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.1013.tgz#9a3ed37224983341a5d6393181bebe68da5d4566"
-  integrity sha512-sBkTPd7Wsp0wTWzNUCYKobI4yTuIpz6PqNK20eQodtiJnRs6nHE+2Vrp1VEZkH+1KAPlm+4d2V/8hVevS8D4xw==
+  version "1.0.1021"
+  resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.1021.tgz#8a609b383c3d836d9043f3e36ce8341544dd2777"
+  integrity sha512-k0yG5XtMW1znEPd/xbTV0yexj19r41h3QW/LxOTXmH5X4cU//K2scxLTUjI4on+CLzy7uCpCLllYJ128q86Q0g==
 
 ns8-protect-models@1.0.226:
   version "1.0.226"
@@ -4987,12 +4987,11 @@ registry-auth-token@^3.0.1:
     safe-buffer "^5.0.1"
 
 registry-auth-token@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/registry-auth-token/-/registry-auth-token-4.1.0.tgz#b17f4763c53785b5342fadb0a35d9825be976cfb"
-  integrity sha512-7uxS951DeOBOwsv8deX+l7HcjY2VZxaOgHtM6RKzg3HhpE+bJ0O7VbuMJLosC1T5WSFpHm0DuFIbqUl43jHpsA==
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/registry-auth-token/-/registry-auth-token-4.1.1.tgz#40a33be1e82539460f94328b0f7f0f84c16d9479"
+  integrity sha512-9bKS7nTl9+/A1s7tnPeGrUpRcVY+LUh7bfFgzpndALdPfXQBfQV77rQVtqgUV3ti4vc/Ik81Ex8UJDWDQ12zQA==
   dependencies:
     rc "^1.2.8"
-    safe-buffer "^5.0.1"
 
 registry-url@^3.0.3:
   version "3.1.0"

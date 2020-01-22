@@ -4578,9 +4578,9 @@ npmlog@^4.0.2:
     set-blocking "~2.0.0"
 
 ns8-billing-core@^1.0.128:
-  version "1.0.1013"
-  resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.1013.tgz#9a3ed37224983341a5d6393181bebe68da5d4566"
-  integrity sha512-sBkTPd7Wsp0wTWzNUCYKobI4yTuIpz6PqNK20eQodtiJnRs6nHE+2Vrp1VEZkH+1KAPlm+4d2V/8hVevS8D4xw==
+  version "1.0.1021"
+  resolved "https://registry.yarnpkg.com/ns8-billing-core/-/ns8-billing-core-1.0.1021.tgz#8a609b383c3d836d9043f3e36ce8341544dd2777"
+  integrity sha512-k0yG5XtMW1znEPd/xbTV0yexj19r41h3QW/LxOTXmH5X4cU//K2scxLTUjI4on+CLzy7uCpCLllYJ128q86Q0g==
 
 ns8-protect-models@1.0.226:
   version "1.0.226"
