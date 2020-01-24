@@ -43,7 +43,7 @@
     "certbot:prep": "./scripts/ssl_cert_prep.sh",
     "clean": "rm -rf dist",
     "compile": "tsc -d",
-    "lint": "eslint --ext=ts switchboard switches",
+    "lint": "eslint --ext=ts switches",
     "lint:fix": "yarn lint --fix",
     "module:build": "cd module && composer install",
     "module:config": "ts-node ./build/moduleConfig.ts",
