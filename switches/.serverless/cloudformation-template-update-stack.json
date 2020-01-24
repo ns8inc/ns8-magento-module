@@ -1,0 +1,1011 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "CreateOrderActionLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/ns8-switchboard-magento2-test-createOrderAction"
+      }
+    },
+    "OnInstallEventLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/ns8-switchboard-magento2-test-onInstallEvent"
+      }
+    },
+    "UninstallActionLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/ns8-switchboard-magento2-test-uninstallAction"
+      }
+    },
+    "UpdateCustVerifyStatusEventLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/ns8-switchboard-magento2-test-updateCustVerifyStatusEvent"
+      }
+    },
+    "UpdateEQ8ScoreEventLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/ns8-switchboard-magento2-test-updateEQ8ScoreEvent"
+      }
+    },
+    "UpdateMerchantActionLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/ns8-switchboard-magento2-test-updateMerchantAction"
+      }
+    },
+    "UpdateOrderRiskEventLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/ns8-switchboard-magento2-test-updateOrderRiskEvent"
+      }
+    },
+    "UpdateOrderStatusActionLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/ns8-switchboard-magento2-test-updateOrderStatusAction"
+      }
+    },
+    "UpdateOrderStatusEventLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/ns8-switchboard-magento2-test-updateOrderStatusEvent"
+      }
+    },
+    "IamRoleLambdaExecution": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "test",
+                  "ns8-switchboard-magento2",
+                  "lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:CreateLogGroup"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/ns8-switchboard-magento2-test*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/ns8-switchboard-magento2-test*:*:*"
+                    }
+                  ]
+                },
+                {
+                  "Action": "s3:GetObject",
+                  "Effect": "Allow",
+                  "Resource": "arn:aws:s3:::protect-api-switch-data-test/*"
+                }
+              ]
+            }
+          }
+        ],
+        "Path": "/",
+        "RoleName": {
+          "Fn::Join": [
+            "-",
+            [
+              "ns8-switchboard-magento2",
+              "test",
+              {
+                "Ref": "AWS::Region"
+              },
+              "lambdaRole"
+            ]
+          ]
+        }
+      }
+    },
+    "CreateOrderActionLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments",
+          "S3Key": "serverless/ns8-switchboard-magento2/test/1579877460570-2020-01-24T14:51:00.570Z/ns8-switchboard-magento2.zip"
+        },
+        "FunctionName": "ns8-switchboard-magento2-test-createOrderAction",
+        "Handler": "dist/index.CreateOrderAction",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 60
+      },
+      "DependsOn": [
+        "CreateOrderActionLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "OnInstallEventLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments",
+          "S3Key": "serverless/ns8-switchboard-magento2/test/1579877460570-2020-01-24T14:51:00.570Z/ns8-switchboard-magento2.zip"
+        },
+        "FunctionName": "ns8-switchboard-magento2-test-onInstallEvent",
+        "Handler": "dist/index.OnInstallEvent",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 60
+      },
+      "DependsOn": [
+        "OnInstallEventLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "UninstallActionLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments",
+          "S3Key": "serverless/ns8-switchboard-magento2/test/1579877460570-2020-01-24T14:51:00.570Z/ns8-switchboard-magento2.zip"
+        },
+        "FunctionName": "ns8-switchboard-magento2-test-uninstallAction",
+        "Handler": "dist/index.UninstallAction",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 60
+      },
+      "DependsOn": [
+        "UninstallActionLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "UpdateCustVerifyStatusEventLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments",
+          "S3Key": "serverless/ns8-switchboard-magento2/test/1579877460570-2020-01-24T14:51:00.570Z/ns8-switchboard-magento2.zip"
+        },
+        "FunctionName": "ns8-switchboard-magento2-test-updateCustVerifyStatusEvent",
+        "Handler": "dist/index.UpdateCustVerifyStatusEvent",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 60
+      },
+      "DependsOn": [
+        "UpdateCustVerifyStatusEventLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "UpdateEQ8ScoreEventLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments",
+          "S3Key": "serverless/ns8-switchboard-magento2/test/1579877460570-2020-01-24T14:51:00.570Z/ns8-switchboard-magento2.zip"
+        },
+        "FunctionName": "ns8-switchboard-magento2-test-updateEQ8ScoreEvent",
+        "Handler": "dist/index.UpdateEQ8ScoreEvent",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 60
+      },
+      "DependsOn": [
+        "UpdateEQ8ScoreEventLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "UpdateMerchantActionLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments",
+          "S3Key": "serverless/ns8-switchboard-magento2/test/1579877460570-2020-01-24T14:51:00.570Z/ns8-switchboard-magento2.zip"
+        },
+        "FunctionName": "ns8-switchboard-magento2-test-updateMerchantAction",
+        "Handler": "dist/index.UpdateMerchantAction",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 60
+      },
+      "DependsOn": [
+        "UpdateMerchantActionLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "UpdateOrderRiskEventLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments",
+          "S3Key": "serverless/ns8-switchboard-magento2/test/1579877460570-2020-01-24T14:51:00.570Z/ns8-switchboard-magento2.zip"
+        },
+        "FunctionName": "ns8-switchboard-magento2-test-updateOrderRiskEvent",
+        "Handler": "dist/index.UpdateOrderRiskEvent",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 60
+      },
+      "DependsOn": [
+        "UpdateOrderRiskEventLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "UpdateOrderStatusActionLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments",
+          "S3Key": "serverless/ns8-switchboard-magento2/test/1579877460570-2020-01-24T14:51:00.570Z/ns8-switchboard-magento2.zip"
+        },
+        "FunctionName": "ns8-switchboard-magento2-test-updateOrderStatusAction",
+        "Handler": "dist/index.UpdateOrderStatusAction",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 60
+      },
+      "DependsOn": [
+        "UpdateOrderStatusActionLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "UpdateOrderStatusEventLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "serverless-framework-deployments",
+          "S3Key": "serverless/ns8-switchboard-magento2/test/1579877460570-2020-01-24T14:51:00.570Z/ns8-switchboard-magento2.zip"
+        },
+        "FunctionName": "ns8-switchboard-magento2-test-updateOrderStatusEvent",
+        "Handler": "dist/index.UpdateOrderStatusEvent",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 60
+      },
+      "DependsOn": [
+        "UpdateOrderStatusEventLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashcreateOrderActionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.us-west-2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "test-us-west-2-ns8-switchboard-magento2-statemachine",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-createOrderAction"
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-createOrderAction"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashonInstallEventRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.us-west-2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "test-us-west-2-ns8-switchboard-magento2-statemachine",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-onInstallEvent"
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-onInstallEvent"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashuninstallActionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.us-west-2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "test-us-west-2-ns8-switchboard-magento2-statemachine",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-uninstallAction"
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-uninstallAction"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateCustVerifyStatusEventRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.us-west-2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "test-us-west-2-ns8-switchboard-magento2-statemachine",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateCustVerifyStatusEvent"
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateCustVerifyStatusEvent"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateEQ8ScoreEventRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.us-west-2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "test-us-west-2-ns8-switchboard-magento2-statemachine",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateEQ8ScoreEvent"
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateEQ8ScoreEvent"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateMerchantActionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.us-west-2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "test-us-west-2-ns8-switchboard-magento2-statemachine",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateMerchantAction"
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateMerchantAction"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderRiskEventRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.us-west-2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "test-us-west-2-ns8-switchboard-magento2-statemachine",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateOrderRiskEvent"
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateOrderRiskEvent"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusActionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.us-west-2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "test-us-west-2-ns8-switchboard-magento2-statemachine",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateOrderStatusAction"
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateOrderStatusAction"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusEventRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.us-west-2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "test-us-west-2-ns8-switchboard-magento2-statemachine",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateOrderStatusEvent"
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateOrderStatusEvent"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashcreateOrderAction": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Sub": "{\n  \"StartAt\": \"CreateOrderActionStart\",\n  \"States\": {\n    \"CreateOrderActionStart\": {\n      \"End\": true,\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-createOrderAction\",\n      \"Retry\": [\n        {\n          \"BackoffRate\": 2,\n          \"ErrorEquals\": [\n            \"States.ALL\"\n          ],\n          \"IntervalSeconds\": 2,\n          \"MaxAttempts\": 5\n        }\n      ],\n      \"Type\": \"Task\"\n    }\n  }\n}"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "Ns8DashswitchboardDashmagento2DashtestDashcreateOrderActionRole",
+            "Arn"
+          ]
+        },
+        "StateMachineName": "ns8-switchboard-magento2-test-createOrderAction"
+      },
+      "DependsOn": [
+        "Ns8DashswitchboardDashmagento2DashtestDashcreateOrderActionRole"
+      ]
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashonInstallEvent": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Sub": "{\n  \"StartAt\": \"OnInstallEventStart\",\n  \"States\": {\n    \"OnInstallEventStart\": {\n      \"End\": true,\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-onInstallEvent\",\n      \"Retry\": [\n        {\n          \"BackoffRate\": 2,\n          \"ErrorEquals\": [\n            \"States.ALL\"\n          ],\n          \"IntervalSeconds\": 2,\n          \"MaxAttempts\": 5\n        }\n      ],\n      \"Type\": \"Task\"\n    }\n  }\n}"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "Ns8DashswitchboardDashmagento2DashtestDashonInstallEventRole",
+            "Arn"
+          ]
+        },
+        "StateMachineName": "ns8-switchboard-magento2-test-onInstallEvent"
+      },
+      "DependsOn": [
+        "Ns8DashswitchboardDashmagento2DashtestDashonInstallEventRole"
+      ]
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashuninstallAction": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Sub": "{\n  \"StartAt\": \"UninstallActionStart\",\n  \"States\": {\n    \"UninstallActionStart\": {\n      \"End\": true,\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-uninstallAction\",\n      \"Retry\": [\n        {\n          \"BackoffRate\": 2,\n          \"ErrorEquals\": [\n            \"States.ALL\"\n          ],\n          \"IntervalSeconds\": 2,\n          \"MaxAttempts\": 5\n        }\n      ],\n      \"Type\": \"Task\"\n    }\n  }\n}"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "Ns8DashswitchboardDashmagento2DashtestDashuninstallActionRole",
+            "Arn"
+          ]
+        },
+        "StateMachineName": "ns8-switchboard-magento2-test-uninstallAction"
+      },
+      "DependsOn": [
+        "Ns8DashswitchboardDashmagento2DashtestDashuninstallActionRole"
+      ]
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateCustVerifyStatusEvent": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Sub": "{\n  \"StartAt\": \"UpdateCustVerifyStatusEventStart\",\n  \"States\": {\n    \"UpdateCustVerifyStatusEventStart\": {\n      \"End\": true,\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateCustVerifyStatusEvent\",\n      \"Retry\": [\n        {\n          \"BackoffRate\": 2,\n          \"ErrorEquals\": [\n            \"States.ALL\"\n          ],\n          \"IntervalSeconds\": 2,\n          \"MaxAttempts\": 5\n        }\n      ],\n      \"Type\": \"Task\"\n    }\n  }\n}"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "Ns8DashswitchboardDashmagento2DashtestDashupdateCustVerifyStatusEventRole",
+            "Arn"
+          ]
+        },
+        "StateMachineName": "ns8-switchboard-magento2-test-updateCustVerifyStatusEvent"
+      },
+      "DependsOn": [
+        "Ns8DashswitchboardDashmagento2DashtestDashupdateCustVerifyStatusEventRole"
+      ]
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateEQ8ScoreEvent": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Sub": "{\n  \"StartAt\": \"UpdateEQ8ScoreEventStart\",\n  \"States\": {\n    \"UpdateEQ8ScoreEventStart\": {\n      \"End\": true,\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateEQ8ScoreEvent\",\n      \"Retry\": [\n        {\n          \"BackoffRate\": 2,\n          \"ErrorEquals\": [\n            \"States.ALL\"\n          ],\n          \"IntervalSeconds\": 2,\n          \"MaxAttempts\": 5\n        }\n      ],\n      \"Type\": \"Task\"\n    }\n  }\n}"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "Ns8DashswitchboardDashmagento2DashtestDashupdateEQ8ScoreEventRole",
+            "Arn"
+          ]
+        },
+        "StateMachineName": "ns8-switchboard-magento2-test-updateEQ8ScoreEvent"
+      },
+      "DependsOn": [
+        "Ns8DashswitchboardDashmagento2DashtestDashupdateEQ8ScoreEventRole"
+      ]
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateMerchantAction": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Sub": "{\n  \"StartAt\": \"UpdateMerchantActionStart\",\n  \"States\": {\n    \"UpdateMerchantActionStart\": {\n      \"End\": true,\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateMerchantAction\",\n      \"Retry\": [\n        {\n          \"BackoffRate\": 2,\n          \"ErrorEquals\": [\n            \"States.ALL\"\n          ],\n          \"IntervalSeconds\": 2,\n          \"MaxAttempts\": 5\n        }\n      ],\n      \"Type\": \"Task\"\n    }\n  }\n}"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "Ns8DashswitchboardDashmagento2DashtestDashupdateMerchantActionRole",
+            "Arn"
+          ]
+        },
+        "StateMachineName": "ns8-switchboard-magento2-test-updateMerchantAction"
+      },
+      "DependsOn": [
+        "Ns8DashswitchboardDashmagento2DashtestDashupdateMerchantActionRole"
+      ]
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderRiskEvent": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Sub": "{\n  \"StartAt\": \"UpdateOrderRiskEventStart\",\n  \"States\": {\n    \"UpdateOrderRiskEventStart\": {\n      \"End\": true,\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateOrderRiskEvent\",\n      \"Retry\": [\n        {\n          \"BackoffRate\": 2,\n          \"ErrorEquals\": [\n            \"States.ALL\"\n          ],\n          \"IntervalSeconds\": 2,\n          \"MaxAttempts\": 5\n        }\n      ],\n      \"Type\": \"Task\"\n    }\n  }\n}"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderRiskEventRole",
+            "Arn"
+          ]
+        },
+        "StateMachineName": "ns8-switchboard-magento2-test-updateOrderRiskEvent"
+      },
+      "DependsOn": [
+        "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderRiskEventRole"
+      ]
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusAction": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Sub": "{\n  \"StartAt\": \"UpdateOrderStatusActionStart\",\n  \"States\": {\n    \"UpdateOrderStatusActionStart\": {\n      \"End\": true,\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateOrderStatusAction\",\n      \"Retry\": [\n        {\n          \"BackoffRate\": 2,\n          \"ErrorEquals\": [\n            \"States.ALL\"\n          ],\n          \"IntervalSeconds\": 2,\n          \"MaxAttempts\": 5\n        }\n      ],\n      \"Type\": \"Task\"\n    }\n  }\n}"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusActionRole",
+            "Arn"
+          ]
+        },
+        "StateMachineName": "ns8-switchboard-magento2-test-updateOrderStatusAction"
+      },
+      "DependsOn": [
+        "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusActionRole"
+      ]
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusEvent": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Sub": "{\n  \"StartAt\": \"UpdateOrderStatusEventStart\",\n  \"States\": {\n    \"UpdateOrderStatusEventStart\": {\n      \"End\": true,\n      \"Resource\": \"arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ns8-switchboard-magento2-test-updateOrderStatusEvent\",\n      \"Retry\": [\n        {\n          \"BackoffRate\": 2,\n          \"ErrorEquals\": [\n            \"States.ALL\"\n          ],\n          \"IntervalSeconds\": 2,\n          \"MaxAttempts\": 5\n        }\n      ],\n      \"Type\": \"Task\"\n    }\n  }\n}"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusEventRole",
+            "Arn"
+          ]
+        },
+        "StateMachineName": "ns8-switchboard-magento2-test-updateOrderStatusEvent"
+      },
+      "DependsOn": [
+        "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusEventRole"
+      ]
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": "serverless-framework-deployments"
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashcreateOrderActionArn": {
+      "Description": "Current StateMachine Arn",
+      "Value": {
+        "Ref": "Ns8DashswitchboardDashmagento2DashtestDashcreateOrderAction"
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashonInstallEventArn": {
+      "Description": "Current StateMachine Arn",
+      "Value": {
+        "Ref": "Ns8DashswitchboardDashmagento2DashtestDashonInstallEvent"
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashuninstallActionArn": {
+      "Description": "Current StateMachine Arn",
+      "Value": {
+        "Ref": "Ns8DashswitchboardDashmagento2DashtestDashuninstallAction"
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateCustVerifyStatusEventArn": {
+      "Description": "Current StateMachine Arn",
+      "Value": {
+        "Ref": "Ns8DashswitchboardDashmagento2DashtestDashupdateCustVerifyStatusEvent"
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateEQ8ScoreEventArn": {
+      "Description": "Current StateMachine Arn",
+      "Value": {
+        "Ref": "Ns8DashswitchboardDashmagento2DashtestDashupdateEQ8ScoreEvent"
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateMerchantActionArn": {
+      "Description": "Current StateMachine Arn",
+      "Value": {
+        "Ref": "Ns8DashswitchboardDashmagento2DashtestDashupdateMerchantAction"
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderRiskEventArn": {
+      "Description": "Current StateMachine Arn",
+      "Value": {
+        "Ref": "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderRiskEvent"
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusActionArn": {
+      "Description": "Current StateMachine Arn",
+      "Value": {
+        "Ref": "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusAction"
+      }
+    },
+    "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusEventArn": {
+      "Description": "Current StateMachine Arn",
+      "Value": {
+        "Ref": "Ns8DashswitchboardDashmagento2DashtestDashupdateOrderStatusEvent"
+      }
+    }
+  }
+}

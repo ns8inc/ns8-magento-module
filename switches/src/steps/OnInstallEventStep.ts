@@ -1,7 +1,7 @@
 import { EventSwitch } from 'ns8-switchboard-interfaces';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 
-export class OnInstallEvent implements EventSwitch {
+export class OnInstallEventStep implements EventSwitch {
   handle = async (switchContext: SwitchContext): Promise<any> => {
     /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     const { actions }: { actions: any } = switchContext.data;
