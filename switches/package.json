@@ -43,13 +43,13 @@
     "build:dev": "NODE_ENV=development yarn && yarn build && yarn link",
     "bundle": "webpack",
     "clean": "rm -rf .awcache .tmp dist .serverless",
+    "deploy": "sls deploy",
     "generate:exports": "yarn cti create ./src -w",
     "lint": "tslint --project .",
     "rebuild": "yarn clean && yarn build",
     "rebuild:dev": "yarn clean && yarn build:dev",
     "test": "jest",
     "test:debug": "node --inspect-brk=9230 ./node_modules/jest/bin/jest.js --runInBand",
-    "deploy": "sls deploy",
     "undeploy": "sls remove"
   },
   "version": "2.0.39"

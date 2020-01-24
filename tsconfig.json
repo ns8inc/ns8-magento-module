@@ -21,7 +21,6 @@
     "test/**/*"
   ],
   "include": [
-    "switchboard/src/**/*",
     "switches/src/**/*"
   ]
 }
