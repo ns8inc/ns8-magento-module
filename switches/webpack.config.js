@@ -5,9 +5,10 @@
   func-names,
   no-console,
   global-require */
-const path = require('path');
 // This plugin can increase the performance of the build by caching and incrementally building
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
 require('dotenv-extended').load();
 
 /**
@@ -23,16 +24,13 @@ DtsBundlePlugin.prototype.apply = function(compiler) {
       main: '.tmp/index.d.ts',
       out: '../dist/index.d.ts',
       removeSource: false,
-      outputAsModuleFolder: true // to use npm in-package typings
+      outputAsModuleFolder: true, // to use npm in-package typings
     });
   });
 };
 
 let mode = 'production';
-if (
-  process.env.NODE_ENV &&
-  process.env.NODE_ENV.toLowerCase().startsWith('prod') !== true
-) {
+if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase().startsWith('prod') !== true) {
   mode = 'development';
 }
 console.log(`Compiling in ${process.env.NODE_ENV}:${mode} mode`);
@@ -45,11 +43,11 @@ const config = {
     filename: 'index.js',
     library: 'index',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
   },
   resolve: {
     extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
-    modules: ['node_modules']
+    modules: ['node_modules'],
   },
   devtool: 'source-map',
   module: {
@@ -58,18 +56,24 @@ const config = {
         test: /\.tsx?$/,
         use: [
           {
-            loader: 'awesome-typescript-loader'
-          }
-        ]
-      }
-    ]
+            loader: 'awesome-typescript-loader',
+          },
+        ],
+      },
+    ],
   },
-  plugins: [new DtsBundlePlugin(), new HardSourceWebpackPlugin()],
+  plugins: [
+    new DtsBundlePlugin(),
+    new HardSourceWebpackPlugin(),
+    new webpack.DefinePlugin({
+      'global.GENTLY': false,
+    }),
+  ],
   target: 'node',
   node: {
     __dirname: false,
-    __filename: false
-  }
+    __filename: false,
+  },
 };
 
 module.exports = config;
