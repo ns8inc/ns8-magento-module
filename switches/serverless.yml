@@ -4,7 +4,7 @@ RetryDefault:
       ErrorEquals:
         - States.ALL
       IntervalSeconds: 2
-      MaxAttempts: 5
+      MaxAttempts: 1
 custom:
   integrationName: '${self:service}-${self:provider.stage}'
 functions:
