@@ -33,8 +33,6 @@ Repos you may need at some point during development:
   * `$ yarn install`
   * `$ yarn build:dev`
   * `$ yarn module:deploy` (Ensure the region set in switchboard/serverless.yml matches  your AWS configuration [e.g. `us-west-2`] prior to deploying.)
-  * `$ yarn switches:build`
-  * `$ yarn switchboard:build`
 * Deploy `switchboard` from platform
   * `$ yarn deploy --stage={devSuffix}` (e.g. `yarn deploy --stage=crf`)
   * Open AWS -> Steps and confirm your step functions are uploaded
@@ -175,17 +173,17 @@ Ensuring that you have a valid merchant is a critical step in setting up your de
 
 The platform uses semver sytnax for versioning. When merging with master, the versions should be set to `major.minor.patch` (e.g. `2.0.1`).
 
-When working on feature branches, it is useful to be able to rely on published packages for switches and composer, for performance. To avoid collisions with other developers, use the platform `$ yarn version:inc` command in conjunction with the `DEV_SUFFIX` environment variable to create collision free versions you can safely publish and consume. One use case for this is testing changes to `switches`. If you use `yarn link` to associate the `switches` and `switchboard` project, the upload size to AWS will be ~60MB and take > 5 minutes to complete. However, if you do not yarn link and use published versions, the upload size to AWS will be ~2MB and take ~1 minute to complete.
+When working on feature branches, it is useful to be able to rely on published packages for switches and composer, for performance. To avoid collisions with other developers, use the platform `$ yarn version:inc` command in conjunction with the `DEV_SUFFIX` environment variable to create collision free versions you can safely publish and consume. One use case for this is testing changes to `src`.
 
-Switchboard/switches example workflow:
+Switchboard example workflow:
 
 * Starting version is `2.0.1`
 * Set `DEV_SUFFIX=abc`
-* Make changes to the switches project
+* Make changes to the `src` project
 * `$ yarn version:inc`
 * All project versions are now `2.0.2-abc.0`
-* In switches, `npm publish` (DO NOT `yarn publish`--this creates tags)
-* In switchboard, `yarn build` and `yarn deploy --stage=abc`
+* Run `npm publish` (DO NOT `yarn publish`--this creates tags)
+* `yarn deploy --stage=abc`
 * AWS upload completes in approximately a minute
 
 The same process would apply if testing changes to the module project, if you need to also test Marketplace installation. Using the `DEV_SUFFIX`, you will get semver versions that are suitable to use for composer publish and deploy tags.

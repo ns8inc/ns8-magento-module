@@ -46,7 +46,7 @@ run:
         exit 1
       fi
 
-      yarnpkg switches:build:dev
+      yarnpkg build:dev
 
       if [ $? -ne 0 ]; then
         >&2 echo 'ERROR: Switches build failed'
