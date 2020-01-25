@@ -1,14 +1,37 @@
 {
+  "awesomeTypescriptLoaderOptions": {
+    "isolatedModules": true,
+    "reportFiles": [
+      "src/**/*.{ts,tsx}"
+    ],
+    "useCache": true
+  },
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
     "incremental": true,
     "module": "commonjs",
-    "moduleResolution": "node",
-    "noLib": true,
+    "noLib": false,
+    "outDir": ".tmp",
     "removeComments": false,
     "resolveJsonModule": true,
+    "sourceMap": true,
     "strict": true,
-    "target": "es2019"
-  }
+    "target": "es2019",
+    "types": [
+      "jest"
+    ]
+  },
+  "exclude": [
+    "test/**/*",
+    "node_modules",
+    "dist",
+    "build/**/*"
+  ],
+  "include": [
+    "src/**/*"
+  ]
 }

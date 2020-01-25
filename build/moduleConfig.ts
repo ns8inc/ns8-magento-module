@@ -49,9 +49,7 @@ export const moduleConfig = (): void => {
     }
   }
   writeFileSync(destFolder, getConfigXml(email, apiUrl));
-  console.info(
-    `Set integration XML ${destFolder} with email='${email}'; apiUrl='${apiUrl}'.`
-  );
+  console.info(`Set integration XML ${destFolder} with email='${email}'; apiUrl='${apiUrl}'.`);
 };
 
 try {

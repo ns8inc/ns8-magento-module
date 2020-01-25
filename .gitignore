@@ -17,3 +17,4 @@ module/vendor/
 release/
 module/etc/integration/config.xml
 switches/.serverless/
+.awcache/

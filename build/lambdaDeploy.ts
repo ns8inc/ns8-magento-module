@@ -7,7 +7,7 @@ const method = (process.env.METHOD || 'deploy').trim().toLowerCase();
 if (method !== 'deploy' && method !== 'remove') throw new Error(`Method ${method} is not supported`);
 
 const command = `sls ${method} --stage=${stage}`;
-const cwd = `${process.cwd()}/switches`;
+const cwd = `${process.cwd()}`;
 console.info(`Running ${command} in ${cwd}`);
 
 try {

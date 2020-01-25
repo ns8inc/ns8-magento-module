@@ -2,8 +2,8 @@
   "id": "magento2",
   "modules": [
     {
-      "name": "@ns8/ns8-magento2-switches",
-      "version": "2.0.39"
+      "name": "@ns8/ns8-magento-platform",
+      "version": "2.0.40"
     }
   ],
   "switches": [
@@ -15,7 +15,7 @@
       "sources": [
         {
           "fileName": "OnInstallEvent",
-          "moduleName": "@ns8/ns8-magento2-switches"
+          "moduleName": "@ns8/ns8-magento-platform"
         }
       ],
       "type": "event"
@@ -28,7 +28,7 @@
       "sources": [
         {
           "fileName": "UpdateCustVerifyStatusEvent",
-          "moduleName": "@ns8/ns8-magento2-switches"
+          "moduleName": "@ns8/ns8-magento-platform"
         }
       ],
       "type": "event"
@@ -41,7 +41,7 @@
       "sources": [
         {
           "fileName": "UpdateEQ8ScoreEvent",
-          "moduleName": "@ns8/ns8-magento2-switches"
+          "moduleName": "@ns8/ns8-magento-platform"
         }
       ],
       "type": "event"
@@ -54,7 +54,7 @@
       "sources": [
         {
           "fileName": "UpdateOrderRiskEvent",
-          "moduleName": "@ns8/ns8-magento2-switches"
+          "moduleName": "@ns8/ns8-magento-platform"
         }
       ],
       "type": "event"
@@ -67,7 +67,7 @@
       "sources": [
         {
           "fileName": "UninstallAction",
-          "moduleName": "@ns8/ns8-magento2-switches"
+          "moduleName": "@ns8/ns8-magento-platform"
         }
       ],
       "type": "action"
@@ -80,7 +80,7 @@
       "sources": [
         {
           "fileName": "CreateOrderAction",
-          "moduleName": "@ns8/ns8-magento2-switches"
+          "moduleName": "@ns8/ns8-magento-platform"
         }
       ],
       "type": "action"
@@ -93,7 +93,7 @@
       "sources": [
         {
           "fileName": "UpdateMerchantAction",
-          "moduleName": "@ns8/ns8-magento2-switches"
+          "moduleName": "@ns8/ns8-magento-platform"
         }
       ],
       "type": "action"
@@ -106,7 +106,7 @@
       "sources": [
         {
           "fileName": "UpdateOrderStatusEvent",
-          "moduleName": "@ns8/ns8-magento2-switches"
+          "moduleName": "@ns8/ns8-magento-platform"
         }
       ],
       "type": "event"
@@ -119,7 +119,7 @@
       "sources": [
         {
           "fileName": "UpdateOrderStatusAction",
-          "moduleName": "@ns8/ns8-magento2-switches"
+          "moduleName": "@ns8/ns8-magento-platform"
         }
       ],
       "type": "action"

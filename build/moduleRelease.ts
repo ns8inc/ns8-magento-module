@@ -1,13 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires, import/extensions, no-console */
-import {
-  createWriteStream,
-  mkdirSync,
-  existsSync,
-  readdirSync,
-  lstatSync,
-  unlinkSync,
-  rmdirSync
-} from 'fs';
+import { createWriteStream, mkdirSync, existsSync, readdirSync, lstatSync, unlinkSync, rmdirSync } from 'fs';
 import Path from 'path';
 import composer from '../module/composer.json';
 
@@ -15,7 +7,7 @@ const archiver = require('archiver');
 
 const deleteFolderRecursive = (path): void => {
   if (existsSync(path)) {
-    readdirSync(path).forEach(file => {
+    readdirSync(path).forEach((file) => {
       const curPath = Path.join(path, file);
       if (lstatSync(curPath).isDirectory()) {
         // recurse
@@ -46,14 +38,14 @@ export const moduleRelease = (): void => {
     console.log(`${fileName}: ${archive.pointer()} total bytes`);
   });
 
-  archive.on('error', err => {
+  archive.on('error', (err) => {
     throw err;
   });
 
   archive.pipe(output);
   archive.glob('**/**', {
     cwd: 'module',
-    ignore: ['**/vendor/**']
+    ignore: ['**/vendor/**'],
   });
   archive.finalize();
 };
