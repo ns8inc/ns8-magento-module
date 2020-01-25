@@ -16,7 +16,7 @@ const env = require('dotenv-extended').load({
   errorOnRegex: false,
   includeProcessEnv: false,
   assignToProcessEnv: true,
-  overrideProcessEnv: false
+  overrideProcessEnv: false,
 });
 
 export { env };
