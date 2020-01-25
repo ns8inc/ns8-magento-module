@@ -38,8 +38,6 @@
     "build": "yarn build:root && yarn switches:build",
     "build:dev": "NODE_ENV=dev yarn build:root && yarn switches:build:dev",
     "build:prod": "NODE_ENV=prod yarn build",
-    "certbot": "./scripts/ssl_cert.sh",
-    "certbot:prep": "./scripts/ssl_cert_prep.sh",
     "build:root": "yarn && yarn switches:clean && yarn beautify && yarn module:config",
     "lint": "eslint --ext=ts switches",
     "lint:fix": "yarn lint --fix",
