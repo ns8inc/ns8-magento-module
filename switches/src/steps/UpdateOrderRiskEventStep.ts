@@ -4,6 +4,9 @@ import { EventSwitch } from 'ns8-switchboard-interfaces';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { ScoreHelper } from '../lib/ScoreHelper';
 
+/**
+ * This is the stateless function that will execute the actual Magento switch logic.
+ */
 export class UpdateOrderRiskEventStep implements EventSwitch {
   async handle(switchContext: SwitchContext): Promise<any> {
     const converter = new ScoreHelper(switchContext);
@@ -14,5 +17,10 @@ export class UpdateOrderRiskEventStep implements EventSwitch {
   }
 }
 
+/**
+ * This is the lambda that will execute the the step function.
+ * This is the method that the serverless context will execute,
+ * where this method name must match the corresponding method defined in `serverless.yml`
+ */
 export const UpdateOrderRiskEvent: (event: any) => Promise<any> = ((): any =>
   new operatorModule.EventOperator([new UpdateOrderRiskEventStep()]).handle)();

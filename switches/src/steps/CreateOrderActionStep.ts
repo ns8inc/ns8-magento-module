@@ -6,7 +6,7 @@ import { Order } from 'ns8-protect-models';
 import { OrderHelper } from '../lib/OrderHelper';
 
 /**
- * This is the state that will execute
+ * This is the stateless function that will execute the actual Magento switch logic.
  */
 export class CreateOrderActionStep implements CreateOrderActionSwitch {
   async create(switchContext: SwitchContext): Promise<Order> {
@@ -15,5 +15,10 @@ export class CreateOrderActionStep implements CreateOrderActionSwitch {
   }
 }
 
+/**
+ * This is the lambda that will execute the the step function.
+ * This is the method that the serverless context will execute,
+ * where this method name must match the corresponding method defined in `serverless.yml`
+ */
 export const CreateOrderAction: (event: any) => Promise<Order> = ((): any =>
   new operatorModule.CreateOrderActionOperator([new CreateOrderActionStep()]).handle)();

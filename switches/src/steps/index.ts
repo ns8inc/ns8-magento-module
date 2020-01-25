@@ -2,7 +2,6 @@ export * from './CreateOrderActionStep';
 export * from './OnInstallEventStep';
 export * from './UninstallActionStep';
 export * from './UpdateCustVerifyStatusEventStep';
-export * from './UpdateCustomerStep';
 export * from './UpdateEQ8ScoreEventStep';
 export * from './UpdateMerchantActionStep';
 export * from './UpdateOrderRiskEventStep';
