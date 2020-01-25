@@ -1,26 +1,14 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true,
     "incremental": true,
     "module": "commonjs",
-    "noImplicitAny": false,
-    "noLib": false,
-    "outDir": "dist",
+    "moduleResolution": "node",
+    "noLib": true,
     "removeComments": false,
     "resolveJsonModule": true,
-    "sourceMap": true,
     "strict": true,
     "target": "es2019"
-  },
-  "exclude": [
-    "node_modules",
-    "test/**/*"
-  ],
-  "include": [
-    "switches/src/**/*"
-  ]
+  }
 }
