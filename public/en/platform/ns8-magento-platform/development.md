@@ -3,8 +3,8 @@
 The Magento Platform project is a single repository comprising three distinct, mutually reinforcing parts.
 
 * `module` is the platform specific code that must be deployed to the platform in order for the NS8 Protect integration to become available for integration. For production, the contents of this folder will be assembled in a zip file and deployed to the Magento Marketplace where it will be available to install into individual vendor stores. For development, the entire contents of this folder will be copied to an instance of Magento running in a container. In both cases, the installation of the module is executed via composer (a PHP convention, similar to npm or yarn in some respects).
-* `src` is the deployment configuration of the lamba functions, the metadata of the functions, specifically tailored to bundle the contents of `src/steps` for deployment to AWS's Step function utility.
-* `switches` contains the lambda definitions--that is, the functions themselves, and any additional business logic required to execute those methods.
+* `switchboard` is the deployment configuration of the lamba functions, the metadata of the functions, specifically tailored to bundle the contents of `switchboard/switches` for deployment to AWS's Step function utility.
+* `switchboard/switches` contains the lambda definitions--that is, the functions themselves, and any additional business logic required to execute those methods.
 
 ## IDE
 
@@ -40,7 +40,7 @@ These values should already be set at your project level:
 
 ## Switchboard Development
 
-The magento platform repository is split into 2 projects. Switchboard logic lives in `src`. `src` defines each of the lambda functions that will be executed on the remote, server-less infrastructure.
+The magento platform repository is split into 2 projects. Switchboard logic lives in `switchboard`. `switchboard` defines each of the lambda functions that will be executed on the remote, server-less infrastructure.
 
 The magento-platform project defines outer level build and compile tasks. One should always start at the repo level and `yarn build` or `yarn build:dev` accordingly to compile the entire project.
 
@@ -60,7 +60,7 @@ export * from class in index.ts
 ### switchboard project
 
 add switch to serverless.yml
-In ns8-magento2-switchboard/switchboard.json, change "link" to the version number you want to target
+In switchboard.json, change "link" to the version number you want to target
 add switch to switchboard.json
 add switch to app.ts
 
@@ -86,7 +86,7 @@ Step functions live in the Oregon region. Go to <https://us-west-2.console.aws.a
 * Step through quickly or you will get timed OrderUpdate
 
 * Use ns8-magento2-rest-client to make calls to get orders
-* `src` project are linked through
+* `switchboard` project are linked through
 
 ### Add a payment method
 

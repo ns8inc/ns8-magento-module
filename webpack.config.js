@@ -22,26 +22,29 @@ DtsBundlePlugin.prototype.apply = function(compiler) {
     dts.bundle({
       name: 'app',
       main: '.tmp/index.d.ts',
-      out: '../dist/index.d.ts',
+      out: '../dist/switchboard.d.ts',
       removeSource: false,
       outputAsModuleFolder: true, // to use npm in-package typings
     });
   });
 };
 
-let mode = 'production';
+const PRODUCTION = 'production';
+const DEVELOPMENT = 'development';
+
+let mode = PRODUCTION;
 if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase().startsWith('prod') !== true) {
-  mode = 'development';
+  mode = DEVELOPMENT;
 }
 console.log(`Compiling in ${process.env.NODE_ENV}:${mode} mode`);
 
 const config = {
-  entry: './src/index.ts',
+  entry: './switchboard/index.ts',
   mode,
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
-    library: 'index',
+    filename: mode === PRODUCTION ? 'switchboard.min.js' : 'switchboard.js',
+    library: 'switchboard',
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },

@@ -46,18 +46,22 @@
     "webpack-dev-server": "3.10.1",
     "webpack-merge": "4.2.2"
   },
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
+  "main": "dist/switchboard.min.js",
   "name": "@ns8/ns8-magento-platform",
   "scripts": {
     "beautify": "ts-node ./build/projectBuild.ts",
-    "build": "yarn && yarn generate:exports && yarn clean && yarn beautify && yarn module:config && yarn bundle",
+    "build": "yarn && yarn generate:exports && yarn beautify && yarn module:config && yarn bundle",
     "build:dev": "NODE_ENV=dev yarn build",
     "build:prod": "NODE_ENV=prod yarn build",
     "bundle": "webpack",
     "clean": "rimraf .awcache .tmp dist .serverless",
     "deploy": "METHOD=deploy && ts-node ./build/lambdaDeploy.ts",
-    "generate:exports": "yarn cti create ./src -w",
-    "lint": "eslint --ext=ts src",
+    "generate:exports": "yarn cti create ./switchboard -w",
+    "lint": "eslint --ext=ts switchboard",
     "lint:fix": "yarn lint --fix",
     "module:build": "cd module && composer install",
     "module:config": "ts-node ./build/moduleConfig.ts",

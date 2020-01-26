@@ -2,7 +2,7 @@
   "awesomeTypescriptLoaderOptions": {
     "isolatedModules": true,
     "reportFiles": [
-      "src/**/*.{ts,tsx}"
+      "switchboard/**/*.{ts,tsx}"
     ],
     "useCache": true
   },
@@ -33,6 +33,6 @@
     "build/**/*"
   ],
   "include": [
-    "src/**/*"
+    "switchboard/**/*"
   ]
 }

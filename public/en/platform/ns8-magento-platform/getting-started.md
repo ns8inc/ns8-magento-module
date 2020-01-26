@@ -99,42 +99,22 @@ The values noted above as Magento Generated can be retrieved from your Admin UI 
 The platform has a variety of tools to assist with builds for local development, production, deploying, linting and cleaning the project. This is a list of the platform tooling options, as defined in `package.json`. Unless otherwise noted, all commands are invoked via `$ yarn <command>`.
 
 * `beautify`: Alphabetically sorts all `.json` files. Runs automatically as part of `build`.
-* `build`: Base build method. Beautifies, compiles, and runs module config. Uses the `NODE_ENV` variable to decide build method.
 * `build:dev`: Explicitly runs `build` in `dev` mode.
 * `build:prod`: Explicitly runs `build` in `prod` mode.
+* `build`: Base build method. Beautifies, compiles, and runs module config. Uses the `NODE_ENV` variable to decide build method.
 * `clean`: Cleans the contents of the platform build folders.
 * `compile`: TypeScript compile. Run by `build`.
-* `lint`: Runs EsLint on the `switches` and `switchboard` project.
+* `deploy`: Deploys the step functions to AWS. Usage: `$ yarn deploy --stage={devSuffix}`
+* `lint`: Runs EsLint on the `switchboard` project.
 * `module:build`: Runs composer install on the modules project. This is required to execute `module:lint`.
 * `module:config`: Creates the module `config.xml` file according to `.env` variables. Only customizes the file if `NODE_ENV=prod`.
 * `module:deploy`: Deploys the `module` folder to Magento instance over SSH
 * `module:lint`: Runs the Magento Marketplace PHP lint on the `module` project
 * `module:release`: Produces the module ZIP file in accordance with the Magento Marketplace rules for submission.
-* `switchboard:build`: Runs the switchboard build at the platform level
-* `switches:build`: Runs the switches build at the platform level
-* `version:inc`: Automatically increments the version of every project within platform according to semver rules. If `DEV_SUFFIX` is set, will patch version numbers using the dev name.
-
-### Switchboard Tools
-
-These tools are located in the platform switchboard package.json and are specific to switchboard.
-
-* `build`: Compiles the project
-* `build:dev`: Compiles the project and links `switches`
-* `deploy`: Deploys the step functions to AWS. Usage: `$ yarn deploy --stage={devSuffix}`
-* `undeploy`: Deletes the step functions from AWS. Usage `$ yarn undeploy --stage={devSuffix}`
-
-### Switches Tools
-
-These tools are located in the platform switches package.json and are specific to switches.
-
-* `build`: Compiles the project. Runs `bundle`.
-* `build:dev`: Explicitly runs `build` in `dev` mode. Creates a link for switches.
-* `bundle`: Creates a compact, single file of all internal/external assets
-* `clean`: Cleans all temporary folders used in `build` and `bundle`. Useful for sanity check if compile fails.
-* `rebuild`: Runs `clean` and `build`
-* `rebuild:dev`: Runs `clean` and `build:dev`
-* `test`: Runs the Jest unit test suite.
 * `test:debug`: Runs the Jest unit test suite in debug mode.
+* `test`: Runs the Jest unit test suite.
+* `undeploy`: Deletes the step functions from AWS. Usage `$ yarn undeploy --stage={devSuffix}`
+* `version:patch`: Automatically increments the version of every project within platform according to semver rules. If `DEV_SUFFIX` is set, will patch version numbers using the dev name.
 
 ## Merchant Seeding
 
@@ -173,13 +153,13 @@ Ensuring that you have a valid merchant is a critical step in setting up your de
 
 The platform uses semver sytnax for versioning. When merging with master, the versions should be set to `major.minor.patch` (e.g. `2.0.1`).
 
-When working on feature branches, it is useful to be able to rely on published packages for switches and composer, for performance. To avoid collisions with other developers, use the platform `$ yarn version:inc` command in conjunction with the `DEV_SUFFIX` environment variable to create collision free versions you can safely publish and consume. One use case for this is testing changes to `src`.
+When working on feature branches, it is useful to be able to rely on published packages for switches and composer, for performance. To avoid collisions with other developers, use the platform `$ yarn version:patch` command in conjunction with the `DEV_SUFFIX` environment variable to create collision free versions you can safely publish and consume. One use case for this is testing changes to `switchboard`.
 
 Switchboard example workflow:
 
 * Starting version is `2.0.1`
 * Set `DEV_SUFFIX=abc`
-* Make changes to the `src` project
+* Make changes to the `switchboard` project
 * `$ yarn version:inc`
 * All project versions are now `2.0.2-abc.0`
 * Run `npm publish` (DO NOT `yarn publish`--this creates tags)
