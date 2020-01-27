@@ -54,11 +54,11 @@
   "name": "@ns8/ns8-magento-platform",
   "scripts": {
     "beautify": "ts-node ./build/projectBuild.ts",
-    "build": "yarn && yarn generate:exports && yarn beautify && yarn module:config && yarn bundle",
+    "build": "yarn && yarn generate:exports && yarn beautify && yarn bundle && yarn module:config",
     "build:dev": "NODE_ENV=dev yarn build",
     "build:prod": "NODE_ENV=prod yarn build",
     "bundle": "webpack",
-    "clean": "rimraf .awcache .tmp dist .serverless",
+    "clean": "rm -rf .awcache .tmp dist .serverless",
     "deploy": "METHOD=deploy && ts-node ./build/lambdaDeploy.ts",
     "generate:exports": "yarn cti create ./switchboard -w",
     "lint": "eslint --ext=ts switchboard",
