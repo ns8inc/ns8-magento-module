@@ -15,19 +15,6 @@ require('dotenv-extended').load();
  * This is the webpack plugin that compiles the TSD file for use in the final bundle.
  * NOTE: Using legacy JavaScript concepts to build this plugin, because it works as-is.
  */
-function DtsBundlePlugin() {}
-DtsBundlePlugin.prototype.apply = function(compiler) {
-  const dts = require('dts-bundle');
-  compiler.plugin('done', () => {
-    dts.bundle({
-      name: 'app',
-      main: '.tmp/index.d.ts',
-      out: '../dist/switchboard.d.ts',
-      removeSource: false,
-      outputAsModuleFolder: true, // to use npm in-package typings
-    });
-  });
-};
 
 const PRODUCTION = 'production';
 const DEVELOPMENT = 'development';
@@ -37,6 +24,20 @@ if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase().startsWith('prod'
   mode = DEVELOPMENT;
 }
 console.log(`Compiling in ${process.env.NODE_ENV}:${mode} mode`);
+
+function DtsBundlePlugin() {}
+DtsBundlePlugin.prototype.apply = function(compiler) {
+  const dts = require('dts-bundle');
+  compiler.plugin('done', () => {
+    dts.bundle({
+      name: 'app',
+      main: '.tmp/index.d.ts',
+      out: mode === PRODUCTION ? '../dist/switchboard.d.min.ts' : '../dist/switchboard.d.ts',
+      removeSource: false,
+      outputAsModuleFolder: true, // to use npm in-package typings
+    });
+  });
+};
 
 const config = {
   entry: './switchboard/index.ts',

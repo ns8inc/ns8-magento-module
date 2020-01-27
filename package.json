@@ -55,8 +55,8 @@
   "scripts": {
     "beautify": "ts-node ./build/projectBuild.ts",
     "build": "yarn && yarn generate:exports && yarn beautify && yarn bundle && yarn module:config",
-    "build:dev": "NODE_ENV=dev yarn build",
-    "build:prod": "NODE_ENV=prod yarn build",
+    "build:dev": "NODE_ENV=dev tsc -d --sourceMap && yarn build",
+    "build:prod": "NODE_ENV=prod tsc -d && yarn build",
     "bundle": "webpack",
     "clean": "rm -rf .awcache .tmp dist .serverless",
     "deploy": "METHOD=deploy && ts-node ./build/lambdaDeploy.ts",
