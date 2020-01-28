@@ -1,8 +1,12 @@
 <?php if ($block->isActivated()) : ?>
     <script type="text/javascript">
-      require(['NS8_Protect/js/iframeResizer.min.js'], function(_) {
+      require(['NS8_Protect/js/iframeResizer.min'], function(_) {
+
         const container = document.getElementById('ns8-protect-wrapper');
-        const url = '<?= /* @noEscape because URL may contain an ampersand */ $block->getNS8ProtectUrl() ?>';
+        const protectIframe = document.createElement('iframe');
+        protectIframe.src = '<?= /* @noEscape because URL may contain an ampersand */ $block->getNS8ProtectUrl() ?>';
+        protectIframe.classList.add('ns8-protect-client-iframe')
+        container.appendChild(protectIframe);
 
         const navigateToMagentoOrderDetails = (orderId) => {
           const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
@@ -11,14 +15,12 @@
         };
 
         const eventHandlers = {
-          //child.on('order-detail-name-click', (data) => navigateToMagentoOrderDetails(data.orderId));
-          'order-detail-name-click': (data) => navigateToMagentoOrderDetails(data.orderId)
+          'order-detail-name-click': (data) => navigateToMagentoOrderDetails(data.orderId),
           'undefined': () => {}
         }
 
         const [ iframe ] = iFrameResize({
-          log: true,
-          // the 'lowestElement' setting is useful when iframe content height is relative to container
+          checkOrigin: false,
           heightCalculationMethod: 'lowestElement',
           onMessage: ({ name, data }) => {
             eventHandlers[name](data)
