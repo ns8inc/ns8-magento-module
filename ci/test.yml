@@ -40,21 +40,15 @@ run:
         exit 1
       fi
 
-      if ! yarnpkg build:dev
+      if ! yarnpkg test
       then
-        >&2 echo 'ERROR: Switches build failed'
+        >&2 echo 'ERROR: Switches tests failed'
         exit 1
       fi
 
       if ! yarnpkg lint
       then
-        >&2 echo 'ERROR: Yarn lint failed'
-        exit 1
-      fi
-
-      if ! yarnpkg test
-      then
-        >&2 echo 'ERROR: Yarn tests failed'
+        >&2 echo 'ERROR: Switches lint failed'
         exit 1
       fi
 
@@ -102,7 +96,7 @@ run:
 
       if ! ln -s `pwd` /tmp/magento/app/code/NS8/Protect
       then
-        >&2 echo 'ERROR: Magento module installation failed'
+        >&2 echo 'ERROR: Module installation failed'
         exit 1
       fi
 
@@ -111,6 +105,6 @@ run:
 
       if ! vendor/phpunit/phpunit/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/NS8/Protect/Test
       then
-        >&2 echo 'ERROR: PHP tests failed'
+        >&2 echo 'ERROR: Module tests failed'
         exit 1
       fi
