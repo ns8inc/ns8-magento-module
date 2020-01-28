@@ -1,5 +1,7 @@
-import { NamedOrderUpdate, SwitchContext, UpdateOrderStatusActionSwitch } from 'ns8-switchboard-interfaces';
 import { UpdateOrderStatusActionOperator } from '@ns8/ns8-switchboard-operator';
+import { NamedOrderUpdate } from 'ns8-switchboard-interfaces';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { UpdateOrderStatusActionSwitch } from 'ns8-switchboard-interfaces';
 import { OrderUpdate } from 'ns8-protect-models';
 import { OrderUpdateHelper } from '../lib/OrderUpdateHelper';
 

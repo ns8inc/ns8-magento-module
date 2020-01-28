@@ -1,13 +1,11 @@
-import {
-  StatusHistory as MagentoComment,
-  Customer as MagentoCustomer,
-  Order as MagentoOrder,
-  Transaction as MagentoTransaction,
-  RestClient,
-  RestLogLevel,
-} from '@ns8/magento2-rest-client';
+import { Customer as MagentoCustomer } from '@ns8/magento2-rest-client';
 import { Logger } from '@ns8/ns8-protect-sdk';
+import { Order as MagentoOrder } from '@ns8/magento2-rest-client';
+import { RestClient } from '@ns8/magento2-rest-client';
+import { RestLogLevel } from '@ns8/magento2-rest-client';
+import { StatusHistory as MagentoComment } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { Transaction as MagentoTransaction } from '@ns8/magento2-rest-client';
 import { RetryConfig, handleApiError } from './utils';
 
 /**

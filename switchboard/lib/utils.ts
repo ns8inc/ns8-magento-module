@@ -1,4 +1,5 @@
-import { Logger, Utilities } from '@ns8/ns8-protect-sdk';
+import { Logger } from '@ns8/ns8-protect-sdk';
+import { Utilities } from '@ns8/ns8-protect-sdk';
 import { OrderState as MagentoOrderState } from '@ns8/magento2-rest-client';
 
 export class RetryConfig {

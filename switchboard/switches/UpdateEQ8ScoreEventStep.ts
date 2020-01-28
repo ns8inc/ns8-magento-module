@@ -1,5 +1,6 @@
 import { EventOperator } from '@ns8/ns8-switchboard-operator';
-import { EventSwitch, SwitchContext } from 'ns8-switchboard-interfaces';
+import { EventSwitch } from 'ns8-switchboard-interfaces';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { ScoreHelper } from '../lib/ScoreHelper';
 
 /**

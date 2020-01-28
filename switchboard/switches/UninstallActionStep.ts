@@ -1,5 +1,6 @@
 import { UninstallActionOperator } from '@ns8/ns8-switchboard-operator';
-import { SwitchContext, UninstallActionSwitch } from 'ns8-switchboard-interfaces';
+import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { UninstallActionSwitch } from 'ns8-switchboard-interfaces';
 
 /**
  * This is the stateless function that will execute the actual Magento switch logic.
