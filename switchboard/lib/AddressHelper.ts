@@ -1,8 +1,6 @@
 import { Address as NS8Address } from 'ns8-protect-models';
-import { Address as MagentoAddress } from '@ns8/magento2-rest-client';
-import { Region as MagentoRegion } from '@ns8/magento2-rest-client';
-import { ModelTools } from '@ns8/ns8-protect-sdk';
-import { Utilities } from '@ns8/ns8-protect-sdk';
+import { Address as MagentoAddress, Region as MagentoRegion } from '@ns8/magento2-rest-client';
+import { ModelTools, Utilities } from '@ns8/ns8-protect-sdk';
 import { HelperBase } from './HelperBase';
 
 /**
@@ -83,7 +81,7 @@ export class AddressHelper extends HelperBase {
         ns8Addresses.push(addr);
       });
     } catch (e) {
-      this.error(`Failed to create Addresses`, e);
+      this.error('Failed to create Addresses', e);
     }
     return ns8Addresses;
   };

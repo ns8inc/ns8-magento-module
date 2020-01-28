@@ -52,6 +52,12 @@ run:
         exit 1
       fi
 
+      if ! yarnpkg test
+      then
+        >&2 echo 'ERROR: Yarn tests failed'
+        exit 1
+      fi
+
       cd module
 
       if ! composer install --no-autoloader --no-progress -q

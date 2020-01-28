@@ -1,10 +1,9 @@
-import { CreditCard } from 'ns8-protect-models';
+import { CreditCard, Transaction, TransactionMethod, TransactionStatus } from 'ns8-protect-models';
 import { ModelTools } from '@ns8/ns8-protect-sdk';
-import { Payment as MagentoPayment } from '@ns8/magento2-rest-client';
-import { PaymentAdditionalInfo as MagentoPaymentAdditionalInfo } from '@ns8/magento2-rest-client';
-import { Transaction } from 'ns8-protect-models';
-import { TransactionMethod } from 'ns8-protect-models';
-import { TransactionStatus } from 'ns8-protect-models';
+import {
+  Payment as MagentoPayment,
+  PaymentAdditionalInfo as MagentoPaymentAdditionalInfo,
+} from '@ns8/magento2-rest-client';
 import { HelperBase } from './HelperBase';
 
 /**
@@ -188,7 +187,7 @@ export class TransactionHelper extends HelperBase {
       trans.status = this.getStatus();
       ret.push(trans);
     } catch (e) {
-      this.error(`Failed create Transactions`, e);
+      this.error('Failed create Transactions', e);
     }
     return ret;
   };

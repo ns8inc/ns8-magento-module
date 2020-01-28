@@ -52,7 +52,6 @@ package:
     - '?*.log'
     - '?*/**.map'
     - '?*/**.template'
-    - jest.config.js
     - node_modules/**
     - README.md
     - scripts/**

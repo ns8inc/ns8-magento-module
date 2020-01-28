@@ -111,8 +111,8 @@ The platform has a variety of tools to assist with builds for local development,
 * `module:deploy`: Deploys the `module` folder to Magento instance over SSH
 * `module:lint`: Runs the Magento Marketplace PHP lint on the `module` project
 * `module:release`: Produces the module ZIP file in accordance with the Magento Marketplace rules for submission.
-* `test:debug`: Runs the Jest unit test suite in debug mode.
-* `test`: Runs the Jest unit test suite.
+* `test:debug`: Runs the Mocha unit test suite in debug mode.
+* `test`: Runs the Mocha unit test suite.
 * `undeploy`: Deletes the step functions from AWS. Usage `$ yarn undeploy --stage={devSuffix}`
 * `version:patch`: Automatically increments the version of every project within platform according to semver rules. If `DEV_SUFFIX` is set, will patch version numbers using the dev name.
 

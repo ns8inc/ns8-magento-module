@@ -5,7 +5,7 @@ export class SessionHelper extends HelperBase {
   /**
    * Convert the session object.
    *
-   * @return {Session} The session
+   * @returns Session The session
    */
   public toSession = (): Session => {
     if (this.SwitchContext.data && this.SwitchContext.data.session) {

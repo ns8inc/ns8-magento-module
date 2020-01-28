@@ -91,7 +91,7 @@ export class CustomerHelper extends HelperBase {
         platformId: customerId,
       });
     } catch (e) {
-      this.error(`Failed to create Customer`, e);
+      this.error('Failed to create Customer', e);
     }
 
     return ret;

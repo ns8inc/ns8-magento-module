@@ -38,7 +38,7 @@ export class LineItemsHelper extends HelperBase {
         ret.push(i);
       });
     } catch (e) {
-      this.error(`Failed to create Line Items`, e);
+      this.error('Failed to create Line Items', e);
     }
     return ret;
   };

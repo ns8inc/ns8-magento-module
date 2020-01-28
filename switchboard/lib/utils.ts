@@ -1,5 +1,4 @@
-import { Logger } from '@ns8/ns8-protect-sdk';
-import { Utilities } from '@ns8/ns8-protect-sdk';
+import { Logger, Utilities } from '@ns8/ns8-protect-sdk';
 import { OrderState as MagentoOrderState } from '@ns8/magento2-rest-client';
 
 export class RetryConfig {
@@ -26,10 +25,11 @@ export class RetryConfig {
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 export const handleApiError = async (
-  error: any,
-  retryCallback: any,
+  error: { statusCode: number },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  retryCallback: () => any,
   retryConfig: RetryConfig = new RetryConfig(),
-): Promise<any> => {
+): Promise<boolean> => {
   if (error?.statusCode === 404 && retryConfig.attempts < retryConfig.maxRetry) {
     retryConfig.attempts += 1;
     Logger.log(

@@ -22,7 +22,7 @@
     "strict": true,
     "target": "es2019",
     "types": [
-      "jest",
+      "mocha",
       "node"
     ]
   },

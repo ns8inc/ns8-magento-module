@@ -4,17 +4,15 @@ env:
   node: true
 extends:
   - eslint-config-airbnb-base
+  - 'plugin:prettier/recommended'
   - 'plugin:@typescript-eslint/recommended'
   - prettier/@typescript-eslint
-  - 'plugin:prettier/recommended'
 overrides:
-  - env:
-      jest: true
-    files:
-      - '**/*.test.ts'
-      - '**/*.spec.ts'
-      - '**/*-spec.ts'
-      - test/**/*
+  - files:
+    - '**/*.test.ts'
+    - '**/*.spec.ts'
+    - '**/*-spec.ts'
+    - test/**/*
 parser: '@typescript-eslint/parser'
 parserOptions:
   ecmaVersion: 2019

@@ -1,4 +1,4 @@
-import { MerchantUpdate, Contact } from 'ns8-protect-models';
+import { Contact, MerchantUpdate } from 'ns8-protect-models';
 import { MerchantUpdate as MagentoMerchantUpdate } from '@ns8/magento2-rest-client';
 import { SwitchContext } from 'ns8-switchboard-interfaces';
 import { Logger } from '@ns8/ns8-protect-sdk';
@@ -48,7 +48,7 @@ export class MerchantHelper {
         }
       }
     } catch (e) {
-      Logger.error(`Failed to create Merchant update event`, e);
+      Logger.error('Failed to create Merchant update event', e);
     }
     return ret;
   };

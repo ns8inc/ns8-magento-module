@@ -33,9 +33,9 @@ export class OrderHelper {
 
   public TransactionHelper: TransactionHelper | undefined;
 
-  protected _ready: Promise<MagentoOrder>;
+  protected ready: Promise<MagentoOrder>;
 
-  private _orderId: number | undefined;
+  private orderId: number | undefined;
 
   /**
    * Constructor will call init() which sets a _ready Promise.
@@ -44,13 +44,13 @@ export class OrderHelper {
   constructor(switchContext: SwitchContext) {
     this.SwitchContext = switchContext;
     this.MagentoClient = new MagentoClient(this.SwitchContext);
-    this._ready = this.init();
+    this.ready = this.init();
   }
 
   /**
    * Attempts to get the Magento order ID.
    * NOTE: there is significant confusion around the difference between the `entity_id`, `id` and `increment_id` concepts as Magento provides different and sometimes conflicting ID representations of the same entity.
-   * @see https://magento.stackexchange.com/questions/26250/confusion-with-order-id-order-increment-id-and-i-am-not-getting-order-id-as-200
+   * See: https://magento.stackexchange.com/questions/26250/confusion-with-order-id-order-increment-id-and-i-am-not-getting-order-id-as-200
    * The `entity_id` is the canonical database id of the order row in the `sales_order` table. This id should be used for the majority of API calls.
    * The `increment_id` is the **Display** Id, exposed via the Magento Admin UI and through the Customer UI. This Id will displayed consistently throughout the UI, and it will not match the underlying canonical database id.
    * The format for `increment_id` is determined by the unique store id under which the order was placed. The assumption is that any Magento instance could have multiple stores, so you would end up with display ids that would provide some guidance to the store associated with the order.
@@ -58,7 +58,7 @@ export class OrderHelper {
    * We will store the Protect Order's `name` as the `increment_id` and assign `platformId` as the `entity_id`.
    */
   public getOrderId = (): number | undefined => {
-    if (this._orderId) return this._orderId;
+    if (this.orderId) return this.orderId;
 
     let ret: number | undefined;
     const { data } = this.SwitchContext;
@@ -73,7 +73,7 @@ export class OrderHelper {
         ret = parseInt(data.platformId, 10);
       }
     }
-    if (ret) this._orderId = ret;
+    if (ret) this.orderId = ret;
     return ret;
   };
 
@@ -84,7 +84,7 @@ export class OrderHelper {
     if (this.MagentoOrder) return this.MagentoOrder;
 
     const orderId = this.getOrderId();
-    if (!orderId) throw new Error(`No Magento OrderId could be found`);
+    if (!orderId) throw new Error('No Magento OrderId could be found');
     const order: MagentoOrder | null = await this.MagentoClient.getOrder(orderId);
     if (order === null)
       throw new Error(
@@ -111,7 +111,7 @@ export class OrderHelper {
   public createProtectOrder = async (): Promise<Order> => {
     this.Order = new Order();
     try {
-      const order: MagentoOrder = await this._ready;
+      const order: MagentoOrder = await this.ready;
       const orderId = this.getOrderId();
       const magentoOrderData = this.SwitchContext.data as OrderActionData;
       this.Order = new Order({
@@ -140,5 +140,5 @@ export class OrderHelper {
   /**
    * Get the Magento version of this Order
    */
-  public getMagentoOrder = async (): Promise<MagentoOrder> => this._ready;
+  public getMagentoOrder = async (): Promise<MagentoOrder> => this.ready;
 }

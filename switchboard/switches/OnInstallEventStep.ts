@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-import * as operatorModule from '@ns8/ns8-switchboard-operator';
-import { EventSwitch } from 'ns8-switchboard-interfaces';
-import { SwitchContext } from 'ns8-switchboard-interfaces';
+import { EventOperator } from '@ns8/ns8-switchboard-operator';
+import { EventSwitch, SwitchContext } from 'ns8-switchboard-interfaces';
 
 /**
  * This is the stateless function that will execute the actual Magento switch logic.
  */
 export class OnInstallEventStep implements EventSwitch {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handle = async (switchContext: SwitchContext): Promise<any> => {
-    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     const { actions }: { actions: any } = switchContext.data;
   };
 }
@@ -18,5 +17,6 @@ export class OnInstallEventStep implements EventSwitch {
  * This is the method that the serverless context will execute,
  * where this method name must match the corresponding method defined in `serverless.yml`
  */
-export const OnInstallEvent: (event: any) => Promise<any> = ((): any =>
-  new operatorModule.EventOperator([new OnInstallEventStep()]).handle)();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const OnInstallEvent: (event: SwitchContext) => Promise<any> = ((): any =>
+  new EventOperator([new OnInstallEventStep()]).handle)();

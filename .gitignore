@@ -1,9 +1,11 @@
 .awcache/
 .env
 .idea/
+.nyc_output/
 .tmp/
 *.log
 *.tgz
+coverage/
 dist/
 module/etc/integration/config.xml
 module/vendor/

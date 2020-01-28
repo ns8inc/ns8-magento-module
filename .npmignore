@@ -8,7 +8,6 @@
 *.log
 codealike.json
 docs/
-jest.config.js
 module/
 node_modules/
 switchboard/
