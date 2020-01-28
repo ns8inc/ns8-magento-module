@@ -1,6 +1,6 @@
 <?php if ($block->isActivated()) : ?>
     <script type="text/javascript">
-      require(['NS8_Protect/js/iframeResizer.min'], function(_) {
+      require(['NS8_Protect/js/iframeResizer.min'], function() {
 
         const container = document.getElementById('ns8-protect-wrapper');
         const protectIframe = document.createElement('iframe');
@@ -19,7 +19,7 @@
           'undefined': () => {}
         }
 
-        const [ iframe ] = iFrameResize({
+        const [ iframe ] = window.iFrameResize({
           checkOrigin: false,
           heightCalculationMethod: 'lowestElement',
           onMessage: ({ name, data }) => {
