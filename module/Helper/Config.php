@@ -49,6 +49,11 @@ class Config extends AbstractHelper
     const NS8_MODULE_NAME = 'NS8_Protect';
 
     /**
+     * Default auth user value to utilize in configuration if no admin user is triggering the event
+     */
+    const DEFAULT_AUTH_USER = 'default';
+
+    /**
      * @var Context
      */
     protected $context;
@@ -282,7 +287,7 @@ class Config extends AbstractHelper
      */
     public function getAuthenticatedUserName(): ?string
     {
-        $username = null;
+        $username = self::DEFAULT_AUTH_USER;
         try {
             $auth = $this->context->getAuth();
             $loginUser = $auth->getUser();
