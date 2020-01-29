@@ -34,6 +34,11 @@ class Container extends Template
     public $order;
 
     /**
+     * @var Config
+     */
+    public $config;
+
+    /**
      * The context.
      *
      * @var Context
@@ -71,6 +76,7 @@ class Container extends Template
     /**
      * Constructor
      *
+     * @param Config $config
      * @param Context $context The context
      * @param Http $request The request
      * @param IntegrationServiceInterface $integrationService The integration service
@@ -79,6 +85,7 @@ class Container extends Template
      * @param Url $url URL helper class
      */
     public function __construct(
+        Config $config,
         Context $context,
         Http $request,
         IntegrationServiceInterface $integrationService,
@@ -87,6 +94,7 @@ class Container extends Template
         Url $url
     ) {
         parent::__construct($context);
+        $this->config = $config;
         $this->context = $context;
         $this->integrationService = $integrationService;
         $this->order = $order;
@@ -96,17 +104,25 @@ class Container extends Template
     }
 
     /**
+     * Get the page to navigate to within the protect client
+     *
+     * @return string The name of the page to naviage to.
+     */
+    public function getPageFromRequest(): string
+    {
+       return (string)$this->request->getParam('page');
+    }
+
+
+    /**
      * Get the URL of the iframe that holds the NS8 Protect client.
      *
      * @return string The URL
      */
-    public function getNS8ProtectUrl(): string
+    public function getOrderIncrementIdFromRequest(): string
     {
-        $orderId = $this->request->getParam('order_id');
-        $orderIncrementId = $orderId ? $this->order->getOrderIncrementId($orderId) : null;
-        $page = $orderIncrementId ? 'order_details' : $this->request->getParam('page');
-
-        return $this->url->getNS8ClientPageUrl($page, $orderIncrementId);
+       $orderId = $this->request->getParam('order_id');
+       return $orderId ? $this->order->getOrderIncrementId($orderId) : '';
     }
 
     /**

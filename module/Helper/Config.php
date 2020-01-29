@@ -174,44 +174,6 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Gets the current protect Middleware URL based on the environment variables.
-     * Defaults to Production.
-     *
-     * @param string $route
-     *
-     * @return string The NS8 Protect Middleware URL in use for this instance.
-     */
-    public function getNS8MiddlewareUrl(string $route = ''): string
-    {
-        return $this->getNS8Url('api/' . $route);
-    }
-
-    /**
-     * Assemble the URL using environment variables and handles parsing extra `/`
-     *
-     * @param string $envVarName
-     * @param string $defaultUrl
-     * @param string $route
-     *
-     * @return string The final URL
-     */
-    public function getNS8Url(string $route = ''): string
-    {
-        $url = $this->getEnvironmentVariable(self::NS8_ENV_NAME_CLIENT_URL) ?: '';
-        $url = rtrim(trim($url), '/');
-
-        if (empty($url)) {
-            $this->initSdkConfiguration();
-            $url = SdkConfigManager::getEnvValue('urls.client_url');
-        }
-        if (!empty($route)) {
-            $route =  str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
-            $url = $url . '/' . $route;
-        }
-        return $url;
-    }
-
-    /**
         // TODO: this needs to be more robust. Circle back and bullet proof this with backing tests.
         $ret = join('/', $segments).'/order_id';
      * Gets an access token.

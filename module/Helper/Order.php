@@ -197,7 +197,8 @@ class Order extends AbstractHelper
         if (!isset($orderId) || !isset($eq8Score)) {
             return 'NA';
         }
-        $link = $this->url->getNS8IframeUrl(['page' => 'order_details', 'order_id' => $orderId]);
+        // `page` must match `ClientPage.ORDER_DETAILS` in JS SDK
+        $link = $this->url->getNS8IframeUrl(['page' => 'ORDER_DETAILS', 'order_id' => $orderId]);
         return '<a href="'.$link.'">'.$eq8Score.'</a>';
     }
 }

@@ -1,45 +1,34 @@
 <?php if ($block->isActivated()) : ?>
+    <script type="text/javascript" src="<?= $block->url->getProtectJsSdkUrl() ?>"></script>
     <script type="text/javascript">
-      require(['NS8_Protect/js/postmate.min'], function(Postmate) {
-        const container = document.getElementById('ns8-protect-wrapper');
-        const url = '<?= /* @noEscape because URL may contain an ampersand */ $block->getNS8ProtectUrl() ?>';
-        const handshake = new Postmate({
-          container,
-          url,
-          classListArray: ['ns8-protect-client-iframe']
+      require(['Protect'], function (Protect) {
+        // this isn't compiled, so we have to use old JS to work in old browsers
+        function navigateToMagentoOrderDetails(orderId) {
+          var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
+          window.location.href = orderDetailsUrlBase + '/' + orderId;
+        };
+
+        var containerElId = 'ns8-protect-wrapper';
+
+        var requestedPage = '<?= $block->getPageFromRequest(); ?>';
+        if (requestedPage === '') {
+          requestPage = Protect.ClientPage.DASHBOARD;
+        }
+        var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
+
+        var eventBinding = {};
+        eventBinding[Protect.EventName.ORDER_DETAIL_NAME_CLICK] = navigateToMagentoOrderDetails;
+        var clientConfig = new Protect.ClientConfig({
+          accessToken: '<?= $block->config->getAccessToken(); ?>',
+          protectClientUrl: '<?= $block->url->getClientUrl(); ?>',
+          eventBinding: eventBinding,
+          iFrameConfig: {
+            attachToId: containerElId,
+            classNames: ['ns8-protect-client-iframe'],
+          },
         });
-
-        const fillRemainingViewportHeight = (element) => {
-          const salesOrderContainerElement = document.getElementById('sales_order_view_tabs_ns8_protect_order_review_content');
-          if (salesOrderContainerElement) {
-            element.style.paddingTop = '419px'; 
-            return;
-          }
-          element.style.height = `calc(100vh - ${element.offsetTop}px - 20px)`;
-        };
-
-        const navigateToMagentoOrderDetails = (orderId) => {
-          const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
-          const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
-          window.location.href = orderUrl;
-        };
-
-        fillRemainingViewportHeight(container);
-        /*
-        * Here, we have a few options for keeping the viewport height full of an element
-        * 1. Listen for window.onresize
-        *    - This may not account for changes in content height caused by the platform
-        * 2. Use window.requestAnimationFrame
-        *    - This seems like overkill given that we don't really need 60Hz for a iframe height change
-        * 3. Poll every so often and run the function to fill the viewport height
-        *    - We've gone with this approach using a 200ms interval for now
-        */
-
-        handshake.then(
-          child => {
-            child.on('order-detail-name-click', (data) => navigateToMagentoOrderDetails(data.orderId));
-          }
-        );
+        var protectClient = Protect.createClient(clientConfig);
+        protectClient.render(requestedPage, orderIncrementId);
       });
     </script>
 <?php endif ?>
