@@ -1,45 +1,37 @@
 <?php if ($block->isActivated()) : ?>
     <script type="text/javascript">
-      require(['NS8_Protect/js/iframeResizer.min.js'], function(Postmate) {
+      require(['NS8_Protect/js/iframeResizer.min'], function() {
+
         const container = document.getElementById('ns8-protect-wrapper');
+        const protectIframe = document.createElement('iframe');
         const url = '<?= /* @noEscape because URL may contain an ampersand */ $block->getNS8ProtectUrl() ?>';
-        const handshake = new Postmate({
-          container,
-          url,
-          classListArray: ['ns8-protect-client-iframe']
-        });
 
-        const fillRemainingViewportHeight = (element) => {
-          const salesOrderContainerElement = document.getElementById('sales_order_view_tabs_ns8_protect_order_review_content');
-          if (salesOrderContainerElement) {
-            element.style.paddingTop = '419px'; 
-            return;
-          }
-          element.style.height = `calc(100vh - ${element.offsetTop}px - 20px)`;
-        };
+        protectIframe.src = url
+        protectIframe.classList.add('ns8-protect-client-iframe')
+        container.appendChild(protectIframe);
 
-        const navigateToMagentoOrderDetails = (orderId) => {
+        function navigateToMagentoOrderDetails(orderId) {
           const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
           const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
           window.location.href = orderUrl;
         };
 
-        fillRemainingViewportHeight(container);
-        /*
-        * Here, we have a few options for keeping the viewport height full of an element
-        * 1. Listen for window.onresize
-        *    - This may not account for changes in content height caused by the platform
-        * 2. Use window.requestAnimationFrame
-        *    - This seems like overkill given that we don't really need 60Hz for a iframe height change
-        * 3. Poll every so often and run the function to fill the viewport height
-        *    - We've gone with this approach using a 200ms interval for now
-        */
+        const eventHandlers = {
+          'order-detail-name-click': function(data) { navigateToMagentoOrderDetails(data.orderId) },
+          'undefined': function() {}
+        }
 
-        handshake.then(
-          child => {
-            child.on('order-detail-name-click', (data) => navigateToMagentoOrderDetails(data.orderId));
+        const [ iframe ] = window.iFrameResize({
+          checkOrigin: false,
+          heightCalculationMethod: 'lowestElement',
+          onMessage: function(payload) {
+            eventHandlers[payload.name](payload.data)
+          },
+          onInit: function(msg) {
+            console.log('parent-child connection established: ', msg)
           }
-        );
+        }, '.ns8-protect-client-iframe')
+
       });
     </script>
 <?php endif ?>
