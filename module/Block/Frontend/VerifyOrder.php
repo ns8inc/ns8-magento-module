@@ -62,6 +62,7 @@ class VerifyOrder extends Template
         parent::__construct($context, $data);
         $this->request = $request;
         $this->config = $config;
+        $this->config->initSdkConfiguration();
         $this->httpClient = new HttpClient();
     }
 
@@ -101,12 +102,11 @@ class VerifyOrder extends Template
             'view', ':view',
         ]);
 
-        $this->config->initSdkConfiguration();
         if ($this->request->isPost()) {
             $postFields = array_merge($params, (array)$this->request->getPost());
-            $response = $this->httpClient->post('merchant/template', $postFields);
+            $response = $this->httpClient->post('/merchant/template', $postFields);
         } else {
-            $response = $this->httpClient->get(sprintf('merchant/template?%s', http_build_query($params)));
+            $response = $this->httpClient->get(sprintf('/merchant/template?%s', http_build_query($params)));
         }
 
         return isset($response->location)
