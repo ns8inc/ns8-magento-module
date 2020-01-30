@@ -17,18 +17,23 @@
         };
 
         const eventHandlers = {
-          'order-detail-name-click': function(data) { navigateToMagentoOrderDetails(data.orderId) },
-          'undefined': function() {}
+          'order-detail-name-click': function(data) {
+            navigateToMagentoOrderDetails(data.orderId)
+          },
         }
 
         const [ iframe ] = window.iFrameResize({
+          tolerance: 5,
           checkOrigin: false,
-          heightCalculationMethod: 'lowestElement',
           onMessage: function(payload) {
-            eventHandlers[payload.name](payload.data)
+            const eventName = payload.message.name;
+            const handler = eventHandlers[eventName];
+            if (typeof handler === 'function') {
+              handler(payload.message.data);
+            }
           },
-          onInit: function(msg) {
-            console.log('parent-child connection established: ', msg)
+          onResized: function(data) {
+            protectIframe.style.height = data.height + 'px';
           }
         }, '.ns8-protect-client-iframe')
 
