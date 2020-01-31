@@ -19,15 +19,15 @@
   * [x] Can the platform be installed on Docker?
     * Technically, yes, it can be installed on Docker. The RAM requirements are very high, so it is computationally expensive to run locally.
     * [x] Are any docker images available that have the platform pre-installed?
-      * Yes, Bitnami and others have pre-built containers. So far, these have no proved useful for local development.
+      * Yes, Bitnami and others have pre-built containers. So far, these have not proved useful for local development.
   * [x] Can the platform be installed in a Virtual Machine, like Amazon Lightsail?
     * Yes, Lightsail is the current preferred installation process
   * [x] How often are updates to the platform released?
     * Patch versions are released approximately once a quarter. Magento patch versions are frequently massive with huge numbers of changes. Evaluating the release notes carefully is strongly encouraged.
   * [x] How are updates applied?
-    * Adobe Cloud customers receive updates automatically. Other providers' policies vary. Self-host customers must manually download and apply the updates.
+    * Adobe Cloud customers receive updates automatically. Other providers' policies vary. Self-hosted customers must manually download and apply the updates.
   * [x] What versions of the platform do you need to support?
-    * We currently support Magento 2.3.*, although extensive testing has only been applied to 2.3.2 and 2.3.3. 2.3.4 is about to be released.
+    * We currently support Magento `2.3.*`, although extensive testing has only been applied to `2.3.2` and `2.3.3`. `2.3.4` is about to be released.
 * [x] Is the platform both self hosted and cloud hosted?
   * Yes
   * [x] What is the ratio of merchants using cloud vs self hosted installs?
