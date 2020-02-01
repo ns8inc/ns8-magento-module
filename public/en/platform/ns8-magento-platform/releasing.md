@@ -4,7 +4,7 @@ In order to manually release a new version, follow these steps.
 
 * Set your ENV variable `NODE_ENV` to `prod`
 * Run `$ yarn version:patch`
-* Switch to the `switchboard` project and run `$ yarn deploy --stage=test` and `$ yarn deploy --stage=prod`
+* Run `$ yarn deploy --stage=test` and `$ yarn deploy --stage=prod`
 * If you do not already have it, clone `git@github.com:ns8inc/ns8-magento-module.git`
 * Copy the contents of the `module` directory into `ns8-magento-module`
 * Commit the changes to `ns8-magento-module`

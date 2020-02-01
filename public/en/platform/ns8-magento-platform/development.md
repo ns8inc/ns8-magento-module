@@ -3,10 +3,8 @@
 The Magento Platform project is a single repository comprising three distinct, mutually reinforcing parts.
 
 * `module` is the platform specific code that must be deployed to the platform in order for the NS8 Protect integration to become available for integration. For production, the contents of this folder will be assembled in a zip file and deployed to the Magento Marketplace where it will be available to install into individual vendor stores. For development, the entire contents of this folder will be copied to an instance of Magento running in a container. In both cases, the installation of the module is executed via composer (a PHP convention, similar to npm or yarn in some respects).
-* `switchboard` is the deployment configuration of the lamba functions, the metadata of the functions, specifically tailored to bundle the contents of `switches` for deployment to AWS's Step function utility.
-* `switches` contains the lambda definitions--that is, the functions themselves, and any additional business logic required to execute those methods.
-
-For general development, the project is designed to compile from the top down in order to provide universal TS compilation and linting. The `switchboard` and `switches` folders are also individual packages which can be deployed independent from the magento platform project.
+* `switchboard` is the deployment configuration of the lamba functions, the metadata of the functions, specifically tailored to bundle the contents of `switchboard/switches` for deployment to AWS's Step function utility.
+* `switchboard/switches` contains the lambda definitions--that is, the functions themselves, and any additional business logic required to execute those methods.
 
 ## IDE
 
@@ -42,18 +40,13 @@ These values should already be set at your project level:
 
 ## Switchboard Development
 
-The magento platform repository is split into 3 projects. Switchboard logic is divided between the `switchboard` and `switches` projects. `switchboard` is a skeleton project whose sole function is to bundle the step functions defined in the `switches` project and deploy that code to AWS Step functions. `switches` defines each of the lambda functions that will be executed on the remote, server-less infrastructure.
+The magento platform repository is split into 2 projects. Switchboard logic lives in `switchboard`. `switchboard` defines each of the lambda functions that will be executed on the remote, server-less infrastructure.
 
-The magento-platform project defines outer level build and compile tasks. One should always start at the repo level and `yarn build` or `yarn build:dev` accordingly to compile the entire project. On success, in order to operate with the switch functions, switch project context (e.g. `$ cd switchboard`) for each project and compile them individually. Always start with switches and then proceed to switchboard.
+The magento-platform project defines outer level build and compile tasks. One should always start at the repo level and `yarn build` or `yarn build:dev` accordingly to compile the entire project.
 
 General flow:
 
 * `$ yarn build:dev`
-* `$ cd switches`
-* `$ yarn build:dev` (this will automatically create a yarn link for the switches project)
-* `$ cd ..`
-* `$ cd switchboard`
-* `$ yarn build:dev` (this will automatically consume the above yarn link)
 * `$ yarn deploy --stage={devName}` (this will deploy to AWS using your devName as a unique prefix
 
 ### Getting in a new switch
@@ -67,7 +60,7 @@ export * from class in index.ts
 ### switchboard project
 
 add switch to serverless.yml
-In ns8-magento2-switchboard/switchboard.json, change "link" to the version number you want to target
+In switchboard.json, change "link" to the version number you want to target
 add switch to switchboard.json
 add switch to app.ts
 
@@ -81,14 +74,6 @@ add switch to app.ts
 * manually copy .vscode folder to server
 * technically only need the "Listen for XDebug" task in launch.json
 
-* Switches project is where the actual step function logic lives
-* Currently there is 1 switch: CreateOrderActionSwitch.ts
-* Must implement the ISwitchContext interface (true?) (is that how the switches become functional?)
-
-1. Make actual code changes in ns8-magento2-switches
-1. Run "yarn build" in ns8-magento2-switches
-1. Use ns8-magento2-switchboard to publish to AWS (everything in this repo is auto generated)
-
 Step functions live in the Oregon region. Go to <https://us-west-2.console.aws.amazon.com/states/home?region=us-west-2#/statemachines>
 
 ## Testing end-to-end
@@ -101,7 +86,7 @@ Step functions live in the Oregon region. Go to <https://us-west-2.console.aws.a
 * Step through quickly or you will get timed OrderUpdate
 
 * Use ns8-magento2-rest-client to make calls to get orders
-* Switches and switchboard project are linked through
+* `switchboard` project are linked through
 
 ### Add a payment method
 

@@ -1,0 +1,129 @@
+{
+  "id": "magento2",
+  "modules": [
+    {
+      "name": "@ns8/ns8-magento-platform",
+      "version": "2.0.40"
+    }
+  ],
+  "switches": [
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "OnInstallEvent",
+      "operator": "EventOperator",
+      "sources": [
+        {
+          "fileName": "OnInstallEvent",
+          "moduleName": "@ns8/ns8-magento-platform"
+        }
+      ],
+      "type": "event"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateCustVerifyStatusEvent",
+      "operator": "EventOperator",
+      "sources": [
+        {
+          "fileName": "UpdateCustVerifyStatusEvent",
+          "moduleName": "@ns8/ns8-magento-platform"
+        }
+      ],
+      "type": "event"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateEQ8ScoreEvent",
+      "operator": "EventOperator",
+      "sources": [
+        {
+          "fileName": "UpdateEQ8ScoreEvent",
+          "moduleName": "@ns8/ns8-magento-platform"
+        }
+      ],
+      "type": "event"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateOrderRiskEvent",
+      "operator": "EventOperator",
+      "sources": [
+        {
+          "fileName": "UpdateOrderRiskEvent",
+          "moduleName": "@ns8/ns8-magento-platform"
+        }
+      ],
+      "type": "event"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UninstallAction",
+      "operator": "UninstallActionOperator",
+      "sources": [
+        {
+          "fileName": "UninstallAction",
+          "moduleName": "@ns8/ns8-magento-platform"
+        }
+      ],
+      "type": "action"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "CreateOrderAction",
+      "operator": "CreateOrderActionOperator",
+      "sources": [
+        {
+          "fileName": "CreateOrderAction",
+          "moduleName": "@ns8/ns8-magento-platform"
+        }
+      ],
+      "type": "action"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateMerchantAction",
+      "operator": "UpdateMerchantActionOperator",
+      "sources": [
+        {
+          "fileName": "UpdateMerchantAction",
+          "moduleName": "@ns8/ns8-magento-platform"
+        }
+      ],
+      "type": "action"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateOrderStatusEvent",
+      "operator": "EventOperator",
+      "sources": [
+        {
+          "fileName": "UpdateOrderStatusEvent",
+          "moduleName": "@ns8/ns8-magento-platform"
+        }
+      ],
+      "type": "event"
+    },
+    {
+      "arn": "...",
+      "executorType": "step-function",
+      "name": "UpdateOrderStatusAction",
+      "operator": "UpdateOrderStatusActionOperator",
+      "sources": [
+        {
+          "fileName": "UpdateOrderStatusAction",
+          "moduleName": "@ns8/ns8-magento-platform"
+        }
+      ],
+      "type": "action"
+    }
+  ],
+  "version": "1.0"
+}

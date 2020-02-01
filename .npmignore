@@ -1,0 +1,17 @@
+.awcache/
+.editorconfig
+.env
+.env.template
+.gitignore
+.tmp/
+.vscode/
+*.log
+codealike.json
+docs/
+module/
+node_modules/
+switchboard/
+test/
+tsconfig.json
+typedoc.json
+webpack.config.js

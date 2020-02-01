@@ -1,0 +1,171 @@
+RetryDefault:
+  Retry: &ref_0
+    - BackoffRate: 2
+      ErrorEquals:
+        - States.ALL
+      IntervalSeconds: 2
+      MaxAttempts: 1
+custom:
+  integrationName: '${self:service}-${self:provider.stage}'
+functions:
+  CreateOrderAction:
+    handler: dist/switchboard.CreateOrderAction
+    name: '${self:custom.integrationName}-createOrderAction'
+  OnInstallEvent:
+    handler: dist/switchboard.OnInstallEvent
+    name: '${self:custom.integrationName}-onInstallEvent'
+  UninstallAction:
+    handler: dist/switchboard.UninstallAction
+    name: '${self:custom.integrationName}-uninstallAction'
+  UpdateCustVerifyStatusEvent:
+    handler: dist/switchboard.UpdateCustVerifyStatusEvent
+    name: '${self:custom.integrationName}-updateCustVerifyStatusEvent'
+  UpdateEQ8ScoreEvent:
+    handler: dist/switchboard.UpdateEQ8ScoreEvent
+    name: '${self:custom.integrationName}-updateEQ8ScoreEvent'
+  UpdateMerchantAction:
+    handler: dist/switchboard.UpdateMerchantAction
+    name: '${self:custom.integrationName}-updateMerchantAction'
+  UpdateOrderRiskEvent:
+    handler: dist/switchboard.UpdateOrderRiskEvent
+    name: '${self:custom.integrationName}-updateOrderRiskEvent'
+  UpdateOrderStatusAction:
+    handler: dist/switchboard.UpdateOrderStatusAction
+    name: '${self:custom.integrationName}-updateOrderStatusAction'
+  UpdateOrderStatusEvent:
+    handler: dist/switchboard.UpdateOrderStatusEvent
+    name: '${self:custom.integrationName}-updateOrderStatusEvent'
+package:
+  exclude:
+    - .awcache/**
+    - .circleci/**
+    - .env
+    - .env.template
+    - .idea/**
+    - .npmignore
+    - .npmrc
+    - .tmp/**
+    - .vscode/**
+    - '?*.d.ts'
+    - '?*.json'
+    - '?*.lock'
+    - '?*.log'
+    - '?*/**.map'
+    - '?*/**.template'
+    - node_modules/**
+    - README.md
+    - scripts/**
+    - switchboard/**
+    - test/**
+    - webpack.config.js
+  include:
+    - switchboard.json
+plugins:
+  - serverless-step-functions
+  - serverless-pseudo-parameters
+provider:
+  deploymentBucket:
+    name: '${ssm:/serverless/deployment/bucket/name}'
+  iamRoleStatements:
+    - Action: 's3:GetObject'
+      Effect: Allow
+      Resource: 'arn:aws:s3:::protect-api-switch-data-${self:provider.stage}/*'
+  name: aws
+  region: us-west-2
+  runtime: nodejs12.x
+  stage: '${opt:stage, env:DEV_NAME}'
+  timeout: 60
+  versionFunctions: false
+service: 'ns8-switchboard-${file(./switchboard.json):id}'
+stepFunctions:
+  stateMachines:
+    CreateOrderAction:
+      definition:
+        StartAt: CreateOrderActionStart
+        States:
+          CreateOrderActionStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-createOrderAction'
+            Retry: *ref_0
+            Type: Task
+      name: '${self:custom.integrationName}-createOrderAction'
+    OnInstallEvent:
+      definition:
+        StartAt: OnInstallEventStart
+        States:
+          OnInstallEventStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-onInstallEvent'
+            Retry: *ref_0
+            Type: Task
+      name: '${self:custom.integrationName}-onInstallEvent'
+    UninstallAction:
+      definition:
+        StartAt: UninstallActionStart
+        States:
+          UninstallActionStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-uninstallAction'
+            Retry: *ref_0
+            Type: Task
+      name: '${self:custom.integrationName}-uninstallAction'
+    UpdateCustVerifyStatusEvent:
+      definition:
+        StartAt: UpdateCustVerifyStatusEventStart
+        States:
+          UpdateCustVerifyStatusEventStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateCustVerifyStatusEvent'
+            Retry: *ref_0
+            Type: Task
+      name: '${self:custom.integrationName}-updateCustVerifyStatusEvent'
+    UpdateEQ8ScoreEvent:
+      definition:
+        StartAt: UpdateEQ8ScoreEventStart
+        States:
+          UpdateEQ8ScoreEventStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateEQ8ScoreEvent'
+            Retry: *ref_0
+            Type: Task
+      name: '${self:custom.integrationName}-updateEQ8ScoreEvent'
+    UpdateMerchantAction:
+      definition:
+        StartAt: UpdateMerchantActionStart
+        States:
+          UpdateMerchantActionStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateMerchantAction'
+            Retry: *ref_0
+            Type: Task
+      name: '${self:custom.integrationName}-updateMerchantAction'
+    UpdateOrderRiskEvent:
+      definition:
+        StartAt: UpdateOrderRiskEventStart
+        States:
+          UpdateOrderRiskEventStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderRiskEvent'
+            Retry: *ref_0
+            Type: Task
+      name: '${self:custom.integrationName}-updateOrderRiskEvent'
+    UpdateOrderStatusAction:
+      definition:
+        StartAt: UpdateOrderStatusActionStart
+        States:
+          UpdateOrderStatusActionStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderStatusAction'
+            Retry: *ref_0
+            Type: Task
+      name: '${self:custom.integrationName}-updateOrderStatusAction'
+    UpdateOrderStatusEvent:
+      definition:
+        StartAt: UpdateOrderStatusEventStart
+        States:
+          UpdateOrderStatusEventStart:
+            End: true
+            Resource: 'arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:custom.integrationName}-updateOrderStatusEvent'
+            Retry: *ref_0
+            Type: Task
+      name: '${self:custom.integrationName}-updateOrderStatusEvent'

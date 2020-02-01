@@ -1,0 +1,42 @@
+
+---
+env:
+  node: true
+extends:
+  - eslint-config-airbnb-base
+  - 'plugin:prettier/recommended'
+  - 'plugin:@typescript-eslint/recommended'
+  - prettier/@typescript-eslint
+overrides:
+  - files:
+    - '**/*.test.ts'
+    - '**/*.spec.ts'
+    - '**/*-spec.ts'
+    - test/**/*
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaVersion: 2019
+  sourceType: module
+rules:
+  '@typescript-eslint/camelcase':
+    - error
+    - properties: never
+  '@typescript-eslint/no-explicit-any': 'off'
+  camelcase: 'off'
+  class-methods-use-this: 'off'
+  import/extensions:
+    - error
+    - .ts: ignorePackages
+  import/no-duplicates: 'off'
+  import/no-extraneous-dependencies:
+    - error
+    - devDependencies: true
+  import/prefer-default-export: 'off'
+  no-underscore-dangle: 'off'
+  no-useless-constructor: 'off'
+settings:
+  import/resolver:
+    node:
+      extensions:
+        - .js
+        - .ts

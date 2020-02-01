@@ -11,12 +11,12 @@ const env = require('dotenv-extended').load({
   path: '.env',
   defaults: '.env.defaults',
   schema: '.env.schema',
-  errorOnMissing: true,
+  errorOnMissing: false,
   errorOnExtra: false,
   errorOnRegex: false,
   includeProcessEnv: false,
   assignToProcessEnv: true,
-  overrideProcessEnv: false
+  overrideProcessEnv: false,
 });
 
 export { env };
