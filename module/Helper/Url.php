@@ -7,6 +7,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Backend\Model\UrlInterface as BackendUrlInterface;
 use Magento\Framework\App\State;
 use Magento\Framework\App\Area;
+use NS8\Protect\Helper\Config;
 use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 use UnexpectedValueException;
 
@@ -31,21 +32,32 @@ class Url extends AbstractHelper
     protected $state;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * The constructor.
      *
      * @param UrlInterface $url
      * @param BackendUrlInterface $backendUrl
-     * @param State $state
+     * @param State $state,
+     * @param Config $config
      *
      */
     public function __construct(
         UrlInterface $url,
         BackendUrlInterface $backendUrl,
-        State $state
+        State $state,
+        Config $config
     ) {
         $this->url = $url;
         $this->backendUrl = $backendUrl;
         $this->state = $state;
+        $this->config = $config;
+
+        // Initiate configuration to ensure environmental URLs function as intended
+        $this->config->initSdkConfiguration();
     }
 
     /**
