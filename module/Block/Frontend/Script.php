@@ -41,17 +41,4 @@ class Script extends Template
         parent::__construct($context, $data);
         $this->url = $url;
     }
-
-    /**
-     * Get the TrueStats tracking script (wrapped in HTML <script> tags).
-     *
-     * @return string The tracking script
-     */
-    public function getScriptHtml(): string
-    {
-        $coreScript =
-        $script = (new HttpClient())->getNonJson('/init/script');
-
-        return is_string($script) ? sprintf('<script>%s</script>', $script) : '';
-    }
 }
