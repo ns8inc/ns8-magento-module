@@ -28,4 +28,3 @@ The store URL is parsed and an OAUTH stash is created utilizing the key passed i
 OAUTH identity logic: Once the request process has reached this stage, an `oauth_consumer_key` parameter and `success_call_back` parameter are included in the request. The OAUTH info is validated using the consumer key and if the validation is successful then a redirect to the `success_callback` value occurs.
 
 Getting an access token: The functionality for getting an access token is simply validating the merchant exists. The request should contain an ouath consumer key and an access token as stated above. A merchant is looked-up based on the oauth consumer key and then formally verified by ensuring the access token passed in matches the service integration token for that merchant.
-
