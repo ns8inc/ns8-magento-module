@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "619ad6403421c56bbbd1e795177b6835",
+    "content-hash": "9cd174d68211e56a800a653e222be248",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -118,16 +118,16 @@
         },
         {
             "name": "ns8/protect-sdk",
-            "version": "0.0.20",
+            "version": "0.0.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ns8inc/protect-php-sdk.git",
-                "reference": "adabf8ce79fe144364394095f8691c5d402e2729"
+                "reference": "b9a361f70c85333b75a32f2f6d997a7c459802fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ns8inc/protect-php-sdk/zipball/adabf8ce79fe144364394095f8691c5d402e2729",
-                "reference": "adabf8ce79fe144364394095f8691c5d402e2729",
+                "url": "https://api.github.com/repos/ns8inc/protect-php-sdk/zipball/b9a361f70c85333b75a32f2f6d997a7c459802fb",
+                "reference": "b9a361f70c85333b75a32f2f6d997a7c459802fb",
                 "shasum": ""
             },
             "require": {
@@ -171,9 +171,9 @@
             ],
             "description": "NS8 Protect SDK",
             "support": {
-                "source": "https://github.com/ns8inc/protect-php-sdk/tree/0.0.20"
+                "source": "https://github.com/ns8inc/protect-php-sdk/tree/0.0.21"
             },
-            "time": "2020-01-31T23:16:34+00:00"
+            "time": "2020-02-03T17:38:14+00:00"
         },
         {
             "name": "phpcompatibility/php-compatibility",
