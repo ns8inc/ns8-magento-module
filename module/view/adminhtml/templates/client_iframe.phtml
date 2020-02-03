@@ -1,43 +1,34 @@
 <?php if ($block->isActivated()) : ?>
     <script type="text/javascript" src="<?= $block->url->getProtectJsSdkUrl() ?>"></script>
     <script type="text/javascript">
-      require(['NS8_Protect/js/iframeResizer.min'], function() {
-
-        const container = document.getElementById('ns8-protect-wrapper');
-        const protectIframe = document.createElement('iframe');
-        const url = '<?= /* @noEscape because URL may contain an ampersand */ $block->getNS8ProtectUrl() ?>';
-
-        protectIframe.src = url
-        protectIframe.classList.add('ns8-protect-client-iframe')
-        container.appendChild(protectIframe);
-
+      require(['Protect'], function (Protect) {
+        // this isn't compiled, so we have to use old JS to work in old browsers
         function navigateToMagentoOrderDetails(orderId) {
-          const orderDetailsUrlBase = '<?= $block->escapeUrl($block->url->getMagentOrderDetailUrl()); ?>';
-          const orderUrl = `${orderDetailsUrlBase}/${orderId}`;
-          window.location.href = orderUrl;
+          var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
+          window.location.href = orderDetailsUrlBase + '/' + orderId;
         };
 
-        const eventHandlers = {
-          'order-detail-name-click': function(data) {
-            navigateToMagentoOrderDetails(data.orderId)
-          },
+        var containerElId = 'ns8-protect-wrapper';
+
+        var requestedPage = '<?= $block->getPageFromRequest(); ?>';
+        if (requestedPage === '') {
+          requestPage = Protect.ClientPage.DASHBOARD;
         }
+        var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
 
-        const [ iframe ] = window.iFrameResize({
-          tolerance: 5,
-          checkOrigin: false,
-          onMessage: function(payload) {
-            const eventName = payload.message.name;
-            const handler = eventHandlers[eventName];
-            if (typeof handler === 'function') {
-              handler(payload.message.data);
-            }
+        var eventBinding = {};
+        eventBinding[Protect.EventName.ORDER_DETAIL_NAME_CLICK] = navigateToMagentoOrderDetails;
+        var clientConfig = new Protect.ClientConfig({
+          accessToken: '<?= $block->config->getAccessToken(); ?>',
+          protectClientUrl: '<?= $block->url->getClientUrl(); ?>',
+          eventBinding: eventBinding,
+          iFrameConfig: {
+            attachToId: containerElId,
+            classNames: ['ns8-protect-client-iframe'],
           },
-          onResized: function(data) {
-            protectIframe.style.height = data.height + 'px';
-          }
-        }, '.ns8-protect-client-iframe')
-
+        });
+        var protectClient = Protect.createClient(clientConfig);
+        protectClient.render(requestedPage, orderIncrementId);
       });
     </script>
 <?php endif ?>
