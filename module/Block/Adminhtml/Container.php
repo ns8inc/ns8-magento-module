@@ -110,9 +110,8 @@ class Container extends Template
      */
     public function getPageFromRequest(): string
     {
-       return (string)$this->request->getParam('page');
+        return (string)$this->request->getParam('page');
     }
-
 
     /**
      * Get the URL of the iframe that holds the NS8 Protect client.
@@ -121,8 +120,8 @@ class Container extends Template
      */
     public function getOrderIncrementIdFromRequest(): string
     {
-       $orderId = $this->request->getParam('order_id');
-       return $orderId ? $this->order->getOrderIncrementId($orderId) : '';
+        $orderId = $this->request->getParam('order_id');
+        return $orderId ? $this->order->getOrderIncrementId($orderId) : '';
     }
 
     /**

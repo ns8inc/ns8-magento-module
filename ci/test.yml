@@ -3,7 +3,7 @@ platform: linux
 
 image_resource:
   type: registry-image
-  source: { repository: php, tag: cli }
+  source: { repository: debian, tag: buster }
 
 inputs:
   - name: ns8-magento-platform
@@ -14,83 +14,98 @@ run:
     - -c
     - |
       apt-get update
-      apt-get install -y git unzip wget yarnpkg
+
+      apt-get install -y \
+        composer \
+        curl \
+        php \
+        php-bcmath \
+        php-curl \
+        php-dom \
+        php-gd \
+        php-intl \
+        php-mbstring \
+        php-mysql \
+        php-soap \
+        php-xdebug \
+        php-zip \
+        unzip \
+        yarnpkg
+
       echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
-      mkdir -p ~/.ssh
-      ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-      # TODO: We can remove the next 2 lines after the ns8inc/protect-php-sdk repo goes public.
-      (umask 177 && echo "${SSH_KEY}" > ~/.ssh/id_rsa)
-      ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
-
-      ## TODO: Uncomment when we have tests!
-      #pecl install xdebug
-      #docker-php-ext-enable xdebug
-
-      EXPECTED_SIGNATURE="$(wget -q -O - https://composer.github.io/installer.sig)"
-      php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-      ACTUAL_SIGNATURE="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
-
-      if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then
-        >&2 echo 'ERROR: Invalid installer signature'
-        rm -f composer-setup.php
-        exit 1
-      fi
-
-      php composer-setup.php --filename=composer --install-dir=/usr/local/bin --quiet
-
-      if [ $? -ne 0 ]; then
-        >&2 echo 'ERROR: Composer setup failed'
-        exit 1
-      fi
-
       cd ns8-magento-platform
-      yarnpkg
 
-      if [ $? -ne 0 ]; then
+      if ! yarnpkg
+      then
         >&2 echo 'ERROR: Yarn install failed'
         exit 1
       fi
 
-      yarnpkg switches:build:dev
-
-      if [ $? -ne 0 ]; then
-        >&2 echo 'ERROR: Switches build failed'
+      if ! yarnpkg test
+      then
+        >&2 echo 'ERROR: Switches tests failed'
         exit 1
       fi
 
-      yarnpkg switchboard:build:dev
-
-      if [ $? -ne 0 ]; then
-        >&2 echo 'ERROR: Switchboard build failed'
-        exit 1
-      fi
-
-      yarnpkg lint
-
-      if [ $? -ne 0 ]; then
-        >&2 echo 'ERROR: Yarn lint failed'
+      if ! yarnpkg lint
+      then
+        >&2 echo 'ERROR: Switches lint failed'
         exit 1
       fi
 
       cd module
-      composer install --no-autoloader --no-progress -q
 
-      if [ $? -ne 0 ]; then
+      if ! composer install --no-autoloader --no-progress -q
+      then
         >&2 echo 'ERROR: Composer install failed'
         exit 1
       fi
 
-      ./vendor/bin/phpcs --config-set installed_paths vendor/magento/magento-coding-standard/Magento2/
-
-      if [ $? -ne 0 ]; then
+      if ! vendor/bin/phpcs --config-set installed_paths vendor/magento/magento-coding-standard/Magento2
+      then
         >&2 echo 'ERROR: PHP_CodeSniffer setup failed'
         exit 1
       fi
 
-      composer lint
-
-      if [ $? -ne 0 ]; then
+      if ! composer lint
+      then
         >&2 echo 'ERROR: PHP lint check failed'
+        exit 1
+      fi
+
+      if ! curl -o /tmp/magento.zip https://$MAGENTO_USER:$MAGENTO_PASS@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.3_sample_data.zip
+      then
+        >&2 echo 'ERROR: Magento download failed'
+        exit 1
+      fi
+
+      if ! unzip -q /tmp/magento.zip -d /tmp/magento
+      then
+        >&2 echo 'ERROR: Magento installation failed'
+        exit 1
+      fi
+
+      rm -f /tmp/magento.zip
+
+      if ! composer install -d /tmp/magento
+      then
+        >&2 echo 'ERROR: Magento setup failed'
+        exit 1
+      fi
+
+      mkdir -p /tmp/magento/app/code/NS8
+
+      if ! ln -s `pwd` /tmp/magento/app/code/NS8/Protect
+      then
+        >&2 echo 'ERROR: Module installation failed'
+        exit 1
+      fi
+
+      cd /tmp/magento
+      chmod 755 vendor/phpunit/phpunit/phpunit
+
+      if ! vendor/phpunit/phpunit/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/NS8/Protect/Test
+      then
+        >&2 echo 'ERROR: Module tests failed'
         exit 1
       fi
