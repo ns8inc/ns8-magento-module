@@ -1,13 +1,3 @@
-<!-- TrueStats tracking script initialization start-->
-<script type="text/javascript" src="<?= $block->url->getProtectJsSdkUrl() ?>"></script>
-<script type="text/javascript">
- require(['Protect'], function (Protect) {
-  Protect.getTrackingScript().then(function(scriptString) {
-       try {
-         var scriptFragment = document.createRange().createContextualFragment(scriptString);
-         document.body.appendChild(scriptFragment);
-       } catch (error) {}
-     });
- });
-</script>
-<!-- TrueStats tracking script initialization end -->
+<!-- TrueStats tracking script start -->
+ <?= $block->getScriptHtml() ?>
+<!-- TrueStats tracking script end -->
