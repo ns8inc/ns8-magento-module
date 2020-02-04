@@ -3,9 +3,9 @@
     <script type="text/javascript">
       require(['Protect'], function (Protect) {
         // this isn't compiled, so we have to use old JS to work in old browsers
-        function navigateToMagentoOrderDetails(orderId) {
+        function navigateToMagentoOrderDetails(orderData) {
           var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
-          window.location.href = orderDetailsUrlBase + '/' + orderId;
+          window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
         };
 
         var containerElId = 'ns8-protect-wrapper';
