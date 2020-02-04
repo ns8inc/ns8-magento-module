@@ -1,5 +1,5 @@
 <?php if ($block->isActivated()) : ?>
-    <script type="text/javascript" src="http://chrisdoriott.ns8demos.com/protect.js"></script>
+    <script type="text/javascript" src="<?= $block->url->getProtectJsSdkUrl() ?>"></script>
     <script type="text/javascript">
       require(['Protect'], function (Protect) {
         // this isn't compiled, so we have to use old JS to work in old browsers
