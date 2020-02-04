@@ -110,7 +110,13 @@ class Container extends Template
      */
     public function getPageFromRequest(): string
     {
-        return (string)$this->request->getParam('page');
+        $page = (string)$this->request->getParam('page');
+        $orderIncrementId = $this->getOrderIncrementIdFromRequest();
+        if (empty($page) && !empty($orderIncrementId)) {
+            $page = 'ORDER_DETAILS';
+        }
+
+        return $page;
     }
 
     /**
