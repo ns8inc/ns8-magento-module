@@ -8,6 +8,7 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\Session as SessionHelper;
 use NS8\ProtectSDK\Actions\Client as ActionsClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
@@ -37,20 +38,30 @@ class MerchantUpdate implements ObserverInterface
     protected $request;
 
     /**
+     * The session helper.
+     *
+     * @var SessionHelper
+     */
+    protected $sessionHelper;
+
+    /**
      * Default constructor
      *
      * @param Config $config
      * @param Http $request
      * @param Session $session
+     * @param SessionHelper $sessionHelper
      */
     public function __construct(
         Config $config,
         Http $request,
-        Session $session
+        Session $session,
+        SessionHelper $sessionHelper
     ) {
         $this->config = $config;
         $this->customerSession = $session;
         $this->request = $request;
+        $this->sessionHelper = $sessionHelper;
         $this->loggingClient = new LoggingClient();
     }
 
@@ -69,7 +80,7 @@ class MerchantUpdate implements ObserverInterface
             return;
         }
 
-        $data = ['eventData' => $eventData];
+        $data = ['eventData' => $eventData, 'session' => $this->sessionHelper->getSessionData()];
 
         try {
             $this->config->initSdkConfiguration();

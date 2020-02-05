@@ -11,6 +11,7 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
+use NS8\Protect\Helper\Session as SessionHelper;
 use NS8\ProtectSDK\Actions\Client as ActionsClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
@@ -50,26 +51,36 @@ class OrderUpdate implements ObserverInterface
     protected $request;
 
     /**
+     * The session helper.
+     *
+     * @var SessionHelper
+     */
+    protected $sessionHelper;
+
+    /**
      * Default constructor
      *
      * @param Config $config
      * @param Http $request
      * @param Order $orderHelper
      * @param OrderInterface $order
-     * @param Session $session
+     * @param Session $session,
+     * @param SessionHelper $sessionHelper
      */
     public function __construct(
         Config $config,
         Http $request,
         Order $orderHelper,
         OrderInterface $order,
-        Session $session
+        Session $session,
+        SessionHelper $sessionHelper
     ) {
         $this->config = $config;
         $this->customerSession = $session;
         $this->order = $order;
         $this->orderHelper = $orderHelper;
         $this->request = $request;
+        $this->sessionHelper = $sessionHelper;
         $this->loggingClient = new LoggingClient();
     }
 
@@ -143,7 +154,8 @@ class OrderUpdate implements ObserverInterface
             }
 
             $this->config->initSdkConfiguration();
-            ActionsClient::setAction($action, ['order'=>$orderData]);
+            $actionData = ['order' => $orderData, 'session' => $this->sessionHelper->getSessionData()];
+            ActionsClient::setAction($action, $actionData);
         } catch (Throwable $e) {
             $this->loggingClient->error('The order update could not be processed', $e);
         }
