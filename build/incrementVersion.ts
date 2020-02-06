@@ -1,9 +1,9 @@
-/* eslint-disable no-console, import/extensions */
-import semver, { ReleaseType } from 'semver';
+/* eslint-disable no-console, import/extensions, import/no-unresolved */
+import { inc, ReleaseType } from 'semver';
 import { writeFileSync } from 'fs';
-import composer from '../module/composer.json';
 import rootPackage from '../package.json';
 import switchboardJson from '../switchboard.json';
+import composer from '../module/composer.json';
 import { env } from './loadEnv';
 
 const getModuleXml = (nextVersion: string): string => `<?xml version="1.0" ?>
@@ -29,10 +29,10 @@ const incrementVersion = (): void => {
   const patchMode: string = process.env.PATCH_MODE ? process.env.PATCH_MODE.trim().toLowerCase() : 'patch';
   const releaseType: ReleaseType = devSuffix !== 'none' && patchMode === 'dev' ? 'prerelease' : 'patch';
   const currentVersion: string = rootPackage.version;
-  const nextPackageVersion: string | null = semver.inc(currentVersion, releaseType, false, devSuffix);
+  const nextPackageVersion: string | null = inc(currentVersion, releaseType, false, devSuffix);
   if (!nextPackageVersion) throw new Error('Could not increment package version');
   // This is a temporary workaround for working with prerelease versions in order to comply with the Magento version standards
-  const nextMagentoVersion: string | null = semver.inc(currentVersion, 'patch', false);
+  const nextMagentoVersion: string | null = inc(currentVersion, 'patch', false);
   if (!nextMagentoVersion) throw new Error('Could not increment magento version');
 
   rootPackage.version = nextPackageVersion;

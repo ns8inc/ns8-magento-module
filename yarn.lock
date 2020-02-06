@@ -339,14 +339,14 @@
   resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.40.tgz#d60b912a9425f74f60c57667a8c6b99d58df4ada"
   integrity sha512-D0hOUw2y6in/cPWv0JMMCBnO3Hc/DNeLi8QQ1wymwk9Eixh6IFgVnCGJnUHefjxKEAVxL7z6LKBsFUrIjKygRg==
 
-"@types/chai-as-promised@^7.1.2":
+"@types/chai-as-promised@7.1.2":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@types/chai-as-promised/-/chai-as-promised-7.1.2.tgz#2f564420e81eaf8650169e5a3a6b93e096e5068b"
   integrity sha512-PO2gcfR3Oxa+u0QvECLe1xKXOqYTzCmWf0FhLhjREoW3fPAVamjihL7v1MOVLJLsnAMdLcjkfrs01yvDMwVK4Q==
   dependencies:
     "@types/chai" "*"
 
-"@types/chai@*", "@types/chai@^4.2.7":
+"@types/chai@*", "@types/chai@4.2.7":
   version "4.2.7"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.7.tgz#1c8c25cbf6e59ffa7d6b9652c78e547d9a41692d"
   integrity sha512-luq8meHGYwvky0O7u0eQZdA7B4Wd9owUCqvbw2m3XCrCU8mplYOujMBbvyS547AxJkC+pGnd0Cm15eNxEUNU8g==
@@ -420,7 +420,7 @@
   resolved "https://registry.yarnpkg.com/@types/mkdirp/-/mkdirp-0.3.29.tgz#7f2ad7ec55f914482fc9b1ec4bb1ae6028d46066"
   integrity sha1-fyrX7FX5FEgvybHsS7GuYCjUYGY=
 
-"@types/mocha@^5.2.7":
+"@types/mocha@5.2.7":
   version "5.2.7"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.7.tgz#315d570ccb56c53452ff8638738df60726d5b6ea"
   integrity sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
@@ -1552,14 +1552,14 @@ caw@^2.0.1:
     tunnel-agent "^0.6.0"
     url-to-options "^1.0.1"
 
-chai-as-promised@^7.1.1:
+chai-as-promised@7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/chai-as-promised/-/chai-as-promised-7.1.1.tgz#08645d825deb8696ee61725dbf590c012eb00ca0"
   integrity sha512-azL6xMoi+uxu6z4rhWQ1jbdUhOMhis2PvscD/xjLqNMkv3BPPp2JyyuTHOrf9BOosGpNQ11v6BKv/g57RXbiaA==
   dependencies:
     check-error "^1.0.2"
 
-chai@^4.2.0:
+chai@4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.2.0.tgz#760aa72cf20e3795e84b12877ce0e83737aa29e5"
   integrity sha512-XQU3bhBukrOsQCuwZndwGcCVQHyZi53fQ6Ys1Fym7E4olpIqqZZhhoFJoaKVvV17lWQoXYwgWN2nF5crA8J2jw==
@@ -5275,7 +5275,7 @@ mkdirp@0.5.1, mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mocha@^7.0.1:
+mocha@7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-7.0.1.tgz#276186d35a4852f6249808c6dd4a1376cbf6c6ce"
   integrity sha512-9eWmWTdHLXh72rGrdZjNbG3aa1/3NRPpul1z0D979QpEnFdCG0Q5tv834N+94QEN2cysfV72YocQ3fn87s70fg==
@@ -5585,7 +5585,7 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-nyc@^15.0.0:
+nyc@15.0.0:
   version "15.0.0"
   resolved "https://registry.yarnpkg.com/nyc/-/nyc-15.0.0.tgz#eb32db2c0f29242c2414fe46357f230121cfc162"
   integrity sha512-qcLBlNCKMDVuKb7d1fpxjPR8sHeMVX0CHarXAVzrVWoFrigCkYR8xcrjfXSPi5HXM7EU78L6ywO7w1c5rZNCNg==
@@ -7720,7 +7720,7 @@ trim-repeated@^1.0.0:
   dependencies:
     escape-string-regexp "^1.0.2"
 
-ts-mocha@^6.0.0:
+ts-mocha@6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/ts-mocha/-/ts-mocha-6.0.0.tgz#40b8c5462ffce6f5dcee5ff729655b2958f26e50"
   integrity sha512-ZCtJK8WXxHNbFNjvUKQIXZby/+ybQQkaBcM/3QhBQUfwjpdGFE9F6iWsHhF5ifQNFV/lWiOODi2VMD5AyPcQyg==
