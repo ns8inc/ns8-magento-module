@@ -7,9 +7,11 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\RequestInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use NS8\Protect\Helper\HttpClient;
-use NS8\Protect\Helper\Logger;
+use Magento\Sales\Model\ResourceModel\GridInterface;
+use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Url;
+use NS8\ProtectSDK\Order\Client as OrderClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 use UnexpectedValueException;
 
 /**
@@ -21,14 +23,14 @@ class Order extends AbstractHelper
     public const EQ8_SCORE_COL = 'eq8_score';
 
     /**
-     * @var HttpClient
+     * @var Config
      */
-    protected $httpClient;
+    protected $config;
 
     /**
-     * @var Logger
+     * @var LoggingClient
      */
-    protected $logger;
+    protected $loggingClient;
 
     /**
      * @var OrderRepositoryInterface
@@ -41,6 +43,11 @@ class Order extends AbstractHelper
     protected $request;
 
     /**
+     * @var GridInterface
+     */
+    protected $salesOrderGrid;
+
+    /**
      * @var Url
      */
     protected $url;
@@ -48,24 +55,25 @@ class Order extends AbstractHelper
     /**
      * Default constructor
      *
-     * @param HttpClient $httpClient
-     * @param Logger $logger
+     * @param Config $config
      * @param OrderRepositoryInterface $orderRepository
      * @param RequestInterface $request
+     * @param GridInterface $salesOrderGrid
      * @param Url $url
      */
     public function __construct(
-        HttpClient $httpClient,
-        Logger $logger,
+        Config $config,
         OrderRepositoryInterface $orderRepository,
         RequestInterface $request,
+        GridInterface $salesOrderGrid,
         Url $url
     ) {
-        $this->httpClient = $httpClient;
-        $this->logger = $logger;
+        $this->config = $config;
         $this->orderRepository = $orderRepository;
         $this->request = $request;
+        $this->salesOrderGrid = $salesOrderGrid;
         $this->url = $url;
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -99,7 +107,7 @@ class Order extends AbstractHelper
                 $ret = $this->orderRepository->get($orderId);
             }
         } catch (Throwable $e) {
-            $this->logger->error('Failed to get order '.$orderId, ['error'=>$e]);
+            $this->loggingClient->error('Failed to get order '.$orderId, $e);
         }
         return $ret;
     }
@@ -120,21 +128,26 @@ class Order extends AbstractHelper
             return $eq8Score;
         }
 
-        $orderIncId = $order->getIncrementId();
-        $uri = sprintf('/orders/order-name/%s', $this->url->base64UrlEncode($orderIncId));
-        $req = $this->httpClient->get($uri);
+        // Ensure Config Properties are set
+        $this->config->initSdkConfiguration();
 
-        if (!isset($req->fraudAssessments)) {
+        $orderIncId = $order->getIncrementId();
+        $orderData = OrderClient::getOrderByName($orderIncId);
+
+        if (!isset($orderData->fraudAssessments)) {
             return null;
         }
 
         // The goal here is to look in the fraudAssessments array and return the first score we find that's an EQ8.
-        $eq8Score = array_reduce($req->fraudAssessments, function (?int $foundScore, \stdClass $fraudAssessment): ?int {
-            if (!empty($foundScore)) {
-                return $foundScore;
+        $eq8Score = array_reduce(
+            $orderData->fraudAssessments,
+            function (?int $foundScore, \stdClass $fraudAssessment): ?int {
+                if (!empty($foundScore)) {
+                    return $foundScore;
+                }
+                return $fraudAssessment->providerType === 'EQ8' ? $fraudAssessment->score : null;
             }
-            return $fraudAssessment->providerType === 'EQ8' ? $fraudAssessment->score : null;
-        });
+        );
         if (!isset($eq8Score)) {
             return null;
         }
@@ -155,6 +168,7 @@ class Order extends AbstractHelper
             ->setData(self::EQ8_SCORE_COL, $eq8Score)
             ->save();
 
+        $this->salesOrderGrid->refresh($order->getId());
         return $eq8Score;
     }
 
@@ -183,7 +197,8 @@ class Order extends AbstractHelper
         if (!isset($orderId) || !isset($eq8Score)) {
             return 'NA';
         }
-        $link = $this->url->getNS8IframeUrl(['page' => 'order_details', 'order_id' => $orderId]);
+        // `page` must match `ClientPage.ORDER_DETAILS` in JS SDK
+        $link = $this->url->getNS8IframeUrl(['page' => 'ORDER_DETAILS', 'order_id' => $orderId]);
         return '<a href="'.$link.'">'.$eq8Score.'</a>';
     }
 }

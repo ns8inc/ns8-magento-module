@@ -16,7 +16,9 @@ use Magento\Framework\Module\ModuleList;
 use Magento\Framework\ObjectManager\ContextInterface;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use Magento\Integration\Api\OauthServiceInterface;
-use Psr\Log\LoggerInterface;
+use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
+use NS8\ProtectSDK\Security\Client as SecurityClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
 use Zend\Uri\Uri;
@@ -26,16 +28,6 @@ use Zend\Uri\Uri;
  */
 class Config extends AbstractHelper
 {
-    /**
-     * The URL to the Development Protect API
-     */
-    const NS8_DEV_URL_API = 'https://test-protect.ns8.com/';
-
-    /**
-     * The URL to the Development Client API
-     */
-    const NS8_DEV_URL_CLIENT = 'https://test-protect-client.ns8.com/';
-
     /**
      * The Environment Variable name for development Protect API URL value
      */
@@ -57,14 +49,9 @@ class Config extends AbstractHelper
     const NS8_MODULE_NAME = 'NS8_Protect';
 
     /**
-     * The URL to the Production Protect API
+     * Default auth user value to utilize in configuration if no admin user is triggering the event
      */
-    const NS8_PRODUCTION_URL_API = 'https://protect.ns8.com';
-
-    /**
-     * The URL to the Production Client API
-     */
-    const NS8_PRODUCTION_URL_CLIENT = 'https://protect-client.ns8.com';
+    const DEFAULT_AUTH_USER = 'default';
 
     /**
      * @var Context
@@ -82,9 +69,9 @@ class Config extends AbstractHelper
     protected $integrationService;
 
     /**
-     * @var LoggerInterface
+     * @var LoggingClient
      */
-    protected $logger;
+    protected $loggingClient;
 
     /**
      * @var ModuleList
@@ -132,7 +119,6 @@ class Config extends AbstractHelper
      * @param Context $context
      * @param EncryptorInterface $encryptor
      * @param IntegrationServiceInterface $integrationService
-     * @param LoggerInterface $logger
      * @param ModuleList $moduleList
      * @param OauthServiceInterface $oauthService
      * @param ProductMetadataInterface $productMetadata
@@ -146,7 +132,6 @@ class Config extends AbstractHelper
         Context $context,
         EncryptorInterface $encryptor,
         IntegrationServiceInterface $integrationService,
-        LoggerInterface $logger,
         ModuleList $moduleList,
         OauthServiceInterface $oauthService,
         ProductMetadataInterface $productMetadata,
@@ -159,7 +144,6 @@ class Config extends AbstractHelper
         $this->context = $context;
         $this->encryptor = $encryptor;
         $this->integrationService = $integrationService;
-        $this->logger = $logger;
         $this->oauthService = $oauthService;
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
@@ -168,6 +152,8 @@ class Config extends AbstractHelper
         $this->scopeWriter = $scopeWriter;
         $this->typeList = $typeList;
         $this->uri = $uri;
+
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -181,47 +167,10 @@ class Config extends AbstractHelper
         $ret = $this->request->getServer($envVarName);
 
         if (!isset($ret)) {
-            $this->logger->log('DEBUG', 'Failed to get environment variable "'.$envVarName.'"');
+            $this->loggingClient->debug('Failed to get environment variable "'.$envVarName.'"');
         }
 
         return $ret;
-    }
-
-    /**
-     * Gets the current protect Middleware URL based on the environment variables.
-     * Defaults to Production.
-     *
-     * @param string $route
-     *
-     * @return string The NS8 Protect Middleware URL in use for this instance.
-     */
-    public function getNS8MiddlewareUrl(string $route = ''): string
-    {
-        return $this->getNS8Url('api/' . $route);
-    }
-
-    /**
-     * Assemble the URL using environment variables and handles parsing extra `/`
-     *
-     * @param string $envVarName
-     * @param string $defaultUrl
-     * @param string $route
-     *
-     * @return string The final URL
-     */
-    public function getNS8Url(string $route = ''): string
-    {
-        $url = $this->getEnvironmentVariable(self::NS8_ENV_NAME_CLIENT_URL) ?: '';
-        $url = rtrim(trim($url), '/');
-
-        if (empty($url)) {
-            $url = self::NS8_PRODUCTION_URL_CLIENT;
-        }
-        if (!empty($route)) {
-            $route =  str_replace('//', '/', rtrim(ltrim(trim($route), '/'), '/'));
-            $url = $url . '/' . $route;
-        }
-        return $url;
     }
 
     /**
@@ -300,7 +249,7 @@ class Config extends AbstractHelper
      */
     public function getAuthenticatedUserName(): ?string
     {
-        $username = null;
+        $username = self::DEFAULT_AUTH_USER;
         try {
             $auth = $this->context->getAuth();
             $loginUser = $auth->getUser();
@@ -308,7 +257,7 @@ class Config extends AbstractHelper
                 $username = $loginUser->getUserName();
             }
         } catch (Throwable $e) {
-            $this->logger->log('ERROR', 'Failed to get username', ['error' => $e]);
+            $this->loggingClient->error('Failed to get username', $e);
         }
         return $username;
     }
@@ -350,7 +299,8 @@ class Config extends AbstractHelper
     private function getProtectAccessToken(string $consumerKey = null, string $accessToken = null) : ?string
     {
         $client = new Client();
-        $client->setUri($this->getNS8MiddlewareUrl('init/magento/access-token'));
+        $url = SdkConfigManager::getEnvValue('urls.client_url') . '/api/init/magento/access-token';
+        $client->setUri($url);
         $client->setMethod('GET');
 
         $client->setParameterGet([
@@ -367,7 +317,7 @@ class Config extends AbstractHelper
         try {
             $response = Decoder::decode($client->send()->getBody());
         } catch (Throwable $e) {
-            $this->logger->error('Failed to execute API call', ['error' => $e]);
+            $this->loggingClient->error('Failed to execute API call', $e);
         }
 
         if (!isset($response) || !isset($response->token)) {
@@ -375,5 +325,17 @@ class Config extends AbstractHelper
         }
 
         return $response->token;
+    }
+
+    /**
+     * Init SDK Configuration class for usage
+     */
+    public function initSdkConfiguration() : void
+    {
+        SdkConfigManager::initConfiguration();
+        $sdkEnv = SdkConfigManager::getEnvironment();
+        SdkConfigManager::setValue('platform_version', 'Magento');
+        SdkConfigManager::setValue(sprintf('%s.authorization.auth_user', $sdkEnv), $this->getAuthenticatedUserName());
+        SdkConfigManager::setValue(sprintf('%s.authorization.access_token', $sdkEnv), $this->getAccessToken());
     }
 }

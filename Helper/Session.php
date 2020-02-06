@@ -2,6 +2,9 @@
 
 namespace NS8\Protect\Helper;
 
+use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\HTTP\Header;
+use Magento\Framework\HTTP\PhpEnvironment\Request;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\Session\SessionManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -12,9 +15,30 @@ use Psr\Log\LoggerInterface;
 class Session extends AbstractHelper
 {
     /**
+     * The customer session.
+     *
+     * @var CustomerSession
+     */
+    protected $customerSession;
+
+    /**
+     * The HTTP header.
+     *
+     * @var Header
+     */
+    protected $header;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
+
+     /**
+      * The HTTP request.
+      *
+      * @var Request
+      */
+    protected $request;
 
     /**
      * @var SessionManagerInterface
@@ -26,13 +50,22 @@ class Session extends AbstractHelper
      *
      * @param LoggerInterface $loggerInterface
      * @param SessionManagerInterface $session
+     * @param Request $request The HTTP request
+     * @param CustomerSession $customerSession The customer session
+     * @param Header $header The HTTP header
      */
     public function __construct(
         LoggerInterface $loggerInterface,
-        SessionManagerInterface $session
+        SessionManagerInterface $session,
+        Request $request,
+        CustomerSession $customerSession,
+        Header $header
     ) {
         $this->logger = $loggerInterface;
         $this->session = $session;
+        $this->request = $request;
+        $this->customerSession = $customerSession;
+        $this->header = $header;
     }
 
     /**
@@ -60,5 +93,22 @@ class Session extends AbstractHelper
         }
 
         return $result;
+    }
+
+    /**
+     * Get the session data.
+     *
+     * @return array The session data passed in
+     */
+    public function getSessionData(): array
+    {
+        return [
+            'acceptLanguage' => $this->header->getHttpAcceptLanguage(),
+            'id' => $this->customerSession->getSessionId(),
+            'ip' => $this->request->getClientIp(),
+            'screenHeight' => $this->session->getScreenHeight(),
+            'screenWidth' => $this->session->getScreenWidth(),
+            'userAgent' => $this->header->getHttpUserAgent(),
+        ];
     }
 }

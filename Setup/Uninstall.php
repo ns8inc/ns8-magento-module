@@ -6,9 +6,9 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UninstallInterface;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\HttpClient;
-use NS8\Protect\Helper\Logger;
-use NS8\Protect\Helper\SwitchActionType;
+use NS8\ProtectSDK\Http\Client as HttpClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
+use NS8\ProtectSDK\Actions\Client as ActionsClient;
 
 /**
  * Uninstall the Protect extension completely
@@ -16,35 +16,47 @@ use NS8\Protect\Helper\SwitchActionType;
 class Uninstall implements UninstallInterface
 {
     /**
-     * @var IntegrationServiceInterface
-     */
-    protected $integrationService;
-
-    /**
+     * The HTTP client.
+     *
      * @var HttpClient
      */
     protected $httpClient;
 
     /**
-     * @var Logger
+     * The Config helper.
+     *
+     * @var Config
      */
-    protected $logger;
+    protected $config;
+
+    /**
+     * The integration service interface.
+     *
+     * @var IntegrationServiceInterface
+     */
+    protected $integrationService;
+
+    /**
+     * The logging client.
+     *
+     * @var LoggingClient
+     */
+    protected $loggingClient;
 
     /**
      * Default constructor
      *
-     * @param HttpClient $httpClient
      * @param IntegrationServiceInterface $integrationService,
-     * @param Logger $logger
+     * @param Config $config
      */
     public function __construct(
-        HttpClient $httpClient,
         IntegrationServiceInterface $integrationService,
-        Logger $logger
+        Config $config
     ) {
-        $this->httpClient=$httpClient;
-        $this->integrationService=$integrationService;
-        $this->logger=$logger;
+        $this->integrationService = $integrationService;
+        $this->httpClient = new HttpClient();
+        $this->config = $config;
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -54,14 +66,15 @@ class Uninstall implements UninstallInterface
     {
         try {
             $setup->startSetup();
-            $params = ['action'=>SwitchActionType::UNINSTALL_ACTION];
+            $this->config->initSdkConfiguration();
+            $params = ['action'=>ActionsClient::UNINSTALL_ACTION];
             $response = $this->httpClient->post('/switch/executor', [], $params);
             $integration = $this->integrationService->findByName(Config::NS8_INTEGRATION_NAME);
             if ($integration) {
                 $integration->delete();
             }
         } catch (Throwable $e) {
-            $this->logger->error('Protect uninstall failed', ['error' => $e]);
+            $this->loggingClient->error('Protect uninstall failed', $e);
         } finally {
             $setup->endSetup();
         }

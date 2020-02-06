@@ -9,7 +9,7 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Integration\Model\ConfigBasedIntegrationManager;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\CustomStatus;
-use NS8\Protect\Helper\Logger;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
 /**
  * Execute the install/upgrade logic for the Protect extension
@@ -17,33 +17,37 @@ use NS8\Protect\Helper\Logger;
 class Setup extends AbstractHelper
 {
     /**
+     * The custom status helper.
+     *
      * @var CustomStatus
      */
     protected $customStatus;
 
     /**
+     * The config-based integration manager.
+     *
      * @var ConfigBasedIntegrationManager
      */
     protected $integrationManager;
 
     /**
-     * @var Logger
+     * The logging client.
+     *
+     * @var LoggingClient
      */
-    protected $logger;
+    protected $loggingClient;
 
     /**
      * @param ConfigBasedIntegrationManager $integrationManager
      * @param CustomStatus $customStatus
-     * @param Logger $logger
      */
     public function __construct(
         ConfigBasedIntegrationManager $integrationManager,
-        CustomStatus $customStatus,
-        Logger $logger
+        CustomStatus $customStatus
     ) {
         $this->customStatus = $customStatus;
         $this->integrationManager = $integrationManager;
-        $this->logger = $logger;
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -65,7 +69,7 @@ class Setup extends AbstractHelper
             // Run the base integration config method. This does not trigger activation.
             $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
         } catch (Throwable $e) {
-            $this->logger->error('Protect '.$mode.' failed', ['error' => $e]);
+            $this->loggingClient->error("Protect $mode failed", $e);
         } finally {
             //Essential step.
             $setup->endSetup();
@@ -119,7 +123,7 @@ class Setup extends AbstractHelper
                 ['eq8_score']
             );
         } catch (Throwable $e) {
-            $this->logger->error('Protect '.$mode.' failed', ['error' => $e]);
+            $this->loggingClient->error("Protect $mode failed", $e);
         } finally {
             //Essential step.
             $setup->endSetup();

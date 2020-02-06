@@ -7,9 +7,10 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use NS8\Protect\Helper\HttpClient;
-use NS8\Protect\Helper\Logger;
-use NS8\Protect\Helper\SwitchActionType;
+use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\Session as SessionHelper;
+use NS8\ProtectSDK\Actions\Client as ActionsClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
 /**
  * Responds to merchant update events
@@ -17,19 +18,19 @@ use NS8\Protect\Helper\SwitchActionType;
 class MerchantUpdate implements ObserverInterface
 {
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @var Session
      */
     protected $customerSession;
 
     /**
-     * @var HttpClient
+     * @var LoggingClient
      */
-    protected $httpClient;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    protected $loggingClient;
 
     /**
      * @var Http
@@ -37,23 +38,31 @@ class MerchantUpdate implements ObserverInterface
     protected $request;
 
     /**
+     * The session helper.
+     *
+     * @var SessionHelper
+     */
+    protected $sessionHelper;
+
+    /**
      * Default constructor
      *
+     * @param Config $config
      * @param Http $request
-     * @param HttpClient $httpClient
-     * @param Logger $logger
      * @param Session $session
+     * @param SessionHelper $sessionHelper
      */
     public function __construct(
+        Config $config,
         Http $request,
-        HttpClient $httpClient,
-        Logger $logger,
-        Session $session
+        Session $session,
+        SessionHelper $sessionHelper
     ) {
+        $this->config = $config;
         $this->customerSession = $session;
-        $this->httpClient = $httpClient;
-        $this->logger = $logger;
         $this->request = $request;
+        $this->sessionHelper = $sessionHelper;
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -67,17 +76,19 @@ class MerchantUpdate implements ObserverInterface
         try {
             $eventData = $observer->getEvent()->getData();
         } catch (Throwable $e) {
-            $this->logger->error('The event data could not be retrieved', ['error' => $e]);
+            $this->loggingClient->error('The event data could not be retrieved', $e);
             return;
         }
 
-        $params = ['action' => SwitchActionType::UPDATE_MERCHANT_ACTION];
-        $data = ['eventData' => $eventData];
+        $data = ['eventData' => $eventData, 'session' => $this->sessionHelper->getSessionData()];
 
         try {
-            $this->httpClient->post('/switch/executor', $data, $params);
+            $this->config->initSdkConfiguration();
+
+            // Send Action Update
+            ActionsClient::setAction(ActionsClient::UPDATE_MERCHANT_ACTION, $data);
         } catch (Throwable $e) {
-            $this->logger->error('The merchant update could not be processed', ['error' => $e]);
+            $this->loggingClient->error('The merchant update could not be processed', $e);
         }
     }
 }

@@ -10,13 +10,10 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\HttpClient;
-use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Order;
-use NS8\Protect\Helper\SwitchActionType;
-
+use NS8\Protect\Helper\Session as SessionHelper;
 use NS8\ProtectSDK\Actions\Client as ActionsClient;
-use NS8\ProtectSDK\Config\Manager as ConfigManager;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
 /**
  * Responds to Order Update events
@@ -34,14 +31,9 @@ class OrderUpdate implements ObserverInterface
     protected $customerSession;
 
     /**
-     * @var HttpClient
+     * @var LoggingClient
      */
-    protected $httpClient;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    protected $loggingClient;
 
     /**
      * @var OrderInterface
@@ -59,32 +51,37 @@ class OrderUpdate implements ObserverInterface
     protected $request;
 
     /**
+     * The session helper.
+     *
+     * @var SessionHelper
+     */
+    protected $sessionHelper;
+
+    /**
      * Default constructor
      *
      * @param Config $config
      * @param Http $request
-     * @param HttpClient $httpClient
-     * @param Logger $logger
      * @param Order $orderHelper
      * @param OrderInterface $order
-     * @param Session $session
+     * @param Session $session,
+     * @param SessionHelper $sessionHelper
      */
     public function __construct(
         Config $config,
         Http $request,
-        HttpClient $httpClient,
-        Logger $logger,
         Order $orderHelper,
         OrderInterface $order,
-        Session $session
+        Session $session,
+        SessionHelper $sessionHelper
     ) {
         $this->config = $config;
         $this->customerSession = $session;
-        $this->httpClient = $httpClient;
-        $this->logger = $logger;
         $this->order = $order;
         $this->orderHelper = $orderHelper;
         $this->request = $request;
+        $this->sessionHelper = $sessionHelper;
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -115,7 +112,7 @@ class OrderUpdate implements ObserverInterface
                     ->save();
             }
         } catch (Throwable $e) {
-            $this->logger->error('Add Status History failed', ['error' => $e]);
+            $this->loggingClient->error('Add Status History failed', $e);
         }
         return $oldStatus;
     }
@@ -136,7 +133,7 @@ class OrderUpdate implements ObserverInterface
             $status = $order->getStatus();
             $oldStatus = $this->addStatusHistory($order);
             $isNew = $state == 'new' || $status == 'pending';
-            $action = SwitchActionType::CREATE_ORDER_ACTION;
+            $action = ActionsClient::CREATE_ORDER_ACTION;
 
             if (isset($oldStatus) || !$isNew) {
                 // For some reason, credit card orders using Authorize.net will start in a state of "processing"
@@ -150,23 +147,17 @@ class OrderUpdate implements ObserverInterface
                         // This will fail if the order does not exist, and we'll remain in a CREATE_ORDER_ACTION state
                         $this->orderHelper->getEQ8Score($order->getId());
                     }
-                    $action = SwitchActionType::UPDATE_ORDER_STATUS_ACTION;
+                    $action = ActionsClient::UPDATE_ORDER_STATUS_ACTION;
                 } catch (Throwable $e) {
-                    $this->logger->error('Could not retrieve the EQ8 Score', ['error' => $e]);
+                    $this->loggingClient->error('Could not retrieve the EQ8 Score', $e);
                 }
             }
 
-            $params = ['action'=>$action];
-            $data = ['order'=>$orderData];
-
-            $configManager = new ConfigManager();
-            ConfigManager::setValue('testing.auth.auth_user', 'magento');
-            ConfigManager::setValue('testing.auth.access_token', $this->config->getAccessToken());
-            ActionClient::setAction($action, $data);
-
-            //$response = $this->httpClient->post('/switch/executor', $data, $params);
+            $this->config->initSdkConfiguration();
+            $actionData = ['order' => $orderData, 'session' => $this->sessionHelper->getSessionData()];
+            ActionsClient::setAction($action, $actionData);
         } catch (Throwable $e) {
-            $this->logger->error('The order update could not be processed', ['error' => $e]);
+            $this->loggingClient->error('The order update could not be processed', $e);
         }
     }
 }

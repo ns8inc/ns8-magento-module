@@ -8,6 +8,7 @@ use Magento\Backend\Model\UrlInterface as BackendUrlInterface;
 use Magento\Framework\App\State;
 use Magento\Framework\App\Area;
 use NS8\Protect\Helper\Config;
+use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 use UnexpectedValueException;
 
 /**
@@ -15,11 +16,6 @@ use UnexpectedValueException;
  */
 class Url extends AbstractHelper
 {
-    /**
-     * @var Config
-     */
-    protected $config;
-
     /**
      * @var UrlInterface
      */
@@ -36,24 +32,32 @@ class Url extends AbstractHelper
     protected $state;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * The constructor.
      *
-     * @param Config $config
      * @param UrlInterface $url
      * @param BackendUrlInterface $backendUrl
-     * @param State $state
+     * @param State $state,
+     * @param Config $config
      *
      */
     public function __construct(
-        Config $config,
         UrlInterface $url,
         BackendUrlInterface $backendUrl,
-        State $state
+        State $state,
+        Config $config
     ) {
-        $this->config = $config;
         $this->url = $url;
         $this->backendUrl = $backendUrl;
         $this->state = $state;
+        $this->config = $config;
+
+        // Initiate configuration to ensure environmental URLs function as intended
+        $this->config->initSdkConfiguration();
     }
 
     /**
@@ -107,56 +111,17 @@ class Url extends AbstractHelper
     }
 
     /**
-     * Encode a string using base64 in URL mode.
-     *
-     * @link https://en.wikipedia.org/wiki/Base64#URL_applications
-     *
-     * @param string $data The data to encode
-     *
-     * @return string The encoded string
-     */
-    public function base64UrlEncode(string $data): string
-    {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
-    }
-
-    /**
-     * Get the NS8 client page URL.
-     *
-     * @param string|null $page The page to visit inside the iframe (defaults to the dashboard)
-     * @param string|null $orderIncrementId The order increment ID (if visiting the order details page)
-     *
-     * @throws UnexpectedValueException If an unknown page was requested.
+     * Get the URL of the protect-js-sdk bundle
      *
      * @return string The URL
      */
-    public function getNS8ClientPageUrl(?string $page, ?string $orderIncrementId): string
+    public function getProtectJsSdkUrl(): string
     {
-        $query = ['accessToken' => $this->config->getAccessToken()];
+        return SdkConfigManager::getEnvValue('urls.js_sdk');
+    }
 
-        switch ($page) {
-            case null:
-            case 'dashboard':
-                $route = '';
-                $query['noredirect'] = 1;
-                break;
-            case 'order_details':
-                $route = 'order-details/' . $this->base64UrlEncode($orderIncrementId);
-                break;
-            case 'order_rules':
-                $route = 'rules';
-                break;
-            case 'suspicious_orders':
-                $route = 'report/suspicious-orders';
-                break;
-            default:
-                throw new UnexpectedValueException('Unrecognized page requested: ' . $page);
-        }
-
-        return sprintf(
-            '%s?%s',
-            $this->config->getNS8Url($route),
-            http_build_query($query)
-        );
+    public function getClientUrl(): string
+    {
+        return SdkConfigManager::getEnvValue('urls.client_url');
     }
 }

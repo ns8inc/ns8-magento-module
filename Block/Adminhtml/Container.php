@@ -17,7 +17,6 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
-use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Url;
 
 /**
@@ -35,18 +34,16 @@ class Container extends Template
     public $order;
 
     /**
+     * @var Config
+     */
+    public $config;
+
+    /**
      * The context.
      *
      * @var Context
      */
     protected $context;
-
-    /**
-     * The HTTP client helper.
-     *
-     * @var HttpClient
-     */
-    protected $httpClient;
 
     /**
      * The integration service.
@@ -79,26 +76,26 @@ class Container extends Template
     /**
      * Constructor
      *
+     * @param Config $config
      * @param Context $context The context
      * @param Http $request The request
-     * @param HttpClient $httpClient The HTTP client
      * @param IntegrationServiceInterface $integrationService The integration service
      * @param Order $order The order helper
      * @param PageFactory $resultPageFactory The page factory
      * @param Url $url URL helper class
      */
     public function __construct(
+        Config $config,
         Context $context,
         Http $request,
-        HttpClient $httpClient,
         IntegrationServiceInterface $integrationService,
         Order $order,
         PageFactory $resultPageFactory,
         Url $url
     ) {
         parent::__construct($context);
+        $this->config = $config;
         $this->context = $context;
-        $this->httpClient = $httpClient;
         $this->integrationService = $integrationService;
         $this->order = $order;
         $this->request = $request;
@@ -107,17 +104,30 @@ class Container extends Template
     }
 
     /**
+     * Get the page to navigate to within the protect client
+     *
+     * @return string The name of the page to naviage to.
+     */
+    public function getPageFromRequest(): string
+    {
+        $page = (string)$this->request->getParam('page');
+        $orderIncrementId = $this->getOrderIncrementIdFromRequest();
+        if (empty($page) && !empty($orderIncrementId)) {
+            $page = 'ORDER_DETAILS';
+        }
+
+        return $page;
+    }
+
+    /**
      * Get the URL of the iframe that holds the NS8 Protect client.
      *
      * @return string The URL
      */
-    public function getNS8ProtectUrl(): string
+    public function getOrderIncrementIdFromRequest(): string
     {
         $orderId = $this->request->getParam('order_id');
-        $orderIncrementId = $orderId ? $this->order->getOrderIncrementId($orderId) : null;
-        $page = $orderIncrementId ? 'order_details' : $this->request->getParam('page');
-
-        return $this->url->getNS8ClientPageUrl($page, $orderIncrementId);
+        return $orderId ? $this->order->getOrderIncrementId($orderId) : '';
     }
 
     /**

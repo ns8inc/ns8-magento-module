@@ -12,7 +12,8 @@ namespace NS8\Protect\Block\Frontend;
 
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use NS8\Protect\Helper\HttpClient;
+use NS8\Protect\Helper\Config;
+use NS8\ProtectSDK\Http\Client as HttpClient;
 
 /**
  * The Script class.
@@ -22,23 +23,21 @@ use NS8\Protect\Helper\HttpClient;
 class Script extends Template
 {
     /**
-     * The HTTP client helper.
-     *
-     * @var HttpClient
+     * @var Config
      */
-    private $httpClient;
+    protected $config;
 
-    /**
-     * The constructor.
-     *
-     * @param Context $context The Magento context
-     * @param HttpClient $httpClient The HTTP client
-     * @param array $data The data to pass to the Template constructor (optional)
-     */
-    public function __construct(Context $context, HttpClient $httpClient, array $data = [])
+     /**
+      * The constructor.
+      *
+      * @param Context $context The Magento context
+      * @param Config $config The Config Helper attribute
+      * @param array $data The data to pass to the Template constructor (optional)
+      */
+    public function __construct(Context $context, Config $config, array $data = [])
     {
         parent::__construct($context, $data);
-        $this->httpClient = $httpClient;
+        $this->config = $config;
     }
 
     /**
@@ -48,8 +47,10 @@ class Script extends Template
      */
     public function getScriptHtml(): string
     {
-        $script = $this->httpClient->post('/init/script', [], [], [], 30, false);
+        $this->config->initSdkConfiguration();
+        $script = (new HttpClient())->sendNonObjectRequest('/init/script');
 
-        return is_string($script) ? sprintf('<script>%s</script>', $script) : '';
+        // Call json_decode to remove quotes if present
+        return is_string($script) ? sprintf('<script>%s</script>', json_decode($script)) : '';
     }
 }

@@ -6,9 +6,9 @@ use Throwable;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
-use NS8\Protect\Helper\HttpClient;
-use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Config;
+use NS8\ProtectSDK\Http\Client as HttpClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
 /**
  * The NS8 Protect Dashboard page
@@ -16,42 +16,44 @@ use NS8\Protect\Helper\Config;
 class Dashboard extends Action
 {
     /**
-     * @var PageFactory
-     */
-    protected $resultPageFactory;
-
-    /**
+     * The HTTP client.
+     *
      * @var HttpClient
      */
     protected $httpClient;
 
     /**
-     * @var Logger
+     * The logging client.
+     *
+     * @var LoggingClient
      */
-    protected $logger;
+    protected $loggingClient;
+
+    /**
+     * The result page factory.
+     *
+     * @var PageFactory
+     */
+    protected $resultPageFactory;
 
     /**
      * Constructor
      *
      * @param Context $context The context
      * @param PageFactory $resultPageFactory The result page factory
-     * @param HttpClient $httpClient The HTTP client
-     * @param Logger $logger The logger
      * @param Config $config The config
      */
     public function __construct(
         Context $context,
         PageFactory $resultPageFactory,
-        HttpClient $httpClient,
-        Logger $logger,
         Config $config
     ) {
         parent::__construct($context);
         $this->context = $context;
         $this->resultPageFactory = $resultPageFactory;
-        $this->httpClient = $httpClient;
-        $this->logger = $logger;
         $this->config = $config;
+        $this->httpClient = new HttpClient();
+        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -72,22 +74,23 @@ class Dashboard extends Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
-
+        $this->config->initSdkConfiguration();
         try {
             $merchant = $this->httpClient->get('/merchant/current');
             if (empty($merchant)) {
-                $this->logger->error('Request to Protect failed to GET /merchant/current');
+                $this->loggingClient->error('Request to Protect failed to GET /merchant/current');
                 return $resultPage;
             }
 
             if (empty($merchant->error)) {
-                $this->logger->debug('MERCHANT ==> ' . $merchant->name);
+                $this->loggingClient->debug('MERCHANT ==> ' . $merchant->name);
             } else {
-                $this->logger->error($merchant->statusCode . ' '     . $merchant->error);
+                $this->loggingClient->error($merchant->statusCode . ' ' . $merchant->error);
             }
         } catch (Throwable $e) {
-            $this->logger->error('The merchant could not be fetched', ['error' => $e]);
+            $this->loggingClient->error('The Protect API is not available', $e);
         }
+
         return $resultPage;
     }
 }

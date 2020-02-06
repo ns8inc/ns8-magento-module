@@ -12,7 +12,8 @@ namespace NS8\Protect\Block\Frontend;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use NS8\Protect\Helper\HttpClient;
+use NS8\Protect\Helper\Config;
+use NS8\ProtectSDK\Http\Client as HttpClient;
 use RuntimeException;
 use Zend\Uri\Http as Uri;
 
@@ -28,7 +29,14 @@ class VerifyOrder extends Template
      *
      * @var HttpClient
      */
-    private $httpClient;
+    protected $httpClient;
+
+    /**
+     * The Config helper.
+     *
+     * @var Config
+     */
+    protected $config;
 
     /**
      * The HTTP request.
@@ -41,19 +49,21 @@ class VerifyOrder extends Template
      * The constructor.
      *
      * @param Context $context The Magento context
-     * @param HttpClient $httpClient The HTTP client
      * @param Http $request The HTTP request
+     * @param Config Config helper to init/set config values
      * @param array $data The data to pass to the Template constructor (optional)
      */
     public function __construct(
         Context $context,
-        HttpClient $httpClient,
         Http $request,
+        Config $config,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->httpClient = $httpClient;
         $this->request = $request;
+        $this->config = $config;
+        $this->config->initSdkConfiguration();
+        $this->httpClient = new HttpClient();
     }
 
     /**
@@ -94,9 +104,9 @@ class VerifyOrder extends Template
 
         if ($this->request->isPost()) {
             $postFields = array_merge($params, (array)$this->request->getPost());
-            $response = $this->httpClient->post('merchant/template', $postFields);
+            $response = $this->httpClient->post('/merchant/template', $postFields);
         } else {
-            $response = $this->httpClient->get(sprintf('merchant/template?%s', http_build_query($params)));
+            $response = $this->httpClient->get(sprintf('/merchant/template?%s', http_build_query($params)));
         }
 
         return isset($response->location)
