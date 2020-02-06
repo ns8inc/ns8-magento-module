@@ -66,8 +66,18 @@ try {
     // Initialize the configuration
     $this->config->initSdkConfiguration();
 
+    // Include Session Data for True Stats integration
+    $sessionData = [
+            'acceptLanguage' => $this->header->getHttpAcceptLanguage(),
+            'id' => $this->customerSession->getSessionId(),
+            'ip' => $this->request->getClientIp(),
+            'screenHeight' => $this->session->getScreenHeight(),
+            'screenWidth' => $this->session->getScreenWidth(),
+            'userAgent' => $this->header->getHttpUserAgent(),
+        ];
+
     // Set the action which sends the data to the NS8 Protect API
-    ActionsClient::setAction($action, ['order'=>$orderData]);
+    ActionsClient::setAction($action, ['order'=>$orderData, 'session' => $sessionData]);
 
   } catch (\Throwable $t)) {
     // Error handling
