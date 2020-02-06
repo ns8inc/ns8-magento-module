@@ -7,7 +7,6 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\RequestInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Model\ResourceModel\GridInterface;
 use NS8\Protect\Helper\HttpClient;
 use NS8\Protect\Helper\Logger;
 use NS8\Protect\Helper\Url;
@@ -42,11 +41,6 @@ class Order extends AbstractHelper
     protected $request;
 
     /**
-     * @var GridInterface
-     */
-    protected $salesOrderGrid;
-
-    /**
      * @var Url
      */
     protected $url;
@@ -58,7 +52,6 @@ class Order extends AbstractHelper
      * @param Logger $logger
      * @param OrderRepositoryInterface $orderRepository
      * @param RequestInterface $request
-     * @param GridInterface $salesOrderGrid
      * @param Url $url
      */
     public function __construct(
@@ -66,14 +59,12 @@ class Order extends AbstractHelper
         Logger $logger,
         OrderRepositoryInterface $orderRepository,
         RequestInterface $request,
-        GridInterface $salesOrderGrid,
         Url $url
     ) {
         $this->httpClient = $httpClient;
         $this->logger = $logger;
         $this->orderRepository = $orderRepository;
         $this->request = $request;
-        $this->salesOrderGrid = $salesOrderGrid;
         $this->url = $url;
     }
 
@@ -164,7 +155,6 @@ class Order extends AbstractHelper
             ->setData(self::EQ8_SCORE_COL, $eq8Score)
             ->save();
 
-        $this->salesOrderGrid->refresh($order->getId());
         return $eq8Score;
     }
 

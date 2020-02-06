@@ -35,16 +35,15 @@
   border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-iframe.ns8-protect-client-iframe {
-  width: 1px;
-  min-width: 100%;
-}
-
 #sales_order_view_tabs_ns8_protect_order_review_content #ns8-protect-wrapper {
-  width: 100%;
+  position: relative;
+  overflow: hidden;
+  padding-top: 419px;
 }
-
 #sales_order_view_tabs_ns8_protect_order_review_content #ns8-protect-wrapper iframe.ns8-protect-client-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: 0;

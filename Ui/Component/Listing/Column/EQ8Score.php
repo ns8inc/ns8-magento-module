@@ -55,8 +55,9 @@ class EQ8Score extends Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
                 $orderId = $item[OrderInterface::ENTITY_ID];
-                $eq8Score = isset($item[Order::EQ8_SCORE_COL])
-                    ? (int)$item[Order::EQ8_SCORE_COL]
+                $order = $this->order->getOrder($orderId);
+                $eq8Score = isset($order)
+                    ? $order->getData(Order::EQ8_SCORE_COL)
                     : null;
                 $item[Order::EQ8_SCORE_COL] = $this->order->formatEQ8ScoreLinkHtml(
                     $orderId,
