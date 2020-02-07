@@ -14,3 +14,4 @@ package-lock.json
 release/
 test/mock_data/
 yarn-error.log
+.serverless/
