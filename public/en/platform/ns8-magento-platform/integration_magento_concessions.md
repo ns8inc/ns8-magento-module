@@ -27,3 +27,14 @@ public function initSdkConfiguration() : void
 }
 ```
 This method is invoked for requests where the SDK is about to be utilized to set SDK configuration information from Magento's configuration logic where required (for needs such as authentication).
+
+## Concessions Regarding Order Data
+As an analytics and fraud scoring application, NS8 Protect relies heavily on order data and benefits from whatever can be reaped from the platform. Magento's Order Model for Guest Orders vs Registered Users is not consistent therefore causing explicit steps to be taken for data validation. Wwe must account for null or non-existent values for such customer properties as first or last name. Additionally, unique customer hashes to represent customer IDs must be generated randomly in cases where the Guest Order does not contain na email address. In light of all of this, careful consideration must be exercised when integrating data from Magento's Order Models and account for a more relaxed data structure.
+
+## Concessions Regarding Credit Card Data & Payment Functionality
+Credit card models are not consistent nor standardized across the Magento framework depending on what payment provider is being utilized. The lack of abstraction and standardization (e.g. through interfaces) forces an increase in default fields, sanitization practices, and requires greater flexibility/support for both data-requirements as well as field names.
+
+Outside of data models, credit card processing through Authorize.net in Magento impacts the state in which orders are set. These orders through Authorize.net are automatically set to a state of "processing" and a status history record is added making it impossible to elegantly determine if an order is "new" vs "existing" in context of order data thus additional steps must be taken to account for checking Order Creation vs Order Update events.
+
+## Concessions Regarding Permissions
+At the time of developing this module, there was very little documentation surrounding Magento 2's permissions logic and intended implementation-standards. The lack of available information resulted in "guest & check" development of the module's `integration/api.xml` file. The implementation made available in this module permits required access and functionality to allow data access for the NS8 Protect API.
