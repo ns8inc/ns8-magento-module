@@ -83,5 +83,5 @@
     "version:patch:dev": "PATCH_MODE=dev && yarn version:patch",
     "version:publish": "yarn && yarn build && npm publish"
   },
-  "version": "2.0.40"
+  "version": "2.0.41"
 }
