@@ -196,7 +196,7 @@ If you are testing the installation of the extension via composer to test instal
   * `$ sudo rm -rf vendor/`
   * Delete `composer.lock`
   * Edit `composer.json`
-    * Add `ns8/protect` to the `require` block with your new version
+    * Add `ns8/protect-magento` to the `require` block with your new version
   * `$ composer install`
   * `$ sudo bin/magento setup:upgrade`
   * `$ sudo bin/magento cache:clean`

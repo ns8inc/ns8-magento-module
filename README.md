@@ -1,3 +1,3 @@
 # Getting Started
 
-* Read the [docs](https://internal-dev-docs.readme.io/docs/magento)
+* Read the [docs](public/en/platform/ns8-magento-platform/getting-started.md)
