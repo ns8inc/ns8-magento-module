@@ -356,12 +356,23 @@ function pull_magento() {
 
   cd /var/www/html || fail_with_msg "can't cd to /var/www/html."
 
+  # Install PHP SDK
+  /usr/local/bin/composer require ns8/protect-sdk
+
   # enable magento developer mode
   php bin/magento deploy:mode:set developer
 
   # update magento, clean cache
   php bin/magento setup:upgrade
   bin/magento cache:clean
+
+  # Update environment to utilize development environment
+  sed -i "s/\"default_environment\": \"production\"/\"default_environment\": \"development\"/" /var/www/html/vendor/ns8/protect-sdk/assets/configuration/core_configuration.json
+  sed -i "s^\"api_url\": \"https://test-protect.ns8.com\"^\"api_url\": \"$NS8_PROTECT_URL\"^" /var/www/html/vendor/ns8/protect-sdk/assets/configuration/core_configuration.json
+  sed -i "s^\"client_url\": \"https://test-protect-client.ns8.com\"^\"client_url\": \"$NS8_CLIENT_URL\"^" /var/www/html/vendor/ns8/protect-sdk/assets/configuration/core_configuration.json
+
+  # Ensure vendor directory is accessible after updates
+  chmod -R ugo+rwx /var/www/html/vendor
 
   # enable PHP display errors
   sed -i "s/#ini_set('display_errors', 1);/ini_set('display_errors', 1);/" /var/www/html/app/bootstrap.php

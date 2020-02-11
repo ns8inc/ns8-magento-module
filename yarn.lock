@@ -1159,6 +1159,13 @@ batch@0.6.1:
   resolved "https://registry.yarnpkg.com/batch/-/batch-0.6.1.tgz#dc34314f4e679318093fc760272525f94bf25c16"
   integrity sha1-3DQxT05nkxgJP8dgJyUl+UvyXBY=
 
+bcrypt-pbkdf@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.2.tgz#a4301d389b6a43f9b67ff3ca11a3f6637e360e9e"
+  integrity sha1-pDAdOJtqQ/m2f/PKEaP2Y342Dp4=
+  dependencies:
+    tweetnacl "^0.14.3"
+
 big.js@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
@@ -5504,6 +5511,17 @@ node-preload@^0.2.0:
   dependencies:
     process-on-spawn "^1.0.0"
 
+node-ssh@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/node-ssh/-/node-ssh-7.0.0.tgz#f5a34f3d84a68bf4c646d55cce07dc11f2f1c22a"
+  integrity sha512-LwdGalFACK+DCVI1+wkehR/a8uIkmAn0npW43f8U6XhH20112a/WAXv3oQay7IK2YHY1J6r5JT2MEHhjyQxKIA==
+  dependencies:
+    p-map "^3.0.0"
+    sb-promisify "^2.0.1"
+    sb-scandir "^2.0.0"
+    shell-escape "^0.2.0"
+    ssh2 "^0.8.7"
+
 noop6@^1.0.1:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/noop6/-/noop6-1.0.8.tgz#eff06e2e5b3621e9e5618f389d6a2294f76e64ad"
@@ -5859,6 +5877,11 @@ p-locate@^4.1.0:
   integrity sha512-R79ZZ/0wAxKGu3oYMlz8jy/kbhsNrS7SKZ7PxEHBgJ5+F2mtFW2fK2cOtBh1cHYkQsbzFV7I+EoRKe6Yt0oK7A==
   dependencies:
     p-limit "^2.2.0"
+
+p-map@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/p-map/-/p-map-1.2.0.tgz#e4e94f311eabbc8633a1e79908165fca26241b6b"
+  integrity sha512-r6zKACMNhjPJMTl8KcFH4li//gkrXWfbD6feV8l6doRHlzljFWGJ2AP6iKaCJXyZmAUMOPtvbW7EXkbWO/pLEA==
 
 p-map@^2.0.0:
   version "2.1.0"
@@ -6723,6 +6746,19 @@ sax@>=0.6.0:
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
+sb-promisify@^2.0.1:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/sb-promisify/-/sb-promisify-2.0.2.tgz#4277a54754488aa9675d886e354db894c9bdc981"
+  integrity sha1-QnelR1RIiqlnXYhuNU24lMm9yYE=
+
+sb-scandir@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/sb-scandir/-/sb-scandir-2.0.0.tgz#a02ad1fa44a8bd2bfaf30193d14d23c2f35ab6b2"
+  integrity sha512-SKbyMJB0DUt9OgN4tP2RBcn9OsR26DEpe+nwaDkQTNcrJSJI0FlLhXhBpTd/YEnlQ2GdLrbszSNekGLw4rweOQ==
+  dependencies:
+    p-map "^1.2.0"
+    sb-promisify "^2.0.1"
+
 schema-utils@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-1.0.0.tgz#0b79a93204d7b600d4b2850d1f66c2a34951c770"
@@ -6945,6 +6981,11 @@ setprototypeof@1.1.1:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.1.tgz#7e95acb24aa92f5885e0abef5ba131330d4ae683"
   integrity sha512-JvdAWfbXeIGaZ9cILp38HntZSFSo3mWg6xGcJJsd+d4aRMOqauag1C63dJfDw7OaMYwEbHMOxEZ1lqVRYP2OAw==
 
+sh-exec@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/sh-exec/-/sh-exec-2.1.0.tgz#f1a198e6c2cc9f4de4abfad1b7cf88c066c140d3"
+  integrity sha512-BOcgjEE2YGhSHiRnigPY3BT1Y1+a+z5vv+6FZjyOF1CttiGoTStNpZ0Vuz9w4yL8vbddLz7sXRD+e6LasvBQqw==
+
 sha.js@^2.4.0, sha.js@^2.4.8:
   version "2.4.11"
   resolved "https://registry.yarnpkg.com/sha.js/-/sha.js-2.4.11.tgz#37a5cf0b81ecbc6943de109ba2960d1b26584ae7"
@@ -6976,6 +7017,11 @@ shebang-regex@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
+
+shell-escape@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/shell-escape/-/shell-escape-0.2.0.tgz#68fd025eb0490b4f567a027f0bf22480b5f84133"
+  integrity sha1-aP0CXrBJC09WegJ/C/IkgLX4QTM=
 
 shortid@^2.2.14:
   version "2.2.15"
@@ -7215,6 +7261,22 @@ ssh2-streams@~0.0.22:
     asn1 "~0.2.0"
     readable-stream "~1.0.0"
     streamsearch "~0.1.2"
+
+ssh2-streams@~0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/ssh2-streams/-/ssh2-streams-0.4.8.tgz#2ff92df2e0063fef86cf934eaea197967deda715"
+  integrity sha512-auxXfgYySz2vYw7TMU7PK7vFI7EPvhvTH8/tZPgGaWocK4p/vwCMiV3icz9AEkb0R40kOKZtFtqYIxDJyJiytw==
+  dependencies:
+    asn1 "~0.2.0"
+    bcrypt-pbkdf "^1.0.2"
+    streamsearch "~0.1.2"
+
+ssh2@^0.8.7:
+  version "0.8.7"
+  resolved "https://registry.yarnpkg.com/ssh2/-/ssh2-0.8.7.tgz#2dc15206f493010b98027201cf399b90bab79c89"
+  integrity sha512-/u1BO12kb0lDVxJXejWB9pxyF3/ncgRqI9vPCZuPzo05pdNDzqUeQRavScwSPsfMGK+5H/VRqp1IierIx0Bcxw==
+  dependencies:
+    ssh2-streams "~0.4.8"
 
 ssh2@~0.4.10:
   version "0.4.15"
@@ -7787,6 +7849,11 @@ tunnel-agent@^0.6.0:
   integrity sha1-J6XeoGs2sEoKmWZ3SykIaPD8QP0=
   dependencies:
     safe-buffer "^5.0.1"
+
+tweetnacl@^0.14.3:
+  version "0.14.5"
+  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
+  integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
 type-check@~0.3.2:
   version "0.3.2"

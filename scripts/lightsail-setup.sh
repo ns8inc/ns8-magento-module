@@ -3,9 +3,9 @@
 ## Set Variables!! You MUST set these!!
 
 # http://<YOUR DEV URL>.ngrok.io, e.g. http://dev-jdoe-magento.ngrok.io
-NS8_PROTECT_URL=https://test-protect.ns8.com
+NS8_PROTECT_URL=
 # http://<YOUR NS8 PROTECT CLIENT APP DEV URL>.ngrok.io, e.g. https://david-local-protect.ngrok.io/#
-NS8_CLIENT_URL=https://test-protect-client.ns8.com
+NS8_CLIENT_URL=
 # <YOUR DEV DOMAIN>, e.g. http://dev-jdoe-Magento-2.3.2.ns8demos.com/
 DEV_LIGHTSAIL_DOMAIN=
 
@@ -87,6 +87,7 @@ sudo -u apache php /var/www/html/bin/magento cron:install
 # Set Magento Admin password to not expire
 sudo -u apache php /var/www/html/bin/magento config:set admin/security/password_lifetime 0
 sudo -u apache php /var/www/html/bin/magento cache:clean
+
 # Update Composer Auth
 sudo -u apache cp /var/www/html/auth.json.sample /var/www/html/auth.json
 #### Need to remove git section
@@ -97,14 +98,32 @@ sed -i '/github/d' /var/www/html/auth.json
 sed -i '/},$/d' /var/www/html/auth.json
 sed -i 's/<public-key>/1b8325eb6d792fe22c0fb83f65150281/' /var/www/html/auth.json
 sed -i 's/<private-key>/d68ff7618b2f3118a0342d7f914848c8/' /var/www/html/auth.json
+
 # Create the directory where we will test the Protect extension
 sudo -u apache mkdir -p /var/www/html/app/code/NS8/Protect
+
+# Install Protect SDK via composer
+cd /var/www/html
+sudo -u apache php -d memory_limit=-1 /var/www/html/vendor/composer/composer/bin/composer require ns8/protect-sdk
+
+# Update environment to utilize development environment if the module is installed
+sed -i "s/\"default_environment\": \"production\"/\"default_environment\": \"development\"/" /var/www/html/vendor/ns8/protect-sdk/assets/configuration/core_configuration.json
+sed -i "s^\"api_url\": \"https://test-protect.ns8.com\"^\"api_url\": \"$NS8_PROTECT_URL\"^" /var/www/html/vendor/ns8/protect-sdk/assets/configuration/core_configuration.json
+sed -i "s^\"client_url\": \"https://test-protect-client.ns8.com\"^\"client_url\": \"$NS8_CLIENT_URL\"^" /var/www/html/vendor/ns8/protect-sdk/assets/configuration/core_configuration.json
+
+# Allow access in root html directory
+sudo chmod -R ugo+rwx /var/www/html/
+
+# Add Protect (CSP) Module
+# cd /var/www/html
+## Following command will run php with no memory limit (not necessary if set high enough in a php.ini file)
+#sudo -u apache php -d memory_limit=-1 /var/www/html/vendor/composer/composer/bin/composer require ns8/csp
+#Create the directory where we will test the Protect extension
+#sudo -u apache mkdir -p /var/www/html/app/code/NS8/Protect
 
 #Make the magento command executable
 sudo chmod +x /var/www/html/bin/magento
 
-# Allow the ec2-user to write to the magento install
-sudo chmod -R ugo+rwx /var/www/html/
 
 # TODO: finish this
 ## The following 3 lines will (eventually) install Protect via the Magento Marketplace

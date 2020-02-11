@@ -1,10 +1,13 @@
 /* eslint-disable
   @typescript-eslint/no-unused-vars,
+  @typescript-eslint/no-var-requires,
   import/order,
   no-console,
 */
 import * as client from 'scp2';
 import { env } from './loadEnv';
+
+const SSHClient = require('node-ssh');
 
 /**
  * Uses SCP to copy the module folder to the dev location on the magento instance.
@@ -43,6 +46,36 @@ export const moduleDeploy = (): void => {
   } else {
     connection.privateKey = process.env.MAGENTO_SSH_PRIVATE_KEY || env.MAGENTO_SSH_PRIVATE_KEY;
   }
+
+  const ssh = new SSHClient();
+  ssh
+    .connect({
+      host: connection.host,
+      username: connection.username,
+      port: 22,
+      password: connection.password,
+      tryKeyboard: true,
+      onKeyboardInteractive: (name, instructions, instructionsLang, prompts, finish) => {
+        if (prompts.length > 0 && prompts[0].prompt.toLowerCase().includes('password')) {
+          finish([connection.password]);
+        }
+      },
+    })
+    .then(() => {
+      const clientUrl = process.env.NS8_CLIENT_URL || env.NS8_CLIENT_URL;
+      const protectUrl = process.env.NS8_PROTECT_URL || env.NS8_PROTECT_URL;
+      const commands = [
+        `sed -i 's/"default_environment": "production"/"default_environment": "development"/' /var/www/html/vendor/ns8/protect-sdk/assets/configuration/core_configuration.json`,
+        `sed -i 's^"api_url": "https://test-protect.ns8.com"^"api_url": "${protectUrl}"^' /var/www/html/vendor/ns8/protect-sdk/assets/configuration/core_configuration.json`,
+        `sed -i 's^"client_url": "https://test-protect-client.ns8.com"^"client_url": "${clientUrl}"^' /var/www/html/vendor/ns8/protect-sdk/assets/configuration/core_configuration.json`,
+      ];
+      commands.forEach((cmd) => {
+        ssh.execCommand(cmd).then((result) => {
+          console.info(`Completed Configuration Command On Server: ${cmd}`);
+          ssh.dispose();
+        });
+      });
+    });
 
   client.scp('module/', connection, (err: any) => {
     if (err) {

@@ -1,6 +1,8 @@
 {
   "author": "ns8inc",
-  "dependencies": {},
+  "dependencies": {
+    "sh-exec": "^2.1.0"
+  },
   "description": "magento extension project",
   "devDependencies": {
     "@ns8/magento2-rest-client": "0.2.29",
@@ -33,6 +35,7 @@
     "eslint-plugin-tsdoc": "0.2.1",
     "hard-source-webpack-plugin": "0.13.1",
     "mocha": "7.0.1",
+    "node-ssh": "^7.0.0",
     "ns8-protect-models": "1.0.227",
     "ns8-switchboard-interfaces": "1.0.98",
     "nyc": "15.0.0",
