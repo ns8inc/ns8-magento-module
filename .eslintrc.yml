@@ -17,6 +17,8 @@ parser: '@typescript-eslint/parser'
 parserOptions:
   ecmaVersion: 2019
   sourceType: module
+plugins:
+  - markdown
 rules:
   '@typescript-eslint/camelcase':
     - error
