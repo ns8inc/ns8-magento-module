@@ -43,7 +43,7 @@ Repos you may need at some point during development:
     * Confirm the contents have been correctly deployed
   * `$ sudo bin/magento setup:upgrade`
   * Confirm the upgrade succeeds with no errors.
-* Open the Magento admin UI, usually at http://dev-name.ns8demos.com/index.php/admin_demo
+* Open the Magento admin UI, usually at `http://{dev-name}.ns8demos.com/index.php/admin_demo`
   * Navigate to System -> Integrations -> NS8 Protect
   * Click Activate
   * Accept the permissions
@@ -79,14 +79,14 @@ A number of environment variables are required in order to maximize the configur
 * `CONSUMER_SECRET`: Magento generated value. Corresponds to `protect.service_integration.identity_secret` column.
 * `DEV_SUFFIX`: Default value "none". If provided, suffix will be used in semver patch increments. Recommended when testing version changes that need to be published to npm.
 * `DEV_EMAIL`: Default value "apps@ns8.com". Sets the platform merchant email for local development. Should be firstname.lastname@ns8.com.
-* `MAGENTO_BASE_URL`: The base URL of your magento instance, e.g. http://dev-name.ns8demos.com.
+* `MAGENTO_BASE_URL`: The base URL of your magento instance, e.g. `http://{dev-name}.ns8demos.com`.
 * `MAGENTO_IP_ADDRESS`: The public IP address of your Magento server to use for SSH connections, e.g. 3.227.191.44.
 * `MAGENTO_SSH_PASSWORD`: The password you created when configuring Lightsail for SSH
 * `MAGENTO_SSH_USERNAME`: Default value "ec2-user". This rarely needs to be changed unless you have gone out of your way to create other linux users on your Lightsail instance.
-* `MAGENTO_URL`: The fully qualified REST API URL, e.g. http://dev-name.ns8demos.com/index.php/rest
+* `MAGENTO_URL`: The fully qualified REST API URL, e.g. `http://{dev-name}.ns8demos.com/index.php/rest`
 * `NODE_ENV`: Default value "prod". Allowed values: ["prod", "dev"]. Recommend "dev" for local development.
-* `NS8_CLIENT_URL`: The base url for your local protect client, e.g. http://dev-protect-client.ngrok.io
-* `NS8_PROTECT_URL`: The base url for your local protect api instance, e.g. http://dev-protect-api.ngrok.io
+* `NS8_CLIENT_URL`: The base url for your local protect client, e.g. `http://{dev-name}-protect-client.ngrok.io`
+* `NS8_PROTECT_URL`: The base url for your local protect api instance, e.g. `http://{dev-name}-protect-api.ngrok.io`
 
 #### Magento Generated Values
 
@@ -180,17 +180,17 @@ In most cases, simply run `$ yarn module:deploy` whenever you want to push your 
 
 If you are testing the installation of the extension via composer to test installation through the Marketplace, this is how to install/update the extension. If you have ever used the local development steps, you will first need to complete a full Delete of the extension (include the database).
 
-* Until CircleCI is fully configured to deploy the magento-module, you will need the following steps
-  * Register an account with https://packagist.org
-    * Ask @crfroehlich or another developer to add you as a maintainer to https://packagist.org/packages/ns8/protect
+* Until Concourse is fully configured to deploy the magento-module, you will need the following steps
+  * Register an account with <https://packagist.org>
+    * Ask @crfroehlich or another developer to add you as a maintainer to <https://packagist.org/packages/ns8/protect-magento>
   * `$ git clone git@github.com:ns8inc/ns8-magento-module.git`
   * Create a branch for your work
   * Determine the semver version you will use for testing. See Versioning for more details.
   * Run platform `$ yarn build:dev` to ensure your `config.xml` is tailored to your dev environment
   * Sync the contents of the platform `module` folder into the `ns8-magento-module`. Be sure to account for deleted files.
   * Commit your changes.
-  * Create a tag on your recent commit as `v{semverVersion}` (e.g. `v2.0.1-crf.0`)
-  * Confirm the new version appears in https://packagist.org/packages/ns8/protect
+  * Create a tag on your recent commit as `v{semverVersion}` (e.g. `v2.0.{n}`)
+  * Confirm the new version appears in <https://packagist.org/packages/ns8/protect-magento>
 * Install on Magento
   * SSH to your magento server at `var/www/html`
   * `$ sudo rm -rf vendor/`
