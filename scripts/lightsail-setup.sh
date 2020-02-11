@@ -63,19 +63,8 @@ mysql -u root -e "CREATE USER 'magento_db_user'@'localhost' IDENTIFIED BY 'magen
 mysql -u root -e "GRANT ALL PRIVILEGES ON magento2.* TO 'magento_db_user'@'localhost'"
 mysql -u root -e "FLUSH PRIVILEGES"
 
-## Mage ID
-# MAG005397149
-## Mage Token
-# 2f7e27231024a6cbc3e075f5a74b8264e6badb56
-## List all file versions
-#curl -k https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/info/versions
-# Download installer
-# With sample data
-#cd /var/www && curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.2.5_sample_data.zip
-#cd /var/www && curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.1_sample_data.zip
-cd /var/www && curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.2_sample_data.zip
-# WithOUT sample data
-#cd ~ && curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.2.zip
+# Download installer with all sample data
+cd /var/www && curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.4_sample_data.zip
 # Unzip Magento files to web root
 sudo -u apache unzip -qq /var/www/Magento-* -d /var/www/html
 # Install Magento via CLI
@@ -108,11 +97,7 @@ sed -i '/github/d' /var/www/html/auth.json
 sed -i '/},$/d' /var/www/html/auth.json
 sed -i 's/<public-key>/1b8325eb6d792fe22c0fb83f65150281/' /var/www/html/auth.json
 sed -i 's/<private-key>/d68ff7618b2f3118a0342d7f914848c8/' /var/www/html/auth.json
-# Add Protect (CSP) Module
-# cd /var/www/html
-## Following command will run php with no memory limit (not necessary if set high enough in a php.ini file)
-#sudo -u apache php -d memory_limit=-1 /var/www/html/vendor/composer/composer/bin/composer require ns8/csp
-#Create the directory where we will test the Protect extension
+# Create the directory where we will test the Protect extension
 sudo -u apache mkdir -p /var/www/html/app/code/NS8/Protect
 
 #Make the magento command executable
@@ -121,6 +106,7 @@ sudo chmod +x /var/www/html/bin/magento
 # Allow the ec2-user to write to the magento install
 sudo chmod -R ugo+rwx /var/www/html/
 
+# TODO: finish this
 ## The following 3 lines will (eventually) install Protect via the Magento Marketplace
 #sudo -u apache php /var/www/html/vendor/composer/composer/bin/composer require ns8/protect
 #sudo -u apache php /var/www/html/bin/magento module:enable NS8_Protect

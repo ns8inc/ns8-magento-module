@@ -35,10 +35,10 @@ LIGHTSAIL_SUBDOMAIN_DEFAULT='magento-v2'
 function print_banner() {
 
   printf "
-................................................... 
-................................................... 
-............... Welcome to Testbox  ............... 
-................................................... 
+...................................................
+...................................................
+............... Welcome to Testbox  ...............
+...................................................
 ...................................................
 
 "
@@ -120,7 +120,7 @@ function start_client() {
   # clear out previous logs
   echo "" > $CLIENT_LOG
   echo "" > $NGROK_CLIENT_LOG
- 
+
   # start named and detached tmux windows for ngrok and client in full-build mode that log to files
   if tmux has-session -t client 2>/dev/null
   then
@@ -550,7 +550,7 @@ function init() {
   # Download installer
   # With sample data and copy sample data to webroot
   cd /var/www || fail_with_msg "can't cd to /var/www."
-  curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.2_sample_data.zip
+  curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.4_sample_data.zip
 
   # Unzip Magento files to web root
   unzip -oqq /var/www/Magento-* -d /var/www/html
