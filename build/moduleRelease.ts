@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires, import/extensions, no-console */
+/* eslint-disable @typescript-eslint/no-var-requires, no-console */
 import { createWriteStream, mkdirSync, existsSync, readdirSync, lstatSync, unlinkSync, rmdirSync } from 'fs';
-import Path from 'path';
-import composer from '../module/composer.json';
+import * as Path from 'path';
 
 const archiver = require('archiver');
+const composer = require('../module/composer.json');
 
 const deleteFolderRecursive = (path): void => {
   if (existsSync(path)) {

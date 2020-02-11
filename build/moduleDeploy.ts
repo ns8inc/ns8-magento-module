@@ -1,5 +1,8 @@
-/* eslint-disable import/order */
-/* eslint-disable no-console, @typescript-eslint/no-unused-vars */
+/* eslint-disable
+  @typescript-eslint/no-unused-vars,
+  import/order,
+  no-console,
+*/
 import * as client from 'scp2';
 import { env } from './loadEnv';
 
