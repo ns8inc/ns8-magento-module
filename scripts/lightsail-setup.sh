@@ -27,15 +27,15 @@ yum install -y \
 git \
 httpd24 \
 nodejs \
-php71 \
-php71-bcmath \
-php71-gd \
-php71-intl \
-php71-mbstring \
-php71-mcrypt \
-php71-mysqlnd \
-php71-soap \
-php71-zip \
+php73 \
+php73-bcmath \
+php73-gd \
+php73-intl \
+php73-mbstring \
+php73-mcrypt \
+php73-mysqlnd \
+php73-soap \
+php73-zip \
 mysql57-server
 # Configure Web and DB servers to start on boot
 chkconfig httpd on
