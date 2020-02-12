@@ -1,5 +1,32 @@
 # Getting Started
 
+1. [Getting Started](#getting-started)
+   1. [Repos](#repos)
+   2. [Setup](#setup)
+   3. [Node Environment Variables](#node-environment-variables)
+      1. [File Structure](#file-structure)
+      2. [Variable Definitions](#variable-definitions)
+         1. [Magento Generated Values](#magento-generated-values)
+   4. [Project Tools](#project-tools)
+   5. [Merchant Seeding](#merchant-seeding)
+   6. [Versioning](#versioning)
+   7. [Updating/Installing the Magento extension](#updatinginstalling-the-magento-extension)
+      1. [Normal local development](#normal-local-development)
+      2. [Marketplace development](#marketplace-development)
+   8. [Uninstalling the Magento extension](#uninstalling-the-magento-extension)
+      1. [Marketplace development uninstall](#marketplace-development-uninstall)
+   9. [Deleting the Magento extension](#deleting-the-magento-extension)
+      1. [Normal local development delete](#normal-local-development-delete)
+      2. [Marketplace development delete](#marketplace-development-delete)
+      3. [Clear Magento MySql tables](#clear-magento-mysql-tables)
+   10. [Releasing Protect to the Magento Marketplace](#releasing-protect-to-the-magento-marketplace)
+      1. [Install composer](#install-composer)
+      2. [Configure PHP Lint](#configure-php-lint)
+         1. [Resources](#resources)
+   11. [Troubleshooting](#troubleshooting)
+      1. [401 Errors](#401-errors)
+      2. [500 Errors](#500-errors)
+
 ## Repos
 
 Required repos:

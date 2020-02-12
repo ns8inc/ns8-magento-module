@@ -1,5 +1,8 @@
 # Configuring Magento for SSL
 
+1. [Configuring Magento for SSL](#configuring-magento-for-ssl)
+   1. [Resources](#resources)
+
 This guide should enable a Magento instance running on Amazon Linux 1 on Lightsail to use SSL
 
 * Login to Lightsail

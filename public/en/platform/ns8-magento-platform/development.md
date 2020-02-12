@@ -1,5 +1,15 @@
 # Overview
 
+1. [Overview](#overview)
+   1. [IDE](#ide)
+      1. [IDE Resources](#ide-resources)
+   2. [Switchboard Development](#switchboard-development)
+      1. [Getting in a new switch](#getting-in-a-new-switch)
+      2. [switchboard project](#switchboard-project)
+   3. [Debugging PHP](#debugging-php)
+   4. [Testing end-to-end](#testing-end-to-end)
+      1. [Add a payment method](#add-a-payment-method)
+
 The Magento Platform project is a single repository comprising three distinct, mutually reinforcing parts.
 
 * `module` is the platform specific code that must be deployed to the platform in order for the NS8 Protect integration to become available for integration. For production, the contents of this folder will be assembled in a zip file and deployed to the Magento Marketplace where it will be available to install into individual vendor stores. For development, the entire contents of this folder will be copied to an instance of Magento running in a container. In both cases, the installation of the module is executed via composer (a PHP convention, similar to npm or yarn in some respects).

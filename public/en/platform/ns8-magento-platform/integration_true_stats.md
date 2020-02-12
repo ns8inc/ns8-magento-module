@@ -1,6 +1,11 @@
 # TrueStats Injection
 
-## What is the TrueStats script?
+1. [TrueStats Injection](#truestats-injection)
+   1. [What is the TrueStats script](#what-is-the-truestats-script)
+   2. [How is the TrueStats script fetched?](#how-is-the-truestats-script-fetched)
+   3. [Outside components required for TrueStats](#outside-components-required-for-truestats)
+
+## What is the TrueStats script
 
 The TrueStats script allows NS8 to accurately track a user's journey through a client website by firing AJAX calls to NS8's Protect servers based on events (e.g. the page loading). The script renders with the required configuration and initial call set-up in the response of the script request. Below is an example of what the TrueStats script looks like when successfully delivered:
 

@@ -1,5 +1,16 @@
 # Configuring Lightsail for Magento
 
+1. [Configuring Lightsail for Magento](#configuring-lightsail-for-magento)
+   1. [Instance Config](#instance-config)
+   2. [Assign a Static IP Address](#assign-a-static-ip-address)
+   3. [Manual Instance Config](#manual-instance-config)
+      1. [Set a password for `ec2-user`](#set-a-password-for-ec2-user)
+   4. [Remote Development](#remote-development)
+      1. [Configuration](#configuration)
+      2. [Magento extension file structure](#magento-extension-file-structure)
+   5. [Configure Magento for Debugging](#configure-magento-for-debugging)
+   6. [Xdebug](#xdebug)
+
 Lightsail is a cloud VM solution hosted on AWS. AWS access is linked to SSO. Open `All Apps` from the Office 365 online menu and select AWS.
 
 * Verify you can access the Light Sail instances
