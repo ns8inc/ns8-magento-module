@@ -3,11 +3,11 @@
 1. [Overview](#overview)
    1. [IDE](#ide)
       1. [IDE Resources](#ide-resources)
-   2. [Switchboard Development](#switchboard-development)
+   1. [Switchboard Development](#switchboard-development)
       1. [Getting in a new switch](#getting-in-a-new-switch)
-      2. [switchboard project](#switchboard-project)
-   3. [Debugging PHP](#debugging-php)
-   4. [Testing end-to-end](#testing-end-to-end)
+      1. [switchboard project](#switchboard-project)
+   1. [Debugging PHP](#debugging-php)
+   1. [Testing end-to-end](#testing-end-to-end)
       1. [Add a payment method](#add-a-payment-method)
 
 The Magento Platform project is a single repository comprising three distinct, mutually reinforcing parts.

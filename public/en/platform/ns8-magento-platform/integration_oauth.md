@@ -2,8 +2,8 @@
 
 1. [Protect OAUTH Integration with the Magento Platform](#protect-oauth-integration-with-the-magento-platform)
    1. [How Does It Work](#how-does-it-work)
-   2. [Related URLs](#related-urls)
-   3. [How are OAUTH requests handled?](#how-are-oauth-requests-handled)
+   1. [Related URLs](#related-urls)
+   1. [How are OAUTH requests handled?](#how-are-oauth-requests-handled)
 
 ## How Does It Work
 

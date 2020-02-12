@@ -2,7 +2,7 @@
 
 1. [Protect SDK Events Integration](#protect-sdk-events-integration)
    1. [How are events defined](#how-are-events-defined)
-   2. [How does the Protect SDK integrate with Magento for events?](#how-does-the-protect-sdk-integrate-with-magento-for-events)
+   1. [How does the Protect SDK integrate with Magento for events?](#how-does-the-protect-sdk-integrate-with-magento-for-events)
 
 ## How are events defined
 

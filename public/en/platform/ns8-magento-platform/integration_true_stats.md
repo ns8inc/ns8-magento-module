@@ -2,8 +2,8 @@
 
 1. [TrueStats Injection](#truestats-injection)
    1. [What is the TrueStats script](#what-is-the-truestats-script)
-   2. [How is the TrueStats script fetched?](#how-is-the-truestats-script-fetched)
-   3. [Outside components required for TrueStats](#outside-components-required-for-truestats)
+   1. [How is the TrueStats script fetched?](#how-is-the-truestats-script-fetched)
+   1. [Outside components required for TrueStats](#outside-components-required-for-truestats)
 
 ## What is the TrueStats script
 

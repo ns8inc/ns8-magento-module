@@ -2,8 +2,8 @@
 
 1. [Protect Platform Integration Checklist](#protect-platform-integration-checklist)
    1. [Implementation Strategy](#implementation-strategy)
-   2. [Development Strategy](#development-strategy)
-   3. [Release and Update Strategy](#release-and-update-strategy)
+   1. [Development Strategy](#development-strategy)
+   1. [Release and Update Strategy](#release-and-update-strategy)
 
 This represents a list of discovery questions which should be answered to inform your decision making around developing an eCommerce platform integration with Protect. In general, the term `platform` refers to the specific eCommerce platform you are targeting (e.g. Shopify, Magento, BigCommerce, etc), and `client` refers to the NS8 Protect Client which is the source of the integration.
 

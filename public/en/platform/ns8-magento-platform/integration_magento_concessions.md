@@ -2,11 +2,11 @@
 
 1. [Platform Concessions Within Magento For the Protect SDK](#platform-concessions-within-magento-for-the-protect-sdk)
    1. [Concessions Regarding Authentication Architecture](#concessions-regarding-authentication-architecture)
-   2. [Concessions Regarding Session Data](#concessions-regarding-session-data)
-   3. [Concessions Regarding Configuration Data](#concessions-regarding-configuration-data)
-   4. [Concessions Regarding Order Data](#concessions-regarding-order-data)
-   5. [Concessions Regarding Credit Card Data & Payment Functionality](#concessions-regarding-credit-card-data--payment-functionality)
-   6. [Concessions Regarding Permissions](#concessions-regarding-permissions)
+   1. [Concessions Regarding Session Data](#concessions-regarding-session-data)
+   1. [Concessions Regarding Configuration Data](#concessions-regarding-configuration-data)
+   1. [Concessions Regarding Order Data](#concessions-regarding-order-data)
+   1. [Concessions Regarding Credit Card Data & Payment Functionality](#concessions-regarding-credit-card-data--payment-functionality)
+   1. [Concessions Regarding Permissions](#concessions-regarding-permissions)
 
 There are several Magento concessions made within the NS8 Protect Module to allow more fluid integration with the Protect SDK and the associated API. These compromises were made to permit the best code quality possible while still allowing an elegant, flexible implementation.
 
