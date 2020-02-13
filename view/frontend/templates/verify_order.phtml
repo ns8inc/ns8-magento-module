@@ -1,1 +1,9 @@
-<?= $block->getNS8TemplateHtml() ?>
+<div id="ns8-order-verification-content" style="display: none;"><?= $block->getNS8TemplateHtml() ?></div>
+<iframe frameborder="0" id="ns8-order-verification-display" scrolling="no" src="about:blank" style="height: 400px; overflow: hidden; width: 100%"></iframe>
+
+<script>
+    var target = document.getElementById('ns8-order-verification-display').contentWindow.document;
+    target.open();
+    target.write(document.getElementById("ns8-order-verification-content").innerHTML);
+    target.close();
+</script>
