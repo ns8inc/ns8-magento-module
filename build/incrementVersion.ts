@@ -7,10 +7,9 @@
 import { inc, ReleaseType } from 'semver';
 import { writeFileSync } from 'fs';
 import { env } from './loadEnv';
-
-const rootPackage = require('../package.json');
-const switchboardJson = require('../switchboard.json');
-const composer = require('../module/composer.json');
+import rootPackage from '../package.json';
+import switchboardJson from '../switchboard.json';
+import composer from '../module/composer.json';
 
 const getModuleXml = (nextVersion: string): string => `<?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
