@@ -58,8 +58,6 @@ package:
     - switchboard/**
     - test/**
     - webpack.config.js
-  include:
-    - switchboard.json
 plugins:
   - serverless-step-functions
   - serverless-pseudo-parameters
@@ -73,10 +71,10 @@ provider:
   name: aws
   region: us-west-2
   runtime: nodejs12.x
-  stage: '${opt:stage, env:DEV_SUFFIX}'
+  stage: '${opt:stage}'
   timeout: 60
   versionFunctions: false
-service: 'ns8-switchboard-${file(./switchboard.json):id}'
+service: 'ns8-switchboard-magento2'
 stepFunctions:
   stateMachines:
     CreateOrderAction:

@@ -8,7 +8,6 @@ import { inc, ReleaseType } from 'semver';
 import { writeFileSync } from 'fs';
 import { env } from './loadEnv';
 import rootPackage from '../package.json';
-import switchboardJson from '../switchboard.json';
 import composer from '../module/composer.json';
 
 const getModuleXml = (nextVersion: string): string => `<?xml version="1.0" ?>
@@ -50,10 +49,6 @@ const incrementVersion = (): void => {
   composer.version = nextPackageVersion;
   writeFileSync('module/composer.json', JSON.stringify(composer, null, 2));
   console.log(`Updated composer ${currentVersion} to ${nextPackageVersion}`);
-
-  switchboardJson.modules[0].version = nextPackageVersion;
-  writeFileSync('switchboard.json', JSON.stringify(switchboardJson, null, 2));
-  console.log(`Updated switchboard JSON ${currentVersion} to ${nextPackageVersion}`);
 };
 
 try {

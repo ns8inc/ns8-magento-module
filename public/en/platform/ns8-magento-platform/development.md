@@ -70,8 +70,6 @@ export * from class in index.ts
 ### switchboard project
 
 add switch to serverless.yml
-In switchboard.json, change "link" to the version number you want to target
-add switch to switchboard.json
 add switch to app.ts
 
 ## Debugging PHP
