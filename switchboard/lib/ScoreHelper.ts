@@ -5,7 +5,7 @@ export class ScoreHelper extends OrderHelper {
   public processScore = async (): Promise<void> => {
     const assessments: FraudAssessment[] = this.SwitchContext.data.fraudAssessments as FraudAssessment[];
     const eq8Match = assessments.find((a) => a.providerType === ProviderType.EQ8);
-    if (eq8Match && eq8Match.score) {
+    if (eq8Match?.score != null) {
       const magentoOrder = await this.getMagentoOrder();
       await this.MagentoClient.postScore(`${magentoOrder.entity_id}`, eq8Match.score);
     }
