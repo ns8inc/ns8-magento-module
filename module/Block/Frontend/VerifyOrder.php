@@ -10,11 +10,13 @@ declare(strict_types=1);
 namespace NS8\Protect\Block\Frontend;
 
 use Magento\Framework\App\Request\Http;
+use Magento\Framework\Data\Form\FormKey;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use NS8\Protect\Helper\Config;
 use NS8\ProtectSDK\Http\Client as HttpClient;
 use RuntimeException;
+use SimpleXMLElement;
 use Zend\Uri\Http as Uri;
 
 /**
@@ -39,6 +41,13 @@ class VerifyOrder extends Template
     protected $config;
 
     /**
+     * The Magento form key helper.
+     *
+     * @var FormKey
+     */
+    protected $formKey;
+
+    /**
      * The HTTP request.
      *
      * @var Http
@@ -51,17 +60,20 @@ class VerifyOrder extends Template
      * @param Context $context The Magento context
      * @param Http $request The HTTP request
      * @param Config Config helper to init/set config values
+     * @param FormKey Magento's form key helper for generating CSRF tokens
      * @param array $data The data to pass to the Template constructor (optional)
      */
     public function __construct(
         Context $context,
         Http $request,
         Config $config,
+        FormKey $formKey,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->request = $request;
         $this->config = $config;
+        $this->formKey = $formKey;
         $this->config->initSdkConfiguration();
         $this->httpClient = new HttpClient();
     }
@@ -111,25 +123,39 @@ class VerifyOrder extends Template
 
         return isset($response->location)
             ? $this->redirect($response->location)
-            : $this->getTemplateBody($response->html);
+            : $this->fixForm($response->html);
     }
 
     /**
-     * Extract the contents of the <body> tag from an NS8 template.
+     * Fix the form that we receive from the template service so it can be used within Magento.
      *
-     * @param string $template The NS8 template
+     * @param string $html The form HTML
      *
-     * @throws RuntimeException If no <body> tag was found in the template
-     *
-     * @return string The body
+     * @return string The fixed HTML
      */
-    private function getTemplateBody(string $template): string
+    private function fixForm(string $html): string
     {
-        if (preg_match('/<body>(.*)(<\/body>)/is', $template, $matches)) {
-            return $matches[1];
+        if (preg_match_all('/<form (.*?)>(.*?)<\/form>/is', $html, $matches)) {
+            foreach ($matches[1] as $match) {
+                // Convert the <form> to a void element so SimpleXML can parse its attributes.
+                $xml = new SimpleXMLElement(sprintf('<form %s/>', $match));
+                $xml->addAttribute('target', '_parent');
+                $dom = dom_import_simplexml($xml);
+                $fixedForm = $dom->ownerDocument->saveXML($dom->ownerDocument->documentElement);
+
+                if (preg_match('/<form (.*?)\/>/', $fixedForm, $innerMatches)) {
+                    $html = str_replace($match, $innerMatches[1], $html);
+                }
+            }
+
+            $hiddenInput = sprintf('<input type="hidden" name="form_key" value="%s"/>', $this->formKey->getFormKey());
+
+            foreach ($matches[2] as $match) {
+                $html = str_replace($match, $match . $hiddenInput, $html);
+            }
         }
 
-        throw new RuntimeException('No <body> tag was found in the NS8 template');
+        return $html;
     }
 
     /**
