@@ -46,6 +46,7 @@ protectClient.render(requestedPage, orderIncrementId);
 ```
 
 Looking at the Client Configuration, the following attributes are present:
+
 * `accessToken`: The access token to authenticate with NS8 Protect API
 * `protectClientUrl`: The root Client URL to be used for the iFrame and requests
 * `eventBinding`: Events to bind between the iFrame and the page to allow page/browser functionality from events occurring in the iFrame
@@ -56,6 +57,7 @@ Looking at the Client Configuration, the following attributes are present:
 ## Rendering the iFrame
 
 The iFrame is rendered in the `protectClient.render(requestedPage, orderIncrementId);` . For this call we see these parameters set:
+
 * `requestedPage`: The page we want to instantiate in the iFrame. For the context of the Magento module, we choose to make the following available:
   * `DASHBOARD`: The dashboard for NS8 Protect
   * `ORDER_RULES`: The configurable order rules page
