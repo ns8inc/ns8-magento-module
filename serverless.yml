@@ -73,7 +73,7 @@ provider:
   name: aws
   region: us-west-2
   runtime: nodejs12.x
-  stage: '${opt:stage, env:DEV_NAME}'
+  stage: '${opt:stage, env:DEV_SUFFIX}'
   timeout: 60
   versionFunctions: false
 service: 'ns8-switchboard-${file(./switchboard.json):id}'
