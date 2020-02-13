@@ -25,7 +25,7 @@ The [Install](../../../../switchboard/switches/OnInstallEventStep.ts) event does
 
 ### Update Customer Verification Status (`updateCustVerifyStatusEvent`)
 
-The [Update Customer Verification Status](../../../../switchboard/switches/UpdateCustVerifyStatusEventStep.ts) event is not used by Magento.
+The [Update Customer Verification Status](../../../../switchboard/switches/UpdateCustVerifyStatusEventStep.ts) event is defined but not used by Magento.
 
 ### Update EQ8 Score (`updateEQ8ScoreEvent`)
 
@@ -47,13 +47,15 @@ The [Update Order Status](../../../../switchboard/switches/UpdateOrderStatusEven
   * If the Magento Order was not already on hold, it is holded
   * If the Order status is not already `NS8 Merchant Review`, the status is so set
 
+The [state flow is documented in more detail here](integration_order_state_changes.md).
+
 ## Actions (Platform -> Protect)
 
 ### Create Order (`createOrderAction`)
 
 The [Create Order](../../../../switchboard/switches/CreateOrderActionStep.ts) action shares the same logic as the [Update Order](../../../../switchboard/switches/UpdateOrderStatusActionStep.ts). The Magento [event observable for Orders](../../../../module/Observer/OrderUpdate.php) does not cleanly distinguish between new vs updated orders, so the step function leverages the same underlying code to evaluate and process either.
 
-This step function is responsible for transforming the emited event data into the NS8 version of the order. To do so, additional API calls back to the Magento API are required to fully populate all of the customer, address, line item, transaction, payment and order data that is missing from the event object.
+This step function is responsible for transforming the emited event data into the NS8 version of the order. To do so, additional API calls back to the Magento API are required to fully populate all of the customer, address, line item, transaction, payment and order data that is missing from the event object. See also the [state flow](integration_order_state_changes.md).
 
 ### Uninstall (`uninstallAction`)
 
