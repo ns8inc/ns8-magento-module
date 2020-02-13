@@ -53,7 +53,7 @@ const incrementVersion = (): void => {
   console.log(`Updated composer ${currentVersion} to ${nextPackageVersion}`);
 
   switchboardJson.modules[0].version = nextPackageVersion;
-  writeFileSync('switchboard/switchboard.json', JSON.stringify(switchboardJson, null, 2));
+  writeFileSync('switchboard.json', JSON.stringify(switchboardJson, null, 2));
   console.log(`Updated switchboard JSON ${currentVersion} to ${nextPackageVersion}`);
 };
 

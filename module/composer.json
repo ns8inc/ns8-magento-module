@@ -24,7 +24,7 @@
     }
   ],
   "require": {
-    "ns8/protect-sdk": "^0.0.25",
+    "ns8/protect-sdk": "^0.0.26",
     "php": "^7.1.3"
   },
   "require-dev": {
@@ -38,5 +38,5 @@
   },
   "suggest": {},
   "type": "magento2-module",
-  "version": "2.0.41"
+  "version": "2.0.42"
 }
