@@ -38,7 +38,7 @@ Required repos:
 Repos you may need at some point during development:
 
 * `ns8-protect-sdk`
-* `magent2-rest-client`
+* `magento2-rest-client`
 * `ns8-switchboard-interfaces`
 * `ns8-protect-models`
 * `ns8-switchboard-operator`
