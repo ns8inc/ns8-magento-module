@@ -1,7 +1,9 @@
 # Protect Client Integration
+
 The Protect Client SDK is a JavaScript SDK that supports front-end integration and interaction with NS8 Protect services. For Magento use-cases, the SDK offers an elegant solution for instantiating the NS8 Protect iFrame that users are able to interact with to review order details, view/update settings, etc.
 
 ## How is the Protect Client SDK loaded for use in Magento?
+
 The Protect Client SDK is loaded directly from NS8's CDN in order to acquire the latest functionality. It is initialized within a script tag with the URL for the asset being retrieved from the Protect PHP SDK
 
 ```php
@@ -24,6 +26,7 @@ public function getProtectJsSdkUrl(): string
 ```
 
 ## How does the Protect Client SDK receive data required for use?
+
 The required key attributes that the SDK uses for initialization are rendered into the `phtml` file that contains the JavaScript for displaying the NS8 Protect iFrame. These values are passed in as a JavaScript object for the Client Config initialization which is then passed in as an argument to the `Protect.createClient` method. Further information regarding initialization can be found in [the JS SDK Client documentation](https://github.com/ns8inc/protect-js-sdk/blob/master/public/en/platform/protect-js-sdk/client.md).
 
 ```javascript
@@ -51,6 +54,7 @@ Looking at the Client Configuration, the following attributes are present:
   * `classNames`: Class names that should be present in the iFrame element.
 
 ## Rendering the iFrame
+
 The iFrame is rendered in the `protectClient.render(requestedPage, orderIncrementId);` . For this call we see these parameters set:
 * `requestedPage`: The page we want to instantiate in the iFrame. For the context of the Magento module, we choose to make the following available:
   * `DASHBOARD`: The dashboard for NS8 Protect
