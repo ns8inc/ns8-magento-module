@@ -24,7 +24,7 @@ public function getProtectJsSdkUrl(): string
 ```
 
 ## How does the Protect Client SDK receive data required for use?
-The required key attributes that the SDK uses for initialization are rendered into the `phtml` file that contains the JavaScript for displaying the NS8 Protect iFrame. These values are passed in as a JavaScript object for the Client Config initialization when is then passed in as an argument to the `Protect.createClient` method.
+The required key attributes that the SDK uses for initialization are rendered into the `phtml` file that contains the JavaScript for displaying the NS8 Protect iFrame. These values are passed in as a JavaScript object for the Client Config initialization which is then passed in as an argument to the `Protect.createClient` method. Further information regarding initialization can be found in [the JS SDK Client documentation](https://github.com/ns8inc/protect-js-sdk/blob/master/public/en/platform/protect-js-sdk/client.md).
 
 ```javascript
 var eventBinding = {};
