@@ -55,9 +55,6 @@ class Url extends AbstractHelper
         $this->backendUrl = $backendUrl;
         $this->state = $state;
         $this->config = $config;
-
-        // Initiate configuration to ensure environmental URLs function as intended
-        $this->config->initSdkConfiguration();
     }
 
     /**
