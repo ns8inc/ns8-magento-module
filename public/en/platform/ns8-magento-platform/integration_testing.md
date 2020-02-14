@@ -1,4 +1,4 @@
-## Testing Integration Code
+# Testing Integration Code
 
 The NS8 PHP Protect SDK & NS8 JavaScript Protect SDK that are utilized within this Magento are both at 100% test coverage for unit tests. The intent of unit testing these components is to ensure any issues/bugs that surface during the process of development are isolated to module implementation or misuse of the Protect API. Testing architecture is also intended to remove any dependencies on outside resources or make references to potential frameworks utilizing the SDK to avoid partial reliance on specific utilities or trigger inconsistent results.
 
