@@ -143,7 +143,7 @@ class VerifyOrder extends Template
                 $dom = dom_import_simplexml($xml);
                 $fixedForm = $dom->ownerDocument->saveXML($dom->ownerDocument->documentElement);
 
-                if (preg_match('/<form (.*?)\/>/', $fixedForm, $innerMatches)) {
+                if (preg_match('/<form (.*?)\/>/is', $fixedForm, $innerMatches)) {
                     $html = str_replace($match, $innerMatches[1], $html);
                 }
             }
@@ -152,6 +152,20 @@ class VerifyOrder extends Template
 
             foreach ($matches[2] as $match) {
                 $html = str_replace($match, $match . $hiddenInput, $html);
+            }
+        }
+
+        if (preg_match_all('/<a (.*?)>/is', $html, $matches)) {
+            foreach ($matches[1] as $match) {
+                // Convert the <a> to a void element so SimpleXML can parse its attributes.
+                $xml = new SimpleXMLElement(sprintf('<a %s/>', $match));
+                $xml->addAttribute('target', '_parent');
+                $dom = dom_import_simplexml($xml);
+                $fixedLink = $dom->ownerDocument->saveXML($dom->ownerDocument->documentElement);
+
+                if (preg_match('/<a (.*?)\/>/is', $fixedLink, $innerMatches)) {
+                    $html = str_replace($match, $innerMatches[1], $html);
+                }
             }
         }
 
