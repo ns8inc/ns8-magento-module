@@ -55,7 +55,7 @@ run:
 
       cd module
 
-      if ! composer install --no-autoloader --no-progress -q
+      if ! composer install --no-autoloader --no-progress
       then
         >&2 echo 'ERROR: Composer install failed'
         exit 1
