@@ -127,11 +127,11 @@ class Config extends AbstractHelper
      * @param IntegrationServiceInterface $integrationService
      * @param ModuleList $moduleList
      * @param OauthServiceInterface $oauthService
+     * @param Pool $cacheFrontendPool
      * @param ProductMetadataInterface $productMetadata
      * @param RequestInterface $request
      * @param ScopeConfigInterface $scopeConfig
      * @param TypeListInterface $typeList
-     * @param Pool $cacheFrontendPool
      * @param Uri $uri
      * @param WriterInterface $scopeWriter
      */
@@ -141,13 +141,13 @@ class Config extends AbstractHelper
         IntegrationServiceInterface $integrationService,
         ModuleList $moduleList,
         OauthServiceInterface $oauthService,
+        Pool $cacheFrontendPool,
         ProductMetadataInterface $productMetadata,
         RequestInterface $request,
         ScopeConfigInterface $scopeConfig,
         TypeListInterface $typeList,
-        Pool $cacheFrontendPool,
-        WriterInterface $scopeWriter,
-        Uri $uri
+        Uri $uri,
+        WriterInterface $scopeWriter
     ) {
         $this->context = $context;
         $this->encryptor = $encryptor;
