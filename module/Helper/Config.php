@@ -245,7 +245,6 @@ class Config extends AbstractHelper
         foreach ($this->cacheFrontendPool as $cacheFrontend) {
             $cacheFrontend->getBackend()->clean();
         }
-
     }
 
     /**
