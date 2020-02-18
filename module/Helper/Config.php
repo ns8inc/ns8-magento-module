@@ -6,6 +6,7 @@ use Throwable;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
 use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
@@ -109,6 +110,11 @@ class Config extends AbstractHelper
     protected $typeList;
 
     /**
+     * @var Pool
+     */
+    protected $cacheFrontendPool;
+
+    /**
      * @var Uri
      */
     protected $uri;
@@ -125,6 +131,7 @@ class Config extends AbstractHelper
      * @param RequestInterface $request
      * @param ScopeConfigInterface $scopeConfig
      * @param TypeListInterface $typeList
+     * @param Pool $cacheFrontendPool
      * @param Uri $uri
      * @param WriterInterface $scopeWriter
      */
@@ -138,6 +145,7 @@ class Config extends AbstractHelper
         RequestInterface $request,
         ScopeConfigInterface $scopeConfig,
         TypeListInterface $typeList,
+        Pool $cacheFrontendPool,
         WriterInterface $scopeWriter,
         Uri $uri
     ) {
@@ -151,6 +159,7 @@ class Config extends AbstractHelper
         $this->scopeConfig = $scopeConfig;
         $this->scopeWriter = $scopeWriter;
         $this->typeList = $typeList;
+        $this->cacheFrontendPool = $cacheFrontendPool;
         $this->uri = $uri;
 
         $this->loggingClient = new LoggingClient();
@@ -210,17 +219,33 @@ class Config extends AbstractHelper
     public function setAccessToken(string $accessToken): void
     {
         $this->scopeWriter->save('ns8/protect/token', $this->encryptor->encrypt($accessToken));
-        $this->flushConfigCache();
+        $this->flushCaches();
     }
 
     /**
-     * Clear the cache
+     * Clear relevant caches after configuration change
      *
      * @return void
      */
-    public function flushConfigCache(): void
+    public function flushCaches(): void
     {
-        $this->typeList->cleanType(CacheTypeConfig::TYPE_IDENTIFIER);
+        $cacheTypesToClear = [
+            'config',
+            'layout',
+            'block_html',
+            'config_integration',
+            'config_integration_api',
+            'config_webservice'
+        ];
+
+        foreach ($cacheTypesToClear as $cacheType) {
+            $this->typeList->cleanType($cacheType);
+        }
+
+        foreach ($this->cacheFrontendPool as $cacheFrontend) {
+            $cacheFrontend->getBackend()->clean();
+        }
+
     }
 
     /**
