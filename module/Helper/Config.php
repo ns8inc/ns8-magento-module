@@ -223,7 +223,7 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Clear relevant caches after configuration change
+     * Clear relevant caches after configuration change has occurred.
      *
      * @return void
      */
