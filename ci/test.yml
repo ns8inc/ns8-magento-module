@@ -73,7 +73,7 @@ run:
         exit 1
       fi
 
-      if ! curl -o /tmp/magento.zip https://$MAGENTO_USER:$MAGENTO_PASS@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.3_sample_data.zip
+      if ! curl -o /tmp/magento.zip https://$MAGENTO_USER:$MAGENTO_PASS@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.4_sample_data.zip
       then
         >&2 echo 'ERROR: Magento download failed'
         exit 1
