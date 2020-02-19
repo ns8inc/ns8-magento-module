@@ -185,7 +185,7 @@ class Config extends AbstractHelper
     /**
         // TODO: this needs to be more robust. Circle back and bullet proof this with backing tests.
         $ret = join('/', $segments).'/order_id';
-     * Gets an access token.
+     * Retrieve an access token.
      *
      * @return string|null The NS8 Protect Access Token.
      */
