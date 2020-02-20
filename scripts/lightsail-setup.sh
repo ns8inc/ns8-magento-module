@@ -8,6 +8,8 @@ NS8_PROTECT_URL=https://test-protect.ns8.com
 NS8_CLIENT_URL=https://test-protect-client.ns8.com
 # <YOUR DEV DOMAIN>, e.g. http://dev-jdoe-Magento-2.3.2.ns8demos.com/
 DEV_LIGHTSAIL_DOMAIN=
+# Your desired SSH password for the "ec2-user" account.
+SSH_PASSWORD=
 
 ## BEGIN--SCRIPT ##
 # Magento
@@ -16,10 +18,10 @@ dd if=/dev/zero of=/swapfile bs=1M count=2048
 mkswap /swapfile
 chmod 600 /swapfile
 swapon /swapfile
-echo "swap /swapfile swap defaults 0 0" | sudo tee -a /etc/fstab
+echo "swap /swapfile swap defaults 0 0" >> /etc/fstab
 
 # Add nodejs repository
-curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash -
+curl -sL https://rpm.nodesource.com/setup_10.x | bash -
 # Update packages
 yum update -y
 # Install LAMP
@@ -45,10 +47,10 @@ sed -i 's/memory_limit = 128M/memory_limit = 4096M/g' /etc/php-*.ini
 # Change Apache to allow Overrides
 sed -i '151s/None/All/' /etc/httpd/conf/httpd.conf
 # Set Composer path
-echo "COMPOSER_HOME=/var/www/html/var/composer_home" | sudo tee -a /etc/environment
+echo "COMPOSER_HOME=/var/www/html/var/composer_home" >> /etc/environment
 # Set NS8_PROTECT_URL environment variable
-echo "SetEnv NS8_CLIENT_URL $NS8_CLIENT_URL" | sudo tee -a /var/www/html/.htaccess
-echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL" | sudo tee -a /var/www/html/.htaccess
+echo "SetEnv NS8_CLIENT_URL $NS8_CLIENT_URL" >> /var/www/html/.htaccess
+echo "SetEnv NS8_PROTECT_URL $NS8_PROTECT_URL" >> /var/www/html/.htaccess
 
 # Set file permissions (Force the group apache on all files and give RWX permissions)
 chown -R apache:apache /var/www/html
@@ -139,7 +141,9 @@ sudo chmod -R ugo+rwx /var/www/html/
 #rm /var/www/html/auth.json.sample
 #rm /var/www/html/auth.json
 
+echo "$SSH_PASSWORD" | passwd --stdin ec2-user
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-sudo service sshd restart
+sed -i 's/#Port 22/Port 65422/' /etc/ssh/sshd_config
+service sshd restart
 
 ## END--SCRIPT ##
