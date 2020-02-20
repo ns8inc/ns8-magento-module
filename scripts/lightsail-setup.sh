@@ -88,7 +88,10 @@ sudo -u apache php /var/www/html/bin/magento setup:install \
 sudo -u apache php /var/www/html/bin/magento cron:install
 # Set Magento Admin password to not expire
 sudo -u apache php /var/www/html/bin/magento config:set admin/security/password_lifetime 0
-sudo -u apache php /var/www/html/bin/magento cache:clean
+# Disable all the CAPTCHAs
+sed -i "s/'Magento_Captcha' => 1/'Magento_Captcha' => 0/" /var/www/html/app/etc/config.php
+sudo -u apache /var/www/html/bin/magento msp:security:recaptcha:disable
+sudo -u apache /var/www/html/bin/magento cache:clean
 
 # Update Composer Auth
 sudo -u apache cp /var/www/html/auth.json.sample /var/www/html/auth.json
