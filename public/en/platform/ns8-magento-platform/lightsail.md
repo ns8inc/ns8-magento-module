@@ -34,7 +34,7 @@ Lightsail is a cloud VM solution hosted on AWS. AWS access is linked to SSO. Ope
 * Select either the $20 or $40 plan
 * Add a unique name to identify your instance, e.g. `dev-johndoe`
 * Click `Create Instance`
-* Wait approximately 30-45 minutes for the install to complete
+* Wait approximately 10-15 minutes for the install to complete
   * To view the output of the install script, ssh through the browser to your instance and run `tail -f /var/log/cloud-init-output.log`.
   * Note that the AWS console's built-in ssh client will disconnect once the script finishes (because the ssh port moves to TCP 65422).
 
