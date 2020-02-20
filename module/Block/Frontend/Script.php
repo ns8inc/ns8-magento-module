@@ -14,7 +14,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use NS8\Protect\Helper\Config;
-use NS8\ProtectSDK\Http\Client as HttpClient;
+use NS8\ProtectSDK\Analytics\Client as AnalyticsClient;
 
 /**
  * The Script class.
@@ -61,9 +61,8 @@ class Script extends Template
         }
 
         $this->config->initSdkConfiguration();
-        $script = (new HttpClient())->sendNonObjectRequest('/init/script');
+        $script = AnalyticsClient::getTrueStatsScript();
 
-        // Call json_decode to remove quotes if present
-        return is_string($script) ? sprintf('<script>%s</script>', json_decode($script)) : '';
+        return is_string($script) ? sprintf('<script>%s</script>', $script) : '';
     }
 }

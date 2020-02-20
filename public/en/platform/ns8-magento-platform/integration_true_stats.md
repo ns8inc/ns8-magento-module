@@ -1,9 +1,9 @@
 # TrueStats Injection
 
-1. [TrueStats Injection](#truestats-injection)
-   1. [What is the TrueStats script](#what-is-the-truestats-script)
-   1. [How is the TrueStats script fetched?](#how-is-the-truestats-script-fetched)
-   1. [Outside components required for TrueStats](#outside-components-required-for-truestats)
+- [TrueStats Injection](#truestats-injection)
+  - [What is the TrueStats script](#what-is-the-truestats-script)
+  - [How is the TrueStats script fetched?](#how-is-the-truestats-script-fetched)
+  - [Outside components required for TrueStats](#outside-components-required-for-truestats)
 
 ## What is the TrueStats script
 
@@ -33,10 +33,10 @@ Please notice that "projectId" configuration value is already populated in this 
 
 ## How is the TrueStats script fetched?
 
-The script is returned via an HTTP POST call to the `/api/init/script` endpoint that is JSON encoded. Authorization headers are required when sending this request to ensure the Project Id is populated. The fetching functionality is simplified by using the Protect SDK:
+The script is returned via an HTTP POST call to the `/api/init/script` endpoint that is JSON encoded. Authorization headers are required when sending this request to ensure the Project Id is populated. The fetching functionality is simplified by using the Protect SDK's Analytics Client:
 
 ```php
-use NS8\ProtectSDK\Http\Client as HttpClient;
+use NS8\ProtectSDK\Analytics\Client as AnalyticsClient;
 
 class Script
 {
@@ -47,9 +47,14 @@ class Script
      */
     public function getScriptHtml(): string
     {
+        $existingAccessToken = $this->scopeConfig->getValue('ns8/protect/token');
+        if (empty($existingAccessToken)) {
+            return '';
+        }
+
         // Init the SDK configuration so auth information is present then fetch the script
         $this->config->initSdkConfiguration();
-        $script = (new HttpClient())->sendNonObjectRequest('/init/script');
+        $script = AnalyticsClient::getTrueStatsScript();
 
         // Call json_decode to remove quotes if present
         return is_string($script) ? sprintf('<script>%s</script>', json_decode($script)) : '';
