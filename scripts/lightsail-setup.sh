@@ -26,6 +26,7 @@ curl -sL https://rpm.nodesource.com/setup_10.x | bash -
 yum update -y
 # Install LAMP
 yum install -y \
+fail2ban \
 git \
 httpd24 \
 nodejs \
@@ -91,7 +92,6 @@ sudo -u apache php /var/www/html/bin/magento config:set admin/security/password_
 # Disable all the CAPTCHAs
 sed -i "s/'Magento_Captcha' => 1/'Magento_Captcha' => 0/" /var/www/html/app/etc/config.php
 sudo -u apache /var/www/html/bin/magento msp:security:recaptcha:disable
-sudo -u apache /var/www/html/bin/magento cache:clean
 
 # Update Composer Auth
 sudo -u apache cp /var/www/html/auth.json.sample /var/www/html/auth.json
@@ -144,6 +144,29 @@ sudo chmod -R ugo+rwx /var/www/html/
 #rm /var/www/html/auth.json.sample
 #rm /var/www/html/auth.json
 
+# Configure AdminAuthLog+fail2ban to block anyone who uses invalid login credentials 10 times in 1 hour for 1 day
+sudo -u apache git clone https://github.com/crankycyclops/AdminAuthLog.git /var/www/html/app/code/Crankycyclops/AdminAuthLog
+sudo -u apache /var/www/html/bin/magento setup:upgrade
+ln -s /var/www/html/app/code/Crankycyclops/AdminAuthLog/fail2ban/filter.d/magento-adminauthlog.conf /etc/fail2ban/filter.d/magento.conf
+sudo -u apache mkdir -p /var/www/html/var/log/crankycyclops/adminauthlog
+sudo -u apache touch /var/www/html/var/log/crankycyclops/adminauthlog/auth.log
+echo '
+[magento]
+action = iptables[name=Magento, port="http"]
+bantime = 86400
+enabled = true
+filter = magento
+findtime = 3600
+logpath = /var/www/html/var/log/crankycyclops/adminauthlog/auth.log
+maxretry = 10
+' >> /etc/fail2ban/jail.conf
+chkconfig fail2ban on
+service fail2ban start
+
+# Clear the Magento caches
+sudo -u apache /var/www/html/bin/magento cache:clean
+
+# Configure SSH
 echo "$SSH_PASSWORD" | passwd --stdin ec2-user
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
 sed -i 's/#Port 22/Port 65422/' /etc/ssh/sshd_config
