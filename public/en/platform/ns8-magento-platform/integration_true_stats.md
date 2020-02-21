@@ -57,7 +57,7 @@ class Script
         $script = AnalyticsClient::getTrueStatsScript();
 
         // Call json_decode to remove quotes if present
-        return is_string($script) ? sprintf('<script>%s</script>', json_decode($script)) : '';
+        return is_string($script) ? sprintf('<script>%s</script>', $script) : '';
     }
 }
 ```
