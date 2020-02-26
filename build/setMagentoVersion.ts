@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import { writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
 
-export async function getLatestVersion(url: string): Promise<string> {
+async function getLatestVersion(url: string): Promise<string> {
   try {
     const response = await fetch(url);
 
@@ -21,7 +21,7 @@ export async function getLatestVersion(url: string): Promise<string> {
   }
 }
 
-export async function setFilesToTargetVersion(newVersion: string, filepaths: string[]): Promise<void> {
+async function setFilesToTargetVersion(newVersion: string, filepaths: string[]): Promise<void> {
   filepaths.forEach((filepath) => {
     let scriptContent;
 
@@ -51,7 +51,7 @@ export async function setFilesToTargetVersion(newVersion: string, filepaths: str
   });
 }
 
-export default async function main(version: string, filepaths: string[]): Promise<void> {
+export default async function setMagentoVersion(version: string, filepaths: string[]): Promise<void> {
   const magentoTagsUrl = 'https://api.github.com/repos/magento/magento2/tags';
   const targetVersion = version === 'latest' ? await getLatestVersion(magentoTagsUrl) : version;
   setFilesToTargetVersion(targetVersion, filepaths);
@@ -66,7 +66,7 @@ if (__filename === process.mainModule?.filename) {
 
   if (flag === '-v' && (version || '').length > 0) {
     const filepaths = [join(__dirname, '../scripts/lightsail-setup.sh'), join(__dirname, '../scripts/testbox')];
-    main(version, filepaths);
+    setMagentoVersion(version, filepaths);
   } else if (flag === '-h') {
     console.log(usage);
     process.exit(0);
