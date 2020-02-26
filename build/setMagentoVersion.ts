@@ -3,23 +3,40 @@ import fetch from 'node-fetch';
 import { writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
 
-async function getLatestVersion(url: string): Promise<string> {
+/**
+ *
+ * @returns {Promise<string | null>} - The latest semver version string for magento2, or null if the response
+ * is not a 200-level code.
+ *
+ */
+
+async function getLatestVersion(): Promise<string | null> {
+  const magentoTagsUrl = 'https://api.github.com/repos/magento/magento2/tags';
+
   try {
-    const response = await fetch(url);
+    const response = await fetch(magentoTagsUrl);
 
     if (!response.status.toString().startsWith('2')) {
-      console.log(`Failed to fetch latest Magento version from the magento2 github url [ ${url} ].`);
+      console.log(`Failed to fetch latest Magento version from the magento2 github url [ ${magentoTagsUrl} ].`);
       console.log(`Github API Response: ${response.statusText}`);
-
-      return '';
+      return null;
     }
 
     const [latest] = await response.json();
     return latest.name;
   } catch (e) {
-    throw new Error(`Fetching latest Magento tags from ${url} failed. More information: ${e}.`);
+    throw new Error(`Fetching latest Magento tags from ${magentoTagsUrl} failed. More information: ${e}.`);
   }
 }
+
+/**
+ * Sets the MAGENTO='version' filepaths to the specified Magento version. If the file in question
+ * is missing a 'MAGENTO_VERSION=' bash variable declaration, it logs a message and skips that file.
+ *
+ * @param {string} newVersion - The new version to set in {@link filepaths}.
+ * @param {string[]} filepaths - an array of filepaths to update.
+ *
+ */
 
 async function setFilesToTargetVersion(newVersion: string, filepaths: string[]): Promise<void> {
   filepaths.forEach((filepath) => {
@@ -32,8 +49,18 @@ async function setFilesToTargetVersion(newVersion: string, filepaths: string[]):
       throw new Error(e);
     }
 
+    // If there is no version declaration at all, dev will need to add it manually
+    const variableDeclarationExists = scriptContent.find(/MAGENTO_VERSION=/);
+    if (!variableDeclarationExists) {
+      console.log(`Warning: no variable declaration exists in file: ${filepath}. Skipping ...`);
+      return;
+    }
+
+    // grab the version number
     const match = /MAGENTO_VERSION=(.*)/.exec(scriptContent) || [];
     const previousVersion = match[1];
+
+    // keep variable declaration, but replace the version number.  this removes comments after version number.
     const scriptWithNewVersionNumber = scriptContent.replace(/(MAGENTO_VERSION=).*/, `$1${newVersion}`);
 
     console.log(`\nUpdating file: ${filepath}...`);
@@ -51,9 +78,16 @@ async function setFilesToTargetVersion(newVersion: string, filepaths: string[]):
   });
 }
 
+/**
+ *
+ * Calls {@link setFilesToTargetVersion} on a list of filepaths with a Magento version string.
+ *
+ * @param {string} newVersion - The new version to set in {@link filepaths}.
+ * @param {string[]} filepaths - an array of filepaths to update.
+ *
+ */
 export default async function setMagentoVersion(version: string, filepaths: string[]): Promise<void> {
-  const magentoTagsUrl = 'https://api.github.com/repos/magento/magento2/tags';
-  const targetVersion = version === 'latest' ? await getLatestVersion(magentoTagsUrl) : version;
+  const targetVersion = version === 'latest' ? String(await getLatestVersion()) : version;
   setFilesToTargetVersion(targetVersion, filepaths);
 }
 
