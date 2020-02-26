@@ -50,7 +50,7 @@ async function setFilesToTargetVersion(newVersion: string, filepaths: string[]):
     }
 
     // If there is no version declaration at all, dev will need to add it manually
-    const variableDeclarationExists = scriptContent.find(/MAGENTO_VERSION=/);
+    const variableDeclarationExists = /MAGENTO_VERSION=/.test(scriptContent);
     if (!variableDeclarationExists) {
       console.log(`Warning: no variable declaration exists in file: ${filepath}. Skipping ...`);
       return;
