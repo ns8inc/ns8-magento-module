@@ -37,6 +37,7 @@
     "eslint-plugin-tsdoc": "0.2.1",
     "hard-source-webpack-plugin": "0.13.1",
     "mocha": "7.0.1",
+    "node-fetch": "^2.6.0",
     "node-ssh": "^7.0.0",
     "nyc": "15.0.0",
     "prettier": "1.19.1",
