@@ -25,6 +25,7 @@ API_SEED_FILENAME='32472162000000-seedMerchantsForNs8LocalDev.ts'
 CLIENT_MIDDLEWARE_ENV="middleware-client-env"
 PROTECT_DOCKER_MYSQL_PORT=3307
 AWS_DEV_SUFFIX=''
+MAGENTO_VERSION=3.3.2
 
 # URL RELATED
 PROTECT_API_SUBDOMAIN_DEFAULT='magento-v2-api'
@@ -561,7 +562,7 @@ function init() {
   # Download installer
   # With sample data and copy sample data to webroot
   cd /var/www || fail_with_msg "can't cd to /var/www."
-  curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.4_sample_data.zip
+  curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-${MAGENTO_VERSION}_sample_data.zip
 
   # Unzip Magento files to web root
   unzip -oqq /var/www/Magento-* -d /var/www/html

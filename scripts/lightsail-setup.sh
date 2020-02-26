@@ -11,6 +11,7 @@ DEV_LIGHTSAIL_DOMAIN=
 # Your desired SSH password for the "ec2-user" account.
 SSH_PASSWORD=
 
+MAGENTO_VERSION=3.3.2
 ## BEGIN--SCRIPT ##
 # Magento
 # Create SWAP file; 2GB
@@ -67,7 +68,7 @@ mysql -u root -e "GRANT ALL PRIVILEGES ON magento2.* TO 'magento_db_user'@'local
 mysql -u root -e "FLUSH PRIVILEGES"
 
 # Download installer with all sample data
-cd /var/www && curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-2.3.4_sample_data.zip
+cd /var/www && curl -O https://MAG005397149:2f7e27231024a6cbc3e075f5a74b8264e6badb56@www.magentocommerce.com/products/downloads/file/Magento-CE-${MAGENTO_VERSION}_sample_data.zip
 # Unzip Magento files to web root
 sudo -u apache unzip -qq /var/www/Magento-* -d /var/www/html
 # Install Magento via CLI
