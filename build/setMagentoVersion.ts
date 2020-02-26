@@ -21,7 +21,7 @@ export async function getLatestVersion(url: string): Promise<string> {
   }
 }
 
-async function setTargetVersion(newVersion: string, filepaths: string[]): Promise<void> {
+export async function setFilesToTargetVersion(newVersion: string, filepaths: string[]): Promise<void> {
   filepaths.forEach((filepath) => {
     let scriptContent;
 
@@ -54,7 +54,7 @@ async function setTargetVersion(newVersion: string, filepaths: string[]): Promis
 export default async function main(version: string, filepaths: string[]): Promise<void> {
   const magentoTagsUrl = 'https://api.github.com/repos/magento/magento2/tags';
   const targetVersion = version === 'latest' ? await getLatestVersion(magentoTagsUrl) : version;
-  setTargetVersion(targetVersion, filepaths);
+  setFilesToTargetVersion(targetVersion, filepaths);
 }
 
 if (__filename === process.mainModule?.filename) {
