@@ -11,7 +11,7 @@ DEV_LIGHTSAIL_DOMAIN=
 # Your desired SSH password for the "ec2-user" account.
 SSH_PASSWORD=
 
-MAGENTO_VERSION=1.0.2
+MAGENTO_VERSION=2.3.4
 
 ## BEGIN--SCRIPT ##
 # Magento
