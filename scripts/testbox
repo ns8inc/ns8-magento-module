@@ -367,6 +367,25 @@ function pull_magento() {
   echo "INSERT INTO core_config_data SET path = 'admin/captcha/enable', value = 0;" | mysql -u root magento2
   bin/magento msp:security:recaptcha:disable
 
+  # Configure AdminAuthLog+fail2ban to block anyone who uses invalid login credentials 10 times in 1 hour for 1 day
+  sudo -u apache git clone https://github.com/crankycyclops/AdminAuthLog.git /var/www/html/app/code/Crankycyclops/AdminAuthLog
+  sudo -u apache /var/www/html/bin/magento setup:upgrade
+  ln -s /var/www/html/app/code/Crankycyclops/AdminAuthLog/fail2ban/filter.d/magento-adminauthlog.conf /etc/fail2ban/filter.d/magento.conf
+  sudo -u apache mkdir -p /var/www/html/var/log/crankycyclops/adminauthlog
+  sudo -u apache touch /var/www/html/var/log/crankycyclops/adminauthlog/auth.log
+  echo '
+  [magento]
+  action = iptables[name=Magento, port="http"]
+  bantime = 86400
+  enabled = true
+  filter = magento
+  findtime = 3600
+  logpath = /var/www/html/var/log/crankycyclops/adminauthlog/auth.log
+  maxretry = 10
+  ' >> /etc/fail2ban/jail.conf
+  chkconfig fail2ban on
+  service fail2ban start
+
   # update magento, clean cache
   bin/magento setup:upgrade
   bin/magento cache:clean
@@ -510,6 +529,7 @@ function init() {
 
   # Install LAMP
   yum install -y \
+  fail2ban \
   git \
   httpd24 \
   nodejs \
