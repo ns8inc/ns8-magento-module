@@ -92,7 +92,7 @@ sudo -u apache php /var/www/html/bin/magento cron:install
 # Set Magento Admin password to not expire
 sudo -u apache php /var/www/html/bin/magento config:set admin/security/password_lifetime 0
 # Disable all the CAPTCHAs
-sed -i "s/'Magento_Captcha' => 1/'Magento_Captcha' => 0/" /var/www/html/app/etc/config.php
+echo "INSERT INTO core_config_data SET path = 'admin/captcha/enable', value = 0;" | mysql -u root magento2
 sudo -u apache /var/www/html/bin/magento msp:security:recaptcha:disable
 
 # Update Composer Auth

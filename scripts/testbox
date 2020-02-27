@@ -361,10 +361,14 @@ function pull_magento() {
   /usr/local/bin/composer require ns8/protect-sdk
 
   # enable magento developer mode
-  php bin/magento deploy:mode:set developer
+  bin/magento deploy:mode:set developer
+
+  # disable CAPTCHAs
+  echo "INSERT INTO core_config_data SET path = 'admin/captcha/enable', value = 0;" | mysql -u root magento2
+  bin/magento msp:security:recaptcha:disable
 
   # update magento, clean cache
-  php bin/magento setup:upgrade
+  bin/magento setup:upgrade
   bin/magento cache:clean
 
   # Update environment to utilize development environment
