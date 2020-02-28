@@ -39,6 +39,8 @@ async function getLatestVersion(): Promise<string | null> {
  */
 
 async function setFilesToTargetVersion(newVersion: string, filepaths: string[]): Promise<void> {
+  let updatedScripts:string[] = []; 
+
   filepaths.forEach((filepath) => {
     let scriptContent;
 
@@ -76,7 +78,15 @@ async function setFilesToTargetVersion(newVersion: string, filepaths: string[]):
       console.log(`Failed to write new Magento version to ${filepath}.`);
       throw new Error(e);
     }
+
+    updatedScripts.push(filepath);
+
   });
+
+  updatedScripts.forEach(file => {
+    console.log(`WARNING: updated script ${file}. Make sure not to unintentionally commit this file to github`); 
+  });
+
 }
 
 /**
