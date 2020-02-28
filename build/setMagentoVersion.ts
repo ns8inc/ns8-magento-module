@@ -2,6 +2,7 @@
 import fetch from 'node-fetch';
 import { writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
+import { compare as compareVersion, valid as validVersion } from 'semver';
 
 /**
  *
@@ -10,7 +11,12 @@ import { join } from 'path';
  *
  */
 
-async function getLatestVersion(): Promise<string | null> {
+const exitWithErrorMessage = (msg:string): void => {
+  console.log(msg);
+  process.exit(1);
+}
+
+async function getVersions(): Promise<string[] > {
   const magentoTagsUrl = 'https://api.github.com/repos/magento/magento2/tags';
 
   try {
@@ -19,11 +25,11 @@ async function getLatestVersion(): Promise<string | null> {
     if (!response.status.toString().startsWith('2')) {
       console.log(`Failed to fetch latest Magento version from the magento2 github url [ ${magentoTagsUrl} ].`);
       console.log(`Github API Response: ${response.statusText}`);
-      return null;
+      return [];
     }
 
-    const [latest] = await response.json();
-    return latest.name;
+    const versions = await response.json();
+    return versions.map(version => version.name);
   } catch (e) {
     throw new Error(`Fetching latest Magento tags from ${magentoTagsUrl} failed. More information: ${e}.`);
   }
@@ -39,7 +45,7 @@ async function getLatestVersion(): Promise<string | null> {
  */
 
 async function setFilesToTargetVersion(newVersion: string, filepaths: string[]): Promise<void> {
-  let updatedScripts:string[] = []; 
+  const updatedScripts: string[] = [];
 
   filepaths.forEach((filepath) => {
     let scriptContent;
@@ -80,13 +86,11 @@ async function setFilesToTargetVersion(newVersion: string, filepaths: string[]):
     }
 
     updatedScripts.push(filepath);
-
   });
 
-  updatedScripts.forEach(file => {
-    console.log(`WARNING: updated script ${file}. Make sure not to unintentionally commit this file to github`); 
+  updatedScripts.forEach((file) => {
+    console.log(`WARNING: updated script ${file}. Make sure not to unintentionally commit this file to github`);
   });
-
 }
 
 /**
@@ -97,8 +101,37 @@ async function setFilesToTargetVersion(newVersion: string, filepaths: string[]):
  * @param {string[]} filepaths - an array of filepaths to update.
  *
  */
-export default async function setMagentoVersion(version: string, filepaths: string[]): Promise<void> {
-  const targetVersion = version === 'latest' ? String(await getLatestVersion()) : version;
+
+export default async function setMagentoVersion(updateVersion: string, filepaths: string[]): Promise<void> {
+  if (!validVersion(updateVersion)) {
+    exitWithErrorMessage(`\nERROR: invalid version supplied: ${updateVersion}\n`);
+  }
+
+  const versions = (await getVersions());
+  const latestVersion = versions[0];
+  const foundVersion = versions.find(version => updateVersion === version);
+
+  if (!foundVersion) {
+
+    const list = versions.map(v => `- ${v}\n`).join('');
+    exitWithErrorMessage(`\nERROR: supplied version (${updateVersion}) is not in the list of available versions: \n${list}`);
+
+  }
+
+
+  if (!validVersion(latestVersion)) {
+    exitWithErrorMessage(`\nERROR: Magento version fetched from Github is invalid: ${updateVersion}\n`);
+  }
+
+  const userVersionTooHigh = compareVersion(updateVersion, latestVersion) > 0;
+
+  if (userVersionTooHigh) {
+    exitWithErrorMessage(
+      `\nERROR: The version you have supplied (${updateVersion}) is beyond the latest Magento release (${latestVersion}).\n`,
+    );
+  }
+
+  const targetVersion = updateVersion === 'latest' ? latestVersion : updateVersion;
   setFilesToTargetVersion(targetVersion, filepaths);
 }
 
@@ -106,17 +139,20 @@ if (__filename === process.mainModule?.filename) {
   const args = process.argv.slice(2);
   const [flag, version] = args;
   const usage = `
-    usage: setMagentoVersion -v <semver string>
-    e.g. setMagentoVersion -v 2.4.3`;
+    usage: setMagentoVersion [-v <semver string>] [-l]
+    -v, set scripts to <semver version>
+    -l, get latest magento version
+  `;
 
   if (flag === '-v' && (version || '').length > 0) {
     const filepaths = [join(__dirname, '../scripts/lightsail-setup.sh'), join(__dirname, '../scripts/testbox')];
-    setMagentoVersion(version, filepaths);
+    setMagentoVersion(version, filepaths).catch((e) => {
+      throw e;
+    });
   } else if (flag === '-h') {
     console.log(usage);
     process.exit(0);
   } else {
-    console.log(usage);
-    process.exit(1);
+    exitWithErrorMessage(usage);
   }
 }
