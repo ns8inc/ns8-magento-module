@@ -16,6 +16,13 @@ const exitWithErrorMessage = (msg:string): void => {
   process.exit(1);
 }
 
+/**
+ * 
+ * @param {string} newVersion - The new version to set in {@link filepaths}.
+ * @returns {string[]} - a list of valid semver version strings.
+ *
+ */
+
 async function getVersions(): Promise<string[] > {
   const magentoTagsUrl = 'https://api.github.com/repos/magento/magento2/tags';
 
