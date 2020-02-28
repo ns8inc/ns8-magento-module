@@ -62,12 +62,13 @@ async function setFilesToTargetVersion(newVersion: string, filepaths: string[]):
 
     // keep variable declaration, but replace the version number.  this removes comments after version number.
     const scriptWithNewVersionNumber = scriptContent.replace(/(MAGENTO_VERSION=).*/, `$1${newVersion}`);
+    const versionAfterUpdate = (/MAGENTO_VERSION=(.*)/.exec(scriptWithNewVersionNumber) || [])[1];
 
     console.log(`\nUpdating file: ${filepath}...`);
     if (previousVersion) {
       console.log(`- Previous magento version was: ${previousVersion}.`);
     }
-    console.log(`- Magento version is now: ${newVersion}.\n`);
+    console.log(`- Magento version is now: ${versionAfterUpdate}.\n`);
 
     try {
       writeFileSync(filepath, scriptWithNewVersionNumber);
