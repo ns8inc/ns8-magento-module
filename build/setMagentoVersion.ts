@@ -6,8 +6,7 @@ import { compare as compareVersion, valid as validVersion } from 'semver';
 
 /**
  *
- * @returns {Promise<string | null>} - The latest semver version string for magento2, or null if the response
- * is not a 200-level code.
+ * A utility method to keep down on the process.exit noise.
  *
  */
 
