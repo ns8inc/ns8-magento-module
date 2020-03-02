@@ -1,6 +1,6 @@
 # Protect Platform Integration Checklist
 
-1. [Protect Platform Integration Checklist](#protect-platform-integration-checklist)
+1. [Protect Platform Integration Checklist](#protect-integration-docs-checklist)
    1. [Implementation Strategy](#implementation-strategy)
    1. [Development Strategy](#development-strategy)
    1. [Release and Update Strategy](#release-and-update-strategy)

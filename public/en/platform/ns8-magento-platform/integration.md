@@ -2,7 +2,7 @@
 
 1. [Protect Integration with the Magento Platform](#protect-integration-with-the-magento-platform)
 
-Magento was evaluated using the [checklist](Integration_checklist.md), which is based off the [Protect Platform Integration Checklist](https://github.com/ns8inc/protect-platform-integration/blob/master/public/en/platform/protect-platform-integration/checklist.md)
+Magento was evaluated using the [checklist](Integration_checklist.md), which is based off the [Protect Platform Integration Checklist](https://github.com/ns8inc/protect-integration-docs/blob/master/public/en/platform/protect-integration-docs/checklist.md)
 
 * [Checklist](Integration_checklist.md)
 * [Events](integration_events.md)

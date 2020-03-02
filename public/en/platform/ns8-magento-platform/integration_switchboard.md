@@ -13,7 +13,7 @@
       1. [Update Merchant (`updateMerchantAction`)](#update-merchant-updatemerchantaction)
       1. [Update Order Status (`updateOrderStatusAction`)](#update-order-status-updateorderstatusaction)
 
-The [Protect Platform Integration](https://github.com/ns8inc/protect-platform-integration/blob/master/public/en/platform/protect-platform-integration/switchboards.md) repo has more detailed information on switch composition at a high level. This integration document details how Magento specific logic was applied to the Magento switchboard.
+The [Protect Platform Integration](https://github.com/ns8inc/protect-integration-docs/blob/master/public/en/platform/protect-integration-docs/switchboards.md) repo has more detailed information on switch composition at a high level. This integration document details how Magento specific logic was applied to the Magento switchboard.
 
 ## Events (Protect -> Platform)
 
