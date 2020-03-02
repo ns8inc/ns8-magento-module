@@ -6,7 +6,7 @@ import { compare as compareVersion, valid as validVersion } from 'semver';
 
 /**
  *
- * A utility method to keep down on the process.exit noise.
+ * A utility method to keep down on the process.exit(1) noise.
  *
  */
 
@@ -17,8 +17,9 @@ const exitWithErrorMessage = (msg:string): void => {
 
 /**
  * 
- * @param {string} newVersion - The new version to set in {@link filepaths}.
- * @returns {string[]} - a list of valid semver version strings.
+ * Gets the list of Magento2 semver version strings from the magento2 github API.
+ *
+ * @returns {string[]} - a list of Magento2 semver version strings. 
  *
  */
 
