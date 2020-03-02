@@ -23,7 +23,7 @@ const deleteFolderRecursive = (path): void => {
 
 /**
  * Generates a zip file with the right naming conventions
- * @see https://devdocs.magento.com/guides/v2.3/extension-dev-guide/package/package_module.html#packaging
+ * see {@link https://devdocs.magento.com/guides/v2.3/extension-dev-guide/package/package_module.html#packaging}
  */
 export const moduleRelease = (): void => {
   // Cleanup any old zip files we may have

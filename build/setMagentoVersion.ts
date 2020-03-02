@@ -5,25 +5,22 @@ import { join } from 'path';
 import { compare as compareVersion, valid as validVersion } from 'semver';
 
 /**
- *
  * A utility method to keep down on the process.exit(1) noise.
- *
+ * @param msg - A string to log before exiting.
  */
 
-const exitWithErrorMessage = (msg:string): void => {
+const exitWithErrorMessage = (msg: string): void => {
   console.log(msg);
   process.exit(1);
-}
+};
 
 /**
- * 
  * Gets the list of Magento2 semver version strings from the magento2 github API.
  *
- * @returns {string[]} - a list of Magento2 semver version strings. 
- *
+ * @returns A Promise-wrapped array of Magento2 semver version strings.
  */
 
-async function getVersions(): Promise<string[] > {
+async function getVersions(): Promise<string[]> {
   const magentoTagsUrl = 'https://api.github.com/repos/magento/magento2/tags';
 
   try {
@@ -36,19 +33,19 @@ async function getVersions(): Promise<string[] > {
     }
 
     const versions = await response.json();
-    return versions.map(version => version.name);
+    return versions.map((version) => version.name);
   } catch (e) {
     throw new Error(`Fetching latest Magento tags from ${magentoTagsUrl} failed. More information: ${e}.`);
   }
 }
 
 /**
- * Sets the MAGENTO='version' filepaths to the specified Magento version. If the file in question
- * is missing a 'MAGENTO_VERSION=' bash variable declaration, it logs a message and skips that file.
+ * Sets the MAGENTO='version' variable declaration in the provided filepaths to the specified Magento version.
+ * If the file in question is missing a 'MAGENTO_VERSION=' bash variable declaration, it logs a message and skips that file.
+ * @param newVersion - The new version to set in {@link filepaths}.
+ * @param filepaths - an array of filepaths (bash scripts) to update.
  *
- * @param {string} newVersion - The new version to set in {@link filepaths}.
- * @param {string[]} filepaths - an array of filepaths to update.
- *
+ * @returns a void Promise.
  */
 
 async function setFilesToTargetVersion(newVersion: string, filepaths: string[]): Promise<void> {
@@ -101,12 +98,11 @@ async function setFilesToTargetVersion(newVersion: string, filepaths: string[]):
 }
 
 /**
- *
  * Calls {@link setFilesToTargetVersion} on a list of filepaths with a Magento version string.
+ * @param updateVersion - The new version to set in {@link filepaths}.
+ * @param filepaths - an array of filepaths to update.
  *
- * @param {string} newVersion - The new version to set in {@link filepaths}.
- * @param {string[]} filepaths - an array of filepaths to update.
- *
+ * @returns a void Promise.
  */
 
 export default async function setMagentoVersion(updateVersion: string, filepaths: string[]): Promise<void> {
@@ -114,17 +110,16 @@ export default async function setMagentoVersion(updateVersion: string, filepaths
     exitWithErrorMessage(`\nERROR: invalid version supplied: ${updateVersion}\n`);
   }
 
-  const versions = (await getVersions());
+  const versions = await getVersions();
   const latestVersion = versions[0];
-  const foundVersion = versions.find(version => updateVersion === version);
+  const foundVersion = versions.find((version) => updateVersion === version);
 
   if (!foundVersion) {
-
-    const list = versions.map(v => `- ${v}\n`).join('');
-    exitWithErrorMessage(`\nERROR: supplied version (${updateVersion}) is not in the list of available versions: \n${list}`);
-
+    const list = versions.map((v) => `- ${v}\n`).join('');
+    exitWithErrorMessage(
+      `\nERROR: supplied version (${updateVersion}) is not in the list of available versions: \n${list}`,
+    );
   }
-
 
   if (!validVersion(latestVersion)) {
     exitWithErrorMessage(`\nERROR: Magento version fetched from Github is invalid: ${updateVersion}\n`);
