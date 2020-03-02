@@ -108,7 +108,7 @@ class Url extends AbstractHelper
     }
 
     /**
-     * Get the URL of the protect-sdk-js bundle
+     * Get the URL of the protect-sdk-client bundle
      *
      * @return string The URL
      */

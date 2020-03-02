@@ -1,8 +1,10 @@
 {
-  "authors": [{
-    "email": "app@ns8.com",
-    "name": "NS8"
-  }],
+  "authors": [
+    {
+      "email": "app@ns8.com",
+      "name": "NS8"
+    }
+  ],
   "autoload": {
     "files": [
       "registration.php"
