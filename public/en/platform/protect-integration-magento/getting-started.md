@@ -110,6 +110,7 @@ A number of environment variables are required in order to maximize the configur
 * `MAGENTO_IP_ADDRESS`: The public IP address of your Magento server to use for SSH connections, e.g. 3.227.191.44.
 * `MAGENTO_SSH_PASSWORD`: The password you created when configuring Lightsail for SSH
 * `MAGENTO_SSH_USERNAME`: Default value "ec2-user". This rarely needs to be changed unless you have gone out of your way to create other linux users on your Lightsail instance.
+* `MAGENTO_SSH_PORT`: The SSH port you set when configuring Lightsail for SSH
 * `MAGENTO_URL`: The fully qualified REST API URL, e.g. `http://{dev-name}.ns8demos.com/index.php/rest`
 * `NODE_ENV`: Default value "prod". Allowed values: ["prod", "dev"]. Recommend "dev" for local development.
 * `NS8_CLIENT_URL`: The base url for your local protect client, e.g. `http://{dev-name}-protect-client.ngrok.io`

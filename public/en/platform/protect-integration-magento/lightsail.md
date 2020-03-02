@@ -122,7 +122,7 @@ Magento install lives under `/var/www/html/`
 * Edit `/etc/php.ini`
   * Add
 
-```bash
+```ini
 [xdebug]
 zend_extension=/usr/lib64/php/7.1/modules/xdebug.so
 xdebug.remote_enable = 1
