@@ -10,7 +10,7 @@ The Protect Client SDK is loaded directly from NS8's CDN in order to acquire the
 use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 
 /**
-* Get the URL of the protect-js-sdk bundle
+* Get the URL of the protect-sdk-js bundle
 *
 * @return string The URL
 */
@@ -27,7 +27,7 @@ public function getProtectJsSdkUrl(): string
 
 ## How does the Protect Client SDK receive data required for use?
 
-The required key attributes that the SDK uses for initialization are rendered into the `phtml` file that contains the JavaScript for displaying the NS8 Protect iFrame. These values are passed in as a JavaScript object for the Client Config initialization which is then passed in as an argument to the `Protect.createClient` method. Further information regarding initialization can be found in [the JS SDK Client documentation](https://github.com/ns8inc/protect-js-sdk/blob/master/public/en/platform/protect-js-sdk/client.md).
+The required key attributes that the SDK uses for initialization are rendered into the `phtml` file that contains the JavaScript for displaying the NS8 Protect iFrame. These values are passed in as a JavaScript object for the Client Config initialization which is then passed in as an argument to the `Protect.createClient` method. Further information regarding initialization can be found in [the JS SDK Client documentation](https://github.com/ns8inc/protect-sdk-js/blob/master/public/en/platform/protect-sdk-js/client.md).
 
 ```javascript
 var eventBinding = {};
