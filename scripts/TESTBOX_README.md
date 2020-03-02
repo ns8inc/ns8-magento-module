@@ -1,6 +1,6 @@
 # Testbox
 
-`testbox` is a bash CLI meant to automate the setup process of a public-facing, developer-independent instance of Magento hosting an NS8 Protect app for the purposes of QA. 
+`testbox` is a bash CLI meant to automate the setup process of a public-facing, developer-independent instance of Magento hosting an NS8 Protect app for the purposes of QA.
 
 # Pre-requisites
 
@@ -10,8 +10,8 @@
 
 ## Usage
 
-- clone `ns8-magento-platform` repo
-- rsync `ns8-magento-platform/scripts/testbox` to your lightsail instance
+- clone `protect-integration-magento` repo
+- rsync `protect-integration-magento/scripts/testbox` to your lightsail instance
 - ssh to your lightsail instance and run `chmod +x testbox`
 - Run `init` to setup your Linux dependencies
 - Run `configure` to authenticate and initialize your aws, ngrok, npm login, and magento developer information
@@ -31,9 +31,9 @@ This is the only manual aspect to testbox.  Takes you through:
     + npm login
     + ssh key generation
 
-### pull 
+### pull
 
-Pull a fresh copy of the `ns8-protect-api`, `ns8-protect-client` and `ns8-magento-platform` repos. Optionally, you can specify a branch and commit hash for each repo when you clone it from the NS8 github.  
+Pull a fresh copy of the `ns8-protect-api`, `ns8-protect-client` and `protect-integration-magento` repos. Optionally, you can specify a branch and commit hash for each repo when you clone it from the NS8 github.
 
 ### build
 

@@ -33,7 +33,7 @@ Required repos:
 
 * `ns8-protect-api`
 * `ns8-protect-client`
-* `ns8-magento-platform`
+* `protect-integration-magento`
 
 Repos you may need at some point during development:
 
@@ -51,7 +51,7 @@ Repos you may need at some point during development:
 * Follow the directions for configuring your Lightsail instance. You will need to complete the steps to enable SSH access.
   * Note the password you assign to `ec2-user`, you will need it again soon.
   * Note the URL you used to configure Magento, you will need it again soon.
-* `$ git clone git@github.com:ns8inc/ns8-magento-platform.git`
+* `$ git clone git@github.com:ns8inc/protect-integration-magento.git`
   * NOTE: this folder will be referred to as `platform`
 * Set the local ENV variables.
   * Copy `platform/.env.schema` -> `platform/.env`
@@ -350,7 +350,7 @@ Ensure you have the latest code from all repositories. NOTE: if you are using `y
 * `ns8-protect-api`
 * `ns8-protect-client`
 * `ns8-protect-sdk`
-* `ns8-magento-platform`
+* `protect-integration-magento`
 * `magent2-rest-client`
 * `ns8-switchboard-interfaces`
 * `ns8-protect-models`

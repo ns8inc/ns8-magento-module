@@ -20,10 +20,10 @@ The Magento Platform project is a single repository comprising three distinct, m
 
 While any IDE can work, VS Code has a number of extensions that make it well suited for Magento development.
 
-NOTE: some VSCode settings are stored in [VCS](https://github.com/ns8inc/ns8-magento-platform/blob/master/.vscode/settings.json). Be sure when you modify settings that you do so at your local environment level and not at the project level. If you need to modify project level settings, make sure the team approves before committing. All of the following recommended extensions are part of the project and will be recommended when first opening the project in VS Code.
+NOTE: some VSCode settings are stored in [VCS](https://github.com/ns8inc/protect-integration-magento/blob/master/.vscode/settings.json). Be sure when you modify settings that you do so at your local environment level and not at the project level. If you need to modify project level settings, make sure the team approves before committing. All of the following recommended extensions are part of the project and will be recommended when first opening the project in VS Code.
 
 * Install [VS Code](https://code.visualstudio.com)
-* *Highly* Recommended Extensions ([these should be recommended automatically inside VS Code](https://github.com/ns8inc/ns8-magento-platform/blob/master/.vscode/extensions.json))
+* *Highly* Recommended Extensions ([these should be recommended automatically inside VS Code](https://github.com/ns8inc/protect-integration-magento/blob/master/.vscode/extensions.json))
   * [PHP Debug extension](https://marketplace.visualstudio.com/items?itemName=felixfbecker.php-debug)
   * [Remote Development extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack)
   * [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)

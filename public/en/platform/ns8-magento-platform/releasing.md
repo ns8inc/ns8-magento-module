@@ -12,7 +12,7 @@ In order to manually release a new version, follow these steps.
   * Push the changes.
   * Tag the repo with the latest version, e.g. `v2.0.22`
   * Push the tag
-* Commit the `ns8-magento-platform` changes on a new branch
+* Commit the `protect-integration-magento` changes on a new branch
 * Create a PR for the version bump
 * Once the PR is merged, switch to master and pull latest
 * Tag master with the latest version

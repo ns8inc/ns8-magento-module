@@ -18,7 +18,7 @@ NGROK_CLIENT_LOG="$TESTBOX_LOG_DIR/ngrok_client_log"
 # Repos
 API_REPO='ns8-protect-api'
 CLIENT_REPO='ns8-protect-client'
-MAGENTO_REPO='ns8-magento-platform'
+MAGENTO_REPO='protect-integration-magento'
 
 # Config Files and Values
 API_SEED_FILENAME='32472162000000-seedMerchantsForNs8LocalDev.ts'
@@ -752,7 +752,7 @@ function usage() {
         stream log file from service
 
     <pull [ api | client | magento ] >
-        git clone the latest code from the 'ns8-magento-platform', 'ns8-protect-api' and 'ns8-protect-client' platforms.
+        git clone the latest code from the 'protect-integration-magento', 'ns8-protect-api' and 'ns8-protect-client' platforms.
         Back up any pre-existing config files, install repo, then restore config files.
 
     <start> [api | client ]

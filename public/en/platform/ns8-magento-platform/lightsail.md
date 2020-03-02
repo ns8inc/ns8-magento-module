@@ -24,7 +24,7 @@ Lightsail is a cloud VM solution hosted on AWS. AWS access is linked to SSO. Ope
 * Select `OS Only`
 * Select `Amazon Linux`
 * Select `Add Launch Script`
-* Open the [lightsail-setup.sh](https://github.com/ns8inc/ns8-magento-platform/blob/master/scripts/lightsail-setup.sh) script
+* Open the [lightsail-setup.sh](https://github.com/ns8inc/protect-integration-magento/blob/master/scripts/lightsail-setup.sh) script
   * Edit the four variables at the top with your environment details:
     * `NS8_PROTECT_URL=` -> enter your protect API URL, e.g. http://johndoe-local-api.ngrok.io
     * `NS8_CLIENT_URL=` -> enter your protect CLIENT URL, e.g. http://johndoe-local-protect.ngrok.io

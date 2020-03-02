@@ -63,7 +63,7 @@
   ],
   "license": "MIT",
   "main": "dist/switchboard.min.js",
-  "name": "@ns8/ns8-magento-platform",
+  "name": "@ns8/protect-integration-magento",
   "private": true,
   "scripts": {
     "beautify": "ts-node -P ./build/tsconfig.json ./build/projectBuild.ts",

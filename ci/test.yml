@@ -6,7 +6,7 @@ image_resource:
   source: { repository: debian, tag: buster }
 
 inputs:
-  - name: ns8-magento-platform
+  - name: protect-integration-magento
 
 run:
   path: /bin/sh
@@ -33,7 +33,7 @@ run:
         yarnpkg
 
       echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
-      cd ns8-magento-platform
+      cd protect-integration-magento
 
       if ! yarnpkg
       then
