@@ -10,6 +10,8 @@ NS8_CLIENT_URL=https://test-protect-client.ns8.com
 DEV_LIGHTSAIL_DOMAIN=
 # Your desired SSH password for the "ec2-user" account.
 SSH_PASSWORD=
+# Set this variable to enable XDEBUG
+DEBUG=
 
 MAGENTO_VERSION=2.3.4
 
@@ -164,6 +166,39 @@ maxretry = 10
 ' >> /etc/fail2ban/jail.conf
 chkconfig fail2ban on
 service fail2ban start
+
+# Setup xdebug
+if [ -n "${DEBUG}" ]; then
+  sudo -u apache /var/www/html/bin/magento deploy:mode:set developer
+
+  sed -i "s/#\(ini_set('display_errors', 1)\)/\1/" /var/www/html/app/bootstrap.php
+  mv /var/www/html/pub/errors/local.xml.sample /var/www/html/pub/errors/local.xml
+
+  sudo yum -y install php7-pear php73-devel gcc
+  sudo pecl7 channel-update pecl.php.net
+  sudo pecl7 install xdebug
+
+  cp /etc/php.ini /tmp
+  cat >> /tmp/php.ini << EOF
+[xdebug]
+zend_extension=/usr/lib64/php/7.3/modules/xdebug.so
+xdebug.remote_enable = 1
+xdebug.remote_port = 9000
+xdebug.remote_autostart = 1
+xdebug.remote_host = 127.0.0.1
+xdebug.remote_connect_back = 0
+EOF
+  sudo mv /tmp/php.ini "$(realpath /etc/php.ini)"
+
+  echo 'fs.inotify.max_user_watches=524288' | sudo tee -a /etc/sysctl.conf > /dev/null
+  sudo sysctl -p
+
+  cat >> ~/.bashrc << EOF
+alias magento="sudo -u apache /var/www/html/bin/magento"
+alias composer="sudo -u apache /var/www/html/vendor/composer/composer/bin/composer"
+alias req-dev-php-sdk="(cd /var/www/html && composer require ns8/protect-sdk dev-dev)"
+EOF
+fi
 
 # Clear the Magento caches
 sudo -u apache /var/www/html/bin/magento cache:clean

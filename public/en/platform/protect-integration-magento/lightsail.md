@@ -99,39 +99,34 @@ Some server configuration is done via Environment Variables. You may have alread
 
 ## Configure Magento for Debugging
 
-Magento install lives under `/var/www/html/`
+### Enable Xdebug
 
-* Enable Magento Development Mode
-  * `$ php bin/magento deploy:mode:set developer`
-* Enable PHP Display Errors
-  * Open `app/bootstrap.php`
-  * Uncomment the line `ini_set('display_errors', 1);`
-* Enable Magento 2 Display Errors
-  * Rename `pub/errors/local.xml.sample` > `/pub/errors/local.xml`
-* Enable Template Path Hints
+Set the `DEBUG` variable at the top of the `scripts/lightsail-setup.sh` to configure the
+instance for debugging.  To verify that xdebug is loaded, run the following and check that
+the output includes "with Xdebug":
+
+```
+$ php --version
+PHP 7.3.14 (cli) (built: Feb 18 2020 23:44:24) ( NTS )
+Copyright (c) 1997-2018 The PHP Group
+Zend Engine v3.3.14, Copyright (c) 1998-2018 Zend Technologies
+    with Xdebug v2.9.2, Copyright (c) 2002-2020, by Derick Rethans
+```
+
+### Enable Template Path Hints
   * Open <http://your_subdomain.ns8demos.com/index.php/admin_demo>
   * Click Stores > Configuration > Advanced > Developer > Debug
   * Enable all options
 
-## Xdebug
+### Loading the development version of the PHP SDK:
 
-* Install pecl
-  * `$ sudo yum -y install php7-pear php71-devel gcc`
-  * `$ sudo pecl7 channel-update pecl.php.net`
-* `$ sudo pecl7 install xdebug`
-* Edit `/etc/php.ini`
-  * Add
+Run `composer require ns8/protect-sdk dev-dev`.  If `DEBUG` was set during the install,
+an alias should be added to `~/.bashrc` to enable running this:
 
-```ini
-[xdebug]
-zend_extension=/usr/lib64/php/7.1/modules/xdebug.so
-xdebug.remote_enable = 1
-xdebug.remote_port = 9000
-xdebug.remote_autostart = 1
-xdebug.remote_host = 127.0.0.1
-xdebug.remote_connect_back = 0
 ```
-
-* Verify that xdebug is loaded
-  * `$ php --version`
-  * Expect output: "PHP 7.0.33 (cli) (built: Jan  9 2019 22:04:26) ... with Xdebug v2.7.2..."
+[ec2-user@ip-172-26-1-227 html]$ req-dev-php-sdk
+./composer.json has been updated
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+...
+```
