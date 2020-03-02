@@ -74,7 +74,7 @@
     "clean": "rm -rf .awcache dist .serverless",
     "deploy": "METHOD=deploy ts-node -P ./build/tsconfig.json ./build/lambdaDeploy.ts",
     "generate:exports": "cti create ./switchboard -w",
-    "lint": "eslint --ext=ts switchboard",
+    "lint": "eslint --ext=ts switchboard build",
     "lint:fix": "yarn lint --fix",
     "lint:markdown": "eslint --ext md .",
     "magento:setversion": "ts-node build/setMagentoVersion.ts",
