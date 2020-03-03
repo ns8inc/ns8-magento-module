@@ -52,6 +52,10 @@ class Dashboard extends Action
         $this->context = $context;
         $this->resultPageFactory = $resultPageFactory;
         $this->config = $config;
+
+        // Init SDK Configuration before invoking HTTP Client:wq
+        
+        $this->config->initSdkConfiguration();
         $this->httpClient = new HttpClient();
         $this->loggingClient = new LoggingClient();
     }
@@ -74,7 +78,6 @@ class Dashboard extends Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
-        $this->config->initSdkConfiguration();
         try {
             $merchant = $this->httpClient->get('/merchant/current');
             if (empty($merchant)) {
