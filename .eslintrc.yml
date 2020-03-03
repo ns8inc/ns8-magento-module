@@ -6,7 +6,6 @@ extends:
   - eslint-config-airbnb-base
   - 'plugin:prettier/recommended'
   - 'plugin:@typescript-eslint/recommended'
-  - 'plugin:@typescript-eslint/recommended'
   - prettier/@typescript-eslint
 overrides:
   - files:
