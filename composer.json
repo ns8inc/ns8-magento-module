@@ -1,8 +1,10 @@
 {
-  "authors": [{
-    "email": "app@ns8.com",
-    "name": "NS8"
-  }],
+  "authors": [
+    {
+      "email": "app@ns8.com",
+      "name": "NS8"
+    }
+  ],
   "autoload": {
     "files": [
       "registration.php"
@@ -15,12 +17,8 @@
   "license": "MIT",
   "minimum-stability": "dev",
   "name": "ns8/protect-magento",
-  "repositories": [{
-    "type": "vcs",
-    "url": "git@github.com:ns8inc/protect-php-sdk.git"
-  }],
   "require": {
-    "ns8/protect-sdk": "^0.0.26",
+    "ns8/protect-sdk": "^0.0.28",
     "php": "^7.1.3"
   },
   "require-dev": {

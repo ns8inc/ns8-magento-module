@@ -2,7 +2,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
   <body>
     <referenceContainer name="content">
-      <block class="NS8\Protect\Block\Frontend\Script" template="NS8_Protect::script.phtml" cacheable="false" />
+      <block class="NS8\Protect\Block\Frontend\Script" template="NS8_Protect::script.phtml" />
     </referenceContainer>
   </body>
 </page>

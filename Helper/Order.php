@@ -7,6 +7,9 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\RequestInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
+use Magento\Sales\Model\ResourceModel\Order\Collection;
+use Magento\Sales\Model\Order as MagentoOrder;
 use Magento\Sales\Model\ResourceModel\GridInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Url;
@@ -38,6 +41,11 @@ class Order extends AbstractHelper
     protected $orderRepository;
 
     /**
+     * @var CollectionFactory
+     */
+    protected $orderCollectionFactory;
+
+    /**
      * @var RequestInterface
      */
     protected $request;
@@ -57,6 +65,7 @@ class Order extends AbstractHelper
      *
      * @param Config $config
      * @param OrderRepositoryInterface $orderRepository
+     * @param CollectionFactory $orderCollectionFactory
      * @param RequestInterface $request
      * @param GridInterface $salesOrderGrid
      * @param Url $url
@@ -64,12 +73,14 @@ class Order extends AbstractHelper
     public function __construct(
         Config $config,
         OrderRepositoryInterface $orderRepository,
+        CollectionFactory $orderCollectionFactory,
         RequestInterface $request,
         GridInterface $salesOrderGrid,
         Url $url
     ) {
         $this->config = $config;
         $this->orderRepository = $orderRepository;
+        $this->orderCollectionFactory = $orderCollectionFactory;
         $this->request = $request;
         $this->salesOrderGrid = $salesOrderGrid;
         $this->url = $url;
@@ -190,7 +201,8 @@ class Order extends AbstractHelper
      * Format an EQ8 Score and orderId as a link, or return "NA" if either value is `null`
      * @param string orderId
      * @param int $eq8Score
-     * @param string An HTML anchor tag with the score and an href to the order details
+     *
+     * @return string An HTML anchor tag with the score and an href to the order details
      */
     public function formatEQ8ScoreLinkHtml(?string $orderId, ?int $eq8Score): string
     {
@@ -200,5 +212,43 @@ class Order extends AbstractHelper
         // `page` must match `ClientPage.ORDER_DETAILS` in JS SDK
         $link = $this->url->getNS8IframeUrl(['page' => 'ORDER_DETAILS', 'order_id' => $orderId]);
         return '<a href="'.$link.'">'.$eq8Score.'</a>';
+    }
+
+    /**
+     * Return a collection of orders that are eligible for an NS8 Protect score but do not currently have one
+     *
+     * @param int $currentPage Optional integer value if you want to paginate results for processing
+     * @param int $pageSize Optional integer value specifying the size of each page (count of results per query)
+     *
+     * @return Collection Returns a collection of orders eligible to be score by NS8 Protect
+     */
+    public function getNonScoredOrders(int $currentPage = null, int $pageSize = null): Collection
+    {
+        $nonFetchableOrderStates = [
+            MagentoOrder::STATE_COMPLETE,
+            MagentoOrder::STATE_CLOSED,
+            MagentoOrder::STATE_CANCELED
+        ];
+
+        // Status filters ARE handled is the canCancel validation below, however, this filter reduces redundant checks
+        $orderCollection = $this->orderCollectionFactory->create()
+             ->addFieldToSelect('*')
+             ->addFieldToFilter(self::EQ8_SCORE_COL, ['null' => true])
+             ->addFieldToFilter('status', ['nin' => $nonFetchableOrderStates])
+             ->setOrder('entity_id', 'DESC')
+             ;
+
+        if (!empty($currentPage) && !empty($pageSize)) {
+            $orderCollection->setCurPage($currentPage);
+            $orderCollection->setPageSize($pageSize);
+        }
+
+        foreach ($orderCollection as $index => $order) {
+            if (!$order->canCancel()) {
+                $orderCollection->removeItemByKey($index);
+            }
+        }
+
+        return $orderCollection;
     }
 }

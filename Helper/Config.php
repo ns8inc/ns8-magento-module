@@ -6,6 +6,7 @@ use Throwable;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
 use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
@@ -109,6 +110,11 @@ class Config extends AbstractHelper
     protected $typeList;
 
     /**
+     * @var Pool
+     */
+    protected $cacheFrontendPool;
+
+    /**
      * @var Uri
      */
     protected $uri;
@@ -121,6 +127,7 @@ class Config extends AbstractHelper
      * @param IntegrationServiceInterface $integrationService
      * @param ModuleList $moduleList
      * @param OauthServiceInterface $oauthService
+     * @param Pool $cacheFrontendPool
      * @param ProductMetadataInterface $productMetadata
      * @param RequestInterface $request
      * @param ScopeConfigInterface $scopeConfig
@@ -134,12 +141,13 @@ class Config extends AbstractHelper
         IntegrationServiceInterface $integrationService,
         ModuleList $moduleList,
         OauthServiceInterface $oauthService,
+        Pool $cacheFrontendPool,
         ProductMetadataInterface $productMetadata,
         RequestInterface $request,
         ScopeConfigInterface $scopeConfig,
         TypeListInterface $typeList,
-        WriterInterface $scopeWriter,
-        Uri $uri
+        Uri $uri,
+        WriterInterface $scopeWriter
     ) {
         $this->context = $context;
         $this->encryptor = $encryptor;
@@ -151,6 +159,7 @@ class Config extends AbstractHelper
         $this->scopeConfig = $scopeConfig;
         $this->scopeWriter = $scopeWriter;
         $this->typeList = $typeList;
+        $this->cacheFrontendPool = $cacheFrontendPool;
         $this->uri = $uri;
 
         $this->loggingClient = new LoggingClient();
@@ -176,7 +185,7 @@ class Config extends AbstractHelper
     /**
         // TODO: this needs to be more robust. Circle back and bullet proof this with backing tests.
         $ret = join('/', $segments).'/order_id';
-     * Gets an access token.
+     * Retrieve an access token.
      *
      * @return string|null The NS8 Protect Access Token.
      */
@@ -210,17 +219,32 @@ class Config extends AbstractHelper
     public function setAccessToken(string $accessToken): void
     {
         $this->scopeWriter->save('ns8/protect/token', $this->encryptor->encrypt($accessToken));
-        $this->flushConfigCache();
+        $this->flushCaches();
     }
 
     /**
-     * Clear the cache
+     * Clear relevant caches after configuration change has occurred.
      *
      * @return void
      */
-    public function flushConfigCache(): void
+    public function flushCaches(): void
     {
-        $this->typeList->cleanType(CacheTypeConfig::TYPE_IDENTIFIER);
+        $cacheTypesToClear = [
+            'config',
+            'layout',
+            'block_html',
+            'config_integration',
+            'config_integration_api',
+            'config_webservice'
+        ];
+
+        foreach ($cacheTypesToClear as $cacheType) {
+            $this->typeList->cleanType($cacheType);
+        }
+
+        foreach ($this->cacheFrontendPool as $cacheFrontend) {
+            $cacheFrontend->getBackend()->clean();
+        }
     }
 
     /**
