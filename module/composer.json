@@ -31,6 +31,5 @@
     "lint-fix": "phpcbf --extensions=php --ignore=/vendor --standard=Magento2 ."
   },
   "suggest": {},
-  "type": "magento2-module",
-  "version": "2.4.1"
+  "type": "magento2-module"
 }
