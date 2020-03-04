@@ -45,10 +45,6 @@ const incrementVersion = (): void => {
 
   writeFileSync('module/etc/module.xml', getModuleXml(nextMagentoVersion));
   console.log(`Updated module xml ${currentVersion} to ${nextMagentoVersion}`);
-
-  composer.version = nextPackageVersion;
-  writeFileSync('module/composer.json', JSON.stringify(composer, null, 2));
-  console.log(`Updated composer ${currentVersion} to ${nextPackageVersion}`);
 };
 
 try {
