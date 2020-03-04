@@ -5,7 +5,7 @@ import { env } from './loadEnv';
 let stage = 'test';
 if (process.env.NODE_ENV?.toLowerCase().startsWith('prod')) {
   stage = 'prod';
-} else if (process.env.NODE_ENV?.toLowerCase().startsWith('dev')) {
+} else if (process.env.NODE_ENV?.toLowerCase().startsWith('test')) {
   stage = 'test';
 } else if (process.env.DEV_SUFFIX) {
   stage = process.env.DEV_SUFFIX;
