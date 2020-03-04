@@ -52,12 +52,22 @@ package:
     - '?*.log'
     - '?*/**.map'
     - '?*/**.template'
+    - build/**
+    - ci/**
+    - CODEOWNERS
+    - LICENSE
+    - module/**
     - node_modules/**
+    - public/**
     - README.md
+    - release/**
     - scripts/**
     - switchboard/**
     - test/**
     - webpack.config.js
+  include:
+    - dist/**
+    - serverless.yml
 plugins:
   - serverless-step-functions
   - serverless-pseudo-parameters

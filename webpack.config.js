@@ -23,7 +23,7 @@ const config = {
   mode,
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: mode === PRODUCTION ? 'switchboard.min.js' : 'switchboard.js',
+    filename: 'switchboard.js',
     library: 'switchboard',
     libraryTarget: 'umd',
     umdNamedDefine: true,
