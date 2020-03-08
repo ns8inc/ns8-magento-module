@@ -93,5 +93,5 @@
     "version:publish": "yarn && yarn build && npm publish"
   },
   "types": "dist/types/index.d.ts",
-  "version": "878789"
+  "version": "878790"
 }
