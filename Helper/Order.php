@@ -3,18 +3,23 @@
 namespace NS8\Protect\Helper;
 
 use Throwable;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Directory\Model\CountryFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\RequestInterface;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\Data\TransactionSearchResultInterfaceFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
-use Magento\Sales\Model\ResourceModel\Order\Collection;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Sales\Model\Order as MagentoOrder;
 use Magento\Sales\Model\ResourceModel\GridInterface;
+use Magento\Sales\Model\ResourceModel\Order\Collection;
+use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Url;
-use NS8\ProtectSDK\Order\Client as OrderClient;
+use NS8\ProtectSDK\ClientSdk\Client as ClientSdkClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
+use NS8\ProtectSDK\Order\Client as OrderClient;
 use UnexpectedValueException;
 
 /**
@@ -22,13 +27,17 @@ use UnexpectedValueException;
  */
 class Order extends AbstractHelper
 {
-
-    public const EQ8_SCORE_COL = 'eq8_score';
+    public const EQ8_SCORE_COL = 'protect_eq8_score';
 
     /**
      * @var Config
      */
     protected $config;
+
+    /**
+     * @var CountryFactory
+     */
+    protected $countryFactory;
 
     /**
      * @var LoggingClient
@@ -46,6 +55,11 @@ class Order extends AbstractHelper
     protected $orderCollectionFactory;
 
     /**
+     * @var ProductRepositoryInterface
+     */
+    protected $productRepository;
+
+    /**
      * @var RequestInterface
      */
     protected $request;
@@ -56,6 +70,16 @@ class Order extends AbstractHelper
     protected $salesOrderGrid;
 
     /**
+     * @var SearchCriteriaBuilder
+     */
+    protected $searchCriteriaBuilder;
+
+    /**
+     * @var TransactionSearchResultInterfaceFactory
+     */
+    protected $transactionRepository;
+
+    /**
      * @var Url
      */
     protected $url;
@@ -63,28 +87,39 @@ class Order extends AbstractHelper
     /**
      * Default constructor
      *
-     * @param Config $config
-     * @param OrderRepositoryInterface $orderRepository
      * @param CollectionFactory $orderCollectionFactory
-     * @param RequestInterface $request
+     * @param Config $config
+     * @param CountryFactory $countryFactory
      * @param GridInterface $salesOrderGrid
+     * @param OrderRepositoryInterface $orderRepository
+     * @param RequestInterface $request
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder;
+     * @param TransactionSearchResultInterfaceFactory $transactionRepository
      * @param Url $url
      */
     public function __construct(
-        Config $config,
-        OrderRepositoryInterface $orderRepository,
         CollectionFactory $orderCollectionFactory,
-        RequestInterface $request,
+        Config $config,
+        CountryFactory $countryFactory,
         GridInterface $salesOrderGrid,
+        OrderRepositoryInterface $orderRepository,
+        ProductRepositoryInterface $productRepository,
+        RequestInterface $request,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        TransactionSearchResultInterfaceFactory $transactionRepository,
         Url $url
     ) {
         $this->config = $config;
-        $this->orderRepository = $orderRepository;
+        $this->countryFactory = $countryFactory;
+        $this->loggingClient = new LoggingClient();
         $this->orderCollectionFactory = $orderCollectionFactory;
+        $this->orderRepository = $orderRepository;
+        $this->productRepository = $productRepository;
         $this->request = $request;
         $this->salesOrderGrid = $salesOrderGrid;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->transactionRepository = $transactionRepository;
         $this->url = $url;
-        $this->loggingClient = new LoggingClient();
     }
 
     /**
@@ -119,6 +154,26 @@ class Order extends AbstractHelper
             }
         } catch (Throwable $e) {
             $this->loggingClient->error('Failed to get order '.$orderId, $e);
+        }
+        return $ret;
+    }
+
+    /**
+     * Get an Order from an order increment id
+     * @param string $orderIncrementId
+     * @return OrderInterface|null An order
+     */
+    public function getOrderByIncrementId(string $orderIncrementId): ?OrderInterface
+    {
+        $ret = null;
+        try {
+            $searchCriteria = $this->searchCriteriaBuilder
+                ->addFilter('increment_id', $orderIncrementId, 'eq')
+                ->create();
+            $orderList = $this->orderRepository->getList($searchCriteria)->getItems();
+            $ret = count((array) $orderList) ? array_values($orderList)[0] : $ret;
+        } catch (Throwable $e) {
+            $this->loggingClient->error('Failed to get order '.$orderIncrementId, $e);
         }
         return $ret;
     }
@@ -198,7 +253,7 @@ class Order extends AbstractHelper
     }
 
     /**
-     * Format an EQ8 Score and orderId as a link, or return "NA" if either value is `null`
+     * Format an EQ8 Score and orderId as a link, or return 'NA' if either value is `null`
      * @param string orderId
      * @param int $eq8Score
      *
@@ -209,8 +264,9 @@ class Order extends AbstractHelper
         if (!isset($orderId) || !isset($eq8Score)) {
             return 'NA';
         }
-        // `page` must match `ClientPage.ORDER_DETAILS` in JS SDK
-        $link = $this->url->getNS8IframeUrl(['page' => 'ORDER_DETAILS', 'order_id' => $orderId]);
+        $link = $this->url->getNS8IframeUrl(
+            ['page' => ClientSdkClient::CLIENT_PAGE_ORDER_DETAILS, 'order_id' => $orderId]
+        );
         return '<a href="'.$link.'">'.$eq8Score.'</a>';
     }
 
@@ -250,5 +306,234 @@ class Order extends AbstractHelper
         }
 
         return $orderCollection;
+    }
+
+    /**
+     * Gets all the customer information
+     *
+     * @param OrderInterface $order
+     * @return array
+     */
+    private function getCustomerData(OrderInterface $order) : array
+    {
+        $customer = [];
+        try {
+            $customer = [
+                'dob' => $order->getCustomerDob(),
+                'email' => $order->getCustomerEmail(),
+                'first_name' => $order->getCustomerFirstname(),
+                'gender' => $order->getCustomerGender(),
+                'group_id' => $order->getCustomerGroupId(),
+                'customer_id' => $order->getCustomerId(),
+                'is_guest' => $order->getCustomerIsGuest(),
+                'last_name' => $order->getCustomerLastname(),
+                'middle_name' => $order->getCustomerMiddlename(),
+                'note' => $order->getCustomerNote(),
+                'note_notify' => $order->getCustomerNoteNotify(),
+                'prefix' => $order->getCustomerPrefix(),
+                'suffix' => $order->getCustomerSuffix(),
+                'tax_vat' => $order->getCustomerTaxvat(),
+            ];
+            $customerId = $order->getCustomerId();
+            if (!empty($customerId)) {
+                $customerObj = $this->customerRepositoryInterface->getById($customerId);
+            }
+            if (!empty($customerObj)) {
+                $customer['created_at'] = $customerObj->getCreatedAt();
+                $customer['updated_at'] = $customerObj->getUpdatedAt();
+            }
+        } catch (Throwable $e) {
+            $this->loggingClient->error('Failed to get Customer data', $e);
+        }
+        return $customer;
+    }
+
+    /**
+     * Gets the address for billing
+     *
+     * @param OrderInterface $order
+     * @return array
+     */
+    private function getBillingAddressData(OrderInterface $order) : array
+    {
+        $billingAddress = [];
+        try {
+            $billingAddressObj = $order->getBillingAddress();
+            if (!empty($billingAddressObj)) {
+                $billingAddress = $billingAddressObj->getData();
+                if (!empty($billingAddress['country_id'])) {
+                    $country = $this->countryFactory->create()->loadByCode($billingAddress['country_id']);
+                    $billingAddress['country'] = $country->getName();
+                }
+            }
+        } catch (Throwable $e) {
+            $this->loggingClient->error('Failed to get Billing Address data', $e);
+        }
+        return $billingAddress;
+    }
+
+    /**
+     * Gets the address for shipping
+     *
+     * @param OrderInterface $order
+     * @return array
+     */
+    private function getShippingAddressData(OrderInterface $order) : array
+    {
+        $shippingAddress = [];
+        try {
+            $shippingAddressObj = $order->getShippingAddress();
+            if (!empty($shippingAddressObj)) {
+                $shippingAddress = $shippingAddressObj->getData();
+                if (!empty($shippingAddress['country_id'])) {
+                    $country = $this->countryFactory->create()->loadByCode($shippingAddress['country_id']);
+                    $shippingAddress['country'] = $country->getName();
+                }
+            }
+        } catch (Throwable $e) {
+            $this->loggingClient->error('Failed to get Shipping Address data', $e);
+        }
+        return $shippingAddress;
+    }
+
+    /**
+     * Gets all the payment and transaction data associated with an order
+     *
+     * @param OrderInterface $order
+     * @return array
+     */
+    private function getPaymentData(OrderInterface $order) : array
+    {
+        $payment = [];
+        try {
+            $paymentObj = $order->getPayment();
+            if (!empty($paymentObj)) {
+                $payment = $paymentObj->getData();
+            }
+        } catch (Throwable $e) {
+            $this->loggingClient->error('Failed to get Payment data', $e);
+        }
+        return $payment;
+    }
+
+    /**
+     * Gets all the payment and transaction data associated with an order
+     *
+     * @param OrderInterface $order
+     * @return array
+     */
+    private function getTransactionData(OrderInterface $order) : array
+    {
+        $transactions = [];
+        try {
+            $transactionsItems = $this->transactionRepository->create()->addOrderIdFilter($order->getId());
+            $transactionsObj = $transactionsItems->getItems();
+            if (!empty($transactionsObj)) {
+                foreach ($transactionsObj as $item) {
+                    $itemData = $item->getData();
+                    array_push($transactions, $itemData);
+                }
+            }
+        } catch (Throwable $e) {
+            $this->loggingClient->error('Failed to get Transaction data', $e);
+        }
+        return $transactions;
+    }
+
+    /**
+     * Gets all line items associated with an order
+     *
+     * @param OrderInterface $order
+     * @return array
+     */
+    private function getItemsData(OrderInterface $order) : array
+    {
+        $items = [];
+        try {
+            $itemsObj = $order->getItems();
+            if (!empty($itemsObj)) {
+                foreach ($itemsObj as $item) {
+                    $itemData = $item->getData();
+                    if (!empty($itemData)) {
+                        $product = $this->productRepository->getById($itemData['product_id']);
+                        if (!empty($product)) {
+                            $productData = $product->getData();
+                            $itemData['name'] = $productData;
+                        }
+                        array_push($items, $itemData);
+                    }
+                }
+            }
+        } catch (Throwable $e) {
+            $this->loggingClient->error('Failed to get Line Items data', $e);
+        }
+        return $items;
+    }
+
+    /**
+     * Gets the complete history of status changes to an order
+     *
+     * @param OrderInterface $order
+     * @return array
+     */
+    public function getOrderHistoryData(OrderInterface $order) : array
+    {
+        $history = [];
+        try {
+            $historyObj = $order->getStatusHistories();
+            if (!empty($historyObj)) {
+                foreach ($historyObj as $item) {
+                    $historyData = [
+                    'comment' => $item->getComment(),
+                    'label' => $item->getStatusLabel(),
+                    'status' => $item->getStatus()
+                    ];
+                    array_push($history, $historyData);
+                }
+            }
+        } catch (Throwable $e) {
+            $this->loggingClient->error('Failed to get History data', $e);
+        }
+        return $history;
+    }
+
+    /**
+     * Gets all of the data associated with an order
+     *
+     * @param OrderInterface $order
+     * @return array
+     */
+    public function getAllOrderData(OrderInterface $order) : array
+    {
+        $completeOrder = [
+            'order' => $order->getData(),
+            'currentState' => $order->getState(),
+            'currentStatus' => $order->getStatus()
+        ];
+        $billingAddress = $this->getBillingAddressData($order);
+        if (!empty($billingAddress)) {
+            $completeOrder['billingAddress'] = $billingAddress;
+        }
+        $shippingAddress = $this->getShippingAddressData($order);
+        if (!empty($shippingAddress)) {
+            $completeOrder['shippingAddress'] = $shippingAddress;
+        }
+        $customer = $this->getCustomerData($order);
+        if (!empty($customer)) {
+            $completeOrder['customer'] = $customer;
+        }
+        $payment = $this->getPaymentData($order);
+        if (!empty($payment)) {
+            $completeOrder['payment'] = $payment;
+        }
+        $items = $this->getItemsData($order);
+        if (!empty($items)) {
+            $completeOrder['items'] = $items;
+        }
+        $transactions = $this->getTransactionData($order);
+        if (!empty($transactions)) {
+            $completeOrder['transactions'] = $transactions;
+        }
+        return $completeOrder;
     }
 }

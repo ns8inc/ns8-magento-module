@@ -1,52 +1,34 @@
-<?php if ($block->isActivated()) : ?>
-    <script type="text/javascript" src="<?= $block->url->getProtectJsSdkUrl() ?>"></script>
-    <script type="text/javascript">
-      require(['Protect'], function (Protect) {
-        // this isn't compiled, so we have to use old JS to work in old browsers
-        function navigateToMagentoOrderDetails(orderData) {
-          var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
-          window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
-        };
+<script type="text/javascript" src="<?= $block->url->getProtectClientSdkUrl() ?>"></script>
+<script type="text/javascript">
+  require(['Protect'], function (Protect) {
+    // this isn't compiled, so we have to use old JS to work in old browsers
+    function navigateToMagentoOrderDetails(orderData) {
+      var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
+      window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
+    };
 
-        var containerElId = 'ns8-protect-wrapper';
+    var containerElId = 'ns8-protect-wrapper';
 
-        var requestedPage = '<?= $block->getPageFromRequest(); ?>';
-        if (requestedPage === '') {
-          requestPage = Protect.ClientPage.DASHBOARD;
-        }
-        var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
+    var requestedPage = '<?= $block->getPageFromRequest(); ?>';
+    if (requestedPage === '') {
+      requestPage = Protect.ClientPage.DASHBOARD;
+    }
+    var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
 
-        var eventBinding = {};
-        eventBinding[Protect.EventName.ORDER_DETAIL_NAME_CLICK] = navigateToMagentoOrderDetails;
-        var clientConfig = new Protect.ClientConfig({
-          accessToken: '<?= $block->config->getAccessToken(); ?>',
-          protectClientUrl: '<?= $block->url->getClientUrl(); ?>',
-          eventBinding: eventBinding,
-          iFrameConfig: {
-            attachToId: containerElId,
-            classNames: ['ns8-protect-client-iframe'],
-          },
-        });
-        var protectClient = Protect.createClient(clientConfig);
-        protectClient.render(requestedPage, orderIncrementId);
-      });
-    </script>
-<?php endif ?>
+    var eventBinding = {};
+    eventBinding[Protect.EventName.ORDER_DETAIL_NAME_CLICK] = navigateToMagentoOrderDetails;
+    var clientConfig = new Protect.ClientConfig({
+      accessToken: '<?= $block->config->getAccessToken(); ?>',
+      protectClientUrl: '<?= $block->url->getClientUrl(); ?>',
+      eventBinding: eventBinding,
+      iFrameConfig: {
+        attachToId: containerElId,
+        classNames: ['ns8-protect-client-iframe'],
+      },
+    });
+    var protectClient = Protect.createClient(clientConfig);
+    protectClient.render(requestedPage, orderIncrementId);
+  });
+</script>
 
-<div id="ns8-protect-wrapper">
-    <?php if (!$block->isActivated()) : ?>
-        <h3>To Activate Your Integration, Follow These Steps:</h3>
-
-        <div class="activation-steps">
-            <ul>
-                <li>Log Into Your Magento Admin</li>
-                <li>Navigate to "System"</li>
-                <li>Navigate to "Integrations"</li>
-                <li>Find "NS8 Integration" line item</li>
-                <li>Click "Authorize" link</li>
-                <li>On the next screen, click the "Authorize" button</li>
-                <li>If you have Full Page Caching enabled, clear your Full Page Caching</li>
-            </ul>
-        </div>
-    <?php endif ?>
-</div>
+<div id="ns8-protect-wrapper"></div>

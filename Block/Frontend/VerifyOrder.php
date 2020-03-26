@@ -14,8 +14,7 @@ use Magento\Framework\Data\Form\FormKey;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use NS8\Protect\Helper\Config;
-use NS8\ProtectSDK\Http\Client as HttpClient;
-use RuntimeException;
+use NS8\ProtectSDK\Templates\Client as TemplatesClient;
 use SimpleXMLElement;
 use Zend\Uri\Http as Uri;
 
@@ -26,13 +25,6 @@ use Zend\Uri\Http as Uri;
  */
 class VerifyOrder extends Template
 {
-    /**
-     * The HTTP client helper.
-     *
-     * @var HttpClient
-     */
-    protected $httpClient;
-
     /**
      * The Config helper.
      *
@@ -46,6 +38,13 @@ class VerifyOrder extends Template
      * @var FormKey
      */
     protected $formKey;
+
+    /**
+     * The Templates client.
+     *
+     * @var TemplatesClient
+     */
+    protected $templatesClient;
 
     /**
      * The HTTP request.
@@ -75,7 +74,7 @@ class VerifyOrder extends Template
         $this->config = $config;
         $this->formKey = $formKey;
         $this->config->initSdkConfiguration();
-        $this->httpClient = new HttpClient();
+        $this->templatesClient = new TemplatesClient();
     }
 
     /**
@@ -84,26 +83,14 @@ class VerifyOrder extends Template
      * There's a lot of hardcoded Shopify-specific stuff in the templates that the service spits out, so we need to
      * hack them up a bit to get them to work in Magento. We really need to fix it up in the Template Service.
      *
-     * @throws RuntimeException If a valid view was not specified in the URL
-     *
      * @return string The template (HTML)
      */
     public function getNS8TemplateHtml(): string
     {
         $params = $this->request->getParams();
+        $postParams = $this->request->isPost() ? (array)$this->request->getPost() : null;
 
-        $validViews = [
-            'orders-reject',
-            'orders-reject-confirm',
-            'orders-validate',
-            'orders-validate-code',
-        ];
-
-        if (!in_array($params['view'] ?? null, $validViews)) {
-            throw new RuntimeException('No valid view was specified in the URL');
-        }
-
-        $params['returnUri'] = implode('/', [
+        $returnUri = implode('/', [
             $this->getBaseUrl(),
             'ns8protect',
             'order',
@@ -114,16 +101,18 @@ class VerifyOrder extends Template
             'view', ':view',
         ]);
 
-        if ($this->request->isPost()) {
-            $postFields = array_merge($params, (array)$this->request->getPost());
-            $response = $this->httpClient->post('/merchant/template', $postFields);
-        } else {
-            $response = $this->httpClient->get(sprintf('/merchant/template?%s', http_build_query($params)));
-        }
+        $template = $this->templatesClient->get(
+            $params['view'],
+            $params['orderId'],
+            $params['token'],
+            $params['verificationId'],
+            $returnUri,
+            $postParams
+        );
 
-        return isset($response->location)
-            ? $this->redirect($response->location)
-            : $this->fixForm($response->html);
+        return isset($template->location)
+            ? $this->redirect($template->location)
+            : $this->fixForm($template->html);
     }
 
     /**

@@ -126,12 +126,11 @@ class OrderUpdate implements ObserverInterface
     public function execute(Observer $observer) : void
     {
         try {
-            $order = $observer->getEvent()->getOrder();
-            $orderData = $order->getData();
-            $params = [];
-            $state = $order->getState();
-            $status = $order->getStatus();
-            $oldStatus = $this->addStatusHistory($order);
+            $currentOrder = $observer->getEvent()->getOrder();
+            $orderData = $this->orderHelper->getAllOrderData($currentOrder);
+            $state = $currentOrder->getState();
+            $status = $currentOrder->getStatus();
+            $oldStatus = $this->addStatusHistory($currentOrder);
             $isNew = $state == 'new' || $status == 'pending';
             $action = ActionsClient::CREATE_ORDER_ACTION;
 
@@ -141,21 +140,26 @@ class OrderUpdate implements ObserverInterface
                 // this order is new or not. This logic ensures that we treat the order as new by first testing if
                 // we already have a score.
                 try {
-                    $eq8Score = $order->getData(Order::EQ8_SCORE_COL);
+                    $eq8Score = $currentOrder->getData(Order::EQ8_SCORE_COL);
                     // If we haven't cached the EQ8 Score, get it now
                     if (!isset($eq8Score)) {
                         // This will fail if the order does not exist, and we'll remain in a CREATE_ORDER_ACTION state
-                        $this->orderHelper->getEQ8Score($order->getId());
+                        $this->orderHelper->getEQ8Score($currentOrder->getId());
                     }
                     $action = ActionsClient::UPDATE_ORDER_STATUS_ACTION;
                 } catch (Throwable $e) {
                     $this->loggingClient->error('Could not retrieve the EQ8 Score', $e);
                 }
             }
-
+            $statusHistory = $this->orderHelper->getOrderHistoryData($currentOrder);
+            if (isset($statusHistory)) {
+                $orderData['statusHistory'] = $statusHistory;
+            }
+            // Version our changes to this data structure
+            $orderData['ns8_version'] = 2;
             $this->config->initSdkConfiguration();
-            $actionData = ['order' => $orderData, 'session' => $this->sessionHelper->getSessionData()];
-            ActionsClient::setAction($action, $actionData);
+            $orderData['session'] = $this->sessionHelper->getSessionData();
+            ActionsClient::setAction($action, $orderData);
         } catch (Throwable $e) {
             $this->loggingClient->error('The order update could not be processed', $e);
         }
