@@ -14,11 +14,11 @@
     }
   },
   "description": "",
-  "license": "MIT",
+  "license": "proprietary",
   "minimum-stability": "dev",
   "name": "ns8/protect-magento",
   "require": {
-    "ns8/protect-sdk": "^0.0.28",
+    "ns8/protect-sdk": "^0.0.31",
     "php": "^7.1.3"
   },
   "require-dev": {
@@ -31,5 +31,6 @@
     "lint-fix": "phpcbf --extensions=php --ignore=/vendor --standard=Magento2 ."
   },
   "suggest": {},
-  "type": "magento2-module"
+  "type": "magento2-module",
+  "version": "2.4.2"
 }

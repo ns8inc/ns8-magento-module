@@ -18,6 +18,7 @@ use Magento\Integration\Api\IntegrationServiceInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\Url;
+use NS8\ProtectSDK\ClientSdk\Client as ClientSdkClient;
 
 /**
  * The Container class.
@@ -113,7 +114,7 @@ class Container extends Template
         $page = (string)$this->request->getParam('page');
         $orderIncrementId = $this->getOrderIncrementIdFromRequest();
         if (empty($page) && !empty($orderIncrementId)) {
-            $page = 'ORDER_DETAILS';
+            $page = ClientSdkClient::CLIENT_PAGE_ORDER_DETAILS;
         }
 
         return $page;
@@ -128,17 +129,5 @@ class Container extends Template
     {
         $orderId = $this->request->getParam('order_id');
         return $orderId ? $this->order->getOrderIncrementId($orderId) : '';
-    }
-
-    /**
-     * Check whether the NS8 Protect extension is activated.
-     *
-     * @return bool True if activated, False otherwise.
-     */
-    public function isActivated(): bool
-    {
-        $integration = $this->integrationService->findByName(Config::NS8_INTEGRATION_NAME);
-
-        return $integration->getStatus() === $integration::STATUS_ACTIVE;
     }
 }

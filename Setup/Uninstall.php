@@ -6,22 +6,15 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UninstallInterface;
 use Magento\Integration\Api\IntegrationServiceInterface;
 use NS8\Protect\Helper\Config;
-use NS8\ProtectSDK\Http\Client as HttpClient;
-use NS8\ProtectSDK\Logging\Client as LoggingClient;
 use NS8\ProtectSDK\Actions\Client as ActionsClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
+use NS8\ProtectSDK\Uninstaller\Client as UninstallerClient;
 
 /**
  * Uninstall the Protect extension completely
  */
 class Uninstall implements UninstallInterface
 {
-    /**
-     * The HTTP client.
-     *
-     * @var HttpClient
-     */
-    protected $httpClient;
-
     /**
      * The Config helper.
      *
@@ -46,16 +39,15 @@ class Uninstall implements UninstallInterface
     /**
      * Default constructor
      *
-     * @param IntegrationServiceInterface $integrationService,
      * @param Config $config
+     * @param IntegrationServiceInterface $integrationService,
      */
     public function __construct(
-        IntegrationServiceInterface $integrationService,
-        Config $config
+        Config $config,
+        IntegrationServiceInterface $integrationService
     ) {
-        $this->integrationService = $integrationService;
-        $this->httpClient = new HttpClient();
         $this->config = $config;
+        $this->integrationService = $integrationService;
         $this->loggingClient = new LoggingClient();
     }
 
@@ -67,9 +59,9 @@ class Uninstall implements UninstallInterface
         try {
             $setup->startSetup();
             $this->config->initSdkConfiguration();
-            $params = ['action'=>ActionsClient::UNINSTALL_ACTION];
-            $response = $this->httpClient->post('/switch/executor', [], $params);
+            UninstallerClient::uninstall();
             $integration = $this->integrationService->findByName(Config::NS8_INTEGRATION_NAME);
+
             if ($integration) {
                 $integration->delete();
             }

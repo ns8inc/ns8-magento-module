@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+  <group id="ns8protect">
+      <job name="ns8protect_order" instance="NS8\Protect\Cron\Order" method="execute">
+          <schedule>*/15 * * * *</schedule>
+      </job>
+  </group>
+</config>

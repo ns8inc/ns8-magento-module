@@ -204,7 +204,7 @@ class Config extends AbstractHelper
         $protectAccessToken = $this->getProtectAccessToken($consumer->getKey(), $accessToken);
 
         if (isset($protectAccessToken)) {
-            $this->setAccessToken($protectAccessToken);
+            $this->setEncryptedConfigValue('ns8/protect/token', $protectAccessToken);
             $storedToken = $protectAccessToken;
         }
 
@@ -212,13 +212,15 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Save an access token.
-     * @param string $accessToken
+     * Saves a Magento configurable value in an encrypted format
+     *
+     * @param string $key The key of the configurable value
+     * @param string $value The value we want to store and encrypt for the configurable value
      * @return void
      */
-    public function setAccessToken(string $accessToken): void
+    public function setEncryptedConfigValue(string $key, string $value): void
     {
-        $this->scopeWriter->save('ns8/protect/token', $this->encryptor->encrypt($accessToken));
+        $this->scopeWriter->save($key, $this->encryptor->encrypt($value));
         $this->flushCaches();
     }
 
@@ -353,12 +355,17 @@ class Config extends AbstractHelper
 
     /**
      * Init SDK Configuration class for usage
+     *
+     * @param bool $isAuthInfoRequired Implies if the SDK should be configured to required authorization information
+     *
+     * @return voice
      */
-    public function initSdkConfiguration() : void
+    public function initSdkConfiguration(bool $isAuthInfoRequired = true) : void
     {
         SdkConfigManager::initConfiguration();
         $sdkEnv = SdkConfigManager::getEnvironment();
         SdkConfigManager::setValue('platform_version', 'Magento');
+        SdkConfigManager::setValue(sprintf('%s.authorization.required', $sdkEnv), $isAuthInfoRequired);
         SdkConfigManager::setValue(sprintf('%s.authorization.auth_user', $sdkEnv), $this->getAuthenticatedUserName());
         SdkConfigManager::setValue(sprintf('%s.authorization.access_token', $sdkEnv), (string) $this->getAccessToken());
     }

@@ -3,7 +3,7 @@
   xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
   <!-- prompts magento to render the EQ8 column -->
   <columns name="sales_order_columns">
-    <column name="eq8_score"
+    <column name="protect_eq8_score"
       class="NS8\Protect\Ui\Component\Listing\Column\EQ8Score">
       <argument name="data"
         xsi:type="array">
