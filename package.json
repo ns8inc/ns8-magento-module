@@ -1,0 +1,26 @@
+{
+  "author": "ns8inc",
+  "dependencies": {
+    "@ns8/protect-tools-js": "0.0.7"
+  },
+  "description": "Protect Integration with Magento Platform",
+  "devDependencies": {
+    "typescript": "3.8.3"
+  },
+  "files": [],
+  "license": "UNLICENSED",
+  "main": "",
+  "name": "@ns8/protect-magento",
+  "private": true,
+  "scripts": {
+    "beautify": "ts-node -P ./build/tsconfig.json ./build/projectBuild.ts",
+    "build": "yarn beautify && composer install",
+    "clean": "rm -rf vendor",
+    "deploy": "ts-node -P ./build/tsconfig.json ./build/moduleDeploy.ts",
+    "lint": "phpcs --standard=Magento2 --ignore='*/vendor/*,*.min.js' ./",
+    "release": "NODE_ENV=prod && ts-node -P ./build/tsconfig.json ./build/moduleRelease.ts",
+    "setversion": "ts-node build/setMagentoVersion.ts"
+  },
+  "types": "dist/types/index.d.ts",
+  "version": "2.4.2"
+}
