@@ -14,6 +14,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\CustomStatus;
 use NS8\Protect\Helper\Order;
+use NS8\ProtectSDK\Installer\Client as InstallerClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
 /**
