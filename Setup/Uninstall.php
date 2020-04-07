@@ -33,9 +33,7 @@ class Uninstall implements UninstallInterface
      *
      * @param Config $config
      */
-    public function __construct(
-        Config $config
-    ) {
+    public function __construct(Config $config) {
         $this->config = $config;
         $this->loggingClient = new LoggingClient();
     }
