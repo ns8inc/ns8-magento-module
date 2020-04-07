@@ -9,7 +9,6 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\UrlInterface;
-use Magento\Integration\Model\ConfigBasedIntegrationManager;
 use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\CustomStatus;
@@ -33,13 +32,6 @@ class Setup extends AbstractHelper
      * @var CustomStatus
      */
     protected $customStatus;
-
-    /**
-     * The config-based integration manager.
-     *
-     * @var ConfigBasedIntegrationManager
-     */
-    protected $integrationManager;
 
     /**
      * The logging client.
@@ -77,7 +69,6 @@ class Setup extends AbstractHelper
 
     /**
      * @param Config $config
-     * @param ConfigBasedIntegrationManager $integrationManager
      * @param CustomStatus $customStatus
      * @param Registry $registry
      * @param ScopeConfigInterface $scopeConfig
@@ -85,7 +76,6 @@ class Setup extends AbstractHelper
      */
     public function __construct(
         Config $config,
-        ConfigBasedIntegrationManager $integrationManager,
         CustomStatus $customStatus,
         Registry $registry,
         ScopeConfigInterface $scopeConfig,
@@ -93,7 +83,6 @@ class Setup extends AbstractHelper
     ) {
         $this->config = $config;
         $this->customStatus = $customStatus;
-        $this->integrationManager = $integrationManager;
         $this->scopeConfig = $scopeConfig;
         $this->registry = $registry;
         $this->storeManager = $storeManager;
@@ -116,8 +105,6 @@ class Setup extends AbstractHelper
 
             // Create or update our custom statuses using the current mode
             $this->customStatus->setCustomStatuses('Running Data '.$mode);
-            // Run the base integration config method. This does not trigger activation.
-            $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
 
             // Dispatch event to NS8 Protect that module has been installed/upgraded
             if (!$this->scopeConfig->getValue('ns8/protect/token')

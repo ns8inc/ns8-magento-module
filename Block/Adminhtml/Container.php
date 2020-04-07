@@ -14,7 +14,6 @@ use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\View\Result\PageFactory;
-use Magento\Integration\Api\IntegrationServiceInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\Url;
@@ -47,13 +46,6 @@ class Container extends Template
     protected $context;
 
     /**
-     * The integration service.
-     *
-     * @var IntegrationServiceInterface
-     */
-    protected $integrationService;
-
-    /**
      * The request.
      *
      * @var Http
@@ -80,7 +72,6 @@ class Container extends Template
      * @param Config $config
      * @param Context $context The context
      * @param Http $request The request
-     * @param IntegrationServiceInterface $integrationService The integration service
      * @param Order $order The order helper
      * @param PageFactory $resultPageFactory The page factory
      * @param Url $url URL helper class
@@ -89,7 +80,6 @@ class Container extends Template
         Config $config,
         Context $context,
         Http $request,
-        IntegrationServiceInterface $integrationService,
         Order $order,
         PageFactory $resultPageFactory,
         Url $url
@@ -97,7 +87,6 @@ class Container extends Template
         parent::__construct($context);
         $this->config = $config;
         $this->context = $context;
-        $this->integrationService = $integrationService;
         $this->order = $order;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
