@@ -15,8 +15,6 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
 use Magento\Framework\ObjectManager\ContextInterface;
-use Magento\Integration\Api\IntegrationServiceInterface;
-use Magento\Integration\Api\OauthServiceInterface;
 use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 use NS8\ProtectSDK\Security\Client as SecurityClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
@@ -40,11 +38,6 @@ class Config extends AbstractHelper
     const NS8_ENV_NAME_CLIENT_URL = 'NS8_CLIENT_URL';
 
     /**
-     * The canonical name of the Magento Service Integration
-     */
-    const NS8_INTEGRATION_NAME = 'NS8 Protect';
-
-    /**
      * The canonical name of the Magento extension/module name
      */
     const NS8_MODULE_NAME = 'NS8_Protect';
@@ -65,11 +58,6 @@ class Config extends AbstractHelper
     protected $encryptor;
 
     /**
-     * @var IntegrationServiceInterface
-     */
-    protected $integrationService;
-
-    /**
      * @var LoggingClient
      */
     protected $loggingClient;
@@ -78,11 +66,6 @@ class Config extends AbstractHelper
      * @var ModuleList
      */
     protected $moduleList;
-
-    /**
-     * @var OauthServiceInterface
-     */
-    protected $oauthService;
 
     /**
      * @var ProductMetadataInterface
@@ -124,9 +107,7 @@ class Config extends AbstractHelper
      *
      * @param Context $context
      * @param EncryptorInterface $encryptor
-     * @param IntegrationServiceInterface $integrationService
      * @param ModuleList $moduleList
-     * @param OauthServiceInterface $oauthService
      * @param Pool $cacheFrontendPool
      * @param ProductMetadataInterface $productMetadata
      * @param RequestInterface $request
@@ -138,9 +119,7 @@ class Config extends AbstractHelper
     public function __construct(
         Context $context,
         EncryptorInterface $encryptor,
-        IntegrationServiceInterface $integrationService,
         ModuleList $moduleList,
-        OauthServiceInterface $oauthService,
         Pool $cacheFrontendPool,
         ProductMetadataInterface $productMetadata,
         RequestInterface $request,
@@ -151,8 +130,6 @@ class Config extends AbstractHelper
     ) {
         $this->context = $context;
         $this->encryptor = $encryptor;
-        $this->integrationService = $integrationService;
-        $this->oauthService = $oauthService;
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
         $this->request = $request;
@@ -183,32 +160,13 @@ class Config extends AbstractHelper
     }
 
     /**
-        // TODO: this needs to be more robust. Circle back and bullet proof this with backing tests.
-        $ret = join('/', $segments).'/order_id';
      * Retrieve an access token.
      *
      * @return string|null The NS8 Protect Access Token.
      */
     public function getAccessToken(): ?string
     {
-        $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/protect/token'));
-
-        if (!empty($storedToken)) {
-            return $storedToken;
-        }
-
-        $consumerId = $this->integrationService->findByName(self::NS8_INTEGRATION_NAME)->getConsumerId();
-        $consumer = $this->oauthService->loadConsumer($consumerId);
-        $accessTokenString = $this->oauthService->getAccessToken($consumerId);
-        $accessToken = $this->extractOauthTokenFromAuthString($accessTokenString);
-        $protectAccessToken = $this->getProtectAccessToken($consumer->getKey(), $accessToken);
-
-        if (isset($protectAccessToken)) {
-            $this->setEncryptedConfigValue('ns8/protect/token', $protectAccessToken);
-            $storedToken = $protectAccessToken;
-        }
-
-        return $storedToken;
+        return $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/protect/token'));
     }
 
     /**
