@@ -22,9 +22,7 @@ jobs:
             git config user.name 'CircleCI'
           name: Setup Git
       - run:
-          command: |
-            apt-get update
-            apt-get install -y jq
+          command: apt-get install -y jq
           name: Install JQ
       - run:
           command: |
@@ -60,9 +58,7 @@ jobs:
           name: Install Git
       - checkout
       - run:
-          command: |
-            apt-get update
-            apt-get install -y python zip
+          command: apt-get install -y python zip
           name: Install Tools
       - run:
           command: zip -r9 NS8_Protect.zip .
