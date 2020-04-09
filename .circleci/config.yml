@@ -11,30 +11,58 @@ jobs:
       - checkout
       - run:
           command: |
-            git config user.email noreply@ns8.com
-            git config user.name 'CircleCI'
-          name:
-            Setup Git
+            set +eo pipefail
+            if git log | head -n 2 | tail -n 1 | grep 'Author: CircleCI'; then
+              circleci step halt
+            fi
+          name: Skip if CI Made the Last Commit
       - run:
           command: |
-            version=$(git tag -l | sort -V | tail -n 1 | awk -F . '{$NF+=1; print $0}' OFS=".") # Find highest version tag
-            version="${version:-0.0.0}" # If the repo has no tags, default the initial version to 0.0.0
-            git tag $version
-            if ! git push origin $version; then
+            git config user.email noreply@ns8.com
+            git config user.name 'CircleCI'
+          name: Setup Git
+      - run:
+          command: |
+            apt-get update
+            apt-get install -y jq
+          name: Install JQ
+      - run:
+          command: |
+            version=$(jq -r .version composer.json | awk -F . '{$NF+=1; print $0}' OFS=".")
+            jq -r ".version |= \"$version\"" composer.json > composer.json-new
+            mv composer.json-new composer.json
+            git add composer.json
+            git commit -m "v$version"
+            git tag $version -am "v$version"
+          name: Bump Version
+      - run:
+          command: |
+            if ! git push -u origin master --follow-tags; then
               echo "Push failed. Please delete and re-add this CircleCI deploy key to your repo with write access:"
               ssh-keygen -y -f ~/.ssh/id_rsa
               exit 1
             fi
-          name: Bump Version
+          name: Tag Release in GitHub
+      - run:
+          command: |
+            git checkout dev
+            git merge -m 'Merge branch `master` into `dev`' master
+            git push origin dev
+          name: Merge Changes Back to Development Branch
   publish:
     docker:
-      - image: node:12
+      - image: php:7.3-cli
     steps:
+      - run:
+          command: |
+            apt-get update
+            apt-get install -y git
+          name: Install Git
       - checkout
       - run:
           command: |
             apt-get update
-            apt-get install -y zip
+            apt-get install -y python zip
           name: Install Tools
       - run:
           command: zip -r9 NS8_Protect.zip .
@@ -63,6 +91,13 @@ jobs:
             apt-get install -y git
           name: Install Git
       - checkout
+      - run:
+          command: |
+            set +eo pipefail
+            if git log | head -n 2 | tail -n 1 | grep 'Author: CircleCI'; then
+              circleci step halt
+            fi
+          name: Skip if CI Made the Last Commit
       - run:
           command: apt-get install -y unzip wget
           name: Install Tools
