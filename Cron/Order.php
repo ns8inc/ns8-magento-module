@@ -143,7 +143,7 @@ class Order
 
         $isActionSuccessful = false;
         switch ($newStatus) {
-            case NS8Order::CANCELED_STATE:
+            case NS8Order::CANCELLED_STATE:
                 $isActionSuccessful = $this->cancelOrder($order);
                 break;
             case NS8Order::APPROVED_STATE:
@@ -178,7 +178,7 @@ class Order
             }
 
             $order->cancel();
-            $this->addOrderComment($order, NS8Order::CANCELED_STATE, self::ORDER_CANCELED_COMMENT);
+            $this->addOrderComment($order, NS8Order::CANCELLED_STATE, self::ORDER_CANCELED_COMMENT);
             return true;
         } catch (\Exception $e) {
             $this->loggingClient->error(
