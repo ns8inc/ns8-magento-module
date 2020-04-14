@@ -134,7 +134,7 @@ class Setup extends AbstractHelper
                     $connection->update(
                         $tableName,
                         [$currentEq8Col => new \Zend_Db_Expr(sprintf('%s.%s', $tableName, 'eq8_score'))],
-                        ['? IS NULL' => new \Zend_Db_Expr(sprintf('%s.%s', $tableName, $currentEq8Col))],
+                        ['? IS NULL' => new \Zend_Db_Expr(sprintf('%s.%s', $tableName, $currentEq8Col))]
                     );
                 }
             }
