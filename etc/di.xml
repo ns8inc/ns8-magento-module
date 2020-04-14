@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+  <preference for="NS8\Protect\Api\OrderScoreInterface"
+    type="NS8\Protect\Model\OrderScore" />
+    <!-- extending vendor/magento/module-sales/etc/di.xml -->
+    <virtualType name="Magento\Sales\Model\ResourceModel\Order\Grid">
+        <arguments>
+            <argument name="columns" xsi:type="array">
+                <item name="eq8_score" xsi:type="string">sales_order.eq8_score</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="NS8\Protect\Helper\Order">
+        <arguments>
+            <argument name="salesOrderGrid" xsi:type="object">Magento\Sales\Model\ResourceModel\Order\Grid</argument>
+        </arguments>
+    </type>
+</config>
