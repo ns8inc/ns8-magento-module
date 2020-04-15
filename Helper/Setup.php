@@ -99,10 +99,10 @@ class Setup extends AbstractHelper
      */
     public function upgradeData(string $mode, ModuleDataSetupInterface $setup, ModuleContextInterface $context) : void
     {
-        try {
-            //Essential step.
-            $setup->startSetup();
+        //Essential step.
+        $setup->startSetup();
 
+        try {
             // Create or update our custom statuses using the current mode
             $this->customStatus->setCustomStatuses('Running Data '.$mode);
 
@@ -118,7 +118,7 @@ class Setup extends AbstractHelper
                 ];
 
                 $installResult = InstallerClient::install('magento', $installRequestData);
-                $this->config->setEncryptedConfigValue('ns8/protect/token', $installResult['accessToken']);
+                $this->config->setEncryptedConfigValue(Config::ACCESS_TOKEN_CONFIG_KEY, $installResult['accessToken']);
                 // Set a registry value so we do not attempt to fetch the token a second time
                 // if config value has not been saved yet
                 $this->registry->register(self::ACCESS_TOKEN_SET_KEY, true);
@@ -140,6 +140,7 @@ class Setup extends AbstractHelper
             }
         } catch (Throwable $e) {
             $this->loggingClient->error("Protect $mode failed", $e);
+            throw $e;
         } finally {
             //Essential step.
             $setup->endSetup();
@@ -156,10 +157,9 @@ class Setup extends AbstractHelper
      */
     public function upgradeSchema(string $mode, SchemaSetupInterface $setup, ModuleContextInterface $context) : void
     {
+        //Essential step.
+        $setup->startSetup();
         try {
-            //Essential step.
-            $setup->startSetup();
-
             // Create or update our custom statuses using the current mode
             $this->customStatus->setCustomStatuses('Running Schema '.$mode);
 
@@ -194,6 +194,7 @@ class Setup extends AbstractHelper
             );
         } catch (Throwable $e) {
             $this->loggingClient->error("Protect $mode failed", $e);
+            throw $e;
         } finally {
             //Essential step.
             $setup->endSetup();

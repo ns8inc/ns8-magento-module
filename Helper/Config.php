@@ -28,16 +28,6 @@ use Zend\Uri\Uri;
 class Config extends AbstractHelper
 {
     /**
-     * The Environment Variable name for development Protect API URL value
-     */
-    const NS8_ENV_NAME_API_URL = 'NS8_PROTECT_URL';
-
-    /**
-     * The Environment Variable name for development Client API URL value
-     */
-    const NS8_ENV_NAME_CLIENT_URL = 'NS8_CLIENT_URL';
-
-    /**
      * The canonical name of the Magento extension/module name
      */
     const NS8_MODULE_NAME = 'NS8_Protect';
@@ -47,6 +37,8 @@ class Config extends AbstractHelper
      */
     const DEFAULT_AUTH_USER = 'default';
 
+    const ACCESS_TOKEN_CONFIG_KEY = 'ns8/protect/token';
+    
     /**
      * @var Context
      */
@@ -166,7 +158,7 @@ class Config extends AbstractHelper
      */
     public function getAccessToken(): ?string
     {
-        return $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/protect/token'));
+        return $this->encryptor->decrypt($this->scopeConfig->getValue(self::ACCESS_TOKEN_CONFIG_KEY));
     }
 
     /**
@@ -254,61 +246,6 @@ class Config extends AbstractHelper
     public function isAllowed(ContextInterface $context)
     {
         return $context->getAuthorization()->isAllowed(self::NS8_MODULE_NAME.'::admin');
-    }
-
-    /**
-     * Auth string has a format of oauth_token=ABC&oauth_token_secret=XYZ. This method
-     * extracts the oauth_token string.
-     *
-     * @param string $authString
-     *
-     * @return string|null Oauth access token.
-     */
-    private function extractOauthTokenFromAuthString(string $accessTokenString = null) : ?string
-    {
-        $this->uri->setQuery($accessTokenString);
-        $parsedToken = $this->uri->getQueryAsArray();
-
-        return $parsedToken['oauth_token'] ?? null;
-    }
-
-    /**
-     * Call protect endpoint to exchange Magento creds for a protect access token.
-     *
-     * @param string $consumerKey
-     * @param string $accessToken
-     *
-     * @return string|null Protect access token.
-     */
-    private function getProtectAccessToken(string $consumerKey = null, string $accessToken = null) : ?string
-    {
-        $client = new Client();
-        $url = SdkConfigManager::getEnvValue('urls.client_url') . '/api/init/magento/access-token';
-        $client->setUri($url);
-        $client->setMethod('GET');
-
-        $client->setParameterGet([
-            'access_token' => $accessToken,
-            'authorization' => $accessToken,
-            'oauth_consumer_key' => $consumerKey,
-        ]);
-
-        $client->setHeaders([
-            'extension-version' => $this->getProtectVersion(),
-            'magento-version' => $this->getMagentoVersion(),
-        ]);
-
-        try {
-            $response = Decoder::decode($client->send()->getBody());
-        } catch (Throwable $e) {
-            $this->loggingClient->error('Failed to execute API call', $e);
-        }
-
-        if (!isset($response) || !isset($response->token)) {
-            return null;
-        }
-
-        return $response->token;
     }
 
     /**
