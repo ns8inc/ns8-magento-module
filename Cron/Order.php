@@ -105,7 +105,10 @@ class Order
                 continue;
             }
 
-            $this->orderHelper->setEQ8Score((int) $messageData['score'], $order);
+            if (!is_null($messageData['score']) && $messageData['score'] !== '') {
+                $this->orderHelper->setEQ8Score((int) $messageData['score'], $order);
+            }
+
             $isActionSuccessful = $this->processOrderStatusUpdate($order, $messageData['status']);
             if ($isActionSuccessful) {
                 $order->save();
