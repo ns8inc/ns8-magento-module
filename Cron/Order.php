@@ -105,7 +105,7 @@ class Order
                 continue;
             }
 
-            if (!is_null($messageData['score']) && $messageData['score'] !== '') {
+            if ($messageData['score'] !== null && $messageData['score'] !== '') {
                 $this->orderHelper->setEQ8Score((int) $messageData['score'], $order);
             }
 
