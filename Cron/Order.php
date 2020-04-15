@@ -105,21 +105,11 @@ class Order
                 continue;
             }
 
-            switch ($messageData['action']) {
-                case QueueClient::MESSAGE_ACTION_UPDATE_EQ8_SCORE:
-                    $this->orderHelper->setEQ8Score((int) $messageData['score'], $order);
-                    QueueClient::deleteMessage($messageData['receipt_handle']);
-                    break;
-                case QueueClient::MESSAGE_ACTION_UPDATE_ORDER_STATUS_EVENT:
-                    $isActionSuccessful = $this->processOrderStatusUpdate($order, $messageData['status']);
-                    if ($isActionSuccessful) {
-                        $order->save();
-                        QueueClient::deleteMessage($messageData['receipt_handle']);
-                    }
-                    break;
-                default:
-                    $this->loggingClient->error(sprintf('Unrecognized action in message: %s', $messageData['action']));
-                    break;
+            $this->orderHelper->setEQ8Score((int) $messageData['score'], $order);
+            $isActionSuccessful = $this->processOrderStatusUpdate($order, $messageData['status']);
+            if ($isActionSuccessful) {
+                $order->save();
+                QueueClient::deleteMessage($messageData['receipt_handle']);
             }
 
         }
@@ -138,7 +128,7 @@ class Order
         $currentOrderState = $order->getState();
         if (in_array($currentOrderState, self::INACTIVE_ORDER_STATES)) {
             $this->loggingClient->info('Attempting to update an order not in an active state.');
-            return false;
+            return true;
         }
 
         $isActionSuccessful = false;
