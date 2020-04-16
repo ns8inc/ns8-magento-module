@@ -29,7 +29,8 @@ jobs:
             version=$(jq -r .version composer.json | awk -F . '{$NF+=1; print $0}' OFS=".")
             jq -r ".version |= \"$version\"" composer.json > composer.json-new
             mv composer.json-new composer.json
-            git add composer.json
+            sed -i "s/setup_version=\".*\"/setup_version=\"$version\"/" etc/module.xml
+            git add composer.json etc/module.xml
             git commit -m "v$version"
             git tag $version -am "v$version"
           name: Bump Version
