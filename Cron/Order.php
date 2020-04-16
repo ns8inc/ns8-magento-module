@@ -307,8 +307,8 @@ class Order
             $orderFetchCount++;
             // phpcs:ignore
             sleep(self::ORDER_FETCH_SLEEP_TIME);
-        } while ($orderFetchCount <= self::MAX_ORDER_FETCH_ATTEMPTS);
+        } while ($orderFetchCount < self::MAX_ORDER_FETCH_ATTEMPTS);
 
-        return $order;
+        return null;
     }
 }
