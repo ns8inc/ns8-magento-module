@@ -7,7 +7,7 @@
     <virtualType name="Magento\Sales\Model\ResourceModel\Order\Grid">
         <arguments>
             <argument name="columns" xsi:type="array">
-                <item name="eq8_score" xsi:type="string">sales_order.eq8_score</item>
+                <item name="protect_eq8_score" xsi:type="string">sales_order.protect_eq8_score</item>
             </argument>
         </arguments>
     </virtualType>
