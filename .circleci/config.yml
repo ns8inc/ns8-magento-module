@@ -58,7 +58,7 @@ jobs:
           name: Install Git
       - checkout
       - run:
-          command: apt-get install -y python zip
+          command: apt-get install -y jq python zip
           name: Install Tools
       - run:
           command: zip -r9 NS8_Protect.zip .
@@ -68,7 +68,7 @@ jobs:
           name: Create Symlink for AWS CLI
       - run:
           command: |
-            version=$(git tag -l | sort -V | tail -n1)
+            version=$(jq -r .version composer.json)
             echo "export VERSION=$version" >> $BASH_ENV
           name: Get Version
       - aws-s3/copy:
