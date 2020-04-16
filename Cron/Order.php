@@ -41,6 +41,16 @@ class Order
     const SLEEP_TIME = 5;
 
     /**
+     * Number of times we try to fetch an order by increment ID
+     */
+    const MAX_ORDER_FETCH_ATTEMPTS = 3;
+
+    /**
+     * Number of seconds to wait before repeating a request for fetching an order
+     */
+    const ORDER_FETCH_SLEEP_TIME = 2;
+
+    /**
      * @var OrderHelper
      */
     protected $orderHelper;
@@ -99,20 +109,27 @@ class Order
     {
         foreach ($messages as $messageData) {
             // Update order details based on message
-            $order =  $this->orderHelper->getOrderByIncrementId($messageData['orderId']);
+            $order =  $this->getOrderByIncrementId($messageData['orderId']);
             if (!$order || !$order->getId()) {
                 $this->loggingClient->error(sprintf('Unable to fetch order %s', $messageData['orderId']));
                 continue;
             }
 
-            if ($messageData['score'] !== null && $messageData['score'] !== '') {
-                $this->orderHelper->setEQ8Score((int) $messageData['score'], $order);
-            }
-
-            $isActionSuccessful = $this->processOrderStatusUpdate($order, $messageData['status']);
-            if ($isActionSuccessful) {
-                $order->save();
-                QueueClient::deleteMessage($messageData['receipt_handle']);
+            switch ($messageData['action']) {
+                case QueueClient::MESSAGE_ACTION_UPDATE_EQ8_SCORE:
+                    $this->orderHelper->setEQ8Score((int) $messageData['score'], $order);
+                    QueueClient::deleteMessage($messageData['receipt_handle']);
+                    break;
+                case QueueClient::MESSAGE_ACTION_UPDATE_ORDER_STATUS_EVENT:
+                    $isActionSuccessful = $this->processOrderStatusUpdate($order, $messageData['status']);
+                    if ($isActionSuccessful) {
+                        $order->save();
+                        QueueClient::deleteMessage($messageData['receipt_handle']);
+                    }
+                    break;
+                default:
+                    $this->loggingClient->error(sprintf('Unrecognized action in message: %s', $messageData['action']));
+                    break;
             }
 
         }
@@ -131,7 +148,7 @@ class Order
         $currentOrderState = $order->getState();
         if (in_array($currentOrderState, self::INACTIVE_ORDER_STATES)) {
             $this->loggingClient->info('Attempting to update an order not in an active state.');
-            return true;
+            return false;
         }
 
         $isActionSuccessful = false;
@@ -269,5 +286,29 @@ class Order
         }
 
         return $returnStatus;
+    }
+
+    /**
+     * Get an Order from an order increment id. Attempts several retries due to Magento lag issues.
+     *
+     * @param string $orderIncrementId
+     *
+     * @return OrderInterface|null An order
+     */
+    protected function getOrderByIncrementId(string $incrementId) : ?OrderInterface
+    {
+        $orderFetchCount = 0;
+        do {
+            $order =  $this->orderHelper->getOrderByIncrementId($incrementId);
+            if ($order && $order->getId()) {
+                return $order;
+            }
+
+            $orderFetchCount++;
+            // phpcs:ignore
+            sleep(self::ORDER_FETCH_SLEEP_TIME);
+        } while ($orderFetchCount <= self::MAX_ORDER_FETCH_ATTEMPTS);
+
+        return $order;
     }
 }
