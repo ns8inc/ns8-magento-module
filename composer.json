@@ -18,7 +18,7 @@
   "minimum-stability": "dev",
   "name": "ns8/protect-magento",
   "require": {
-    "ns8/protect-sdk": "^0.0.31",
+    "ns8/protect-sdk": "dev-dev",
     "php": "^7.1.3"
   },
   "require-dev": {
