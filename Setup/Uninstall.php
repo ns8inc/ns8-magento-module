@@ -54,8 +54,9 @@ class Uninstall implements UninstallInterface
         Config $config
     ) {
         $this->integrationService = $integrationService;
-        $this->httpClient = new HttpClient();
         $this->config = $config;
+        $this->config->initSdkConfiguration();
+        $this->httpClient = new HttpClient();
         $this->loggingClient = new LoggingClient();
     }
 
@@ -66,7 +67,6 @@ class Uninstall implements UninstallInterface
     {
         try {
             $setup->startSetup();
-            $this->config->initSdkConfiguration();
             $params = ['action'=>ActionsClient::UNINSTALL_ACTION];
             $response = $this->httpClient->post('/switch/executor', [], $params);
             $integration = $this->integrationService->findByName(Config::NS8_INTEGRATION_NAME);

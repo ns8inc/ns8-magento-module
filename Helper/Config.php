@@ -277,7 +277,7 @@ class Config extends AbstractHelper
         try {
             $auth = $this->context->getAuth();
             $loginUser = $auth->getUser();
-            if (isset($loginUser)) {
+            if ($loginUser && $loginUser->getUserName()) {
                 $username = $loginUser->getUserName();
             }
         } catch (Throwable $e) {
