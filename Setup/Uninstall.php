@@ -36,6 +36,7 @@ class Uninstall implements UninstallInterface
     public function __construct(Config $config)
     {
         $this->config = $config;
+        $this->config->initSdkConfiguration();
         $this->loggingClient = new LoggingClient();
     }
 
@@ -46,7 +47,6 @@ class Uninstall implements UninstallInterface
     {
         try {
             $setup->startSetup();
-            $this->config->initSdkConfiguration();
             UninstallerClient::uninstall();
         } catch (Throwable $e) {
             $this->loggingClient->error('Protect uninstall failed', $e);

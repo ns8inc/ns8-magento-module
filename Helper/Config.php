@@ -38,7 +38,7 @@ class Config extends AbstractHelper
     const DEFAULT_AUTH_USER = 'default';
 
     const ACCESS_TOKEN_CONFIG_KEY = 'ns8/protect/token';
-    
+
     /**
      * @var Context
      */
@@ -229,7 +229,7 @@ class Config extends AbstractHelper
         try {
             $auth = $this->context->getAuth();
             $loginUser = $auth->getUser();
-            if (isset($loginUser)) {
+            if ($loginUser && $loginUser->getUserName()) {
                 $username = $loginUser->getUserName();
             }
         } catch (Throwable $e) {
