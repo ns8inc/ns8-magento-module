@@ -3,6 +3,7 @@ namespace NS8\Protect\Cron;
 
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order as MagentoOrder;
+use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order as OrderHelper;
 use NS8\ProtectSDK\Order\Client as NS8Order;
 use NS8\ProtectSDK\Queue\Client as QueueClient;
@@ -51,6 +52,11 @@ class Order
     const ORDER_FETCH_SLEEP_TIME = 2;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @var OrderHelper
      */
     protected $orderHelper;
@@ -63,12 +69,16 @@ class Order
     /**
      * Default constructor
      *
-     * @param Order $order
+     * @param Config $config
+     * @param OrderHelper $order
      */
     public function __construct(
+        Config $config,
         OrderHelper $orderHelper
     ) {
+        $this->config=$config;
         $this->orderHelper=$orderHelper;
+        $this->config->initSdkConfiguration();
         $this->loggingClient = new LoggingClient();
     }
 
@@ -81,6 +91,7 @@ class Order
     {
         try {
             $maxEndTime = strtotime(sprintf("+%d minutes", self::MAX_RUN_TIME_MINUTES));
+            $this->loggingClient->info('initializing queue client');
             QueueClient::initialize();
             do {
                 $messages = QueueClient::getMessages();
@@ -131,7 +142,6 @@ class Order
                     $this->loggingClient->error(sprintf('Unrecognized action in message: %s', $messageData['action']));
                     break;
             }
-
         }
     }
 
