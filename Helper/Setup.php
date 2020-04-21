@@ -86,6 +86,8 @@ class Setup extends AbstractHelper
         $this->scopeConfig = $scopeConfig;
         $this->registry = $registry;
         $this->storeManager = $storeManager;
+
+        $this->config->initSdkConfiguration();
         $this->loggingClient = new LoggingClient();
     }
 
@@ -107,9 +109,7 @@ class Setup extends AbstractHelper
             $this->customStatus->setCustomStatuses('Running Data '.$mode);
 
             // Dispatch event to NS8 Protect that module has been installed/upgraded
-            if (!$this->scopeConfig->getValue('ns8/protect/token')
-                && !$this->registry->registry(self::ACCESS_TOKEN_SET_KEY)
-            ) {
+            if (!$this->registry->registry(self::ACCESS_TOKEN_SET_KEY)) {
                 $storeEmail = $this->scopeConfig->getValue('trans_email/ident_sales/email') ?? '';
                 $storeUrl = rtrim($this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB), '/');
                 $installRequestData = [
