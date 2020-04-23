@@ -3,6 +3,7 @@ namespace NS8\Protect\Cron;
 
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order as MagentoOrder;
+use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order as OrderHelper;
 use NS8\ProtectSDK\Order\Client as NS8Order;
 use NS8\ProtectSDK\Queue\Client as QueueClient;
@@ -25,9 +26,9 @@ class Order
     /**
      * Comments applied to order upon status update events
      */
-    const ORDER_CANCELED_COMMENT = 'NS8 Protect Order Cancelled';
     const ORDER_APPROVED_COMMENT = 'NS8 Protect Order Approved';
-    const ORDER_HOLDED_COMMENT = 'NS8 Protect Order Requires Review';
+    const ORDER_CANCELED_COMMENT = 'NS8 Protect Order Cancelled';
+    const ORDER_HOLDED_COMMENT   = 'NS8 Protect Order Requires Review';
 
     /**
      * Max number of minutes the cron should run for.
@@ -51,6 +52,11 @@ class Order
     const ORDER_FETCH_SLEEP_TIME = 2;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @var OrderHelper
      */
     protected $orderHelper;
@@ -63,12 +69,16 @@ class Order
     /**
      * Default constructor
      *
-     * @param Order $order
+     * @param Config $config
+     * @param OrderHelper $order
      */
     public function __construct(
+        Config $config,
         OrderHelper $orderHelper
     ) {
+        $this->config=$config;
         $this->orderHelper=$orderHelper;
+        $this->config->initSdkConfiguration();
         $this->loggingClient = new LoggingClient();
     }
 
@@ -81,6 +91,7 @@ class Order
     {
         try {
             $maxEndTime = strtotime(sprintf("+%d minutes", self::MAX_RUN_TIME_MINUTES));
+            $this->loggingClient->info('initializing queue client');
             QueueClient::initialize();
             do {
                 $messages = QueueClient::getMessages();
@@ -121,7 +132,7 @@ class Order
                     QueueClient::deleteMessage($messageData['receipt_handle']);
                     break;
                 case QueueClient::MESSAGE_ACTION_UPDATE_ORDER_STATUS_EVENT:
-                    $isActionSuccessful = $this->processOrderStatusUpdate($order, $messageData['status']);
+                    $isActionSuccessful = $this->processOrderStatusUpdate($order, $messageData['platformStatus']);
                     if ($isActionSuccessful) {
                         $order->save();
                         QueueClient::deleteMessage($messageData['receipt_handle']);
@@ -131,7 +142,6 @@ class Order
                     $this->loggingClient->error(sprintf('Unrecognized action in message: %s', $messageData['action']));
                     break;
             }
-
         }
     }
 
@@ -153,13 +163,13 @@ class Order
 
         $isActionSuccessful = false;
         switch ($newStatus) {
-            case NS8Order::CANCELLED_STATE:
-                $isActionSuccessful = $this->cancelOrder($order);
-                break;
             case NS8Order::APPROVED_STATE:
                 $isActionSuccessful = $this->approveOrder($order);
                 break;
-            case NS8Order::MERCHANT_REVIEW_STATE:
+            case NS8Order::CANCELLED_STATE:
+                $isActionSuccessful = $this->cancelOrder($order);
+                break;
+            case NS8Order::HOLDED_STATE:
                 $isActionSuccessful = $this->holdOrder($order);
                 break;
             default:

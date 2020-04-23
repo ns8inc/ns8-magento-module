@@ -3,7 +3,9 @@ namespace NS8\Protect\Helper;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\Module\ModuleListInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -48,6 +50,20 @@ class Setup extends AbstractHelper
     protected $config;
 
     /**
+     * Module list object to fetch version information
+     *
+     * @var ModuleListInterface
+     */
+    protected $moduleList;
+
+    /**
+     * Product Metadata object to fetch Magento version
+     *
+     * @var ProductMetadataInterface
+     */
+    protected $productMetadata;
+
+    /**
      * @var Registry
      */
 
@@ -70,6 +86,8 @@ class Setup extends AbstractHelper
     /**
      * @param Config $config
      * @param CustomStatus $customStatus
+     * @param ProductMetadataInterface $productMetadata,
+     * @param ModuleListInterface $moduleList,
      * @param Registry $registry
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
@@ -77,15 +95,21 @@ class Setup extends AbstractHelper
     public function __construct(
         Config $config,
         CustomStatus $customStatus,
+        ProductMetadataInterface $productMetadata,
+        ModuleListInterface $moduleList,
         Registry $registry,
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager
     ) {
         $this->config = $config;
         $this->customStatus = $customStatus;
-        $this->scopeConfig = $scopeConfig;
+        $this->moduleList = $moduleList;
+        $this->productMetadata = $productMetadata;
         $this->registry = $registry;
+        $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
+
+        $this->config->initSdkConfiguration();
         $this->loggingClient = new LoggingClient();
     }
 
@@ -101,20 +125,21 @@ class Setup extends AbstractHelper
     {
         //Essential step.
         $setup->startSetup();
-
         try {
             // Create or update our custom statuses using the current mode
             $this->customStatus->setCustomStatuses('Running Data '.$mode);
 
             // Dispatch event to NS8 Protect that module has been installed/upgraded
-            if (!$this->scopeConfig->getValue('ns8/protect/token')
-                && !$this->registry->registry(self::ACCESS_TOKEN_SET_KEY)
-            ) {
+            if (!$this->registry->registry(self::ACCESS_TOKEN_SET_KEY)) {
+                $moduleData = $this->moduleList->getOne('NS8_Protect');
+                $moduleVersion = $moduleData['setup_version'] ?? '';
                 $storeEmail = $this->scopeConfig->getValue('trans_email/ident_sales/email') ?? '';
                 $storeUrl = rtrim($this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB), '/');
                 $installRequestData = [
                     'storeUrl' => $storeUrl,
-                    'email' => $storeEmail
+                    'email' => $storeEmail,
+                    'moduleVersion' => $moduleVersion,
+                    'platformVersion' => (string) $this->productMetadata->getVersion()
                 ];
 
                 $installResult = InstallerClient::install('magento', $installRequestData);
