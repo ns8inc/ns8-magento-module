@@ -26,9 +26,9 @@ class Order
     /**
      * Comments applied to order upon status update events
      */
-    const ORDER_CANCELED_COMMENT = 'NS8 Protect Order Cancelled';
     const ORDER_APPROVED_COMMENT = 'NS8 Protect Order Approved';
-    const ORDER_HOLDED_COMMENT = 'NS8 Protect Order Requires Review';
+    const ORDER_CANCELED_COMMENT = 'NS8 Protect Order Cancelled';
+    const ORDER_HOLDED_COMMENT   = 'NS8 Protect Order Requires Review';
 
     /**
      * Max number of minutes the cron should run for.
@@ -132,7 +132,7 @@ class Order
                     QueueClient::deleteMessage($messageData['receipt_handle']);
                     break;
                 case QueueClient::MESSAGE_ACTION_UPDATE_ORDER_STATUS_EVENT:
-                    $isActionSuccessful = $this->processOrderStatusUpdate($order, $messageData['status']);
+                    $isActionSuccessful = $this->processOrderStatusUpdate($order, $messageData['platformStatus']);
                     if ($isActionSuccessful) {
                         $order->save();
                         QueueClient::deleteMessage($messageData['receipt_handle']);
@@ -163,13 +163,13 @@ class Order
 
         $isActionSuccessful = false;
         switch ($newStatus) {
-            case NS8Order::CANCELLED_STATE:
-                $isActionSuccessful = $this->cancelOrder($order);
-                break;
             case NS8Order::APPROVED_STATE:
                 $isActionSuccessful = $this->approveOrder($order);
                 break;
-            case NS8Order::MERCHANT_REVIEW_STATE:
+            case NS8Order::CANCELLED_STATE:
+                $isActionSuccessful = $this->cancelOrder($order);
+                break;
+            case NS8Order::HOLDED_STATE:
                 $isActionSuccessful = $this->holdOrder($order);
                 break;
             default:
