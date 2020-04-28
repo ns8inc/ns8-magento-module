@@ -31,6 +31,11 @@ class Order
     const ORDER_HOLDED_COMMENT   = 'NS8 Protect Order Requires Review';
 
     /**
+     * Additional order states not provided by MagentoOrder
+     */
+    const ORDER_STATE_APPROVED = 'ns8_approved';
+
+    /**
      * Max number of minutes the cron should run for.
      * This value should be one minute less than the cron's scheduled rate.
      */
@@ -163,13 +168,13 @@ class Order
 
         $isActionSuccessful = false;
         switch ($newStatus) {
-            case NS8Order::APPROVED_STATE:
+            case self::ORDER_STATE_APPROVED:
                 $isActionSuccessful = $this->approveOrder($order);
                 break;
-            case NS8Order::CANCELLED_STATE:
+            case MagentoOrder::STATE_CANCELED:
                 $isActionSuccessful = $this->cancelOrder($order);
                 break;
-            case NS8Order::HOLDED_STATE:
+            case MagentoOrder::STATE_HOLDED:
                 $isActionSuccessful = $this->holdOrder($order);
                 break;
             default:
