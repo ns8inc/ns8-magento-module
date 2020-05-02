@@ -203,7 +203,7 @@ class Order
             }
 
             $order->cancel();
-            $this->addOrderComment($order, NS8Order::CANCELLED_STATE, self::ORDER_CANCELED_COMMENT);
+            $this->addOrderComment($order, MagentoOrder::STATE_CANCELED, self::ORDER_CANCELED_COMMENT);
             return true;
         } catch (\Exception $e) {
             $this->loggingClient->error(
@@ -225,19 +225,21 @@ class Order
     protected function approveOrder(OrderInterface $order) : bool
     {
         try {
-            if ($order->getState() != MagentoOrder::STATE_HOLDED) {
-                return true;
+            if ($order->getState() == MagentoOrder::STATE_HOLDED) {
+                if (!$order->canUnhold()) {
+                    $this->loggingClient->info(
+                        sprintf('Unable to unhold/approve Order #%s as it cannot be unholded', $order->getIncrementId())
+                    );
+                    return true;
+                }
+
+                $order->unhold();
             }
 
-            if (!$order->canUnhold()) {
-                $this->loggingClient->info(
-                    sprintf('Unable to unhold/approve Order #%s as it cannot be unholded', $order->getIncrementId())
-                );
-                return true;
+            if ($order->getStatus() !== self::ORDER_STATE_APPROVED) {
+                $this->addOrderComment($order, self::ORDER_STATE_APPROVED, self::ORDER_APPROVED_COMMENT);
             }
 
-            $order->unhold();
-            $this->addOrderComment($order, NS8Order::APPROVED_STATE, self::ORDER_APPROVED_COMMENT);
             return true;
         } catch (\Exception $e) {
             $this->loggingClient->error(
