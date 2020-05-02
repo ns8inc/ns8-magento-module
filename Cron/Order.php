@@ -225,7 +225,7 @@ class Order
     protected function approveOrder(OrderInterface $order) : bool
     {
         try {
-            if ($order->getState() == MagentoOrder::STATE_HOLDED) {
+            if ($order->getState() === MagentoOrder::STATE_HOLDED) {
                 if (!$order->canUnhold()) {
                     $this->loggingClient->info(
                         sprintf('Unable to unhold/approve Order #%s as it cannot be unholded', $order->getIncrementId())
