@@ -4,6 +4,7 @@ namespace NS8\Protect\Cron;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order as MagentoOrder;
 use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\CustomStatus as CustomStatus;
 use NS8\Protect\Helper\Order as OrderHelper;
 use NS8\ProtectSDK\Order\Client as NS8Order;
 use NS8\ProtectSDK\Queue\Client as QueueClient;
@@ -29,11 +30,6 @@ class Order
     const ORDER_APPROVED_COMMENT = 'NS8 Protect Order Approved';
     const ORDER_CANCELED_COMMENT = 'NS8 Protect Order Cancelled';
     const ORDER_HOLDED_COMMENT   = 'NS8 Protect Order Requires Review';
-
-    /**
-     * Additional order states not provided by MagentoOrder
-     */
-    const ORDER_STATE_APPROVED = 'ns8_approved';
 
     /**
      * Max number of minutes the cron should run for.
@@ -168,7 +164,7 @@ class Order
 
         $isActionSuccessful = false;
         switch ($newStatus) {
-            case self::ORDER_STATE_APPROVED:
+            case CustomStatus::APPROVED:
                 $isActionSuccessful = $this->approveOrder($order);
                 break;
             case MagentoOrder::STATE_CANCELED:
@@ -203,7 +199,7 @@ class Order
             }
 
             $order->cancel();
-            $this->addOrderComment($order, NS8Order::CANCELLED_STATE, self::ORDER_CANCELED_COMMENT);
+            $this->addOrderComment($order, MagentoOrder::STATE_CANCELED, self::ORDER_CANCELED_COMMENT);
             return true;
         } catch (\Exception $e) {
             $this->loggingClient->error(
@@ -225,19 +221,21 @@ class Order
     protected function approveOrder(OrderInterface $order) : bool
     {
         try {
-            if ($order->getState() != MagentoOrder::STATE_HOLDED) {
-                return true;
+            if ($order->getState() === MagentoOrder::STATE_HOLDED) {
+                if (!$order->canUnhold()) {
+                    $this->loggingClient->info(
+                        sprintf('Unable to unhold/approve Order #%s as it cannot be unholded', $order->getIncrementId())
+                    );
+                    return true;
+                }
+
+                $order->unhold();
             }
 
-            if (!$order->canUnhold()) {
-                $this->loggingClient->info(
-                    sprintf('Unable to unhold/approve Order #%s as it cannot be unholded', $order->getIncrementId())
-                );
-                return true;
+            if ($order->getStatus() !== CustomStatus::APPROVED) {
+                $this->addOrderComment($order, CustomStatus::APPROVED, self::ORDER_APPROVED_COMMENT);
             }
 
-            $order->unhold();
-            $this->addOrderComment($order, NS8Order::APPROVED_STATE, self::ORDER_APPROVED_COMMENT);
             return true;
         } catch (\Exception $e) {
             $this->loggingClient->error(
@@ -266,7 +264,7 @@ class Order
             }
 
             $order->hold();
-            $this->addOrderComment($order, NS8Order::MERCHANT_REVIEW_STATE, self::ORDER_HOLDED_COMMENT);
+            $this->addOrderComment($order, CustomStatus::MERCHANT_REVIEW_STATUS, self::ORDER_HOLDED_COMMENT);
             return true;
         } catch (\Exception $e) {
             $this->loggingClient->error(
