@@ -15,8 +15,6 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
 use Magento\Framework\ObjectManager\ContextInterface;
-use Magento\Integration\Api\IntegrationServiceInterface;
-use Magento\Integration\Api\OauthServiceInterface;
 use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 use NS8\ProtectSDK\Security\Client as SecurityClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
@@ -30,21 +28,6 @@ use Zend\Uri\Uri;
 class Config extends AbstractHelper
 {
     /**
-     * The Environment Variable name for development Protect API URL value
-     */
-    const NS8_ENV_NAME_API_URL = 'NS8_PROTECT_URL';
-
-    /**
-     * The Environment Variable name for development Client API URL value
-     */
-    const NS8_ENV_NAME_CLIENT_URL = 'NS8_CLIENT_URL';
-
-    /**
-     * The canonical name of the Magento Service Integration
-     */
-    const NS8_INTEGRATION_NAME = 'NS8 Protect';
-
-    /**
      * The canonical name of the Magento extension/module name
      */
     const NS8_MODULE_NAME = 'NS8_Protect';
@@ -53,6 +36,8 @@ class Config extends AbstractHelper
      * Default auth user value to utilize in configuration if no admin user is triggering the event
      */
     const DEFAULT_AUTH_USER = 'default';
+
+    const ACCESS_TOKEN_CONFIG_KEY = 'ns8/protect/token';
 
     /**
      * @var Context
@@ -65,11 +50,6 @@ class Config extends AbstractHelper
     protected $encryptor;
 
     /**
-     * @var IntegrationServiceInterface
-     */
-    protected $integrationService;
-
-    /**
      * @var LoggingClient
      */
     protected $loggingClient;
@@ -78,11 +58,6 @@ class Config extends AbstractHelper
      * @var ModuleList
      */
     protected $moduleList;
-
-    /**
-     * @var OauthServiceInterface
-     */
-    protected $oauthService;
 
     /**
      * @var ProductMetadataInterface
@@ -124,9 +99,7 @@ class Config extends AbstractHelper
      *
      * @param Context $context
      * @param EncryptorInterface $encryptor
-     * @param IntegrationServiceInterface $integrationService
      * @param ModuleList $moduleList
-     * @param OauthServiceInterface $oauthService
      * @param Pool $cacheFrontendPool
      * @param ProductMetadataInterface $productMetadata
      * @param RequestInterface $request
@@ -138,9 +111,7 @@ class Config extends AbstractHelper
     public function __construct(
         Context $context,
         EncryptorInterface $encryptor,
-        IntegrationServiceInterface $integrationService,
         ModuleList $moduleList,
-        OauthServiceInterface $oauthService,
         Pool $cacheFrontendPool,
         ProductMetadataInterface $productMetadata,
         RequestInterface $request,
@@ -151,8 +122,6 @@ class Config extends AbstractHelper
     ) {
         $this->context = $context;
         $this->encryptor = $encryptor;
-        $this->integrationService = $integrationService;
-        $this->oauthService = $oauthService;
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
         $this->request = $request;
@@ -183,42 +152,25 @@ class Config extends AbstractHelper
     }
 
     /**
-        // TODO: this needs to be more robust. Circle back and bullet proof this with backing tests.
-        $ret = join('/', $segments).'/order_id';
      * Retrieve an access token.
      *
      * @return string|null The NS8 Protect Access Token.
      */
     public function getAccessToken(): ?string
     {
-        $storedToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/protect/token'));
-
-        if (!empty($storedToken)) {
-            return $storedToken;
-        }
-
-        $consumerId = $this->integrationService->findByName(self::NS8_INTEGRATION_NAME)->getConsumerId();
-        $consumer = $this->oauthService->loadConsumer($consumerId);
-        $accessTokenString = $this->oauthService->getAccessToken($consumerId);
-        $accessToken = $this->extractOauthTokenFromAuthString($accessTokenString);
-        $protectAccessToken = $this->getProtectAccessToken($consumer->getKey(), $accessToken);
-
-        if (isset($protectAccessToken)) {
-            $this->setAccessToken($protectAccessToken);
-            $storedToken = $protectAccessToken;
-        }
-
-        return $storedToken;
+        return $this->encryptor->decrypt($this->scopeConfig->getValue(self::ACCESS_TOKEN_CONFIG_KEY));
     }
 
     /**
-     * Save an access token.
-     * @param string $accessToken
+     * Saves a Magento configurable value in an encrypted format
+     *
+     * @param string $key The key of the configurable value
+     * @param string $value The value we want to store and encrypt for the configurable value
      * @return void
      */
-    public function setAccessToken(string $accessToken): void
+    public function setEncryptedConfigValue(string $key, string $value): void
     {
-        $this->scopeWriter->save('ns8/protect/token', $this->encryptor->encrypt($accessToken));
+        $this->scopeWriter->save($key, $this->encryptor->encrypt($value));
         $this->flushCaches();
     }
 
@@ -297,68 +249,18 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Auth string has a format of oauth_token=ABC&oauth_token_secret=XYZ. This method
-     * extracts the oauth_token string.
-     *
-     * @param string $authString
-     *
-     * @return string|null Oauth access token.
-     */
-    private function extractOauthTokenFromAuthString(string $accessTokenString = null) : ?string
-    {
-        $this->uri->setQuery($accessTokenString);
-        $parsedToken = $this->uri->getQueryAsArray();
-
-        return $parsedToken['oauth_token'] ?? null;
-    }
-
-    /**
-     * Call protect endpoint to exchange Magento creds for a protect access token.
-     *
-     * @param string $consumerKey
-     * @param string $accessToken
-     *
-     * @return string|null Protect access token.
-     */
-    private function getProtectAccessToken(string $consumerKey = null, string $accessToken = null) : ?string
-    {
-        $client = new Client();
-        $url = SdkConfigManager::getEnvValue('urls.client_url') . '/api/init/magento/access-token';
-        $client->setUri($url);
-        $client->setMethod('GET');
-
-        $client->setParameterGet([
-            'access_token' => $accessToken,
-            'authorization' => $accessToken,
-            'oauth_consumer_key' => $consumerKey,
-        ]);
-
-        $client->setHeaders([
-            'extension-version' => $this->getProtectVersion(),
-            'magento-version' => $this->getMagentoVersion(),
-        ]);
-
-        try {
-            $response = Decoder::decode($client->send()->getBody());
-        } catch (Throwable $e) {
-            $this->loggingClient->error('Failed to execute API call', $e);
-        }
-
-        if (!isset($response) || !isset($response->token)) {
-            return null;
-        }
-
-        return $response->token;
-    }
-
-    /**
      * Init SDK Configuration class for usage
+     *
+     * @param bool $isAuthInfoRequired Implies if the SDK should be configured to required authorization information
+     *
+     * @return voice
      */
-    public function initSdkConfiguration() : void
+    public function initSdkConfiguration(bool $isAuthInfoRequired = true) : void
     {
         SdkConfigManager::initConfiguration();
         $sdkEnv = SdkConfigManager::getEnvironment();
         SdkConfigManager::setValue('platform_version', 'Magento');
+        SdkConfigManager::setValue(sprintf('%s.authorization.required', $sdkEnv), $isAuthInfoRequired);
         SdkConfigManager::setValue(sprintf('%s.authorization.auth_user', $sdkEnv), $this->getAuthenticatedUserName());
         SdkConfigManager::setValue(sprintf('%s.authorization.access_token', $sdkEnv), (string) $this->getAccessToken());
     }

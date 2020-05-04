@@ -14,10 +14,10 @@ use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\View\Result\PageFactory;
-use Magento\Integration\Api\IntegrationServiceInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\Url;
+use NS8\ProtectSDK\ClientSdk\Client as ClientSdkClient;
 
 /**
  * The Container class.
@@ -46,13 +46,6 @@ class Container extends Template
     protected $context;
 
     /**
-     * The integration service.
-     *
-     * @var IntegrationServiceInterface
-     */
-    protected $integrationService;
-
-    /**
      * The request.
      *
      * @var Http
@@ -79,7 +72,6 @@ class Container extends Template
      * @param Config $config
      * @param Context $context The context
      * @param Http $request The request
-     * @param IntegrationServiceInterface $integrationService The integration service
      * @param Order $order The order helper
      * @param PageFactory $resultPageFactory The page factory
      * @param Url $url URL helper class
@@ -88,7 +80,6 @@ class Container extends Template
         Config $config,
         Context $context,
         Http $request,
-        IntegrationServiceInterface $integrationService,
         Order $order,
         PageFactory $resultPageFactory,
         Url $url
@@ -96,7 +87,6 @@ class Container extends Template
         parent::__construct($context);
         $this->config = $config;
         $this->context = $context;
-        $this->integrationService = $integrationService;
         $this->order = $order;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
@@ -113,7 +103,7 @@ class Container extends Template
         $page = (string)$this->request->getParam('page');
         $orderIncrementId = $this->getOrderIncrementIdFromRequest();
         if (empty($page) && !empty($orderIncrementId)) {
-            $page = 'ORDER_DETAILS';
+            $page = ClientSdkClient::CLIENT_PAGE_ORDER_DETAILS;
         }
 
         return $page;
@@ -128,17 +118,5 @@ class Container extends Template
     {
         $orderId = $this->request->getParam('order_id');
         return $orderId ? $this->order->getOrderIncrementId($orderId) : '';
-    }
-
-    /**
-     * Check whether the NS8 Protect extension is activated.
-     *
-     * @return bool True if activated, False otherwise.
-     */
-    public function isActivated(): bool
-    {
-        $integration = $this->integrationService->findByName(Config::NS8_INTEGRATION_NAME);
-
-        return $integration->getStatus() === $integration::STATUS_ACTIVE;
     }
 }

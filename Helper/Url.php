@@ -8,6 +8,7 @@ use Magento\Backend\Model\UrlInterface as BackendUrlInterface;
 use Magento\Framework\App\State;
 use Magento\Framework\App\Area;
 use NS8\Protect\Helper\Config;
+use NS8\ProtectSDK\ClientSdk\Client as ClientSdk;
 use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 use UnexpectedValueException;
 
@@ -112,9 +113,9 @@ class Url extends AbstractHelper
      *
      * @return string The URL
      */
-    public function getProtectJsSdkUrl(): string
+    public function getProtectClientSdkUrl(): string
     {
-        return SdkConfigManager::getEnvValue('urls.js_sdk');
+        return ClientSdk::getClientSdkUrl();
     }
 
     public function getClientUrl(): string

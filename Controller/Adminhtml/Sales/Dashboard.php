@@ -7,8 +7,8 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 use NS8\Protect\Helper\Config;
-use NS8\ProtectSDK\Http\Client as HttpClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
+use NS8\ProtectSDK\Merchants\Client as MerchantsClient;
 
 /**
  * The NS8 Protect Dashboard page
@@ -16,18 +16,18 @@ use NS8\ProtectSDK\Logging\Client as LoggingClient;
 class Dashboard extends Action
 {
     /**
-     * The HTTP client.
-     *
-     * @var HttpClient
-     */
-    protected $httpClient;
-
-    /**
      * The logging client.
      *
      * @var LoggingClient
      */
     protected $loggingClient;
+
+    /**
+     * The Merchants client.
+     *
+     * @var MerchantsClient
+     */
+    protected $merchantsClient;
 
     /**
      * The result page factory.
@@ -56,8 +56,8 @@ class Dashboard extends Action
         // Init SDK Configuration before invoking HTTP Client:wq
         
         $this->config->initSdkConfiguration();
-        $this->httpClient = new HttpClient();
         $this->loggingClient = new LoggingClient();
+        $this->merchantsClient = new MerchantsClient();
     }
 
     /**
@@ -79,9 +79,10 @@ class Dashboard extends Action
     {
         $resultPage = $this->resultPageFactory->create();
         try {
-            $merchant = $this->httpClient->get('/merchant/current');
+            $merchant = $this->merchantsClient->getCurrent();
+
             if (empty($merchant)) {
-                $this->loggingClient->error('Request to Protect failed to GET /merchant/current');
+                $this->loggingClient->error('Request to Protect failed to get the current merchant');
                 return $resultPage;
             }
 

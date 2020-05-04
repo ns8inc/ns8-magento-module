@@ -4,7 +4,6 @@ namespace NS8\Protect\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\Exception\AlreadyExistsException;
-use Magento\Integration\Model\ConfigBasedIntegrationManager;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Status;
 use Magento\Sales\Model\Order\StatusFactory;
@@ -38,13 +37,6 @@ class CustomStatus extends AbstractHelper
     const MERCHANT_REVIEW_STATUS_LABEL = 'NS8 Merchant Review';
 
     /**
-     * The config-based integration manager.
-     *
-     * @var ConfigBasedIntegrationManager
-     */
-    protected $integrationManager;
-
-    /**
      * The logging client.
      *
      * @var LoggingClient
@@ -68,16 +60,13 @@ class CustomStatus extends AbstractHelper
     /**
      * Default constructor
      *
-     * @param ConfigBasedIntegrationManager $integrationManager
      * @param StatusFactory $statusFactory
      * @param StatusResourceFactory $statusResourceFactory
      */
     public function __construct(
-        ConfigBasedIntegrationManager $integrationManager,
         StatusFactory $statusFactory,
         StatusResourceFactory $statusResourceFactory
     ) {
-        $this->integrationManager = $integrationManager;
         $this->statusFactory = $statusFactory;
         $this->statusResourceFactory = $statusResourceFactory;
         $this->loggingClient = new LoggingClient();
@@ -93,7 +82,6 @@ class CustomStatus extends AbstractHelper
     public function setCustomStatuses(string $upgradeMode) : void
     {
         $this->loggingClient->debug($upgradeMode);
-        $this->integrationManager->processIntegrationConfig([Config::NS8_INTEGRATION_NAME]);
         $this->addCustomStatus(self::MERCHANT_REVIEW_STATUS, self::MERCHANT_REVIEW_STATUS_LABEL, Order::STATE_HOLDED);
         $this->addCustomStatus(self::APPROVED, self::APPROVED_LABEL, Order::STATE_PROCESSING);
     }

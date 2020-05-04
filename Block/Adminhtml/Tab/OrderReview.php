@@ -7,6 +7,7 @@ use Magento\Backend\Block\Template;
 use Magento\Framework\Registry;
 use Magento\Backend\Block\Template\Context;
 use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\Url;
 
 /**
@@ -86,7 +87,7 @@ class OrderReview extends Template implements TabInterface
         $html = '';
         if (isset($order['ns8_status'])) {
             $html = '<div class="ns8-order-tab-title ns8-'.$order['ns8_status'].'-badge">'
-                .' <div class="ns8-order-score">'.$order['eq8_score'].'</div>'
+                .' <div class="ns8-order-score">'.$order[Order::EQ8_SCORE_COL].'</div>'
                 .' <div class="ns8-order-tab-status">'.$order['ns8_status'].'</div>'
                 .'</div>';
         }

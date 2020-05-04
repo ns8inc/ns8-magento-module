@@ -1,16 +1,168 @@
-# PHP CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-php/ for more details
-#
-version: 2
 jobs:
-  build:
+  deploy:
     docker:
-      # Specify the version you desire here
-      - image: circleci/php:7.1-node-browsers
-
+      - image: php:7.3-cli
     steps:
+      - run:
+          command: |
+            apt-get update
+            apt-get install -y git
+          name: Install Git
       - checkout
+      - run:
+          command: |
+            set +eo pipefail
+            if git log | head -n 2 | tail -n 1 | grep 'Author: CircleCI'; then
+              circleci step halt
+            fi
+          name: Skip if CI Made the Last Commit
+      - run:
+          command: |
+            git config user.email noreply@ns8.com
+            git config user.name 'CircleCI'
+          name: Setup Git
+      - run:
+          command: apt-get install -y jq
+          name: Install JQ
+      - run:
+          command: |
+            version=$(jq -r .version composer.json | awk -F . '{$NF+=1; print $0}' OFS=".")
+            jq -r ".version |= \"$version\"" composer.json > composer.json-new
+            mv composer.json-new composer.json
+            sed -i "s/setup_version=\".*\"/setup_version=\"$version\"/" etc/module.xml
+            git add composer.json etc/module.xml
+            git commit -m "v$version"
+            git tag $version -am "v$version"
+          name: Bump Version
+      - run:
+          command: |
+            if ! git push -u origin master --follow-tags; then
+              echo "Push failed. Please delete and re-add this CircleCI deploy key to your repo with write access:"
+              ssh-keygen -y -f ~/.ssh/id_rsa
+              exit 1
+            fi
+          name: Tag Release in GitHub
+      - run:
+          command: |
+            git checkout dev
+            git merge -m 'Merge branch `master` into `dev`' master
+            git push origin dev
+          name: Merge Changes Back to Development Branch
+  publish:
+    docker:
+      - image: php:7.3-cli
+    steps:
+      - run:
+          command: |
+            apt-get update
+            apt-get install -y git
+          name: Install Git
+      - checkout
+      - run:
+          command: apt-get install -y jq python zip
+          name: Install Tools
+      - run:
+          command: zip -r9 NS8_Protect.zip .
+          name: Make Zip File
+      - run:
+          command: ln -s ~/bin/aws /usr/local/bin/
+          name: Create Symlink for AWS CLI
+      - run:
+          command: |
+            version=$(jq -r .version composer.json)
+            echo "export VERSION=$version" >> $BASH_ENV
+          name: Get Version
+      - aws-s3/copy:
+          arguments: |
+            --acl private \
+            --content-type application/zip
+          from: NS8_Protect.zip
+          to: s3://${AWS_S3_BUCKET}/NS8_Protect-${VERSION}.zip
+  test:
+    docker:
+      - image: php:7.3-cli
+    steps:
+      - run:
+          command: |
+            apt-get update
+            apt-get install -y git
+          name: Install Git
+      - checkout
+      - run:
+          command: |
+            set +eo pipefail
+            if git log | head -n 2 | tail -n 1 | grep 'Author: CircleCI'; then
+              circleci step halt
+            fi
+          name: Skip if CI Made the Last Commit
+      - run:
+          command: apt-get install -y unzip wget
+          name: Install Tools
+      - run:
+          command: apt-get install -y libicu-dev libpng-dev libxslt1-dev libzip-dev
+          name: Install Libraries
+      - run:
+          command: docker-php-ext-install bcmath gd intl pdo_mysql soap sockets xsl zip
+          name: Install PHP Extensions
+      - run:
+          command: |
+            pecl install xdebug
+            docker-php-ext-enable xdebug
+          name: Install XDebug
+      - run:
+          command: |
+            cd /tmp
+            expected_signature="$(wget -q -O - https://composer.github.io/installer.sig)"
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+            actual_signature="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+            if [ "$expected_signature" != "$actual_signature" ]; then
+              >&2 echo 'ERROR: Invalid installer signature'
+              exit 1
+            fi
+            php composer-setup.php --filename=composer --install-dir=/usr/local/bin --quiet
+          name: Install Composer
+      - run:
+          command: composer install --no-ansi --no-autoloader
+          name: Install Module
+      - run:
+          command: |
+            vendor/bin/phpcs --config-set installed_paths vendor/magento/magento-coding-standard/Magento2
+            composer lint
+          name: Lint
+      - run:
+          command: |
+            curl -o /tmp/magento.zip "$MAGENTO_URL"
+            unzip -q /tmp/magento.zip -d /tmp/magento
+            composer install -d /tmp/magento --no-ansi
+            mkdir -p /tmp/magento/app/code/NS8
+            ln -s $(pwd) /tmp/magento/app/code/NS8/Protect
+          name: Install Magento
+      - run:
+          command: |
+            chmod 755 /tmp/magento/vendor/phpunit/phpunit/phpunit
+            /tmp/magento/vendor/phpunit/phpunit/phpunit -c /tmp/magento/dev/tests/unit/phpunit.xml.dist /tmp/magento/app/code/NS8/Protect/Test
+          name: Run Tests
 
-      - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
-      - run: sudo docker-php-ext-install zip
+orbs:
+  aws-s3: circleci/aws-s3@1.0.15
+
+version: 2.1
+
+workflows:
+  publish:
+    jobs:
+      - publish:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+  test_and_deploy:
+    jobs:
+      - test
+      - deploy:
+          filters:
+            branches:
+              only: master
+          requires:
+            - test

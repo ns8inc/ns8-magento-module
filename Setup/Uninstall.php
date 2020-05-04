@@ -4,11 +4,10 @@ namespace NS8\Protect\Setup;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UninstallInterface;
-use Magento\Integration\Api\IntegrationServiceInterface;
 use NS8\Protect\Helper\Config;
-use NS8\ProtectSDK\Http\Client as HttpClient;
-use NS8\ProtectSDK\Logging\Client as LoggingClient;
 use NS8\ProtectSDK\Actions\Client as ActionsClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
+use NS8\ProtectSDK\Uninstaller\Client as UninstallerClient;
 
 /**
  * Uninstall the Protect extension completely
@@ -16,25 +15,11 @@ use NS8\ProtectSDK\Actions\Client as ActionsClient;
 class Uninstall implements UninstallInterface
 {
     /**
-     * The HTTP client.
-     *
-     * @var HttpClient
-     */
-    protected $httpClient;
-
-    /**
      * The Config helper.
      *
      * @var Config
      */
     protected $config;
-
-    /**
-     * The integration service interface.
-     *
-     * @var IntegrationServiceInterface
-     */
-    protected $integrationService;
 
     /**
      * The logging client.
@@ -46,14 +31,10 @@ class Uninstall implements UninstallInterface
     /**
      * Default constructor
      *
-     * @param IntegrationServiceInterface $integrationService,
      * @param Config $config
      */
-    public function __construct(
-        IntegrationServiceInterface $integrationService,
-        Config $config
-    ) {
-        $this->integrationService = $integrationService;
+    public function __construct(Config $config)
+    {
         $this->config = $config;
         $this->config->initSdkConfiguration();
         $this->httpClient = new HttpClient();
@@ -67,12 +48,7 @@ class Uninstall implements UninstallInterface
     {
         try {
             $setup->startSetup();
-            $params = ['action'=>ActionsClient::UNINSTALL_ACTION];
-            $response = $this->httpClient->post('/switch/executor', [], $params);
-            $integration = $this->integrationService->findByName(Config::NS8_INTEGRATION_NAME);
-            if ($integration) {
-                $integration->delete();
-            }
+            UninstallerClient::uninstall();
         } catch (Throwable $e) {
             $this->loggingClient->error('Protect uninstall failed', $e);
         } finally {

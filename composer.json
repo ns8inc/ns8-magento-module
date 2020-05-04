@@ -12,11 +12,11 @@
     }
   },
   "description": "",
-  "license": "MIT",
+  "license": "proprietary",
   "minimum-stability": "dev",
   "name": "ns8/protect-magento",
   "require": {
-    "ns8/protect-sdk": "^0.0.32",
+    "ns8/protect-sdk": "^0.0.34",
     "php": "^7.1.3"
   },
   "require-dev": {
@@ -30,5 +30,5 @@
   },
   "suggest": {},
   "type": "magento2-module",
-  "version": "2.4.4"
+  "version": "2.5.0"
 }
