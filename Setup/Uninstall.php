@@ -37,7 +37,6 @@ class Uninstall implements UninstallInterface
     {
         $this->config = $config;
         $this->config->initSdkConfiguration();
-        $this->httpClient = new HttpClient();
         $this->loggingClient = new LoggingClient();
     }
 
