@@ -3,9 +3,9 @@
 namespace NS8\Protect\Helper;
 
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\HTTP\Header;
 use Magento\Framework\HTTP\PhpEnvironment\Request;
-use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\Session\SessionManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -29,18 +29,22 @@ class Session extends AbstractHelper
     protected $header;
 
     /**
+     * The logger interface.
+     *
      * @var LoggerInterface
      */
     protected $logger;
 
-     /**
-      * The HTTP request.
-      *
-      * @var Request
-      */
+    /**
+     * The HTTP request.
+     *
+     * @var Request
+     */
     protected $request;
 
     /**
+     * The session.
+     *
      * @var SessionManagerInterface
      */
     protected $session;
@@ -77,19 +81,15 @@ class Session extends AbstractHelper
      */
     public function saveSessionDataFromPostBody(array $postBody)
     {
-        // Retrieve desired session data values from POST body
-        $screenHeight = $postBody['screenHeight'];
-        $screenWidth = $postBody['screenWidth'];
-
         // Set Session data values
         $result = [];
-        if (isset($screenHeight)) {
-            $this->session->setScreenHeight($screenHeight);
-            $result['screenHeight'] = $screenHeight;
+        if (isset($postBody['screenHeight'])) {
+            $this->session->setScreenHeight($postBody['screenHeight']);
+            $result['screenHeight'] = $postBody['screenHeight'];
         }
-        if (isset($screenWidth)) {
-            $this->session->setScreenWidth($screenWidth);
-            $result['screenWidth'] = $screenWidth;
+        if (isset($postBody['screenWidth'])) {
+            $this->session->setScreenWidth($postBody['screenWidth']);
+            $result['screenWidth'] = $postBody['screenWidth'];
         }
 
         return $result;
