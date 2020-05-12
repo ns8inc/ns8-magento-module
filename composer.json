@@ -1,10 +1,8 @@
 {
-  "authors": [
-    {
-      "email": "app@ns8.com",
-      "name": "NS8"
-    }
-  ],
+  "authors": [{
+    "email": "app@ns8.com",
+    "name": "NS8"
+  }],
   "autoload": {
     "files": [
       "registration.php"
@@ -32,5 +30,5 @@
   },
   "suggest": {},
   "type": "magento2-module",
-  "version": "2.4.101"
+  "version": "2.5.0"
 }
