@@ -92,7 +92,6 @@ class Order
     {
         try {
             $maxEndTime = strtotime(sprintf("+%d minutes", self::MAX_RUN_TIME_MINUTES));
-            $this->loggingClient->info('initializing queue client');
             QueueClient::initialize();
             do {
                 $messages = QueueClient::getMessages();
