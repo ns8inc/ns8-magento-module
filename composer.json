@@ -13,16 +13,16 @@
   },
   "description": "",
   "license": "proprietary",
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "name": "ns8/protect-magento",
   "require": {
     "ns8/protect-sdk": "^0.0.35",
     "php": "^7.1.3"
   },
   "require-dev": {
-    "magento/magento-coding-standard": "dev-master",
-    "phpunit/phpunit": "*",
-    "squizlabs/php_codesniffer": "3.5.2"
+    "magento/magento-coding-standard": "^5",
+    "phpunit/phpunit": "^9.1.4",
+    "squizlabs/php_codesniffer": "^3.5.5"
   },
   "scripts": {
     "lint": "phpcs --extensions=php --ignore=/vendor --standard=Magento2 .",
