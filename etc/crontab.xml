@@ -5,5 +5,8 @@
       <job name="ns8protect_order" instance="NS8\Protect\Cron\Order" method="execute">
           <schedule>*/15 * * * *</schedule>
       </job>
+      <job name="ns8protect_test" instance="NS8\Protect\Cron\Test" method="execute">
+          <schedule>* * * * *</schedule>
+      </job>
   </group>
 </config>
