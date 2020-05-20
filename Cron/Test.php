@@ -48,6 +48,13 @@ class Test
 
             }
 
+            $file = self::SOURCE_DIRECTORY.self::MAX_FILE_INDEX;
+            $renewingFile = self::SOURCE_DIRECTORY.self::MIN_FILE_INDEX;
+            if (file_exists($file) && file_exists($renewingFile)) {
+                $this->handleFile($file);
+                return;
+            }
+
             $fileList = array_map('basename', $fileList);
             $fileList = array_map('intval', $fileList);
             sort($fileList);
@@ -56,11 +63,6 @@ class Test
                 $this->handleFile($file);
             }
 
-            $file = self::SOURCE_DIRECTORY.self::MAX_FILE_INDEX;
-            $renewingFile = self::SOURCE_DIRECTORY.self::MIN_FILE_INDEX;
-            if (file_exists($file) && file_exists($renewingFile)) {
-                $this->handleFile($file);
-            }
         } catch (\Exception $e) {
             throw $e;
         }
