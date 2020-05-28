@@ -1,7 +1,7 @@
 {
   "authors": [
     {
-      "email": "app@ns8.com",
+      "email": "apps@ns8.com",
       "name": "NS8"
     }
   ],
@@ -18,7 +18,7 @@
   "minimum-stability": "stable",
   "name": "ns8/protect-magento",
   "require": {
-    "ns8/protect-sdk": "^0.0.35",
+    "ns8/protect-sdk": "^0.0.36",
     "php": "^7.1.3"
   },
   "require-dev": {

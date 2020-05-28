@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f23ebb0c2147af2d7e7a4a0b48bf4ad",
+    "content-hash": "79835fb23f707ad74b8bb40a7c7953cf",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -118,16 +118,16 @@
         },
         {
             "name": "ns8/protect-sdk",
-            "version": "0.0.35",
+            "version": "0.0.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ns8inc/protect-sdk-php.git",
-                "reference": "556c44cdbbe843bb82984f3da5b44d3a0764863f"
+                "reference": "be820133503dc0f44def5922ba6fb5af9023268c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ns8inc/protect-sdk-php/zipball/556c44cdbbe843bb82984f3da5b44d3a0764863f",
-                "reference": "556c44cdbbe843bb82984f3da5b44d3a0764863f",
+                "url": "https://api.github.com/repos/ns8inc/protect-sdk-php/zipball/be820133503dc0f44def5922ba6fb5af9023268c",
+                "reference": "be820133503dc0f44def5922ba6fb5af9023268c",
                 "shasum": ""
             },
             "require": {
@@ -158,7 +158,7 @@
                 "proprietary"
             ],
             "description": "NS8 Protect SDK",
-            "time": "2020-05-18T13:24:47+00:00"
+            "time": "2020-05-28T16:49:52+00:00"
         },
         {
             "name": "psr/container",
@@ -1196,6 +1196,12 @@
                 "filesystem",
                 "iterator"
             ],
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
             "time": "2020-04-18T05:02:12+00:00"
         },
         {
@@ -1344,6 +1350,12 @@
             "keywords": [
                 "timer"
             ],
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
             "time": "2020-04-20T06:00:37+00:00"
         },
         {
@@ -1392,6 +1404,12 @@
             "homepage": "https://github.com/sebastianbergmann/php-token-stream/",
             "keywords": [
                 "tokenizer"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
             ],
             "time": "2020-05-06T09:56:31+00:00"
         },
@@ -1481,6 +1499,16 @@
                 "testing",
                 "xunit"
             ],
+            "funding": [
+                {
+                    "url": "https://phpunit.de/donate.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
             "time": "2020-04-30T06:32:53+00:00"
         },
         {
@@ -1527,6 +1555,12 @@
             ],
             "description": "Collection of value objects that represent the PHP code units",
             "homepage": "https://github.com/sebastianbergmann/code-unit",
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
             "time": "2020-04-30T05:58:10+00:00"
         },
         {
@@ -1692,6 +1726,12 @@
                 "unidiff",
                 "unified diff"
             ],
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
             "time": "2020-05-08T05:01:12+00:00"
         },
         {
@@ -1744,6 +1784,12 @@
                 "Xdebug",
                 "environment",
                 "hhvm"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
             ],
             "time": "2020-04-14T13:36:52+00:00"
         },
@@ -2254,6 +2300,20 @@
                 "polyfill",
                 "portable"
             ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-12T16:14:59+00:00"
         },
         {
@@ -2405,5 +2465,6 @@
     "platform": {
         "php": "^7.1.3"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
