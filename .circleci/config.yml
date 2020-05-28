@@ -62,7 +62,7 @@ jobs:
           command: apt-get install -y jq python zip
           name: Install Tools
       - run:
-          command: zip -x '.*' -r9 NS8_Protect.zip .
+          command: zip -x '.*' -x CODEOWNERS -x 'Test/*' -r9 NS8_Protect.zip .
           name: Make Zip File
       - run:
           command: ln -s ~/bin/aws /usr/local/bin/
