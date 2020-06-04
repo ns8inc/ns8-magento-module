@@ -99,19 +99,26 @@ jobs:
             fi
           name: Skip if CI Made the Last Commit
       - run:
-          command: apt-get install -y unzip wget
+          command: apt-get install -y default-mysql-server jq unzip wget
           name: Install Tools
       - run:
-          command: apt-get install -y libicu-dev libpng-dev libxslt1-dev libzip-dev
+          command: apt-get install -y libicu-dev libjpeg-dev libpng-dev libxslt1-dev libzip-dev
           name: Install Libraries
       - run:
-          command: docker-php-ext-install bcmath gd intl pdo_mysql soap sockets xsl zip
+          command: |
+            docker-php-ext-configure gd --with-jpeg-dir=/usr/include/
+            docker-php-ext-install bcmath gd intl pdo_mysql soap sockets xsl zip
           name: Install PHP Extensions
       - run:
           command: |
             pecl install xdebug
             docker-php-ext-enable xdebug
           name: Install XDebug
+      - run:
+          command: |
+            cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+            sed -i 's/memory_limit = 128M/memory_limit = 4096M/g' /usr/local/etc/php/php.ini
+          name: Configure PHP
       - run:
           command: |
             cd /tmp
@@ -126,7 +133,7 @@ jobs:
           name: Install Composer
       - run:
           command: composer install --no-ansi --no-autoloader
-          name: Install Module
+          name: Install Module Files
       - run:
           command: |
             vendor/bin/phpcs --config-set installed_paths vendor/magento/magento-coding-standard/Magento2
@@ -134,17 +141,57 @@ jobs:
           name: Lint
       - run:
           command: |
+            service mysql start
+            mysqladmin create magento2
+            mysql -e "GRANT ALL PRIVILEGES ON magento2.* TO 'magento_db_user'@'localhost' IDENTIFIED BY 'magento_db_password'"
+          name: Setup MySQL
+      - run:
+          command: |
             curl -o /tmp/magento.zip "$MAGENTO_URL"
             unzip -q /tmp/magento.zip -d /tmp/magento
             composer install -d /tmp/magento --no-ansi
-            mkdir -p /tmp/magento/app/code/NS8
-            ln -s $(pwd) /tmp/magento/app/code/NS8/Protect
+            /tmp/magento/bin/magento setup:install \
+              --admin-email=dev@ns8demos.com \
+              --admin-firstname=Development \
+              --admin-lastname=Testing \
+              --admin-password=secret1 \
+              --admin-user=development \
+              --backend-frontname=admin_demo \
+              --base-url=https://integration-test-$(date +%s).example.com/ \
+              --db-host=127.0.0.1 \
+              --db-name=magento2 \
+              --db-password=magento_db_password \
+              --db-user=magento_db_user \
+              --language=en_US \
+              --timezone=America/Los_Angeles \
+              --use-secure=1 \
+              --use-secure-admin=1
           name: Install Magento
+          no_output_timeout: 30m
       - run:
           command: |
-            chmod 755 /tmp/magento/vendor/phpunit/phpunit/phpunit
-            /tmp/magento/vendor/phpunit/phpunit/phpunit -c /tmp/magento/dev/tests/unit/phpunit.xml.dist /tmp/magento/app/code/NS8/Protect/Test
-          name: Run Tests
+            cd /tmp/magento
+            jq ".repositories |= [{type: \"path\", url: \"${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}\"}]" composer.json > composer.json-new
+            mv composer.json-new composer.json
+            composer require ns8/protect-magento @dev
+          name: Enable Module
+      - run:
+          command: |
+            cd /tmp/magento
+            chmod 755 vendor/phpunit/phpunit/phpunit
+            vendor/phpunit/phpunit/phpunit -c dev/tests/unit/phpunit.xml.dist vendor/ns8/protect-magento/Test
+          name: Run Unit Tests
+      - run:
+          command: |
+            cd /tmp/magento/vendor/ns8/protect-sdk/assets/configuration
+            jq -r '.default_environment |= "testing"' core_configuration.json > core_configuration.json-new
+            mv core_configuration.json-new core_configuration.json
+            cd /tmp/magento
+            bin/magento setup:upgrade
+
+            # bin/magento returns 1 if the module is enabled, 0 otherwise, so we invert that
+            ! bin/magento module:status NS8_Protect
+          name: Run Integration Test for Installation
 
 orbs:
   aws-s3: circleci/aws-s3@1.0.15
