@@ -190,10 +190,21 @@ class Order
     protected function cancelOrder(OrderInterface $order) : bool
     {
         try {
+            $isUnholded = false;
+            if ($order->canUnhold()) {
+                $isUnholded = true;
+                $order->unhold();
+            }
+
             if (!$order->canCancel()) {
                 $this->loggingClient->info(
                     sprintf('Unable to cancel Order #%s as it cannot be canceled', $order->getIncrementId())
                 );
+
+                if ($isUnholded) {
+                    $order->hold();
+                }
+                
                 return true;
             }
 
