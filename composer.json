@@ -1,7 +1,7 @@
 {
   "authors": [
     {
-      "email": "app@ns8.com",
+      "email": "apps@ns8.com",
       "name": "NS8"
     }
   ],
@@ -32,5 +32,5 @@
   },
   "suggest": {},
   "type": "magento2-module",
-  "version": "2.5.1"
+  "version": "2.5.2"
 }
