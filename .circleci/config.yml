@@ -157,7 +157,7 @@ jobs:
               --admin-password=secret1 \
               --admin-user=development \
               --backend-frontname=admin_demo \
-              --base-url=https://integration-test.dev.ns8demos.com/ \
+              --base-url=https://integration-test-$(date +%s).example.com/ \
               --db-host=127.0.0.1 \
               --db-name=magento2 \
               --db-password=magento_db_password \
