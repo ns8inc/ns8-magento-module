@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f456d634cdc42445ae8e5b977498cf4",
+    "content-hash": "f88ad1e0719d4c5c396c17eea12fe391",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -118,16 +118,16 @@
         },
         {
             "name": "ns8/protect-sdk",
-            "version": "0.0.36",
+            "version": "0.0.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ns8inc/protect-sdk-php.git",
-                "reference": "be820133503dc0f44def5922ba6fb5af9023268c"
+                "reference": "daecd96a633a0f3f6d8fceaf493abd0ac8c5bfdb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ns8inc/protect-sdk-php/zipball/be820133503dc0f44def5922ba6fb5af9023268c",
-                "reference": "be820133503dc0f44def5922ba6fb5af9023268c",
+                "url": "https://api.github.com/repos/ns8inc/protect-sdk-php/zipball/daecd96a633a0f3f6d8fceaf493abd0ac8c5bfdb",
+                "reference": "daecd96a633a0f3f6d8fceaf493abd0ac8c5bfdb",
                 "shasum": ""
             },
             "require": {
@@ -158,7 +158,7 @@
                 "proprietary"
             ],
             "description": "NS8 Protect SDK",
-            "time": "2020-05-28T16:49:52+00:00"
+            "time": "2020-06-08T16:20:56+00:00"
         },
         {
             "name": "psr/container",
@@ -2405,5 +2405,6 @@
     "platform": {
         "php": "^7.1.3"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
