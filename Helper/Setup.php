@@ -141,11 +141,6 @@ class Setup extends AbstractHelper
                 $moduleVersion = $moduleData['setup_version'] ?? '';
                 $storeEmail = $this->scopeConfig->getValue('trans_email/ident_sales/email') ?? '';
                 $storeUrl = rtrim($this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB, true), '/');
-                if (stripos($storeUrl, self::MAGENTO_REQUIRED_PROTOCOL) !== 0) {
-                    throw new InstallException(
-                        'Please configure Magento to use HTTPS (SSL) in order to connect your instance'
-                    );
-                }
                 $installRequestData = [
                     'storeUrl' => $storeUrl,
                     'email' => $storeEmail,
