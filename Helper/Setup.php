@@ -30,11 +30,6 @@ class Setup extends AbstractHelper
     const ACCESS_TOKEN_SET_KEY = 'ns8_access_token_set';
 
     /**
-     * The protocol we require the store to utilize for NS8 Protect usage
-     */
-    const MAGENTO_REQUIRED_PROTOCOL = 'https';
-
-    /**
      * The custom status helper.
      *
      * @var CustomStatus
