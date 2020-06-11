@@ -19,7 +19,7 @@ Additionally, you must configure all of Magento’s background task operations t
 
 ## Manual Install
 
-1. SSH to the Magento server and navigate to the root path of the Magento install, frequently in `/var/www/html`.
+1. SSH to the Magento server and navigate to the root path of your Magento install, which is frequently located in `/var/www/html`, and run the following commands:
 1. `$ composer require ns8/protect-magento`
 1. `$ sudo bin/magento setup:upgrade`
 1. `$ sudo bin/magento cache:clean`
@@ -29,4 +29,4 @@ Additionally, you must configure all of Magento’s background task operations t
 
 ## License
 
-For more information about NS8, see our [License](./LICENSE) or visit us at [ns8inc](https://ns8.com).
+For more information about NS8, see our [License](./LICENSE) or visit us at [ns8.com](https://ns8.com).
