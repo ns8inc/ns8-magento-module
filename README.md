@@ -6,16 +6,16 @@
 [![Total Downloads](https://poser.pugx.org/ns8/protect-magento/downloads)](//packagist.org/packages/ns8/protect-magento)
 [![Monthly Downloads](https://poser.pugx.org/ns8/protect-magento/d/monthly)](//packagist.org/packages/ns8/protect-magento)
 
-This is the source code for the NS8 Protect extension for use on the Magento eCommerce platform. If you have landed here, you probably want to install Protect from the [Magento Marketplace](https://marketplace.magento.com/ns8-protect-magento.html).
-
-If you are are a developer or an admin user attempting a manual install of Protect on your Magento 2 instance, you can follow the steps below.
+This is the source code for the NS8 extension for Magento 2. Most users can automatically install NS8 through the [Magento Marketplace](https://marketplace.magento.com/ns8-protect-magento.html). However, if you are a developer or admin user and would like to manually install NS8 on your Magento 2 instance, you can follow the steps below.
 
 ## Requirements
 
-The following items are requirements for using Protect with Magento:
+The system requirements to use NS8 with Magento are:
 
 - Magento version 2.3.* (all 2.3 versions are supported)
 - PHP 7.1+
+
+Additionally, you must configure all of Magento’s background task operations to run automatically.
 
 ## Manual Install
 
@@ -25,10 +25,8 @@ The following items are requirements for using Protect with Magento:
 1. `$ sudo bin/magento cache:clean`
 1. `$ sudo bin/magento cache:enable`
 1. `$ sudo bin/magento module:status`
-1. Confirm that NS8 Protect is listed.
+1. After running the commands outlined in steps two through six, you can access NS8 through your Magento instance. 
 
 ## License
 
-See [License](./LICENSE)
-
- © [ns8inc](https://ns8.com)
+For more information about NS8, see our [License](./LICENSE) or visit us at [ns8inc](https://ns8.com).
