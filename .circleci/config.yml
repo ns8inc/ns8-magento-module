@@ -202,6 +202,7 @@ workflows:
   publish:
     jobs:
       - publish:
+          type: approval
           filters:
             branches:
               ignore: /.*/
@@ -211,6 +212,7 @@ workflows:
     jobs:
       - test
       - deploy:
+          type: approval
           filters:
             branches:
               only: master
