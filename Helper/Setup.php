@@ -144,6 +144,11 @@ class Setup extends AbstractHelper
                 ];
 
                 $installResult = InstallerClient::install('magento', $installRequestData);
+
+                if (!isset($installResult['accessToken'])) {
+                    throw new InstallException('This URL has already been registered and cannot be reused. If this is an error, please contact support@ns8.com.');
+                }
+
                 $this->config->setEncryptedConfigValue(Config::ACCESS_TOKEN_CONFIG_KEY, $installResult['accessToken']);
                 // Set a registry value so we do not attempt to fetch the token a second time
                 // if config value has not been saved yet
