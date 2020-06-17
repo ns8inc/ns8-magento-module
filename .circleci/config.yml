@@ -223,11 +223,11 @@ jobs:
             --content-type application/zip
           from: NS8_Protect.zip
           to: s3://${AWS_S3_BUCKET}/NS8_Protect-${VERSION}.zip
-  test_7-1_2-3-0:
-    docker:
-      - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.0
-    steps:
-      - test
+  #test_7-1_2-3-0:
+  #  docker:
+  #    - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.0
+  #  steps:
+  #    - test
   test_7-1_2-3-1:
     docker:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.1
@@ -243,11 +243,11 @@ jobs:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.3
     steps:
       - test
-  test_7-2_2-3-0:
-    docker:
-      - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.2-2.3.0
-    steps:
-      - test
+  #test_7-2_2-3-0:
+  #  docker:
+  #    - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.2-2.3.0
+  #  steps:
+  #    - test
   test_7-2_2-3-1:
     docker:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.2-2.3.1
@@ -323,9 +323,9 @@ workflows:
               only: master
           requires:
             - test_latest
-      - test_7-1_2-3-0:
-          requires:
-            - approve
+      #- test_7-1_2-3-0:
+      #    requires:
+      #      - approve
       - test_7-1_2-3-1:
           requires:
             - approve
@@ -335,9 +335,9 @@ workflows:
       - test_7-1_2-3-3:
           requires:
             - approve
-      - test_7-2_2-3-0:
-          requires:
-            - approve
+      #- test_7-2_2-3-0:
+      #    requires:
+      #      - approve
       - test_7-2_2-3-1:
           requires:
             - approve
@@ -367,11 +367,11 @@ workflows:
             - approve
       - deploy:
           requires:
-            - test_7-1_2-3-0
+            #- test_7-1_2-3-0
             - test_7-1_2-3-1
             - test_7-1_2-3-2
             - test_7-1_2-3-3
-            - test_7-2_2-3-0
+            #- test_7-2_2-3-0
             - test_7-2_2-3-1
             - test_7-2_2-3-2
             - test_7-2_2-3-3
