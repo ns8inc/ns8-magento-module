@@ -28,7 +28,7 @@ class DashboardInstantiation implements ObserverInterface
     /**
      * The  config manager
      *
-     * @var Config $scopeConfig;
+     * @var Config
      */
     protected $config;
 
@@ -41,7 +41,7 @@ class DashboardInstantiation implements ObserverInterface
 
     /**
      * Message manager
-     * @var ManagerInterface $messageManager
+     * @var ManagerInterface
      */
     protected $messageManager;
 
