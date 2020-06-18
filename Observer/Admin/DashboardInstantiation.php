@@ -79,7 +79,6 @@ class DashboardInstantiation implements ObserverInterface
      */
     protected $scopeConfig;
 
-
     /**
      * Default constructor
      *
