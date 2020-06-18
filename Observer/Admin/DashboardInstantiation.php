@@ -52,17 +52,16 @@ class DashboardInstantiation implements ObserverInterface
      */
     protected $moduleList;
 
-     /**
-      * Product Metadata object to fetch Magento version
-      *
-      * @var ProductMetadataInterface
-      */
+    /**
+     * Product metadata manager
+     *
+     * @var ProductMetadataInterface
+     */
     protected $productMetadata;
 
     /**
      * @var Registry
      */
-
     protected $registry;
 
     /**
