@@ -46,7 +46,7 @@ class Uninstall implements UninstallInterface
     public function uninstall(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         try {
-            if (!$this->isMerchantActive()) {
+            if (!$this->config->isMerchantActive()) {
                 return;
             }
 
