@@ -40,6 +40,11 @@ class Config extends AbstractHelper
     const ACCESS_TOKEN_CONFIG_KEY = 'ns8/protect/token';
 
     /**
+     * Config path for if the merchant is active
+     */
+    const IS_MERCHANT_ACTIVE = 'ns8/protect/is_merchant_active';
+
+    /**
      * @var Context
      */
     protected $context;
@@ -149,6 +154,29 @@ class Config extends AbstractHelper
         }
 
         return $ret;
+    }
+
+    /**
+     * Sets if the merchant is Active for NS8
+     *
+     * @param bool $value The value we want to set for the merchant's activation status
+     *
+     * @return void
+     */
+    public function setIsMerchantActive(bool $value): void
+    {
+        $this->scopeWriter->save(self::IS_MERCHANT_ACTIVE, $value);
+        $this->flushCaches();
+    }
+
+    /**
+     * Returns if the merchant is Active for NS8
+     *
+     * @return bool
+     */
+    public function isMerchantActive(): bool
+    {
+        return (bool) $this->scopeConfig->getValue(self::IS_MERCHANT_ACTIVE);
     }
 
     /**

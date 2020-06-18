@@ -1,18 +1,11 @@
 <?php
 namespace NS8\Protect\Helper;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\DB\Ddl\Table;
-use Magento\Framework\Module\ModuleListInterface;
-use Magento\Framework\Registry;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-use Magento\Framework\UrlInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use NS8\Protect\Exception\InstallException;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\CustomStatus;
 use NS8\Protect\Helper\Order;
@@ -24,11 +17,6 @@ use NS8\ProtectSDK\Logging\Client as LoggingClient;
  */
 class Setup extends AbstractHelper
 {
-    /**
-     * Registry key used to determine fetching the access token between setup and update
-     */
-    const ACCESS_TOKEN_SET_KEY = 'ns8_access_token_set';
-
     /**
      * The custom status helper.
      *
@@ -51,64 +39,15 @@ class Setup extends AbstractHelper
     protected $config;
 
     /**
-     * Module list object to fetch version information
-     *
-     * @var ModuleListInterface
-     */
-    protected $moduleList;
-
-    /**
-     * Product Metadata object to fetch Magento version
-     *
-     * @var ProductMetadataInterface
-     */
-    protected $productMetadata;
-
-    /**
-     * @var Registry
-     */
-
-    protected $registry;
-
-    /**
-     * Store manager attribute to fetch store data
-     *
-     * @var StoreManagerInterface
-     */
-    protected $storeManager;
-
-    /**
-     * Scope config manager to get config data
-     *
-     * @var ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
-    /**
      * @param Config $config
      * @param CustomStatus $customStatus
-     * @param ProductMetadataInterface $productMetadata,
-     * @param ModuleListInterface $moduleList,
-     * @param Registry $registry
-     * @param ScopeConfigInterface $scopeConfig
-     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         Config $config,
-        CustomStatus $customStatus,
-        ProductMetadataInterface $productMetadata,
-        ModuleListInterface $moduleList,
-        Registry $registry,
-        ScopeConfigInterface $scopeConfig,
-        StoreManagerInterface $storeManager
+        CustomStatus $customStatus
     ) {
         $this->config = $config;
         $this->customStatus = $customStatus;
-        $this->moduleList = $moduleList;
-        $this->productMetadata = $productMetadata;
-        $this->registry = $registry;
-        $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $storeManager;
 
         $this->config->initSdkConfiguration();
         $this->loggingClient = new LoggingClient();
@@ -129,34 +68,6 @@ class Setup extends AbstractHelper
         try {
             // Create or update our custom statuses using the current mode
             $this->customStatus->setCustomStatuses('Running Data '.$mode);
-
-            // Dispatch event to NS8 Protect that module has been installed/upgraded
-            if (!$this->registry->registry(self::ACCESS_TOKEN_SET_KEY)) {
-                $moduleData = $this->moduleList->getOne('NS8_Protect');
-                $moduleVersion = $moduleData['setup_version'] ?? '';
-                $storeEmail = $this->scopeConfig->getValue('trans_email/ident_sales/email') ?? '';
-                $storeUrl = rtrim($this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB, true), '/');
-                $installRequestData = [
-                    'storeUrl' => $storeUrl,
-                    'email' => $storeEmail,
-                    'moduleVersion' => $moduleVersion,
-                    'platformVersion' => (string) $this->productMetadata->getVersion()
-                ];
-
-                $installResult = InstallerClient::install('magento', $installRequestData);
-
-                if (!isset($installResult['accessToken'])) {
-                    throw new InstallException(
-                        'This URL has already been registered and cannot be reused. ' .
-                        'If this is an error, please contact support@ns8.com.'
-                    );
-                }
-
-                $this->config->setEncryptedConfigValue(Config::ACCESS_TOKEN_CONFIG_KEY, $installResult['accessToken']);
-                // Set a registry value so we do not attempt to fetch the token a second time
-                // if config value has not been saved yet
-                $this->registry->register(self::ACCESS_TOKEN_SET_KEY, true);
-            }
 
             // Update current eq8_score with value from v1 if it exists AND if the current score is null
             $connection = $setup->getConnection();
