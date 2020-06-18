@@ -48,6 +48,7 @@ class Uninstall implements UninstallInterface
         try {
             $setup->startSetup();
             UninstallerClient::uninstall();
+            $this->config->setIsMerchantActive(false);
         } catch (Throwable $e) {
             $this->loggingClient->error('Protect uninstall failed', $e);
         } finally {

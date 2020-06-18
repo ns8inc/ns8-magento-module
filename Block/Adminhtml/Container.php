@@ -13,6 +13,7 @@ namespace NS8\Protect\Block\Adminhtml;
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
+use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\View\Result\PageFactory;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
@@ -60,6 +61,13 @@ class Container extends Template
     protected $resultPageFactory;
 
     /**
+     * The event manager.
+     *
+     * @var ManagerInterface
+     */
+    protected $eventManager;
+
+    /**
      * The URL Helper class
      *
      * @var Url
@@ -71,6 +79,7 @@ class Container extends Template
      *
      * @param Config $config
      * @param Context $context The context
+     * @param ManagerInterface $eventManager The event manager
      * @param Http $request The request
      * @param Order $order The order helper
      * @param PageFactory $resultPageFactory The page factory
@@ -79,6 +88,7 @@ class Container extends Template
     public function __construct(
         Config $config,
         Context $context,
+        ManagerInterface $eventManager,
         Http $request,
         Order $order,
         PageFactory $resultPageFactory,
@@ -87,10 +97,13 @@ class Container extends Template
         parent::__construct($context);
         $this->config = $config;
         $this->context = $context;
+        $this->eventManager = $eventManager;
         $this->order = $order;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
         $this->url = $url;
+
+        $this->eventManager->dispatch('ns8_protect_dashboard_container_instantiated');
     }
 
     /**
