@@ -189,7 +189,6 @@ jobs:
     docker:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-php
     steps:
-      - run:
       - checkout
       - run:
           command: zip -x '.*' -x CODEOWNERS -x 'Test/*' -r9 NS8_Protect.zip .
