@@ -149,13 +149,8 @@ commands:
 jobs:
   deploy:
     docker:
-      - image: php:7.3-cli
+      - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-php
     steps:
-      - run:
-          command: |
-            apt-get update
-            apt-get install -y git
-          name: Install Git
       - add_ssh_keys:
           fingerprints:
             - "53:1d:b4:b6:2f:4e:48:66:8e:eb:3d:67:bf:9e:d7:0d"
@@ -172,9 +167,6 @@ jobs:
             git config user.email noreply@ns8.com
             git config user.name 'CircleCI'
           name: Setup Git
-      - run:
-          command: apt-get install -y jq
-          name: Install JQ
       - run:
           command: |
             version=$(jq -r .version composer.json | awk -F . '{$NF+=1; print $0}' OFS=".")
@@ -195,34 +187,21 @@ jobs:
           name: Tag Release in GitHub
   publish:
     docker:
-      - image: php:7.3-cli
+      - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-php
     steps:
       - run:
-          command: |
-            apt-get update
-            apt-get install -y git
-          name: Install Git
       - checkout
-      - run:
-          command: apt-get install -y jq python zip
-          name: Install Tools
       - run:
           command: zip -x '.*' -x CODEOWNERS -x 'Test/*' -r9 NS8_Protect.zip .
           name: Make Zip File
-      - run:
-          command: ln -s ~/bin/aws /usr/local/bin/
-          name: Create Symlink for AWS CLI
       - run:
           command: |
             version=$(jq -r .version composer.json)
             echo "export VERSION=$version" >> $BASH_ENV
           name: Get Version
-      - aws-s3/copy:
-          arguments: |
-            --acl private \
-            --content-type application/zip
-          from: NS8_Protect.zip
-          to: s3://${AWS_S3_BUCKET}/NS8_Protect-${VERSION}.zip
+      - run:
+          command: aws s3 cp --acl private --content-type application/zip NS8_Protect.zip s3://$AWS_S3_BUCKET/NS8_Protect-$VERSION.zip
+          name: Deploy Release to S3
   #test_7-1_2-3-0:
   #  docker:
   #    - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.0
@@ -298,9 +277,6 @@ jobs:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:latest
     steps:
       - test
-
-orbs:
-  aws-s3: circleci/aws-s3@1.0.15
 
 version: 2.1
 
