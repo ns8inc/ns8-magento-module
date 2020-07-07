@@ -12,7 +12,7 @@ I have added/updated:
 
 - [ ] Tests
 - [ ] Documentation
-- [ ] Release notes
+- [ ] Release notes (title of this PR)
 
 ## Version Bump
 
