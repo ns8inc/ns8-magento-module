@@ -159,8 +159,7 @@ jobs:
             apt-get update
             apt-get install -y npm
             curl -o- -L https://yarnpkg.com/install.sh | bash
-            ~/.yarn/bin/yarn global add gren
-          name: Install Yarn/Gren for Release Notes
+          name: Install Yarn for Release Notes
       - checkout
       - run:
           command: |
@@ -186,16 +185,18 @@ jobs:
           name: Bump Version In Files
       - run:
           command: |
+            echo {} > package.json
+            ~/.yarn/bin/yarn add gren
             ~/.yarn/bin/yarn gren release -m -t $version -T $GITHUB_ACCESS_TOKEN
             ~/.yarn/bin/yarn gren release -o -t $version -T $GITHUB_ACCESS_TOKEN
-          name: Create GitHub Release
+          name: Create GitHub Release Via Gren
   publish:
     docker:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-php
     steps:
       - checkout
       - run:
-          command: zip -x '.*' -x CODEOWNERS -x 'Test/*' -r9 NS8_Protect.zip .
+          command: zip -x 'yarn*' -x -x '.*' -x package.json -x '*node_modules*' -x CODEOWNERS -x 'Test/*' -r9 NS8_Protect.zip .
           name: Make Zip File
       - run:
           command: |
