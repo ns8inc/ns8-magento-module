@@ -154,6 +154,13 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "53:1d:b4:b6:2f:4e:48:66:8e:eb:3d:67:bf:9e:d7:0d"
+      - run:
+          command: |
+            apt-get update
+            apt-get install -y npm
+            curl -o- -L https://yarnpkg.com/install.sh | bash
+            ~/.yarn/bin/yarn global add gren
+          name: Install Yarn/Gren for Release Notes
       - checkout
       - run:
           command: |
@@ -175,16 +182,13 @@ jobs:
             sed -i "s/setup_version=\".*\"/setup_version=\"$version\"/" etc/module.xml
             git add composer.json etc/module.xml
             git commit -m "v$version"
-            git tag $version -am "v$version"
-          name: Bump Version
+            git push -u origin ctdoriott/test
+          name: Bump Version In Files
       - run:
           command: |
-            if ! git push -u origin master --follow-tags; then
-              echo "Push failed. Please add this CircleCI deploy key to your repo with write access:"
-              ssh-keygen -y -f ~/.ssh/id_rsa
-              exit 1
-            fi
-          name: Tag Release in GitHub
+            ~/.yarn/bin/yarn gren release -m -t $version -T $GITHUB_ACCESS_TOKEN
+            ~/.yarn/bin/yarn gren release -o -t $version -T $GITHUB_ACCESS_TOKEN
+          name: Create GitHub Release
   publish:
     docker:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-php
@@ -199,8 +203,12 @@ jobs:
             echo "export VERSION=$version" >> $BASH_ENV
           name: Get Version
       - run:
-          command: aws s3 cp --acl private --content-type application/zip NS8_Protect.zip s3://$AWS_S3_BUCKET/NS8_Protect-$VERSION.zip
-          name: Deploy Release to S3
+          command: |
+            FILENAME="NS8_Protect-$VERSION.zip"
+            mv NS8_Protect.zip $FILENAME
+            GH_URL="https://uploads.github.com/repos/ns8inc/protect-integration-magento/releases/$VERSION/assets?name=$FILENAME"
+            curl --data-binary @"$FILENAME" -H "Authorization: token $GITHUB_ACCESS_TOKEN" -H "Content-Type: application/octet-stream" $GH_URL
+          name: Attach Zip File To Release
   #test_7-1_2-3-0:
   #  docker:
   #    - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.0
@@ -285,7 +293,7 @@ workflows:
           type: approval
           filters:
             branches:
-              only: master
+              only: ctdoriott/test
           requires:
             - test_latest
       #- test_7-1_2-3-0:
