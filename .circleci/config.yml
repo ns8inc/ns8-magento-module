@@ -195,7 +195,7 @@ jobs:
       - run:
           command: |
             echo {} > package.json
-            version=$(jq -r .version composer.json
+            version= jq -r .version composer.json
             ~/.yarn/bin/yarn add github-release-notes
             ~/.yarn/bin/yarn gren release -m -t $version -T $GITHUB_ACCESS_TOKEN
             ~/.yarn/bin/yarn gren release -o -t $version -T $GITHUB_ACCESS_TOKEN
