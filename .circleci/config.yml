@@ -154,12 +154,6 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "53:1d:b4:b6:2f:4e:48:66:8e:eb:3d:67:bf:9e:d7:0d"
-      - run:
-          command: |
-            apt-get update
-            apt-get install -y npm
-            curl -o- -L https://yarnpkg.com/install.sh | bash
-          name: Install Yarn for Release Notes
       - checkout
       - run:
           command: |
@@ -182,7 +176,6 @@ jobs:
             git add composer.json etc/module.xml
             git commit -m "v$version"
             git tag $version -am "v$version"
-            git push -u origin ctdoriott/test
           name: Bump Version In Files
       - run:
           command: |
@@ -196,9 +189,9 @@ jobs:
           command: |
             echo {} > package.json
             version=$(jq -r .version composer.json)
-            ~/.yarn/bin/yarn add github-release-notes
-            ~/.yarn/bin/yarn gren release -m -t $version -T $GITHUB_ACCESS_TOKEN
-            ~/.yarn/bin/yarn gren release -o -t $version -T $GITHUB_ACCESS_TOKEN
+            yarn global add github-release-notes
+            yarn gren release -m -t $version -T $GITHUB_ACCESS_TOKEN
+            yarn gren release -o -t $version -T $GITHUB_ACCESS_TOKEN
           name: Create GitHub Release Via Gren
   publish:
     docker:
