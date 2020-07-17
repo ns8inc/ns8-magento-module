@@ -154,6 +154,12 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "53:1d:b4:b6:2f:4e:48:66:8e:eb:3d:67:bf:9e:d7:0d"
+      - run:
+          command: |
+            apt-get update
+            apt-get install -y npm
+            curl -o- -L https://yarnpkg.com/install.sh | bash
+          name: Install Yarn for Release Notes
       - checkout
       - run:
           command: |
@@ -176,7 +182,7 @@ jobs:
             git add composer.json etc/module.xml
             git commit -m "v$version"
             git tag $version -am "v$version"
-          name: Bump Version
+          name: Bump Version In Files
       - run:
           command: |
             if ! git push -u origin master --follow-tags; then
@@ -185,13 +191,21 @@ jobs:
               exit 1
             fi
           name: Tag Release in GitHub
+      - run:
+          command: |
+            echo {} > package.json
+            version=$(jq -r .version composer.json)
+            ~/.yarn/bin/yarn add github-release-notes
+            ~/.yarn/bin/yarn gren release -m -t $version -T $GITHUB_ACCESS_TOKEN
+            ~/.yarn/bin/yarn gren release -o -t $version -T $GITHUB_ACCESS_TOKEN
+          name: Create GitHub Release Via Gren
   publish:
     docker:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-php
     steps:
       - checkout
       - run:
-          command: zip -x '.*' -x CODEOWNERS -x 'Test/*' -r9 NS8_Protect.zip .
+          command: zip -x 'yarn*' -x -x '.*' -x package.json -x '*node_modules*' -x CODEOWNERS -x 'Test/*' -r9 NS8_Protect.zip .
           name: Make Zip File
       - run:
           command: |
@@ -199,8 +213,13 @@ jobs:
             echo "export VERSION=$version" >> $BASH_ENV
           name: Get Version
       - run:
-          command: aws s3 cp --acl private --content-type application/zip NS8_Protect.zip s3://$AWS_S3_BUCKET/NS8_Protect-$VERSION.zip
-          name: Deploy Release to S3
+          command: |
+            FILENAME="NS8_Protect-$VERSION.zip"
+            mv NS8_Protect.zip $FILENAME
+            UPLOAD_URL_TEMPLATE=$(curl https://api.github.com/repos/ns8inc/protect-integration-magento/releases/tags/$VERSION | jq .upload_url)
+            UPLOAD_URL=$(echo $UPLOAD_URL_TEMPLATE | sed "s/{?name,label}/?name=$FILENAME/g"| tr -d '"')
+            curl --data-binary @"$FILENAME" -H "Authorization: token $GITHUB_ACCESS_TOKEN" -H "Content-Type: application/octet-stream" $UPLOAD_URL
+          name: Attach Zip File To Release
   #test_7-1_2-3-0:
   #  docker:
   #    - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.0
