@@ -52,7 +52,7 @@ class SessionData extends Template
     protected $state;
 
     /**
-     * The constructor.
+     * The constructor for the Session Data class.
      *
      * @param Context $context The Magento context
      * @param SessionManagerInterface $session The Session
