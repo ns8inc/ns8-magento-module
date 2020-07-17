@@ -223,6 +223,21 @@ class Order extends AbstractHelper
     }
 
     /**
+     * Gets local EQ8 scores for a set of order IDs
+     * Does not verify that all order IDs provided were found
+     * @param array $orderIds
+     * @return Collection the found orders
+     */
+    public function getOrderEQ8Scores(array $orderIds): Collection
+    {
+        return $this->orderCollectionFactory->create()
+             ->addFieldToSelect(OrderInterface::ENTITY_ID)
+             ->addFieldToSelect(self::EQ8_SCORE_COL)
+             ->addFieldToFilter(OrderInterface::ENTITY_ID, ['in' => $orderIds])
+             ;
+    }
+
+    /**
      * Sets the EQ8 Score on an order
      * @param int $eq8Score The score to persist
      * @param OrderInterface $order The order to update

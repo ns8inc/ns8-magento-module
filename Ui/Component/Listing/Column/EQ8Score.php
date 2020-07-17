@@ -2,10 +2,10 @@
 
 namespace NS8\Protect\Ui\Component\Listing\Column;
 
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
-use Magento\Ui\Component\Listing\Columns\Column;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Ui\Component\Listing\Columns\Column;
 use NS8\Protect\Helper\Order;
 
 /**
@@ -17,29 +17,29 @@ use NS8\Protect\Helper\Order;
 class EQ8Score extends Column
 {
     /**
-     * The order.
+     * The order helper (not the order itself)
      *
      * @var Order
      */
-    private $order;
+    protected $orderHelper;
 
     /**
      * Constructor
      *
      * @param ContextInterface $context The Magento Context
      * @param UiComponentFactory $uiComponentFactory The UI Component Factory
-     * @param Order $order The order
+     * @param Order $orderHelper The order helper
      * @param array $components The components
      * @param array $data The data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        Order $order,
+        Order $orderHelper,
         array $components = [],
         array $data = []
     ) {
-        $this->order = $order;
+        $this->orderHelper = $orderHelper;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -53,14 +53,20 @@ class EQ8Score extends Column
     public function prepareDataSource(array $dataSource): array
     {
         if (isset($dataSource['data']['items'])) {
+            $orderIds = [];
+            // fetch EQ8 scores since $dataSource doesn't include them
+            foreach ($dataSource['data']['items'] as $item) {
+                $orderIds[] = $item[OrderInterface::ENTITY_ID];
+            }
+            $orderCollection = $this->orderHelper->getOrderEQ8Scores($orderIds);
+            // populate $dataSource's items with formatted scores
             foreach ($dataSource['data']['items'] as &$item) {
                 $orderId = $item[OrderInterface::ENTITY_ID];
-                $eq8Score = isset($item[Order::EQ8_SCORE_COL])
-                    ? (int)$item[Order::EQ8_SCORE_COL]
-                    : null;
-                $item[Order::EQ8_SCORE_COL] = $this->order->formatEQ8ScoreLinkHtml(
+                $order = $orderCollection->getItemById($orderId);
+                $eq8Score = $order->get(Order::EQ8_SCORE_COL)[Order::EQ8_SCORE_COL];
+                $item[Order::EQ8_SCORE_COL] = $this->orderHelper->formatEQ8ScoreLinkHtml(
                     $orderId,
-                    $eq8Score
+                    $eq8Score === null ? null : (int)$eq8Score
                 );
             }
         }
