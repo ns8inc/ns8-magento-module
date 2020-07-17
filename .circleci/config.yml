@@ -186,7 +186,7 @@ jobs:
       - run:
           command: |
             echo {} > package.json
-            ~/.yarn/bin/yarn add gren
+            ~/.yarn/bin/yarn add github-release-notes
             ~/.yarn/bin/yarn gren release -m -t $version -T $GITHUB_ACCESS_TOKEN
             ~/.yarn/bin/yarn gren release -o -t $version -T $GITHUB_ACCESS_TOKEN
           name: Create GitHub Release Via Gren
