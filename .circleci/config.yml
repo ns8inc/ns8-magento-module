@@ -187,11 +187,10 @@ jobs:
           name: Tag Release in GitHub
       - run:
           command: |
-            echo {} > package.json
             version=$(jq -r .version composer.json)
             yarn global add github-release-notes
-            yarn gren release -m -t $version -T $GITHUB_ACCESS_TOKEN
-            yarn gren release -o -t $version -T $GITHUB_ACCESS_TOKEN
+            gren release -m -t $version -T $GITHUB_ACCESS_TOKEN
+            gren release -o -t $version -T $GITHUB_ACCESS_TOKEN
           name: Create GitHub Release Via Gren
   publish:
     docker:
