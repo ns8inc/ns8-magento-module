@@ -198,7 +198,7 @@ jobs:
     steps:
       - checkout
       - run:
-          command: zip -x '.*' -x package.json -x CODEOWNERS -x 'Test/*' -r9 NS8_Protect.zip .
+          command: zip -x '.*' -x CODEOWNERS -x 'Test/*' -r9 NS8_Protect.zip .
           name: Make Zip File
       - run:
           command: |
