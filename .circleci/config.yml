@@ -289,14 +289,11 @@ workflows:
               only: /^\d+\.\d+\.\d+$/
   test_and_deploy:
     jobs:
-      - test_latest
       - approve:
           type: approval
           filters:
             branches:
               only: ctdoriott/test
-          requires:
-            - test_latest
       - deploy:
           requires:
            - approve
