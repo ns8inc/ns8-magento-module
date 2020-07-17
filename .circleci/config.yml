@@ -217,7 +217,7 @@ jobs:
           command: |
             FILENAME="NS8_Protect-$VERSION.zip"
             mv NS8_Protect.zip $FILENAME
-            UPLOAD_URL_TEMPLATE=(curl https://api.github.com/repos/ns8inc/protect-integration-magento/releases/tags/2.5.14 | jq .upload_url)
+            UPLOAD_URL_TEMPLATE=$(curl https://api.github.com/repos/ns8inc/protect-integration-magento/releases/tags/$VERSION | jq .upload_url)
             UPLOAD_URL=$(echo $UPLOAD_URL | sed "s/{?name,label}/?name=$FILENAME/g"| tr -d '"')
             curl --data-binary @"$FILENAME" -H "Authorization: token $GITHUB_ACCESS_TOKEN" -H "Content-Type: application/octet-stream" $UPLOAD_URL
           name: Attach Zip File To Release
