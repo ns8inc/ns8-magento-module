@@ -18,6 +18,7 @@ use Magento\Framework\ObjectManager\ContextInterface;
 use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 use NS8\ProtectSDK\Security\Client as SecurityClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
+use NS8\Protect\Helper\Data\ProtectMetadata;
 use Zend\Http\Client;
 use Zend\Json\Decoder;
 use Zend\Uri\Uri;
@@ -37,12 +38,9 @@ class Config extends AbstractHelper
      */
     const DEFAULT_AUTH_USER = 'default';
 
-    const ACCESS_TOKEN_CONFIG_KEY = 'ns8/protect/token';
+    const ACCESS_TOKEN_CONFIG_KEY = 'ns8/protect/metadata';
 
-    /**
-     * Config path for if the merchant is active
-     */
-    const IS_MERCHANT_ACTIVE = 'ns8/protect/is_merchant_active';
+    const EMPTY_STORE_ID = 'NO_STORE_ID';
 
     /**
      * @var Context
@@ -157,48 +155,99 @@ class Config extends AbstractHelper
     }
 
     /**
-     * Sets if the merchant is Active for NS8
+     * Sets if a given store is active for NS8
      *
-     * @param bool $value The value we want to set for the merchant's activation status
-     *
+     * @param int|null $storeId The store ID
+     * @param bool $isActive The value we want to set for the merchant's activation status
      * @return void
      */
-    public function setIsMerchantActive(bool $value): void
+    public function setIsMerchantActive(?int $storeId, bool $isActive): void
     {
-        $this->scopeWriter->save(self::IS_MERCHANT_ACTIVE, $value);
-        $this->flushCaches();
+        $token = $this->getAccessToken($storeId);
+        if ($token === null) { // no need to set isActive when no token exists
+            return;
+        }
+        $metadata = new ProtectMetadata($token, $isActive);
+        $this->setStoreMetadata($storeId, $metadata);
     }
 
     /**
-     * Returns if the merchant is Active for NS8
+     * Returns if a given store is active for NS8
      *
+     * @param int|null $storeId The store ID
      * @return bool
      */
-    public function isMerchantActive(): bool
+    public function isMerchantActive(?int $storeId = null): bool
     {
-        return (bool) $this->scopeConfig->getValue(self::IS_MERCHANT_ACTIVE);
+        $metadata = $this->getStoreMetadata($storeId);
+        return $metadata !== null ? $metadata->isActive : false;
     }
 
     /**
-     * Retrieve an access token.
-     *
-     * @return string|null The NS8 Protect Access Token.
+     * Retrieve the Protect access token for a given store.
+     * @param int|null $storeId ID of the store to retrieve token for
+     * @return string|null The NS8 Protect Access Token for the provided store.
      */
-    public function getAccessToken(): ?string
+    public function getAccessToken(?int $storeId = null): ?string
     {
-        return $this->encryptor->decrypt($this->scopeConfig->getValue(self::ACCESS_TOKEN_CONFIG_KEY));
+        $metadata = $this->getStoreMetadata($storeId);
+        return $metadata !== null ? $metadata->token : null;
     }
 
     /**
-     * Saves a Magento configurable value in an encrypted format
-     *
-     * @param string $key The key of the configurable value
-     * @param string $value The value we want to store and encrypt for the configurable value
+     * Set the Protect access token for a given store.
+     * @param int|null $storeId The store ID to set token for
+     * @param string $token The Protect access token
      * @return void
      */
-    public function setEncryptedConfigValue(string $key, string $value): void
+    public function setAccessToken(?int $storeId, string $token): void
     {
-        $this->scopeWriter->save($key, $this->encryptor->encrypt($value));
+        $metadata = new ProtectMetadata($token, $this->isMerchantActive($storeId));
+        $this->setStoreMetadata($storeId, $metadata);
+    }
+
+    /**
+     * Gets ProtectMetadata instance for a given store
+     * @param int|null $storeId The store ID to get metadata for
+     * @return ProtectMetadata
+     */
+    public function getStoreMetadata(?int $storeId): ?\stdClass
+    {
+        $metadatas = $this->getStoreMetadatas();
+        $storeId = $storeId !== null ? $storeId : self::EMPTY_STORE_ID;
+        return isset($metadatas[$storeId]) ? $metadatas[$storeId] : null;
+    }
+
+    /**
+     * Get all metadatas, for all stores.
+     * Structured as { [storeId: string]: ProtectMetadata };
+     * @return ProtectMetadata[]
+     */
+    public function getStoreMetadatas(): array
+    {
+        $rawTokensJson = $this->encryptor->decrypt($this->scopeConfig->getValue(self::ACCESS_TOKEN_CONFIG_KEY));
+        $rawMetadatas = json_decode($rawTokensJson, true);
+        return array_map(function ($rawMetadata) {
+            return new ProtectMetadata(
+                $rawMetadata["accessToken"],
+                $rawMetadata["isActive"]
+            );
+        }, (array) $rawMetadatas);
+    }
+
+    /**
+     * Stores a Protect metadata object for a given store.
+     *
+     * @param int|null $storeId ID of the store to store metadata for
+     * @param ProtectMetadata $metadata Metadata object to store
+     * @return void
+     */
+    public function setStoreMetadata(?int $storeId, ProtectMetadata $metadata): void
+    {
+        $storeId = $storeId !== null ? $storeId : self::EMPTY_STORE_ID;
+        $accessTokens = $this->getStoreMetadatas();
+        $accessTokens[$storeId] = $metadata;
+        $this->scopeWriter->save(self::ACCESS_TOKEN_CONFIG_KEY, $this->encryptor->encrypt(json_encode($accessTokens)));
         $this->flushCaches();
     }
 
@@ -290,6 +339,7 @@ class Config extends AbstractHelper
         SdkConfigManager::setValue('platform_version', 'Magento');
         SdkConfigManager::setValue(sprintf('%s.authorization.required', $sdkEnv), $isAuthInfoRequired);
         SdkConfigManager::setValue(sprintf('%s.authorization.auth_user', $sdkEnv), $this->getAuthenticatedUserName());
+        // TODO use $storeId
         SdkConfigManager::setValue(sprintf('%s.authorization.access_token', $sdkEnv), (string) $this->getAccessToken());
     }
 }
