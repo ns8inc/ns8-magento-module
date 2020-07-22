@@ -38,7 +38,7 @@ class Config extends AbstractHelper
      */
     const DEFAULT_AUTH_USER = 'default';
 
-    const ACCESS_TOKEN_CONFIG_KEY = 'ns8/protect/metadata';
+    const METADATA_CONFIG_KEY = 'ns8/protect/metadata';
 
     const EMPTY_STORE_ID = 'NO_STORE_ID';
 
@@ -211,7 +211,7 @@ class Config extends AbstractHelper
      * @param int|null $storeId The store ID to get metadata for
      * @return ProtectMetadata
      */
-    public function getStoreMetadata(?int $storeId): ?\stdClass
+    public function getStoreMetadata(?int $storeId): ?ProtectMetadata
     {
         $metadatas = $this->getStoreMetadatas();
         $storeId = $storeId !== null ? $storeId : self::EMPTY_STORE_ID;
@@ -225,11 +225,11 @@ class Config extends AbstractHelper
      */
     public function getStoreMetadatas(): array
     {
-        $rawTokensJson = $this->encryptor->decrypt($this->scopeConfig->getValue(self::ACCESS_TOKEN_CONFIG_KEY));
+        $rawTokensJson = $this->encryptor->decrypt($this->scopeConfig->getValue(self::METADATA_CONFIG_KEY));
         $rawMetadatas = json_decode($rawTokensJson, true);
         return array_map(function ($rawMetadata) {
             return new ProtectMetadata(
-                $rawMetadata["accessToken"],
+                $rawMetadata["token"],
                 $rawMetadata["isActive"]
             );
         }, (array) $rawMetadatas);
@@ -247,7 +247,7 @@ class Config extends AbstractHelper
         $storeId = $storeId !== null ? $storeId : self::EMPTY_STORE_ID;
         $accessTokens = $this->getStoreMetadatas();
         $accessTokens[$storeId] = $metadata;
-        $this->scopeWriter->save(self::ACCESS_TOKEN_CONFIG_KEY, $this->encryptor->encrypt(json_encode($accessTokens)));
+        $this->scopeWriter->save(self::METADATA_CONFIG_KEY, $this->encryptor->encrypt(json_encode($accessTokens)));
         $this->flushCaches();
     }
 

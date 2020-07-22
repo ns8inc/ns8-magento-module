@@ -15,7 +15,7 @@ commands:
           name: Install Module Files
       - run:
           command: |
-            vendor/bin/phpcs --config-set installed_paths vendor/magento/magento-coding-standard/Magento2
+            composer config-lint
             composer lint
           name: Lint
       - run:
