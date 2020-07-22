@@ -278,7 +278,21 @@ class Config extends AbstractHelper
      */
     public function generateMerchantId(): string
     {
-        $merchantId = uniqid(rand(), true);
+        if (function_exists('com_create_guid')) {
+            $merchantId = com_create_guid();
+        } else {
+            $charid = strtoupper(hash('sha512', uniqid(rand(), true)));
+            $hyphen = '-';
+            $merchantIdPieces = [
+            substr($charid, 0, 8),
+            substr($charid, 8, 4),
+            substr($charid, 12, 4),
+            substr($charid, 16, 4),
+            substr($charid, 20, 12)
+            ];
+            $merchantId = implode($merchantIdPieces, '-');
+        }
+
         $this->setEncryptedConfigValue(self::MERCHANT_ID_CONFIG_KEY, $merchantId);
         return $merchantId;
     }
