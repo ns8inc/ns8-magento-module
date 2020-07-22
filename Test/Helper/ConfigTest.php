@@ -13,6 +13,7 @@ use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
+use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Data\ProtectMetadata;
 use PHPUnit\Framework\TestCase;
@@ -74,6 +75,8 @@ class ConfigTest extends TestCase
         $typeList = $this->createMock(TypeListInterface::class);
         /** @var Uri */
         $uri = $this->createMock(Uri::class);
+        /** @var StoreManagerInterface */
+        $storeManager = $this->createMock(StoreManagerInterface::class);
 
         $this->config = new Config(
             $context,
@@ -85,7 +88,8 @@ class ConfigTest extends TestCase
             $this->scopeConfig,
             $typeList,
             $uri,
-            $scopeWriter
+            $scopeWriter,
+            $storeManager
         );
     }
 
