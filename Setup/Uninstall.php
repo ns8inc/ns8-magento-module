@@ -5,6 +5,7 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UninstallInterface;
 use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\Data\ProtectMetadata;
 use NS8\ProtectSDK\Actions\Client as ActionsClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
 use NS8\ProtectSDK\Uninstaller\Client as UninstallerClient;
@@ -41,20 +42,32 @@ class Uninstall implements UninstallInterface
     }
 
     /**
+     * Uninstall a single merchant
+     *
+     * @param string $storeId - the id of the individual store getting uninstalled
+     * @param ProtectMetadata $store - the store info
+     */
+    private function uninstallMerchant(string $storeId, ProtectMetadata $store): void
+    {
+        if (!$store->isActive) {
+            return;
+        }
+        $this->config->initSdkConfiguration(true, $storeId);
+        UninstallerClient::uninstall();
+        $this->config->setIsMerchantActive($storeId, false);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function uninstall(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         try {
             $setup->startSetup();
-            // TODO use $storeId
-            if (!$this->config->isMerchantActive()) {
-                return;
+            $stores = $this->config->getStoreMetadatas();
+            foreach($stores as $id => $metadata) {
+                $this->uninstallMerchant($id, $metadata);
             }
-
-            UninstallerClient::uninstall();
-            // TODO use $storeId
-            $this->config->setIsMerchantActive(null, false);
         } catch (Throwable $e) {
             $this->loggingClient->error('Protect uninstall failed', $e);
         } finally {

@@ -337,18 +337,17 @@ class Config extends AbstractHelper
      * Init SDK Configuration class for usage
      *
      * @param bool $isAuthInfoRequired Implies if the SDK should be configured to required authorization information
-     *
-     * @return voice
+     * @param string $storeId optionally passes in an authentication token to support multiple stores
+     * @return void
      */
-    public function initSdkConfiguration(bool $isAuthInfoRequired = true) : void
+    public function initSdkConfiguration(bool $isAuthInfoRequired = true, ?string $storeId = '0') : void
     {
         SdkConfigManager::initConfiguration();
         $sdkEnv = SdkConfigManager::getEnvironment();
         SdkConfigManager::setValue('platform_version', 'Magento');
         SdkConfigManager::setValue(sprintf('%s.authorization.required', $sdkEnv), $isAuthInfoRequired);
         SdkConfigManager::setValue(sprintf('%s.authorization.auth_user', $sdkEnv), $this->getAuthenticatedUserName());
-        // TODO use $storeId
-        SdkConfigManager::setValue(sprintf('%s.authorization.access_token', $sdkEnv), (string) $this->getAccessToken());
+        SdkConfigManager::setValue(sprintf('%s.authorization.access_token', $sdkEnv), (string) $this->getAccessToken($storeId));
     }
 
     /**
