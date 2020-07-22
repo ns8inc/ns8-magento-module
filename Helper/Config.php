@@ -280,7 +280,7 @@ class Config extends AbstractHelper
     public function generateMerchantId(): string
     {
         $merchantId = UUID::create();
-        $this->setEncryptedConfigValue(self::MERCHANT_ID_CONFIG_KEY, $merchantId);
+        $this->scopeWriter->save(self::MERCHANT_ID_CONFIG_KEY, $this->encryptor->encrypt($merchantId));
         return $merchantId;
     }
 
