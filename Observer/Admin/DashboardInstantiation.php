@@ -137,7 +137,7 @@ class DashboardInstantiation implements ObserverInterface
                 'email' => $storeEmail,
                 'multistoreMerchantId' => $merchantId,
                 'moduleVersion' => $moduleVersion,
-                'platformVersion' => (string) $this->productMetadata->getVersion(),
+                'platformVersion' => (string) $this->productMetadata->getVersion()
             ];
 
             $installResult = InstallerClient::install('magento', $installRequestData);
