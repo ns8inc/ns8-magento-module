@@ -130,15 +130,17 @@ class DashboardInstantiation implements ObserverInterface
             $moduleVersion = $moduleData['setup_version'] ?? '';
             $storeEmail = $this->scopeConfig->getValue('trans_email/ident_sales/email') ?? '';
             $storeUrl = rtrim($store->getBaseUrl(UrlInterface::URL_TYPE_WEB, true), '/');
+            $merchantId = $this->config->getMerchantId();
+            $merchantId = empty($merchantId) ? $this->config->generateMerchantId() : $merchantId;
             $installRequestData = [
                 'storeUrl' => $storeUrl,
                 'email' => $storeEmail,
+                'multistoreMerchantId' => $merchantId,
                 'moduleVersion' => $moduleVersion,
-                'platformVersion' => (string) $this->productMetadata->getVersion()
+                'platformVersion' => (string) $this->productMetadata->getVersion(),
             ];
 
             $installResult = InstallerClient::install('magento', $installRequestData);
-
             if (!isset($installResult['accessToken'])) {
                 throw new InstallException(
                     'This store\'s domain has already been registered and cannot be reused with NS8 Protect. ' .

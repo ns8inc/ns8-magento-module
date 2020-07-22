@@ -39,9 +39,30 @@ class Config extends AbstractHelper
      */
     const DEFAULT_AUTH_USER = 'default';
 
+    /**
+     * Key to fetch access Protect metadata values
+     */
     const METADATA_CONFIG_KEY = 'ns8/protect/metadata';
 
+    /**
+     * ID to utilize when no store ID is present
+     */
     const EMPTY_STORE_ID = 'NO_STORE_ID';
+
+    /**
+     * Key to fetch access token values
+     */
+    const ACCESS_TOKEN_CONFIG_KEY = 'ns8/protect/token';
+
+    /**
+     * Key to fetch merchant ID generated for NS8 Protect
+     */
+    const MERCHANT_ID_CONFIG_KEY = 'ns8/protect/merchant_id';
+
+    /**
+     * Config path for if the merchant is active
+     */
+    const IS_MERCHANT_ACTIVE = 'ns8/protect/is_merchant_active';
 
     /**
      * @var Context
@@ -245,6 +266,25 @@ class Config extends AbstractHelper
 
     /**
      * Stores a Protect metadata object for a given store.
+     * Retrieves the Merchant ID associated with this platform install
+     */
+    public function getMerchantId(): ?string
+    {
+        return $this->encryptor->decrypt($this->scopeConfig->getValue(self::MERCHANT_ID_CONFIG_KEY));
+    }
+
+    /**
+     * Generates the Merchant ID associated with this platform install
+     */
+    public function generateMerchantId(): string
+    {
+        $merchantId = uniqid(rand(), true);
+        $this->setEncryptedConfigValue(self::MERCHANT_ID_CONFIG_KEY, $merchantId);
+        return $merchantId;
+    }
+
+    /**
+     * Saves a Magento configurable value in an encrypted format
      *
      * @param int|null $storeId ID of the store to store metadata for
      * @param ProtectMetadata $metadata Metadata object to store
