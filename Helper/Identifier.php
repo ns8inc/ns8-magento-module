@@ -22,7 +22,7 @@ class Identifier extends AbstractHelper
     public function generateUUID(): string
     {
         if (function_exists('com_create_guid')) {
-            $merchantId = com_create_guid();
+            $merchantId = trim(com_create_guid(), '{}');
         } else {
             $charid = strtoupper(hash('sha512', uniqid(rand(), true)));
             $hyphen = '-';
