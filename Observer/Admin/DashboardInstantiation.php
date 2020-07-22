@@ -119,14 +119,17 @@ class DashboardInstantiation implements ObserverInterface
     public function execute(Observer $observer) : void
     {
         try {
-            if ($this->config->isMerchantActive() || $this->registry->registry(self::ACCESS_TOKEN_SET_KEY)) {
+            $store = $this->storeManager->getStore();
+
+            // TODO use $storeId
+            if ($this->config->isMerchantActive() || $this->config->getAccessToken()) {
                 return;
             }
 
             $moduleData = $this->moduleList->getOne('NS8_Protect');
             $moduleVersion = $moduleData['setup_version'] ?? '';
             $storeEmail = $this->scopeConfig->getValue('trans_email/ident_sales/email') ?? '';
-            $storeUrl = rtrim($this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB, true), '/');
+            $storeUrl = rtrim($store->getBaseUrl(UrlInterface::URL_TYPE_WEB, true), '/');
             $installRequestData = [
                 'storeUrl' => $storeUrl,
                 'email' => $storeEmail,
@@ -143,12 +146,9 @@ class DashboardInstantiation implements ObserverInterface
                 );
             }
 
-            $this->config->setEncryptedConfigValue(Config::ACCESS_TOKEN_CONFIG_KEY, $installResult['accessToken']);
-            // Set a registry value so we do not attempt to fetch the token a second time
-            // if config value has not been saved yet
-            $this->registry->register(self::ACCESS_TOKEN_SET_KEY, true);
-
-            $this->config->setIsMerchantActive(true);
+            // TODO use $storeId
+            $this->config->setAccessToken(null, $installResult['accessToken']);
+            $this->config->setIsMerchantActive(null, true);
         } catch (\Throwable $t) {
             $this->messageManager->addErrorMessage($t->getMessage());
             $this->loggingClient->error(sprintf('Install failed: %s', $t->getMessage()));

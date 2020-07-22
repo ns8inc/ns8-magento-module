@@ -18,17 +18,22 @@
   "minimum-stability": "stable",
   "name": "ns8/protect-magento",
   "require": {
-    "ns8/protect-sdk": "^0.0.38",
-    "php": "^7.1.3"
+    "php": "^7.1.3",
+    "ns8/protect-sdk": "^0.0.42"
   },
   "require-dev": {
+    "allure-framework/allure-phpunit": "~1.2",
+    "magento/community-edition": "^2.3",
     "magento/magento-coding-standard": "^5",
-    "phpunit/phpunit": "^7.5.20",
+    "phpunit/phpunit": "~6.5",
     "squizlabs/php_codesniffer": "^3.5.5"
   },
   "scripts": {
+    "config-lint": "vendor/bin/phpcs --config-set installed_paths vendor/magento/magento-coding-standard",
     "lint": "phpcs --extensions=php --ignore=/vendor --standard=Magento2 .",
-    "lint-fix": "phpcbf --extensions=php --ignore=/vendor --standard=Magento2 ."
+    "lint-fix": "phpcbf --extensions=php --ignore=/vendor --standard=Magento2 .",
+    "test": "vendor/bin/phpunit Test",
+    "test-verbose": "vendor/bin/phpunit --verbose -c vendor/magento/community-edition/dev/tests/unit/phpunit.xml.dist Test"
   },
   "suggest": {},
   "type": "magento2-module",
