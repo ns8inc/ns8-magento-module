@@ -3,6 +3,7 @@
 namespace NS8\Protect\Helper;
 
 use Throwable;
+use Kodus\Helpers\UUID;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
 use Magento\Framework\App\Cache\TypeListInterface;
@@ -281,7 +282,7 @@ class Config extends AbstractHelper
      */
     public function generateMerchantId(): string
     {
-        $merchantId = $this->identifierHelper->generateUUID();
+        $merchantId = UUID::create();
         $this->setEncryptedConfigValue(self::MERCHANT_ID_CONFIG_KEY, $merchantId);
         return $merchantId;
     }
