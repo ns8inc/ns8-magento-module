@@ -129,6 +129,7 @@ class Config extends AbstractHelper
      *
      * @param Context $context
      * @param EncryptorInterface $encryptor
+     * @param Identifier $identifierHelper
      * @param ModuleList $moduleList
      * @param Pool $cacheFrontendPool
      * @param ProductMetadataInterface $productMetadata
@@ -142,6 +143,7 @@ class Config extends AbstractHelper
     public function __construct(
         Context $context,
         EncryptorInterface $encryptor,
+        Identifier $identifierHelper,
         ModuleList $moduleList,
         Pool $cacheFrontendPool,
         ProductMetadataInterface $productMetadata,
@@ -154,6 +156,7 @@ class Config extends AbstractHelper
     ) {
         $this->context = $context;
         $this->encryptor = $encryptor;
+        $this->identifierHelper = $identifierHelper;
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
         $this->request = $request;
@@ -278,21 +281,7 @@ class Config extends AbstractHelper
      */
     public function generateMerchantId(): string
     {
-        if (function_exists('com_create_guid')) {
-            $merchantId = com_create_guid();
-        } else {
-            $charid = strtoupper(hash('sha512', uniqid(rand(), true)));
-            $hyphen = '-';
-            $merchantIdPieces = [
-            substr($charid, 0, 8),
-            substr($charid, 8, 4),
-            substr($charid, 12, 4),
-            substr($charid, 16, 4),
-            substr($charid, 20, 12)
-            ];
-            $merchantId = implode($merchantIdPieces, '-');
-        }
-
+        $merchantId = $this->identifierHelper->generateUUID();
         $this->setEncryptedConfigValue(self::MERCHANT_ID_CONFIG_KEY, $merchantId);
         return $merchantId;
     }
