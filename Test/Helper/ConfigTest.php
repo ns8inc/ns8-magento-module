@@ -16,6 +16,7 @@ use Magento\Framework\Module\ModuleList;
 use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Data\ProtectMetadata;
+use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 use PHPUnit\Framework\TestCase;
 use Zend\Uri\Uri;
 
@@ -198,6 +199,23 @@ class ConfigTest extends TestCase
     public function testIsMerchantActiveReturnsFalseWhenNotFound(): void
     {
         $this->assertEquals(false, $this->config->isMerchantActive(1));
+    }
+
+    /** Config::initSdkConfiguration() should set the access token in theg sdkConfigManager
+     *  to the passed in store's token
+     */
+    public function testInitSdkConfiguration(): void
+    {
+        $this->setMetadatas([
+            '1' => new ProtectMetadata('foo', true),
+            '2' => new ProtectMetadata('bar', false)
+        ]);
+        $this->config->initSdkConfiguration(true, '1');
+        $sdkEnv = SdkConfigManager::getEnvironment();
+        $this->assertEquals(
+            'foo',
+            SdkConfigManager::getValue(sprintf('%s.authorization.access_token', $sdkEnv))
+        );
     }
 
     /**
