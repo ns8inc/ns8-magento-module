@@ -38,7 +38,7 @@ class Order
      * Max number of minutes the cron should run for.
      * This value should be one minute less than the cron's scheduled rate.
      */
-    const MAX_RUN_TIME_MINUTES = 2;
+    const MAX_RUN_TIME_MINUTES = 14;
 
     /**
      * Number of seconds to sleep when no messages are received
@@ -110,11 +110,9 @@ class Order
             $storeQueueArray= $this->getStoreQueueAccessItems();
             $maxEndTime = strtotime(sprintf("+%d minutes", self::MAX_RUN_TIME_MINUTES));
             do {
-                $this->loggingClient->error('Entering DO WHILE loop');
                 $currentTime = strtotime("now");
                 $preFetchProcessCount = $executionCount;
                 foreach ($storeQueueArray as $queueData) {
-                    $this->loggingClient->error('Entering FOR EACH loop');
                     $this->queueHelper->setQueueUrl($queueData[self::QUEUE_URL_KEY]);
                     $this->queueHelper->setNs8HttpClient($queueData[self::HTTP_CLIENT_KEY]);
                     $messages = $this->queueHelper->getMessages();
@@ -135,7 +133,6 @@ class Order
             throw $e;
         }
 
-        $this->loggingClient->error('Leaving cron');
         return $executionCount;
     }
 
