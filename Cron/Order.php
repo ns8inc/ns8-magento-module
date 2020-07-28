@@ -1,6 +1,7 @@
 <?php
 namespace NS8\Protect\Cron;
 
+use Magento\Cron\Model\Schedule;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order as MagentoOrder;
 use NS8\Protect\Helper\Config;
@@ -37,7 +38,7 @@ class Order
      * Max number of minutes the cron should run for.
      * This value should be one minute less than the cron's scheduled rate.
      */
-    const MAX_RUN_TIME_MINUTES = 14;
+    const MAX_RUN_TIME_MINUTES = 2;
 
     /**
      * Number of seconds to sleep when no messages are received
@@ -76,8 +77,8 @@ class Order
     protected $loggingClient;
 
      /**
-     * @var QueueHelper
-     */
+      * @var QueueHelper
+      */
     protected $queueHelper;
 
     /**
@@ -102,27 +103,39 @@ class Order
      *
      * @return int The number of messages the cron attempted to process
      */
-    public function execute($singleExecution = false) : int
+    public function execute(Schedule $schedule) : int
     {
         $executionCount = 0;
         try {
             $storeQueueArray= $this->getStoreQueueAccessItems();
             $maxEndTime = strtotime(sprintf("+%d minutes", self::MAX_RUN_TIME_MINUTES));
             do {
+                $this->loggingClient->error('Entering DO WHILE loop');
                 $currentTime = strtotime("now");
+                $preFetchProcessCount = $executionCount;
                 foreach ($storeQueueArray as $queueData) {
+                    $this->loggingClient->error('Entering FOR EACH loop');
                     $this->queueHelper->setQueueUrl($queueData[self::QUEUE_URL_KEY]);
                     $this->queueHelper->setNs8HttpClient($queueData[self::HTTP_CLIENT_KEY]);
                     $messages = $this->queueHelper->getMessages();
+                    if (empty($messages)) {
+                        continue;
+                    }
                     $this->processMessageArray($messages);
                     $executionCount += count($messages);
                 }
-            } while ($currentTime < $maxEndTime && !$singleExecution);
+
+                if ($preFetchProcessCount === $executionCount) {
+                    // phpcs:ignore
+                    sleep(self::SLEEP_TIME);
+                }
+            } while ($currentTime < $maxEndTime && $schedule->getId());
         } catch (\Exception $e) {
             $this->loggingClient->error('Protect Order Update Cron Job has failed to execute successfully.', $e);
             throw $e;
         }
 
+        $this->loggingClient->error('Leaving cron');
         return $executionCount;
     }
 
