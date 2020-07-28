@@ -2,26 +2,43 @@
 namespace NS8\Protect\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
+use NS8\Protect\Helper\Config;
 use NS8\ProtectSDK\Http\Client as HttpClient;
 use NS8\ProtectSDK\Queue\Client as QueueClient;
 use Zend\Http\Client as ZendClient;
+
 /**
  * Helper to assist with queue functionality
  */
 class Queue extends AbstractHelper
 {
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * Default constructor
+     *
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
      * Fetches messages from a queue
      *
      * @return mixed[] Array of messages
      */
-    public function getMessages(): array
+    public function getMessages(): ?array
     {
         try {
             $messages = QueueClient::getMessages();
         } catch (\Exception $e) {
             $this->loggingClient->error('Unable to fetch messages');
-            $messages = [];
+            $messages = null;
         }
 
         return $messages;
@@ -37,7 +54,7 @@ class Queue extends AbstractHelper
      */
     public function deleteMessage(string $messageId) : bool
     {
-        $returnvalue = true;
+        $returnValue = true;
         try {
             QueueClient::deleteMessage($messageId);
         } catch (\Exception $e) {
@@ -61,7 +78,7 @@ class Queue extends AbstractHelper
     public function setQueueUrl(string $queueUrl) : void
     {
         try {
-            QueueClient::initialize(null, $orderFetchCountqueueUrl);
+            QueueClient::initialize(null, $queueUrl);
         } catch (\Exception $e) {
             $this->loggingClient->error('Unable to set Queue URL');
             throw $e;
@@ -73,7 +90,7 @@ class Queue extends AbstractHelper
         try {
             $this->config->initSdkConfiguration($storeId);
             $sdkHttpClient = new HttpClient();
-            $urlData = $sdkHttpClient->post(self::GET_QUEUE_URL);
+            $urlData = $sdkHttpClient->post(QueueClient::GET_QUEUE_URL);
             return $urlData->url;
         } catch (\Exceotion $e) {
             $this->loggingClient->error('Unable to fetch Queue URL');
