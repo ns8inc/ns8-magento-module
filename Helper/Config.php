@@ -255,7 +255,7 @@ class Config extends AbstractHelper
      */
     public function getStoreMetadatas(): array
     {
-        $rawTokensJson = $this->encryptor->decrypt($this->scopeConfig->getValue(self::METADATA_CONFIG_KEY));
+        $rawTokensJson = $this->scopeConfig->getValue(self::METADATA_CONFIG_KEY);
         $rawMetadatas = json_decode($rawTokensJson, true);
         return array_map(function ($rawMetadata) {
             return new ProtectMetadata(
@@ -271,7 +271,7 @@ class Config extends AbstractHelper
      */
     public function getMerchantId(): ?string
     {
-        return $this->encryptor->decrypt($this->scopeConfig->getValue(self::MERCHANT_ID_CONFIG_KEY));
+        return $this->scopeConfig->getValue(self::MERCHANT_ID_CONFIG_KEY);
     }
 
     /**
@@ -280,7 +280,7 @@ class Config extends AbstractHelper
     public function generateMerchantId(): string
     {
         $merchantId = UUID::create();
-        $this->scopeWriter->save(self::MERCHANT_ID_CONFIG_KEY, $this->encryptor->encrypt($merchantId));
+        $this->scopeWriter->save(self::MERCHANT_ID_CONFIG_KEY, $merchantId);
         return $merchantId;
     }
 
@@ -296,7 +296,7 @@ class Config extends AbstractHelper
         $storeId = $storeId !== null ? $storeId : self::EMPTY_STORE_ID;
         $accessTokens = $this->getStoreMetadatas();
         $accessTokens[$storeId] = $metadata;
-        $this->scopeWriter->save(self::METADATA_CONFIG_KEY, $this->encryptor->encrypt(json_encode($accessTokens)));
+        $this->scopeWriter->save(self::METADATA_CONFIG_KEY, json_encode($accessTokens));
         $this->flushCaches();
     }
 
