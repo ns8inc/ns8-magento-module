@@ -389,7 +389,10 @@ class Config extends AbstractHelper
         SdkConfigManager::setValue('platform_version', 'Magento');
         SdkConfigManager::setValue(sprintf('%s.authorization.required', $sdkEnv), $isAuthInfoRequired);
         SdkConfigManager::setValue(sprintf('%s.authorization.auth_user', $sdkEnv), $this->getAuthenticatedUserName());
-        SdkConfigManager::setValue(sprintf('%s.authorization.access_token', $sdkEnv), (string) $this->getAccessToken($storeId));
+        SdkConfigManager::setValue(
+            sprintf('%s.authorization.access_token', $sdkEnv),
+            (string) $this->getAccessToken($storeId)
+        );
     }
 
     /**
