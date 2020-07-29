@@ -1,14 +1,17 @@
 <?php
 namespace NS8\Protect\Cron;
 
+use Magento\Cron\Model\Schedule;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order as MagentoOrder;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\CustomStatus as CustomStatus;
 use NS8\Protect\Helper\Order as OrderHelper;
+use NS8\Protect\Helper\Queue as QueueHelper;
+use NS8\ProtectSDK\Http\Client as HttpClient;
+use NS8\ProtectSDK\Logging\Client as LoggingClient;
 use NS8\ProtectSDK\Order\Client as NS8Order;
 use NS8\ProtectSDK\Queue\Client as QueueClient;
-use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
 /**
  * Cron-job to permit polling to NS8 Protect Services
@@ -52,6 +55,16 @@ class Order
      */
     const ORDER_FETCH_SLEEP_TIME = 2;
 
+     /**
+     * URL key for store queue-access components
+     */
+    const QUEUE_URL_KEY = 'url';
+
+    /**
+     * HTTP Client key for store queue-access components
+     */
+    const HTTP_CLIENT_KEY = 'httpClient';
+
     /**
      * @var Config
      */
@@ -67,6 +80,11 @@ class Order
      */
     protected $loggingClient;
 
+     /**
+      * @var QueueHelper
+      */
+    protected $queueHelper;
+
     /**
      * Default constructor
      *
@@ -75,38 +93,51 @@ class Order
      */
     public function __construct(
         Config $config,
-        OrderHelper $orderHelper
+        OrderHelper $orderHelper,
+        QueueHelper $queueHelper
     ) {
         $this->config=$config;
         $this->orderHelper=$orderHelper;
-        $this->config->initSdkConfiguration();
+        $this->queueHelper = $queueHelper;
         $this->loggingClient = new LoggingClient();
     }
 
     /**
      * Execute cron job to process messages from the NS8 Protect queue and update orders
      *
-     * @return void
+     * @return int The number of messages the cron attempted to process
      */
-    public function execute() : void
+    public function execute(Schedule $schedule) : int
     {
+        $executionCount = 0;
         try {
+            $storeQueueArray= $this->getStoreQueueAccessItems();
             $maxEndTime = strtotime(sprintf("+%d minutes", self::MAX_RUN_TIME_MINUTES));
-            QueueClient::initialize();
             do {
-                $messages = QueueClient::getMessages();
                 $currentTime = strtotime("now");
-                if (empty($messages)) {
+                $preFetchProcessCount = $executionCount;
+                foreach ($storeQueueArray as $queueData) {
+                    $this->queueHelper->setQueueUrl($queueData[self::QUEUE_URL_KEY]);
+                    $this->queueHelper->setNs8HttpClient($queueData[self::HTTP_CLIENT_KEY]);
+                    $messages = $this->queueHelper->getMessages();
+                    if (empty($messages)) {
+                        continue;
+                    }
+                    $this->processMessageArray($messages);
+                    $executionCount += count($messages);
+                }
+
+                if ($preFetchProcessCount === $executionCount) {
                     // phpcs:ignore
                     sleep(self::SLEEP_TIME);
-                } else {
-                    $this->processMessageArray($messages);
                 }
-            } while ($currentTime < $maxEndTime);
+            } while ($currentTime < $maxEndTime && $schedule->getId());
         } catch (\Exception $e) {
             $this->loggingClient->error('Protect Order Update Cron Job has failed to execute successfully.', $e);
             throw $e;
         }
+
+        return $executionCount;
     }
 
     /**
@@ -116,7 +147,7 @@ class Order
      *
      * @return void
      */
-    protected function processMessageArray(array $messages) : void
+    public function processMessageArray(array $messages) : void
     {
         foreach ($messages as $messageData) {
             // Update order details based on message
@@ -129,13 +160,13 @@ class Order
             switch ($messageData['action']) {
                 case QueueClient::MESSAGE_ACTION_UPDATE_EQ8_SCORE:
                     $this->orderHelper->setEQ8Score((int) $messageData['score'], $order);
-                    QueueClient::deleteMessage($messageData['receipt_handle']);
+                    $this->queueHelper->deleteMessage($messageData['receipt_handle']);
                     break;
                 case QueueClient::MESSAGE_ACTION_UPDATE_ORDER_STATUS_EVENT:
                     $isActionSuccessful = $this->processOrderStatusUpdate($order, $messageData['platformStatus']);
                     if ($isActionSuccessful) {
                         $order->save();
-                        QueueClient::deleteMessage($messageData['receipt_handle']);
+                        $this->queueHelper->deleteMessage($messageData['receipt_handle']);
                     }
                     break;
                 default:
@@ -146,13 +177,37 @@ class Order
     }
 
     /**
+     * Returns an array of items for each store that has a queue we want to access.
+     * Each item contains a URL for the queue and an HTTP Client object present with authentication information
+     *
+     * @return mixed[] The array of Store Queue Access Items
+     */
+    public function getStoreQueueAccessItems(): array
+    {
+        $storeArray = $this->config->storeSet = $this->config->getStoreMetadatas();
+        $returnData = [];
+        foreach ($storeArray as $storeId => $storeMetaData) {
+            if (!$storeMetaData->isActive) {
+                continue;
+            }
+
+            $returnData[] = [
+                self::QUEUE_URL_KEY => $this->queueHelper->fetchQueueUrl($storeId),
+                self::HTTP_CLIENT_KEY => (new HttpClient())
+            ];
+        }
+
+        return $returnData;
+    }
+
+    /**
      * Process an order status update given the order and the new status
      * @param OrderInterface $order The order we are going to try to update
      * @param string $newStatus The new status of the order
      *
      * @return bool Returns true if the action was successful otherwise false
      */
-    protected function processOrderStatusUpdate(OrderInterface $order, string $newStatus) : bool
+    public function processOrderStatusUpdate(OrderInterface $order, string $newStatus) : bool
     {
         // Before updating the order, make sure it is active
         $currentOrderState = $order->getState();
@@ -204,7 +259,7 @@ class Order
                 if ($isUnholded) {
                     $order->hold();
                 }
-                
+
                 return true;
             }
 
