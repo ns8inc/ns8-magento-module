@@ -106,7 +106,7 @@ class Queue extends AbstractHelper
     public function fetchQueueUrl(int $storeId) : string
     {
         try {
-            $this->config->initSdkConfiguration($storeId);
+            $this->config->initSdkConfiguration(true, $storeId);
             $sdkHttpClient = new HttpClient();
             $urlData = $sdkHttpClient->post(QueueClient::GET_QUEUE_URL);
             return $urlData->url;
