@@ -120,12 +120,6 @@ class DashboardInstantiation implements ObserverInterface
     {
         try {
             $store = $this->storeManager->getStore();
-            $this->config->setAccessToken(1, '77771263-c3ed-4cb1-8845-d6c6df923b26');
-            $this->config->setAccessToken(2, '4a5cdc94-6ea1-4753-a3a5-dde3474594c7');
-            $this->config->setIsMerchantActive(1, true);
-            $this->config->setIsMerchantActive(2, true);
-            $x = print_r($this->config->getStoreMetadatas());
-            die($x);
 
             // TODO use $storeId
             if ($this->config->isMerchantActive() || $this->config->getAccessToken()) {
