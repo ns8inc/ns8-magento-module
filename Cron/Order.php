@@ -8,10 +8,10 @@ use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\CustomStatus as CustomStatus;
 use NS8\Protect\Helper\Order as OrderHelper;
 use NS8\Protect\Helper\Queue as QueueHelper;
-use NS8\ProtectSDK\Order\Client as NS8Order;
 use NS8\ProtectSDK\Http\Client as HttpClient;
-use NS8\ProtectSDK\Queue\Client as QueueClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
+use NS8\ProtectSDK\Order\Client as NS8Order;
+use NS8\ProtectSDK\Queue\Client as QueueClient;
 
 /**
  * Cron-job to permit polling to NS8 Protect Services
@@ -56,9 +56,13 @@ class Order
     const ORDER_FETCH_SLEEP_TIME = 2;
 
      /**
-     * Constants representing keys for store queue-access components
+     * URL key for store queue-access components
      */
     const QUEUE_URL_KEY = 'url';
+
+    /**
+     * HTTP Client key for store queue-access components
+     */
     const HTTP_CLIENT_KEY = 'httpClient';
 
     /**
