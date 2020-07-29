@@ -54,9 +54,8 @@ class Queue extends AbstractHelper
      */
     public function deleteMessage(string $messageId) : bool
     {
-        $returnValue = true;
         try {
-            QueueClient::deleteMessage($messageId);
+            $returnValue = QueueClient::deleteMessage($messageId);
         } catch (\Exception $e) {
             $this->loggingClient->error(sprintf('Unable to delete message: %s', $messageId));
             $returnValue = false;
@@ -65,6 +64,11 @@ class Queue extends AbstractHelper
         return $returnValue;
     }
 
+    /**
+     * Sets the NS8 Http Client to be used in making requests
+     *
+     * @param HttpClient $ns8HttpClient - The client to be used in Protect requests
+     */
     public function setNs8HttpClient(HttpClient $ns8HttpClient) : void
     {
         try {
@@ -75,6 +79,13 @@ class Queue extends AbstractHelper
         }
     }
 
+    /**
+     * Sets the Queue URL to a specific value
+     *
+     * @param string $queueUrl - The URL to be used for fetching queue messages
+     *
+     * @return void
+     */
     public function setQueueUrl(string $queueUrl) : void
     {
         try {
@@ -85,6 +96,13 @@ class Queue extends AbstractHelper
         }
     }
 
+    /**
+     * Sets the queue URL for the given store.
+     *
+     * @param int $storeId - The store we want to fetch the queue URL for
+     *
+     * @return string The queue URL.
+     */
     public function fetchQueueUrl(int $storeId) : string
     {
         try {
