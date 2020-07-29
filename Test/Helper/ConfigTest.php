@@ -210,7 +210,7 @@ class ConfigTest extends TestCase
             '1' => new ProtectMetadata('foo', true),
             '2' => new ProtectMetadata('bar', false)
         ]);
-        $this->config->initSdkConfiguration(true, '1');
+        $this->config->initSdkConfiguration(true, 1);
         $sdkEnv = SdkConfigManager::getEnvironment();
         $this->assertEquals(
             'foo',
