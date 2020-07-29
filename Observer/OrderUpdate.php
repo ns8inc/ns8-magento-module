@@ -128,6 +128,7 @@ class OrderUpdate implements ObserverInterface
         try {
             $currentOrder = $observer->getEvent()->getOrder();
             $orderData = $this->orderHelper->getAllOrderData($currentOrder);
+            $this->loggingClient->error('Order Store ID is '.$currentOrder->getStoreId().'!!');
             $state = $currentOrder->getState();
             $status = $currentOrder->getStatus();
             $oldStatus = $this->addStatusHistory($currentOrder);
