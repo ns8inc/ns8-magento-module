@@ -1,14 +1,21 @@
 <?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<page
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
   <head>
     <title>NS8 Protect</title>
+    <link src="requirejs/require.js"/>
+    <css src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" src_type="url" />
     <css src="NS8_Protect::css/dashboard_styles.css" />
   </head>
   <body>
     <referenceContainer name="content">
       <block class="NS8\Protect\Block\Adminhtml\Container"
         template="NS8_Protect::client_iframe.phtml" />
+    </referenceContainer>
+    <referenceContainer name="header.inner.left">
+      <block class="NS8\Protect\Block\Adminhtml\StoreSelect"
+        template="NS8_Protect::store_select.phtml" />
     </referenceContainer>
   </body>
 </page>

@@ -140,7 +140,13 @@ class DashboardInstantiation implements ObserverInterface
                 'platformVersion' => (string) $this->productMetadata->getVersion()
             ];
 
-            $installResult = InstallerClient::install('magento', $installRequestData);
+            // phpcs:ignore
+            $devToken = getenv('NS8_ACCESS_TOKEN');
+            $installResult = [ 'accessToken' => $devToken ];
+            if (!$devToken) {
+                $installResult = InstallerClient::install('magento', $installRequestData);
+            }
+
             if (!isset($installResult['accessToken'])) {
                 throw new InstallException(
                     'This store\'s domain has already been registered and cannot be reused with NS8 Protect. ' .

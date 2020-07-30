@@ -245,7 +245,9 @@ class Config extends AbstractHelper
     {
         $metadatas = $this->getStoreMetadatas();
         $storeId = $storeId !== null ? $storeId : self::EMPTY_STORE_ID;
-        return isset($metadatas[$storeId]) ? $metadatas[$storeId] : null;
+        return isset($metadatas[$storeId]) ? $metadatas[$storeId] : (
+            isset($metadatas[self::EMPTY_STORE_ID]) ? $metadatas[self::EMPTY_STORE_ID] : null
+        );
     }
 
     /**
