@@ -1,0 +1,101 @@
+<?php
+/** @var NS8\Protect\Block\Adminhtml\StoreSelect */
+$block = $block;
+
+/**
+ * This Javascript blob lives here instead of its own file because it depends
+ *   very heavily on variables pulled directly from the PHP environment
+ */
+?>
+
+<select id="ns8-store-select"></select>
+
+<script type="text/javascript" src="<?= $block->url->getProtectClientSdkUrl() ?>"></script>
+<script>
+  require([
+    "jquery",
+    "Protect",
+    "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js",
+    "underscore"
+  ], function($, Protect, select2, _) {
+    // this isn't compiled, so we have to use old JS to work in old browsers
+    var containerElementId = 'ns8-protect-wrapper';
+    // load a bunch of data from PHP
+    var requestedPage = '<?= $block->getPageFromRequest(); ?>' || Protect.ClientPage.DASHBOARD;
+    var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
+    var stores = JSON.parse('<?= json_encode($block->getStores()) ?>');
+    var clientUrl = '<?= $block->url->getClientUrl() ?>';
+
+    function navigateToMagentoOrderDetails(orderData) {
+      var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
+      window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
+    }
+
+    function renderProtectIFrame(accessToken) {
+      var clientConfig = new Protect.ClientConfig({
+        accessToken: accessToken,
+        protectClientUrl: clientUrl,
+        eventBinding: {
+          [Protect.EventName.ORDER_DETAIL_NAME_CLICK]: navigateToMagentoOrderDetails
+        },
+        iFrameConfig: {
+          attachToId: containerElementId,
+          classNames: ['ns8-protect-client-iframe'],
+        },
+      });
+      var protectClient = Protect.createClient(clientConfig);
+      $('#' + containerElementId).html('');
+      protectClient.render(requestedPage, orderIncrementId);
+    }
+
+    // converts store data into select2 option
+    function storeToOption(store) {
+      return {
+        id: store.id,
+        text: store.name
+      };
+    }
+
+    // build option groups for select2
+    var activeStores = stores.filter(function(store) {
+      return !!store.active;
+    });
+    var inactiveStores = stores.filter(function(store) {
+      return !store.active;
+    });
+    var storeOptions = _.compact([
+      activeStores.length > 0 ? {
+        text: 'Active Stores',
+        children: activeStores.map(storeToOption)
+      } : false,
+      inactiveStores.length > 0 ? {
+        text: 'Inactive Stores',
+        children: inactiveStores.map(storeToOption)
+      } : false
+    ]);
+
+    $("#ns8-store-select").select2({
+      data: storeOptions,
+      escapeMarkup: function(markup) {
+        return markup;
+      },
+      // render icon
+      templateSelection: function(data) {
+        if (data.disabled) {
+          return escape(data.text);
+        }
+        return "<span class='ns8-store-select-icon' />" + data.text.trim();
+      },
+      minimumResultsForSearch: Infinity, // disable search
+      width: '25%'
+    });
+    $("#ns8-store-select").on("change", function() {
+      var storeId = this.value.toString();
+      var store = stores.find(function(store) {
+        return store.id === storeId;
+      });
+      renderProtectIFrame(store.token);
+    });
+    $("#ns8-store-select").trigger("change");
+  });
+</script>

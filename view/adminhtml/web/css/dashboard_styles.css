@@ -7,3 +7,17 @@
 .page-footer {
   display: none;
 }
+
+.page-title-wrapper {
+  display: inline-block;
+  margin-right: 1em;
+}
+
+.ns8-store-select-icon {
+  font-family: 'Admin Icons';
+  margin-right: 0.5em;
+}
+
+.ns8-store-select-icon:before {
+  content: '\e60d';
+}

@@ -68,13 +68,6 @@ class Container extends Template
     protected $eventManager;
 
     /**
-     * The URL Helper class
-     *
-     * @var Url
-     */
-    public $url;
-
-    /**
      * Constructor
      *
      * @param Config $config
@@ -91,8 +84,7 @@ class Container extends Template
         ManagerInterface $eventManager,
         Http $request,
         Order $order,
-        PageFactory $resultPageFactory,
-        Url $url
+        PageFactory $resultPageFactory
     ) {
         parent::__construct($context);
         $this->config = $config;
@@ -101,7 +93,6 @@ class Container extends Template
         $this->order = $order;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
-        $this->url = $url;
 
         $this->eventManager->dispatch('ns8_protect_dashboard_container_instantiated');
     }
