@@ -5,6 +5,7 @@ namespace NS8\Protect\Block\Adminhtml;
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\Store;
 use NS8\Protect\Helper\Url;
 
 /**
@@ -18,19 +19,25 @@ class StoreSelect extends Template
     /** @var Url */
     public $url;
 
+    /** @var Store */
+    private $storeHelper;
+
     /**
      * Constructor
      * @param Context $context The context
      * @param Config $config Config helper
      * @param Url $url Url helper
+     * @param Store $storeHelper Store helper
      */
     public function __construct(
         Context $context,
         Config $config,
-        Url $url
+        Url $url,
+        Store $storeHelper
     ) {
         $this->config = $config;
         $this->url = $url;
+        $this->storeHelper = $storeHelper;
         parent::__construct($context);
     }
 
@@ -41,7 +48,7 @@ class StoreSelect extends Template
      */
     public function getStores(): array
     {
-        $stores = $this->config->getStores();
+        $stores = $this->storeHelper->getUserStores();
         return array_map(function ($store) {
             return [
                 "id" => $store["id"],

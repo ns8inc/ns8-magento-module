@@ -16,7 +16,6 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleList;
 use Magento\Framework\ObjectManager\ContextInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use NS8\ProtectSDK\Config\Manager as SdkConfigManager;
 use NS8\ProtectSDK\Security\Client as SecurityClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
@@ -121,11 +120,6 @@ class Config extends AbstractHelper
     protected $uri;
 
     /**
-     * @var StoreManager
-     */
-    protected $storeManager;
-
-    /**
      * Default constructor
      *
      * @param Context $context
@@ -138,7 +132,6 @@ class Config extends AbstractHelper
      * @param TypeListInterface $typeList
      * @param Uri $uri
      * @param WriterInterface $scopeWriter
-     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         Context $context,
@@ -150,8 +143,7 @@ class Config extends AbstractHelper
         ScopeConfigInterface $scopeConfig,
         TypeListInterface $typeList,
         Uri $uri,
-        WriterInterface $scopeWriter,
-        StoreManagerInterface $storeManager
+        WriterInterface $scopeWriter
     ) {
         $this->context = $context;
         $this->encryptor = $encryptor;
@@ -163,7 +155,6 @@ class Config extends AbstractHelper
         $this->typeList = $typeList;
         $this->cacheFrontendPool = $cacheFrontendPool;
         $this->uri = $uri;
-        $this->storeManager = $storeManager;
         $this->loggingClient = new LoggingClient();
     }
 
@@ -394,27 +385,5 @@ class Config extends AbstractHelper
             sprintf('%s.authorization.access_token', $sdkEnv),
             (string) $this->getAccessToken($storeId)
         );
-    }
-
-    /**
-     * Retrieve a list of stores that the user has access to
-     *
-     * @return array $stores a list of stores the user has access to
-     */
-    public function getStores(): array
-    {
-        $storeManagerDataList = $this->storeManager->getStores();
-        $stores = [];
-
-        foreach ($storeManagerDataList as $value) {
-            $stores[] = [
-                'name'  => $value->getName(),
-                'code'  => $value->getCode(),
-                'id'    => $value->getStoreId(),
-                'url'   => $value->getBaseUrl(),
-                'active' => $value->isActive()
-            ];
-        }
-        return $stores;
     }
 }
