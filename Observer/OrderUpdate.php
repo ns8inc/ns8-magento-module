@@ -157,7 +157,7 @@ class OrderUpdate implements ObserverInterface
             }
             // Version our changes to this data structure
             $orderData['ns8_version'] = 2;
-            $this->config->initSdkConfiguration();
+            $this->config->initSdkConfiguration(true, $currentOrder->getStoreId());
             $orderData['session'] = $this->sessionHelper->getSessionData();
             ActionsClient::setAction($action, $orderData);
         } catch (Throwable $e) {
