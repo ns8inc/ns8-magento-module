@@ -96,6 +96,12 @@ $block = $block;
       });
       renderProtectIFrame(store.token);
     });
+
+    if (stores.length <= 1) {
+      // .next() used to get the actual visible select2 container
+      $("#ns8-store-select").next().hide();
+    }
+
     $("#ns8-store-select").trigger("change");
   });
 </script>
