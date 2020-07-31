@@ -7,8 +7,8 @@ use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\Url;
 use NS8\Protect\Helper\Store;
+use NS8\Protect\Helper\Url;
 
 /**
  * Provides access to DI and helper methods for the store_select template

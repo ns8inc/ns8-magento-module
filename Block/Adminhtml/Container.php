@@ -18,8 +18,8 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
-use NS8\Protect\Helper\Url;
 use NS8\Protect\Helper\Store;
+use NS8\Protect\Helper\Url;
 use NS8\ProtectSDK\ClientSdk\Client as ClientSdkClient;
 
 /**
