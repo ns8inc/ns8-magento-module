@@ -52,10 +52,12 @@ class StoreSelect extends Template
         return array_map(function ($store) {
             return [
                 "id" => $store["id"],
-                "active" => $store["active"],
+                "active" => $this->config->isMerchantActive((int) $store["id"]),
                 "name" => $store["name"],
                 "token" => $this->config->getAccessToken((int) $store["id"])
             ];
-        }, $stores);
+        }, array_filter($stores, function ($store) {
+            return $store["active"];
+        }));
     }
 }
