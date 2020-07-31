@@ -50,11 +50,6 @@ class Config extends AbstractHelper
     const EMPTY_STORE_ID = 'NO_STORE_ID';
 
     /**
-     * Key to fetch access token values
-     */
-    const ACCESS_TOKEN_CONFIG_KEY = 'ns8/protect/token';
-
-    /**
      * Key to fetch merchant ID generated for NS8 Protect
      */
     const MERCHANT_ID_CONFIG_KEY = 'ns8/protect/merchant_id';
@@ -379,6 +374,7 @@ class Config extends AbstractHelper
         SdkConfigManager::initConfiguration();
         $sdkEnv = SdkConfigManager::getEnvironment();
         SdkConfigManager::setValue('platform_version', 'Magento');
+        SdkConfigManager::setValue('store_id', $storeId);
         SdkConfigManager::setValue(sprintf('%s.authorization.required', $sdkEnv), $isAuthInfoRequired);
         SdkConfigManager::setValue(sprintf('%s.authorization.auth_user', $sdkEnv), $this->getAuthenticatedUserName());
         SdkConfigManager::setValue(
