@@ -112,7 +112,9 @@ $block = $block;
       $("#ns8-store-select").next().hide();
     }
     $("#ns8-store-select").val(paramStoreId)
-
-    $("#ns8-store-select").trigger("change");
+    if (stores.length <= 1) {
+      // .next() used to get the actual visible select2 container
+      $("#ns8-store-select").next().hide();
+    }
   });
 </script>
