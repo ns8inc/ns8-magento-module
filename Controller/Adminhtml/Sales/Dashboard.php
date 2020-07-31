@@ -54,7 +54,7 @@ class Dashboard extends Action
         $this->config = $config;
 
         // Init SDK Configuration before invoking HTTP Client:wq
-        
+
         $this->config->initSdkConfiguration();
         $this->loggingClient = new LoggingClient();
         $this->merchantsClient = new MerchantsClient();

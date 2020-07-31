@@ -11,6 +11,7 @@ $block = $block;
 <select id="ns8-store-select"></select>
 
 <script type="text/javascript" src="<?= $block->url->getProtectClientSdkUrl() ?>"></script>
+
 <script>
   require([
     "jquery",
@@ -25,7 +26,7 @@ $block = $block;
     var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
     var stores = JSON.parse('<?= json_encode($block->getStores()) ?>');
     var clientUrl = '<?= $block->url->getClientUrl() ?>';
-
+    var paramStoreId = '<?= $block->request->getParam('store_id', $block->storeHelper->getCurrentStore()['id']) ?>';
     function navigateToMagentoOrderDetails(orderData) {
       var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
       window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
@@ -43,6 +44,7 @@ $block = $block;
           classNames: ['ns8-protect-client-iframe'],
         },
       });
+
       var protectClient = Protect.createClient(clientConfig);
       $('#' + containerElementId).html('');
       protectClient.render(requestedPage, orderIncrementId);
@@ -60,9 +62,11 @@ $block = $block;
     var activeStores = stores.filter(function(store) {
       return !!store.active;
     });
+
     var inactiveStores = stores.filter(function(store) {
       return !store.active;
     });
+
     var storeOptions = _.compact([
       activeStores.length > 0 ? {
         text: 'Active Stores',
@@ -89,18 +93,25 @@ $block = $block;
       minimumResultsForSearch: Infinity, // disable search
       width: '25%'
     });
+
     $("#ns8-store-select").on("change", function() {
       var storeId = this.value.toString();
       var store = stores.find(function(store) {
         return store.id === storeId;
       });
-      renderProtectIFrame(store.token);
+      if (storeId !== paramStoreId) {
+        const newUrl = '<?=$block->getUrl('*/*/*')?>' + '?store_id=' + storeId;
+        window.location = newUrl;
+      } else {
+        renderProtectIFrame(store.token);
+      }
     });
 
     if (stores.length <= 1) {
       // .next() used to get the actual visible select2 container
       $("#ns8-store-select").next().hide();
     }
+    $("#ns8-store-select").val(paramStoreId)
 
     $("#ns8-store-select").trigger("change");
   });

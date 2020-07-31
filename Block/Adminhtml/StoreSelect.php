@@ -4,9 +4,11 @@ namespace NS8\Protect\Block\Adminhtml;
 
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
+use Magento\Framework\App\Request\Http;
+use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\Store;
 use NS8\Protect\Helper\Url;
+use NS8\Protect\Helper\Store;
 
 /**
  * Provides access to DI and helper methods for the store_select template
@@ -20,24 +22,33 @@ class StoreSelect extends Template
     public $url;
 
     /** @var Store */
-    private $storeHelper;
+    public $storeHelper;
 
+    /**
+     * The request.
+     *
+     * @var Http
+     */
+    public $request;
     /**
      * Constructor
      * @param Context $context The context
      * @param Config $config Config helper
      * @param Url $url Url helper
+     * @param Http $request request object
      * @param Store $storeHelper Store helper
      */
     public function __construct(
         Context $context,
         Config $config,
         Url $url,
+        Http $request,
         Store $storeHelper
     ) {
         $this->config = $config;
         $this->url = $url;
         $this->storeHelper = $storeHelper;
+        $this->request = $request;
         parent::__construct($context);
     }
 
@@ -54,7 +65,7 @@ class StoreSelect extends Template
                 "id" => $store["id"],
                 "active" => $this->config->isMerchantActive((int) $store["id"]),
                 "name" => $store["name"],
-                "token" => $this->config->getAccessToken((int) $store["id"])
+                "token" => $this->config->getAccessToken((int) $store["id"]),
             ];
         }, array_filter($stores, function ($store) {
             return $store["active"];

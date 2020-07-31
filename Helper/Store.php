@@ -41,6 +41,22 @@ class Store extends AbstractHelper
     }
 
     /**
+     *  formats a single store into a more succinct and usable array
+     * @param Store $store
+     * @return array
+     */
+    private function parseStore($store): array
+    {
+        return [
+            'name'  => $store->getName(),
+            'code'  => $store->getCode(),
+            'id'    => $store->getStoreId(),
+            'url'   => $store->getBaseUrl(),
+            'active' => $store->isActive()
+        ];
+    }
+
+    /**
      * Formats store collections into a more succinct and usable array
      * @param array $storeCollection
      * @return array
@@ -49,13 +65,7 @@ class Store extends AbstractHelper
     {
         $stores = [];
         foreach ($storeCollection as $value) {
-            $stores[] = [
-                'name'  => $value->getName(),
-                'code'  => $value->getCode(),
-                'id'    => $value->getStoreId(),
-                'url'   => $value->getBaseUrl(),
-                'active' => $value->isActive()
-            ];
+            $stores[] = $this->parseStore($value);
         }
         return $stores;
     }
@@ -91,5 +101,13 @@ class Store extends AbstractHelper
     {
         $storeManagerDataList = $this->storeManager->getStores();
         return $this->parseStores($storeManagerDataList);
+    }
+
+    /**
+     * get the current store from the storeManager
+     */
+    public function getCurrentStore(): array
+    {
+        return $this->parseStore($this->storeManager->getStore());
     }
 }

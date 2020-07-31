@@ -232,7 +232,7 @@ class Config extends AbstractHelper
         $metadatas = $this->getStoreMetadatas();
         $storeId = $storeId !== null ? $storeId : self::EMPTY_STORE_ID;
         return isset($metadatas[$storeId]) ? $metadatas[$storeId] : (
-            isset($metadatas[self::EMPTY_STORE_ID]) ? $metadatas[self::EMPTY_STORE_ID] : null
+            isset($metadatas[self::EMPTY_STORE_ID]) && count($metadatas) === 1 ? $metadatas[self::EMPTY_STORE_ID] : null
         );
     }
 
