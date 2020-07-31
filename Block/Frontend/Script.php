@@ -10,9 +10,10 @@ declare(strict_types=1);
 
 namespace NS8\Protect\Block\Frontend;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
 use NS8\ProtectSDK\Analytics\Client as AnalyticsClient;
 
@@ -33,19 +34,31 @@ class Script extends Template
      */
     protected $scopeConfig;
 
+    /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
+
      /**
       * The constructor.
       *
       * @param Context $context The Magento context
       * @param Config $config The Config Helper attribute
-      * @param ScopeConfigInterface $scopeConfig
+      * @param ScopeConfigInterface $scopeConfig The scope config
+      * @param StoreManagerInterface $storeManager The store manager
       * @param array $data The data to pass to the Template constructor (optional)
       */
-    public function __construct(Context $context, Config $config, ScopeConfigInterface $scopeConfig, array $data = [])
-    {
+    public function __construct(
+        Context $context,
+        Config $config,
+        ScopeConfigInterface $scopeConfig,
+        StoreManagerInterface $storeManager,
+        array $data = []
+    ) {
         parent::__construct($context, $data);
         $this->config = $config;
         $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -55,12 +68,7 @@ class Script extends Template
      */
     public function getScriptHtml(): string
     {
-        $existingAccessToken = $this->scopeConfig->getValue('ns8/protect/token');
-        if (empty($existingAccessToken)) {
-            return '';
-        }
-
-        $this->config->initSdkConfiguration();
+        $this->config->initSdkConfiguration(true, (int)$this->storeManager->getStore()->getId());
         $script = AnalyticsClient::getTrueStatsScript();
 
         return is_string($script) ? sprintf('<script>%s</script>', $script) : '';
