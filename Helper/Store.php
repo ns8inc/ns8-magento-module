@@ -1,6 +1,9 @@
 <?php
 namespace NS8\Protect\Helper;
 
+use Magento\Backend\Model\Auth\Session;
+use Magento\Framework\AuthorizationInterface;
+use Magento\Framework\Acl\AclResource\ProviderInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Store\Model\StoreFactory;
@@ -9,9 +12,21 @@ use Magento\Store\Model\StoreManagerInterface;
 class Store extends AbstractHelper
 {
     /**
+     * @var AuthorizationInterface
+     */
+    private $authorization;
+
+    /**
      * @var Context
      */
     protected $context;
+
+     /**
+      * Acl resource config
+      *
+      * @var ProviderInterface
+      */
+    protected $resourceProvider;
 
     /**
      * @var StoreFactory
@@ -23,6 +38,8 @@ class Store extends AbstractHelper
      */
     protected $storeManager;
 
+    protected $session;
+
     /**
      * Default constructor
      *
@@ -31,12 +48,18 @@ class Store extends AbstractHelper
      * @param StoreManagerInterface $storeManager
      */
     public function __construct(
+        AuthorizationInterface $authorization,
         Context $context,
+        ProviderInterface $resourceProvider,
         StoreFactory $storeFactory,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        Session $session
     ) {
+        $this->authorization = $authorization;
+        $this->resourceProvider = $resourceProvider;
         $this->storeFactory = $storeFactory;
         $this->storeManager = $storeManager;
+        $this->session = $session;
         parent::__construct($context);
     }
 
@@ -100,7 +123,29 @@ class Store extends AbstractHelper
     public function getUserStores(): array
     {
         $storeManagerDataList = $this->storeManager->getStores();
-        return $this->parseStores($storeManagerDataList);
+        $storeArray = $this->parseStores($storeManagerDataList);
+        $this->filterstoreArrayByPermission($storeArray);
+        return $storeArray;
+    }
+ 
+    /**
+     * Returns an array of strores accessible by the user
+     * @param mixed[] $storeArray - The array of stores we want to filter
+     *
+     * @return mixed[] The filtered array of stores
+     */
+    public function filterstoreArrayByPermission(array $storeArray): array
+    {
+        $user = $this->session->getUser();
+        $multistorePermissionAvailable = $user->getRole()->getGwsIsAll() !== null;
+        if (!$multistorePermissionAvailable) {
+            return $storeArray;
+        }
+
+        $accessibleStores = (array) $user->getRole()->getGwsWebsites();
+        return array_filter($storeArray, function ($store) use ($accessibleStores) {
+            return in_array($store['id'], $accessibleStores);
+        });
     }
 
     /**
