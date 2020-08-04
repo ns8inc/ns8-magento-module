@@ -2,8 +2,6 @@
 namespace NS8\Protect\Helper;
 
 use Magento\Backend\Model\Auth\Session;
-use Magento\Framework\AuthorizationInterface;
-use Magento\Framework\Acl\AclResource\ProviderInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Store\Model\StoreFactory;
@@ -21,13 +19,6 @@ class Store extends AbstractHelper
      */
     protected $context;
 
-     /**
-      * Acl resource config
-      *
-      * @var ProviderInterface
-      */
-    protected $resourceProvider;
-
     /**
      * @var StoreFactory
      */
@@ -38,28 +29,29 @@ class Store extends AbstractHelper
      */
     protected $storeManager;
 
+    /**
+     * @var Session
+    */
     protected $session;
 
     /**
      * Default constructor
      *
      * @param Context $context
+     * @param Session $session
      * @param StoreFactory $storeFactory
      * @param StoreManagerInterface $storeManager
      */
     public function __construct(
-        AuthorizationInterface $authorization,
         Context $context,
-        ProviderInterface $resourceProvider,
+        Session $session
         StoreFactory $storeFactory,
         StoreManagerInterface $storeManager,
-        Session $session
     ) {
         $this->authorization = $authorization;
-        $this->resourceProvider = $resourceProvider;
+        $this->session = $session;
         $this->storeFactory = $storeFactory;
         $this->storeManager = $storeManager;
-        $this->session = $session;
         parent::__construct($context);
     }
 
