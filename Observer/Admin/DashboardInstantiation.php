@@ -119,13 +119,15 @@ class DashboardInstantiation implements ObserverInterface
     public function execute(Observer $observer) : void
     {
         try {
-            $store = $this->storeManager->getStore();
-
-            // TODO use $storeId
-            if ($this->config->isMerchantActive() || $this->config->getAccessToken()) {
+            $event = $observer->getEvent()->getData();
+            $store = $this->storeManager->getStore($event['storeId']);
+            if ($store === null) {
+                $store = $this->storeManager->getStore();
+            }
+            $meta = $this->config->getStoreMetadata($store->getStoreId());
+            if ($meta && ($meta->isActive || $meta->token)) {
                 return;
             }
-
             $moduleData = $this->moduleList->getOne('NS8_Protect');
             $moduleVersion = $moduleData['setup_version'] ?? '';
             $storeEmail = $this->scopeConfig->getValue('trans_email/ident_sales/email') ?? '';
@@ -154,9 +156,8 @@ class DashboardInstantiation implements ObserverInterface
                 );
             }
 
-            // TODO use $storeId
-            $this->config->setAccessToken(null, $installResult['accessToken']);
-            $this->config->setIsMerchantActive(null, true);
+            $this->config->setAccessToken($store->getStoreId(), $installResult['accessToken']);
+            $this->config->setIsMerchantActive($store->getStoreId(), true);
         } catch (\Throwable $t) {
             $this->messageManager->addErrorMessage($t->getMessage());
             $this->loggingClient->error(sprintf('Install failed: %s', $t->getMessage()));

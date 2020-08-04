@@ -15,8 +15,10 @@ use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\View\Result\PageFactory;
+use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
+use NS8\Protect\Helper\Store;
 use NS8\Protect\Helper\Url;
 use NS8\ProtectSDK\ClientSdk\Client as ClientSdkClient;
 
@@ -84,7 +86,8 @@ class Container extends Template
         ManagerInterface $eventManager,
         Http $request,
         Order $order,
-        PageFactory $resultPageFactory
+        PageFactory $resultPageFactory,
+        Store $storeHelper
     ) {
         parent::__construct($context);
         $this->config = $config;
@@ -94,7 +97,11 @@ class Container extends Template
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
 
-        $this->eventManager->dispatch('ns8_protect_dashboard_container_instantiated');
+        $storeId = $request->getParam('store_id', $storeHelper->getCurrentStore()['id']);
+        $this->eventManager->dispatch(
+            'ns8_protect_dashboard_container_instantiated',
+            ['storeId' => $storeId]
+        );
     }
 
     /**
