@@ -31,7 +31,7 @@ class Store extends AbstractHelper
 
     /**
      * @var Session
-    */
+     */
     protected $session;
 
     /**
@@ -44,7 +44,7 @@ class Store extends AbstractHelper
      */
     public function __construct(
         Context $context,
-        Session $session
+        Session $session,
         StoreFactory $storeFactory,
         StoreManagerInterface $storeManager,
     ) {
