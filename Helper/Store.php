@@ -46,7 +46,7 @@ class Store extends AbstractHelper
         Context $context,
         Session $session,
         StoreFactory $storeFactory,
-        StoreManagerInterface $storeManager,
+        StoreManagerInterface $storeManager
     ) {
         $this->authorization = $authorization;
         $this->session = $session;
