@@ -116,8 +116,7 @@ class Store extends AbstractHelper
     {
         $storeManagerDataList = $this->storeManager->getStores();
         $storeArray = $this->parseStores($storeManagerDataList);
-        $this->filterstoreArrayByPermission($storeArray);
-        return $storeArray;
+        return $this->filterstoreArrayByPermission($storeArray);
     }
  
     /**
