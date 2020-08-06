@@ -16,4 +16,11 @@
             <argument name="salesOrderGrid" xsi:type="object">Magento\Sales\Model\ResourceModel\Order\Grid</argument>
         </arguments>
     </type>
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="setAccessTokenCommand" xsi:type="object">NS8\Protect\Console\Command\SetAccessToken</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
