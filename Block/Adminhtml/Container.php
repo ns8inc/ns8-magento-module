@@ -87,7 +87,8 @@ class Container extends Template
         Http $request,
         Order $order,
         PageFactory $resultPageFactory,
-        Store $storeHelper
+        Store $storeHelper,
+        Url $url
     ) {
         parent::__construct($context);
         $this->config = $config;
@@ -96,12 +97,26 @@ class Container extends Template
         $this->order = $order;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
+        $this->url = $url
 
         $storeId = $request->getParam('store_id', $storeHelper->getCurrentStore()['id']);
         $this->eventManager->dispatch(
             'ns8_protect_dashboard_container_instantiated',
             ['storeId' => $storeId]
         );
+    }
+
+    /**
+     * Get the page to navigate to within the protect client
+     *
+     * @return string Access token to use initially upon page render
+     */
+    public function getInitialAccessToken() : string
+    {
+        $storeId = $order->getStoreId();
+        $accessToken = $this->config->getAccessToken($storeId);
+
+        return (string) $accessToken;
     }
 
     /**
