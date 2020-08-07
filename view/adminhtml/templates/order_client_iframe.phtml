@@ -7,8 +7,8 @@ $block = $block;
 <script>
     require(['Protect'], function(Protect) {
         function navigateToMagentoOrderDetails(orderData) {
-        var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
-        window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
+            var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
+            window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
         }
 
         var requestedPage = '<?= $block->getPageFromRequest(); ?>' || Protect.ClientPage.DASHBOARD;
