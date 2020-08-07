@@ -4,28 +4,30 @@ $block = $block;
 ?>
 
 <script type="text/javascript" src="<?= $block->url->getProtectClientSdkUrl() ?>"></script>
-<script type="text/javascript">
-    function navigateToMagentoOrderDetails(orderData) {
-      var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
-      window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
-    }
-    
-    var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
-    var containerElementId = 'ns8-protect-wrapper';
-    var clientConfig = new Protect.ClientConfig({
-        accessToken: '<?= $block->getAccessToken(); ?>',
-        protectClientUrl: '<?= $block->url->getClientUrl() ?>',
-        eventBinding: {
-          [Protect.EventName.ORDER_DETAIL_NAME_CLICK]: navigateToMagentoOrderDetails
-        },
-        iFrameConfig: {
-          attachToId: containerElementId,
-          classNames: ['ns8-protect-client-iframe'],
-        },
-      });
+<script>
+    require(['Protect'], function(Protect) {
+        function navigateToMagentoOrderDetails(orderData) {
+        var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
+        window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
+        }
 
-    var protectClient = Protect.createClient(clientConfig);
-    $('#' + containerElementId).html('');
-    protectClient.render(requestedPage, orderIncrementId);
+        var requestedPage = '<?= $block->getPageFromRequest(); ?>' || Protect.ClientPage.DASHBOARD;
+        var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
+        var containerElementId = 'ns8-protect-wrapper';
+        var clientConfig = new Protect.ClientConfig({
+            accessToken: '<?= $block->getInitialAccessToken(); ?>',
+            protectClientUrl: '<?= $block->url->getClientUrl() ?>',
+            eventBinding: {
+            [Protect.EventName.ORDER_DETAIL_NAME_CLICK]: navigateToMagentoOrderDetails
+            },
+            iFrameConfig: {
+            attachToId: containerElementId,
+            classNames: ['ns8-protect-client-iframe'],
+            },
+        });
+
+        var protectClient = Protect.createClient(clientConfig);
+        protectClient.render(requestedPage, orderIncrementId);
+  });
 </script>
 <div id="ns8-protect-wrapper"></div>

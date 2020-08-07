@@ -97,7 +97,7 @@ class Container extends Template
         $this->order = $order;
         $this->request = $request;
         $this->resultPageFactory = $resultPageFactory;
-        $this->url = $url
+        $this->url = $url;
 
         $storeId = $request->getParam('store_id', $storeHelper->getCurrentStore()['id']);
         $this->eventManager->dispatch(
@@ -113,7 +113,8 @@ class Container extends Template
      */
     public function getInitialAccessToken() : string
     {
-        $storeId = $order->getStoreId();
+        $order = $this->order->getOrder();
+        $storeId = $order ? (int) $order->getStoreId() : null;
         $accessToken = $this->config->getAccessToken($storeId);
 
         return (string) $accessToken;
