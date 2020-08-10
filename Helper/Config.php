@@ -251,7 +251,7 @@ class Config extends AbstractHelper
         if ($this->metaDataContext) {
             return $this->metaDataContext;
         }
-        $rawTokensJson = $this->scopeConfig->getValue(self::METADATA_CONFIG_KEY);
+        $rawTokensJson = $this->encryptor->decrypt($this->scopeConfig->getValue(self::METADATA_CONFIG_KEY));
         $rawMetadatas = json_decode($rawTokensJson, true);
         $this->metaDataContext = array_map(function ($rawMetadata) {
             return new ProtectMetadata(
@@ -295,7 +295,7 @@ class Config extends AbstractHelper
         $accessTokens = $this->getStoreMetadatas();
         $accessTokens[$storeId] = $metadata;
         $this->metaDataContext = $accessTokens;
-        $this->scopeWriter->save(self::METADATA_CONFIG_KEY, json_encode($accessTokens));
+        $this->scopeWriter->save(self::METADATA_CONFIG_KEY, $this->encryptor->encrypt(json_encode($accessTokens)));
         $this->flushCaches();
     }
 
