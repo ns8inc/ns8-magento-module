@@ -218,10 +218,10 @@ class Config extends AbstractHelper
     /**
      * Set the Protect access token for a given store.
      * @param int|null $storeId The store ID to set token for
-     * @param string $token The Protect access token
+     * @param string|null $token The Protect access token
      * @return void
      */
-    public function setAccessToken(?int $storeId, string $token): void
+    public function setAccessToken(?int $storeId, ?string $token): void
     {
         $metadata = new ProtectMetadata($token, $this->isMerchantActive($storeId));
         $this->setStoreMetadata($storeId, $metadata);
