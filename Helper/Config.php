@@ -109,6 +109,9 @@ class Config extends AbstractHelper
      */
     protected $cacheFrontendPool;
 
+    /**
+     * @var mixed[]
+    */
     protected $metaDataContext;
 
     /**
