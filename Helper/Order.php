@@ -195,7 +195,7 @@ class Order extends AbstractHelper
         }
 
         // Ensure Config Properties are set
-        $this->config->initSdkConfiguration();
+        $this->config->initSdkConfiguration(true, (int) $order->getStoreId());
 
         $orderIncId = $order->getIncrementId();
         $orderData = OrderClient::getOrderByName($orderIncId);
