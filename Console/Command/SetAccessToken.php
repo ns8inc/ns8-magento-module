@@ -69,8 +69,11 @@ class SetAccessToken extends Command
         $storeId = $input->getOption(self::STORE_ID);
         $token = $input->getArgument(self::TOKEN);
         $active = $input->getOption(self::ACTIVE);
-
+        if ($token === 'null') {
+            $token = null;
+        }
         $this->config->setAccessToken($storeId, $token);
+
         if ($active !== null) {
             $this->config->setIsMerchantActive($storeId, $active === 'true');
         }
