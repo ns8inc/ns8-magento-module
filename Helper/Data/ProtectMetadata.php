@@ -9,7 +9,7 @@ class ProtectMetadata
     /** @var bool */
     public $isActive;
 
-    public function __construct(string $token, bool $isActive)
+    public function __construct(?string $token, bool $isActive)
     {
         $this->token = $token;
         $this->isActive = $isActive;

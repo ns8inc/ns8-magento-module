@@ -41,7 +41,7 @@ class Store extends AbstractHelper
     }
 
     /**
-     *  formats a single store into a more succinct and usable array
+     * Formats a single store into a more succinct and usable array
      * @param Store $store
      * @return array
      */
@@ -71,7 +71,7 @@ class Store extends AbstractHelper
     }
 
     /**
-     * get all stores
+     * Get all stores
      *
      * @return array
      */
@@ -82,7 +82,7 @@ class Store extends AbstractHelper
     }
 
     /**
-     * get all stores under a website
+     * Get all stores under a website
      * @param int $websiteId - the id if the desired website
      * @return array
      */
