@@ -53,10 +53,10 @@ class StoreSelect extends Template
     }
 
      /**
-     * Returns the Store ID we want to show initially in the UI
-     * 
-     * @return int - The Store ID we want to show the UI for
-     */
+      * Returns the Store ID we want to show initially in the UI
+      *
+      * @return int - The Store ID we want to show the UI for
+      */
     public function getRequestedStore(): int
     {
         $storeArray = $this->getStores();
