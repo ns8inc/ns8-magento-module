@@ -131,7 +131,7 @@ class DashboardInstantiation implements ObserverInterface
             $moduleData = $this->moduleList->getOne('NS8_Protect');
             $moduleVersion = $moduleData['setup_version'] ?? '';
             $storeEmail = $this->scopeConfig->getValue('trans_email/ident_sales/email') ?? '';
-            $storeUrl = 'https://chrisdoriott_test'.rand(1, 10000).'.com' ; //rtrim($store->getBaseUrl(UrlInterface::URL_TYPE_WEB, true), '/');
+            $storeUrl = rtrim($store->getBaseUrl(UrlInterface::URL_TYPE_WEB, true), '/');
             $merchantId = $this->config->getMerchantId();
             $merchantId = empty($merchantId) ? $this->config->generateMerchantId() : $merchantId;
             $installRequestData = [
