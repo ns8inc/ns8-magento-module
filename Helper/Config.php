@@ -109,6 +109,8 @@ class Config extends AbstractHelper
      */
     protected $cacheFrontendPool;
 
+    protected $metaDataContext;
+
     /**
      * @var Uri
      */
@@ -243,14 +245,19 @@ class Config extends AbstractHelper
      */
     public function getStoreMetadatas(): array
     {
-        $rawTokensJson = $this->encryptor->decrypt($this->scopeConfig->getValue(self::METADATA_CONFIG_KEY));
+        if ($this->metaDataContext) {
+            return $this->metaDataContext;
+        }
+        $rawTokensJson = $this->scopeConfig->getValue(self::METADATA_CONFIG_KEY);
         $rawMetadatas = json_decode($rawTokensJson, true);
-        return array_map(function ($rawMetadata) {
+        $this->metaDataContext = array_map(function ($rawMetadata) {
             return new ProtectMetadata(
                 $rawMetadata["token"],
                 $rawMetadata["isActive"]
             );
         }, (array) $rawMetadatas);
+
+        return $this->metaDataContext;
     }
 
     /**
@@ -284,7 +291,8 @@ class Config extends AbstractHelper
         $storeId = $storeId !== null ? $storeId : self::EMPTY_STORE_ID;
         $accessTokens = $this->getStoreMetadatas();
         $accessTokens[$storeId] = $metadata;
-        $this->scopeWriter->save(self::METADATA_CONFIG_KEY, $this->encryptor->encrypt(json_encode($accessTokens)));
+        $this->metaDataContext = $accessTokens;
+        $this->scopeWriter->save(self::METADATA_CONFIG_KEY, json_encode($accessTokens));
         $this->flushCaches();
     }
 
