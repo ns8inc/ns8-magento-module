@@ -52,6 +52,22 @@ class StoreSelect extends Template
         parent::__construct($context);
     }
 
+     /**
+     * Returns the Store ID we want to show initially in the UI
+     * 
+     * @return int - The Store ID we want to show the UI for
+     */
+    public function getRequestedStore(): int
+    {
+        $storeArray = $this->getStores();
+        $availableStoreIds = array_map(function ($store) {
+            return (int) $store['id'];
+        }, $storeArray);
+        $requestedStoreId = (int) $this->request->getParam('store_id');
+
+        return in_array($requestedStoreId, $availableStoreIds) ? $requestedStoreId : $availableStoreIds[0];
+    }
+
     /**
      * Gets a limited set of attributes for each store the user has access to.
      * Safe to include on front-end as JSON.
@@ -62,13 +78,13 @@ class StoreSelect extends Template
         $stores = $this->storeHelper->getUserStores();
         return array_map(function ($store) {
             return [
-                "id" => $store["id"],
-                "active" => $this->config->isMerchantActive((int) $store["id"]),
-                "name" => $store["name"],
-                "token" => $this->config->getAccessToken((int) $store["id"]),
+                'id' => $store['id'],
+                'active' => $this->config->isMerchantActive((int) $store['id']),
+                'name' => $store['name'],
+                'token' => $this->config->getAccessToken((int) $store['id']),
             ];
         }, array_filter($stores, function ($store) {
-            return $store["active"];
+            return $store['active'];
         }));
     }
 }

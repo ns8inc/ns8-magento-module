@@ -26,7 +26,7 @@ $block = $block;
     var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
     var stores = JSON.parse('<?= json_encode($block->getStores()) ?>');
     var clientUrl = '<?= $block->url->getClientUrl() ?>';
-    var paramStoreId = '<?= $block->request->getParam('store_id', $block->storeHelper->getCurrentStore()['id']) ?>';
+    var paramStoreId = '<?= $block->getRequestedStore() ?>';
     function navigateToMagentoOrderDetails(orderData) {
       var orderDetailsUrlBase = '<?= $block->url->getMagentOrderDetailUrl(); ?>';
       window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;

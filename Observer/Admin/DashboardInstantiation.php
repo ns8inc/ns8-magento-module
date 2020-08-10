@@ -12,7 +12,6 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Exception\InstallException;
 use NS8\Protect\Helper\Config;
-use NS8\Protect\Helper\Store;
 use NS8\ProtectSDK\Installer\Client as InstallerClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
 
@@ -80,13 +79,6 @@ class DashboardInstantiation implements ObserverInterface
     protected $scopeConfig;
 
     /**
-     * Scope helper to simplify pulling store data
-     *
-     * @var Stre
-     */
-    public $storeHelper;
-
-    /**
      * Default constructor
      *
      * @param Config $config
@@ -95,7 +87,6 @@ class DashboardInstantiation implements ObserverInterface
      * @param ProductMetadataInterface $productMetadata,
      * @param Registry $registry
      * @param ScopeConfigInterface $scopeConfig
-     * @param Store $storeHelper
      * @param StoreManagerInterface $storeManager
      */
     public function __construct(
@@ -105,7 +96,6 @@ class DashboardInstantiation implements ObserverInterface
         ProductMetadataInterface $productMetadata,
         Registry $registry,
         ScopeConfigInterface $scopeConfig,
-        Store $storeHelper,
         StoreManagerInterface $storeManager
     ) {
         $this->config = $config;
@@ -114,7 +104,6 @@ class DashboardInstantiation implements ObserverInterface
         $this->productMetadata = $productMetadata;
         $this->registry = $registry;
         $this->scopeConfig = $scopeConfig;
-        $this->storeHelper = $storeHelper;
         $this->storeManager = $storeManager;
 
         $this->config->initSdkConfiguration();
@@ -125,29 +114,13 @@ class DashboardInstantiation implements ObserverInterface
      * Observer execute method
      *
      * @param Observer $observer
-     *
      * @return void
      */
     public function execute(Observer $observer) : void
     {
-        $storeArray = $this->storeHelper->getUserStores();
-        foreach ($storeArray as $storeData) {
-            $this->registerStore((int) $storeData['id']);
-        }
-    }
-
-    /**
-     * Registers a store given the store ID.
-     * If the store is already registered, the method will return early
-     *
-     * @param int $storeId - The store we want to activate
-     *
-     * @return void
-     */
-    protected function registerStore(int $storeId): void
-    {
         try {
-            $store = $this->storeManager->getStore($storeId);
+            $event = $observer->getEvent()->getData();
+            $store = $this->storeManager->getStore($event['storeId']);
             if ($store === null) {
                 $store = $this->storeManager->getStore();
             }
@@ -158,7 +131,7 @@ class DashboardInstantiation implements ObserverInterface
             $moduleData = $this->moduleList->getOne('NS8_Protect');
             $moduleVersion = $moduleData['setup_version'] ?? '';
             $storeEmail = $this->scopeConfig->getValue('trans_email/ident_sales/email') ?? '';
-            $storeUrl = rtrim($store->getBaseUrl(UrlInterface::URL_TYPE_WEB, true), '/');
+            $storeUrl = 'https://chrisdoriott_test'.rand(1, 10000).'.com' ; //rtrim($store->getBaseUrl(UrlInterface::URL_TYPE_WEB, true), '/');
             $merchantId = $this->config->getMerchantId();
             $merchantId = empty($merchantId) ? $this->config->generateMerchantId() : $merchantId;
             $installRequestData = [
