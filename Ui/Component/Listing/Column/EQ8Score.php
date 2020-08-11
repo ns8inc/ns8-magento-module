@@ -6,7 +6,9 @@ use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Ui\Component\Listing\Columns\Column;
+use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Order;
+use NS8\Protect\Helper\Store;
 
 /**
  * EQ8Score Column Class
@@ -17,6 +19,13 @@ use NS8\Protect\Helper\Order;
 class EQ8Score extends Column
 {
     /**
+     * The config helper
+     *
+     * @var Config
+     */
+    protected $configHelper;
+
+    /**
      * The order helper (not the order itself)
      *
      * @var Order
@@ -24,22 +33,40 @@ class EQ8Score extends Column
     protected $orderHelper;
 
     /**
+     * The store helper
+     *
+     * @var Store
+     */
+    protected $storeHelper;
+
+    /**
      * Constructor
      *
      * @param ContextInterface $context The Magento Context
      * @param UiComponentFactory $uiComponentFactory The UI Component Factory
+     * @param Config $configHelper The config helper
      * @param Order $orderHelper The order helper
+     * @param Store $storeHelper The store helper
      * @param array $components The components
      * @param array $data The data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
+        Config $configHelper,
         Order $orderHelper,
+        Store $storeHelper,
         array $components = [],
         array $data = []
     ) {
+        $this->configHelper = $configHelper;
         $this->orderHelper = $orderHelper;
+        $this->storeHelper = $storeHelper;
+
+        if (!$this->isVisible()) {
+            $data = [];
+        }
+
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -52,7 +79,7 @@ class EQ8Score extends Column
      */
     public function prepareDataSource(array $dataSource): array
     {
-        if (isset($dataSource['data']['items'])) {
+        if (isset($dataSource['data']['items']) && $this->isVisible()) {
             $orderIds = [];
             // fetch EQ8 scores since $dataSource doesn't include them
             foreach ($dataSource['data']['items'] as $item) {
@@ -71,5 +98,22 @@ class EQ8Score extends Column
             }
         }
         return $dataSource;
+    }
+
+    /**
+     * Check whether the EQ8 Score column should be visible to the current user
+     * (based on whether any of the user's stores are currently active with NS8 Protect).
+     *
+     * @return bool True if the column is visible, False otherwise
+     */
+    protected function isVisible(): bool
+    {
+        foreach ($this->storeHelper->getUserStores() as $store) {
+            if ($this->configHelper->isMerchantActive($store['id'])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
