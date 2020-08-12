@@ -125,7 +125,7 @@ class DashboardInstantiation implements ObserverInterface
                 $store = $this->storeManager->getStore();
             }
             $meta = $this->config->getStoreMetadata($store->getStoreId());
-            if ($meta && ($meta->isActive || $meta->token)) {
+            if ($meta && $meta->isActive) {
                 return;
             }
             $moduleData = $this->moduleList->getOne('NS8_Protect');
