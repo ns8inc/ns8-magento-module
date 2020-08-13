@@ -3,6 +3,7 @@
 namespace NS8\Protect\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Request\Http;
 use Magento\Framework\UrlInterface;
 use Magento\Backend\Model\UrlInterface as BackendUrlInterface;
 use Magento\Framework\App\State;
@@ -38,24 +39,34 @@ class Url extends AbstractHelper
     protected $config;
 
     /**
+     * The request.
+     *
+     * @var Http
+     */
+    protected $request;
+
+    /**
      * The constructor.
      *
-     * @param UrlInterface $url
      * @param BackendUrlInterface $backendUrl
-     * @param State $state,
      * @param Config $config
+     * @param Http $request The request
+     * @param State $state
+     * @param UrlInterface $url
      *
      */
     public function __construct(
-        UrlInterface $url,
         BackendUrlInterface $backendUrl,
+        Config $config,
+        Http $request,
         State $state,
-        Config $config
+        UrlInterface $url
     ) {
-        $this->url = $url;
         $this->backendUrl = $backendUrl;
-        $this->state = $state;
         $this->config = $config;
+        $this->request = $request;
+        $this->state = $state;
+        $this->url = $url;
     }
 
     /**
@@ -118,8 +129,40 @@ class Url extends AbstractHelper
         return ClientSdk::getClientSdkUrl();
     }
 
+    /**
+     * Gets the protect-sdk-client URL
+     *
+     * @return string The URL
+     */
     public function getClientUrl(): string
     {
         return SdkConfigManager::getEnvValue('urls.client_url');
+    }
+
+    /**
+     * Get the page to navigate to within the protect client
+     *
+     * @return string The name of the page to naviage to.
+     */
+    public function getPageFromRequest(): string
+    {
+        $page = (string)$this->request->getParam('page');
+        $orderIncrementId = $this->getOrderIncrementIdFromRequest();
+        if (empty($page) && !empty($orderIncrementId)) {
+            $page = ClientSdkClient::CLIENT_PAGE_ORDER_DETAILS;
+        }
+
+        return $page;
+    }
+
+    /**
+     * Get the URL of the iframe that holds the NS8 Protect client.
+     *
+     * @return string The URL
+     */
+    public function getOrderIncrementIdFromRequest(): string
+    {
+        $orderId = $this->request->getParam('order_id');
+        return $orderId ? $this->order->getOrderIncrementId($orderId) : '';
     }
 }

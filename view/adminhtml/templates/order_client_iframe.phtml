@@ -1,6 +1,6 @@
 <?php
 /** @var NS8\Protect\Block\Adminhtml\StoreSelect */
-$block = $block; 
+$block = $block;
 ?>
 
 <script type="text/javascript" src="<?= $block->url->getProtectClientSdkUrl() ?>"></script>
@@ -11,8 +11,8 @@ $block = $block;
             window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
         }
 
-        var requestedPage = '<?= $block->getPageFromRequest(); ?>' || Protect.ClientPage.DASHBOARD;
-        var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
+        var requestedPage = '<?= $block->url->getPageFromRequest(); ?>' || Protect.ClientPage.DASHBOARD;
+        var orderIncrementId = '<?= $block->url>getOrderIncrementIdFromRequest(); ?>';
         var containerElementId = 'ns8-protect-wrapper';
         var clientConfig = new Protect.ClientConfig({
             accessToken: '<?= $block->getInitialAccessToken(); ?>',

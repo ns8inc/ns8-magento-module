@@ -22,8 +22,8 @@ $block = $block;
     // this isn't compiled, so we have to use old JS to work in old browsers
     var containerElementId = 'ns8-protect-wrapper';
     // load a bunch of data from PHP
-    var requestedPage = '<?= $block->getPageFromRequest(); ?>' || Protect.ClientPage.DASHBOARD;
-    var orderIncrementId = '<?= $block->getOrderIncrementIdFromRequest(); ?>';
+    var requestedPage = '<?= $block->url->getPageFromRequest(); ?>' || Protect.ClientPage.DASHBOARD;
+    var orderIncrementId = '<?= $block->url->getOrderIncrementIdFromRequest(); ?>';
     var stores = JSON.parse('<?= json_encode($block->getStores()) ?>');
     var clientUrl = '<?= $block->url->getClientUrl() ?>';
     var paramStoreId = '<?= $block->getRequestedStore() ?>';
