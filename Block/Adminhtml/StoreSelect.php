@@ -2,6 +2,7 @@
 
 namespace NS8\Protect\Block\Adminhtml;
 
+use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Store\Model\StoreManagerInterface;
@@ -12,7 +13,7 @@ use NS8\Protect\Helper\Url;
 /**
  * Provides access to DI and helper methods for the store_select template
  */
-class StoreSelect extends Container
+class StoreSelect extends Template
 {
     /** @var Config */
     protected $config;
@@ -66,6 +67,26 @@ class StoreSelect extends Container
 
         return in_array($requestedStoreId, $availableStoreIds) ? $requestedStoreId : $availableStoreIds[0];
     }
+
+    /**
+     * Get the page to navigate to within the protect client
+     *
+     * @return string Access token to use initially upon page render
+     */
+    public function getInitialStoreId() : string
+    {
+        $orderId = $this->request->getParam('order_id');
+        if (empty($orderId)) {
+            return '';
+        }
+
+        $order = $this->order->getOrder();
+        $storeId = $order ? (int) $order->getStoreId() : null;
+        $accessToken = $this->config->getAccessToken($storeId);
+
+        return (string) $accessToken;
+    }
+
 
     /**
      * Gets a limited set of attributes for each store the user has access to.
