@@ -2,7 +2,6 @@
 
 namespace NS8\Protect\Block\Adminhtml;
 
-use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Store\Model\StoreManagerInterface;
@@ -13,7 +12,7 @@ use NS8\Protect\Helper\Url;
 /**
  * Provides access to DI and helper methods for the store_select template
  */
-class StoreSelect extends Template
+class StoreSelect extends Container
 {
     /** @var Config */
     protected $config;

@@ -279,8 +279,14 @@ class Order extends AbstractHelper
         if (!isset($orderId) || !isset($eq8Score)) {
             return 'NA';
         }
+
+        $order = $this->getOrder($orderId);
         $link = $this->url->getNS8IframeUrl(
-            ['page' => ClientSdkClient::CLIENT_PAGE_ORDER_DETAILS, 'order_id' => $orderId]
+            [
+                'page' => ClientSdkClient::CLIENT_PAGE_ORDER_DETAILS,
+                'order_id' => $orderId,
+                'store_id' => $order->getStoreId()
+            ]
         );
         return '<a href="'.$link.'">'.$eq8Score.'</a>';
     }
