@@ -87,7 +87,6 @@ class StoreSelect extends Template
         return (string) $accessToken;
     }
 
-
     /**
      * Gets a limited set of attributes for each store the user has access to.
      * Safe to include on front-end as JSON.
