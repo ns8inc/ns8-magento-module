@@ -1,0 +1,35 @@
+<script type="text/javascript">
+  var shops = {};
+  require([
+    'jquery',
+    'loader'
+  ], function($) {
+  var url = "<?= $block->getUrl('ns8protectadmin/shop/manage') ?>";
+
+  function activateShop(id) {
+    var elem = '#toggle-' + id;
+    callController({'activate': id}, elem);
+  }
+
+  function deactivateShop(id) {
+    var elem = '#toggle-' + id;
+    callController({'deactivate': id}, elem);
+  }
+
+  function callController(data, elem) {
+    $(elem).loader('show');
+    $.ajax({
+      url,
+      type: 'POST',
+      data,
+      success: function(result) {
+        location.reload();
+      },
+      dataType: 'json'
+    })
+  }
+
+  shops.activateShop = activateShop;
+  shops.deactivateShop = deactivateShop;
+});
+</script>

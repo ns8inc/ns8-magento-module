@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+    </head>
+    <body>
+       <referenceContainer name="content">
+        <block class="NS8\Protect\Block\Adminhtml\StoreSelect"
+          template="NS8_Protect::protect_column_js.phtml" />
+      </referenceContainer>
+        <referenceBlock name="adminhtml.system.store.container">
+            <referenceBlock class="Magento\Backend\Block\Widget\Grid" name="adminhtml.system.store.grid" as="grid">
+                <arguments>
+                    <argument name="id" xsi:type="string">storeGrid</argument>
+                    <argument name="save_parameters_in_session" xsi:type="string">1</argument>
+                    <argument name="dataSource" xsi:type="object" shared="false">Magento\Store\Model\ResourceModel\Website\Grid\Collection</argument>
+                </arguments>
+                <referenceBlock class="Magento\Backend\Block\Widget\Grid\ColumnSet" name="adminhtml.system.store.grid.columnSet" as="grid.columnSet">
+                    <arguments>
+                        <argument name="id" xsi:type="string">storeGrid</argument>
+                    </arguments>
+                    <block class="Magento\Backend\Block\Widget\Grid\Column" name="adminhtml.system.store.grid.columnSet.protect_active" as="protect_active">
+                        <arguments>
+                            <argument name="header" xsi:type="string" translate="true">Protect Status</argument>
+                            <argument name="align" xsi:type="string">left</argument>
+                            <argument name="renderer" xsi:type="string">NS8\Protect\Block\Adminhtml\Grid\ProtectColumn</argument>
+                        </arguments>
+                    </block>
+                </referenceBlock>
+            </referenceBlock>
+        </referenceBlock>
+    </body>
+</page>
