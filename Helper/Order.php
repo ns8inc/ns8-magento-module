@@ -519,6 +519,33 @@ class Order extends AbstractHelper
     }
 
     /**
+     * Get the URL of the iframe that holds the NS8 Protect client.
+     *
+     * @return string The URL
+     */
+    public function getOrderIncrementIdFromRequest(): string
+    {
+        $orderId = $this->request->getParam('order_id');
+        return $orderId ? $this->getOrderIncrementId($orderId) : '';
+    }
+
+    /**
+     * Get the page to navigate to within the protect client
+     *
+     * @return string The name of the page to naviage to.
+     */
+    public function getPageFromRequest(): string
+    {
+        $page = (string)$this->request->getParam('page');
+        $orderIncrementId = $this->getOrderIncrementIdFromRequest();
+        if (empty($page) && !empty($orderIncrementId)) {
+            $page = ClientSdkClient::CLIENT_PAGE_ORDER_DETAILS;
+        }
+
+        return $page;
+    }
+
+    /**
      * Gets all of the data associated with an order
      *
      * @param OrderInterface $order

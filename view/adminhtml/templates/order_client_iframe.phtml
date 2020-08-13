@@ -11,8 +11,8 @@ $block = $block;
             window.location.href = orderDetailsUrlBase + '/' + orderData.orderId;
         }
 
-        var requestedPage = '<?= $block->url->getPageFromRequest(); ?>' || Protect.ClientPage.DASHBOARD;
-        var orderIncrementId = '<?= $block->url>getOrderIncrementIdFromRequest(); ?>';
+        var requestedPage = '<?= $block->order->getPageFromRequest(); ?>' || Protect.ClientPage.DASHBOARD;
+        var orderIncrementId = '<?= $block->order>getOrderIncrementIdFromRequest(); ?>';
         var containerElementId = 'ns8-protect-wrapper';
         var clientConfig = new Protect.ClientConfig({
             accessToken: '<?= $block->getInitialAccessToken(); ?>',

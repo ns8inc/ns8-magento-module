@@ -7,6 +7,7 @@ use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\Order;
 use NS8\Protect\Helper\Store;
 use NS8\Protect\Helper\Url;
 
@@ -17,6 +18,13 @@ class StoreSelect extends Template
 {
     /** @var Config */
     protected $config;
+
+    /**
+     * The order helper.
+     *
+     * @var Order
+     */
+    public $order;
 
     /** @var Url */
     public $url;
@@ -36,19 +44,22 @@ class StoreSelect extends Template
      * @param Config $config Config helper
      * @param Url $url Url helper
      * @param Http $request request object
+     * @param Order $order The order helper
      * @param Store $storeHelper Store helper
      */
     public function __construct(
         Context $context,
         Config $config,
-        Url $url,
         Http $request,
-        Store $storeHelper
+        Order $order,
+        Store $storeHelper,
+        Url $url
     ) {
         $this->config = $config;
-        $this->url = $url;
+        $this->order = $order;
         $this->storeHelper = $storeHelper;
         $this->request = $request;
+        $this->url = $url;
         parent::__construct($context);
     }
 
@@ -66,25 +77,6 @@ class StoreSelect extends Template
         $requestedStoreId = (int) $this->request->getParam('store_id');
 
         return in_array($requestedStoreId, $availableStoreIds) ? $requestedStoreId : $availableStoreIds[0];
-    }
-
-    /**
-     * Get the page to navigate to within the protect client
-     *
-     * @return string Access token to use initially upon page render
-     */
-    public function getInitialStoreId() : string
-    {
-        $orderId = $this->request->getParam('order_id');
-        if (empty($orderId)) {
-            return '';
-        }
-
-        $order = $this->order->getOrder();
-        $storeId = $order ? (int) $order->getStoreId() : null;
-        $accessToken = $this->config->getAccessToken($storeId);
-
-        return (string) $accessToken;
     }
 
     /**
