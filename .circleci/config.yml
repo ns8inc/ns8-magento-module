@@ -1,11 +1,18 @@
 commands:
   test:
-    description: "Run All Unit Tests and Integration Tests"
+    description: "Run All Unit Tests, Integration Tests and Acceptance Tests"
     steps:
       - checkout
       - run:
-          command: composer install --no-ansi --no-autoloader
-          name: Install Module Files
+          command: |
+            jq "del(.version)" composer.json > composer.json-new
+            mv composer.json-new composer.json
+          name: Unversion Local Module
+      - run:
+          command: |
+            composer require ns8/protect-sdk:dev-master --no-ansi
+            rm -f vendor/autoload.php vendor/composer/autoload_*.php
+          name: Switch to PHP SDK's Master Branch
       - run:
           command: |
             composer config-lint
@@ -25,13 +32,19 @@ commands:
       - run:
           command: |
             cd /var/www/html
-            jq ".repositories |= [{type: \"path\", url: \"${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}\"}]" composer.json > composer.json-new
+            jq ".\"minimum-stability\" |= \"dev\"" composer.json > composer.json-new
+            mv composer.json-new composer.json
+          name: Set Magento's Minimum Stability to Dev
+      - run:
+          command: |
+            cd /var/www/html
+            jq ".repositories |= [{options: {symlink: false}, type: \"path\", url: \"${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}\"}]" composer.json > composer.json-new
             mv composer.json-new composer.json
           name: Switch Composer Repository to Local
       - run:
           command: |
             cd /var/www/html
-            composer require ns8/protect-magento @dev
+            composer require ns8/protect-magento:@dev
           name: Require Module from Local
       - run:
           command: /var/www/html/bin/magento setup:store-config:set --base-url=https://integration-test-$(date +%s)-$(mktemp -u XXX | tr A-Z a-z).example.com/
@@ -82,9 +95,8 @@ commands:
           name: Integration Test - Uninstall the Module
       - run:
           command: |
-            cd /var/www
-            rm -rf html
-            mv html-backup html
+            rm -rf /var/www/html
+            cp -Rp /var/www/html-backup /var/www/html
             mysql magento2 < /tmp/magento2-backup.sql
           name: Restore Magento Installation from Backup
       - run:
@@ -106,7 +118,7 @@ commands:
             cd /var/www/html/vendor/ns8/protect-sdk/assets/configuration
             jq -r '.default_environment |= "testing"' core_configuration.json > core_configuration.json-new
             mv core_configuration.json-new core_configuration.json
-          name: Point the SDK to the NS8 Testing Environment
+          name: Point SDK to NS8 Testing Environment
       - run:
           command: |
             /var/www/html/bin/magento setup:upgrade
@@ -114,19 +126,20 @@ commands:
       - run:
           command: |
             cd /var/www/html
-            jq ".repositories |= [{type: \"path\", url: \"${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}\"}]" composer.json > composer.json-new
+            jq ".repositories |= [{options: {symlink: false}, type: \"path\", url: \"${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}\"}]" composer.json > composer.json-new
             mv composer.json-new composer.json
           name: Switch Composer Repository to Local
       - run:
           command: |
-            jq "del(.version)" composer.json > composer.json-new
+            cd /var/www/html
+            jq ".\"minimum-stability\" |= \"dev\"" composer.json > composer.json-new
             mv composer.json-new composer.json
-          name: Unversion Local Module
+          name: Set Magento's Minimum Stability to Dev
       - run:
           command: |
             cd /var/www/html
-            composer require ns8/protect-magento @dev
-          name: Require Local Module
+            composer require ns8/protect-sdk:dev-master ns8/protect-magento:@dev
+          name: Upgrade Module from Local
       - run:
           command: |
             cd /var/www/html/vendor/ns8/protect-sdk/assets/configuration
@@ -141,6 +154,66 @@ commands:
             # bin/magento returns 1 if the module is enabled, 0 otherwise, so we invert that
             ! bin/magento module:status NS8_Protect
           name: Integration Test - Upgrade the Module
+      - run:
+          command: /var/www/html/bin/magento admin:user:create --admin-email=test@ns8.com --admin-firstname=Acceptance --admin-lastname=Tester --admin-password=123456a --admin-user=admin
+          name: Create Administrator Account for Acceptance Testing
+      - run:
+          command: |
+            sed -i "s/'Magento_Captcha' => 1,/'Magento_Captcha' => 0,/" /var/www/html/app/etc/config.php
+            sed -i "s/'MSP_ReCaptcha' => 1,/'MSP_ReCaptcha' => 0,/" /var/www/html/app/etc/config.php
+          name: Disable CAPTCHAs
+      - run:
+          command: |
+            service cron start
+            /var/www/html/bin/magento cron:install
+          name: Setup Cron
+      - run:
+          command: |
+            sed -i "s/'Magento_AdminAnalytics' => 1,/'Magento_AdminAnalytics' => 0,/" /var/www/html/app/etc/config.php
+          name: Disable Intrusive Admin Data Collection Modal
+      - run:
+          command: /var/www/html/bin/magento deploy:mode:set developer
+          name: Enable Developer Mode
+      - run:
+          command: |
+            git clone https://$GITHUB_ACCESS_TOKEN@github.com/ns8inc/ns8-acceptance-tests.git
+            yarnpkg --cwd ns8-acceptance-tests --frozen-lockfile
+          name: Install Acceptance Tests
+      - run:
+          command: |
+            store_hostname="acceptance-test-$(date +%s)-$(mktemp -u XXX | tr A-Z a-z).example.com"
+            echo "127.0.0.1 $store_hostname" >> /etc/hosts
+            /var/www/html/bin/magento setup:store-config:set --base-url=http://$store_hostname/
+            echo "export MAGENTO_STORE_URL=http://$store_hostname/index.php" >> $BASH_ENV
+          name: Create Unique Storefront URL
+      - run:
+          command: a2enmod rewrite
+          name: Enable mod_rewrite
+      - run:
+          command: |
+            chown -R www-data:www-data /var/www/html
+            chmod -R 2775 /var/www/html
+          name: Set Webroot Permissions
+      - run:
+          command: /var/www/html/bin/magento cache:clean
+          name: Clear Cache
+      - run:
+          command: service apache2 start
+          name: Start Web Server
+      - run:
+          command: |
+            cd ns8-acceptance-tests
+            yarnpkg workspace magento run xtest:all
+          environment:
+            HEADLESS: 1
+            MAGENTO_ADMIN_PASSWORD: 123456a
+            MAGENTO_ADMIN_USER: admin
+            PROTECT_CLIENT_URL: https://test-protect-client.ns8.com
+          name: Run All Acceptance Tests
+      - store_test_results:
+          path: ns8-acceptance-tests/report/magento
+      - store_artifacts:
+          path: ns8-acceptance-tests/report/magento
 
 jobs:
   deploy:
@@ -279,7 +352,7 @@ jobs:
       - test
   test_latest:
     docker:
-      - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:latest
+      - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.3-2.3.5-p2-dave
     steps:
       - test
 
