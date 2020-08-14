@@ -185,7 +185,7 @@ class Config extends AbstractHelper
     public function setIsMerchantActive(?int $storeId, bool $isActive): void
     {
         $token = $this->getAccessToken($storeId);
-        if ($token === null) { // no need to set isActive when no token exists
+        if ($token === null && $isActive) { // no need to set isActive when no token exists
             return;
         }
         $metadata = new ProtectMetadata($token, $isActive);
