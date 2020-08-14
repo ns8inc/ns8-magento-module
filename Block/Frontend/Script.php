@@ -68,7 +68,13 @@ class Script extends Template
      */
     public function getScriptHtml(): string
     {
-        $this->config->initSdkConfiguration(true, (int)$this->storeManager->getStore()->getId());
+        $storeId = (int)$this->storeManager->getStore()->getId();
+
+        if (!$this->config->isMerchantActive($storeId)) {
+            return '';
+        }
+
+        $this->config->initSdkConfiguration(true, $storeId);
         $script = AnalyticsClient::getTrueStatsScript();
 
         return is_string($script) ? sprintf('<script>%s</script>', $script) : '';
