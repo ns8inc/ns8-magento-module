@@ -169,6 +169,30 @@ class ConfigTest extends TestCase
         ]);
     }
 
+    /** Config::setIsMerchantActive() should not activate a store with a null token */
+    public function testSetIsMerchantActiveWontActivateWithNullToken(): void
+    {
+        $this->setMetadatas([
+            '1' => new ProtectMetadata(null, false)
+        ]);
+        $this->config->setIsMerchantActive(1, true);
+        $this->assertScopeConfig([
+            '1' => new ProtectMetadata(null, false)
+        ]);
+    }
+
+    /** Config::setIsMerchantActive() should deactivate a store with a null token */
+    public function testSetIsMerchantActiveWillDectivateWithNullToken(): void
+    {
+        $this->setMetadatas([
+            '1' => new ProtectMetadata(null, true)
+        ]);
+        $this->config->setIsMerchantActive(1, false);
+        $this->assertScopeConfig([
+            '1' => new ProtectMetadata(null, false)
+        ]);
+    }
+
     /** Config::setIsMerchantActive() should set multiple stores' isActive */
     public function testSetIsMerchantActiveSetsMultiple(): void
     {
