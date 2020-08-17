@@ -20,7 +20,7 @@
                     </arguments>
                     <block class="Magento\Backend\Block\Widget\Grid\Column" name="adminhtml.system.store.grid.columnSet.protect_active" as="protect_active">
                         <arguments>
-                            <argument name="header" xsi:type="string" translate="true">Protect Status</argument>
+                            <argument name="header" xsi:type="string" translate="true">NS8 Protect Status</argument>
                             <argument name="align" xsi:type="string">left</argument>
                             <argument name="renderer" xsi:type="string">NS8\Protect\Block\Adminhtml\Grid\ProtectColumn</argument>
                         </arguments>
