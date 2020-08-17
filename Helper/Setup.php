@@ -161,7 +161,6 @@ class Setup extends AbstractHelper
      * Deactivate a single shop
      *
      * @param int $storeId - the id of the individual store getting de-activated
-     * @param ProtectMetadata $metadata - the store info
      */
     public function deactivateShop(int $storeId): void
     {

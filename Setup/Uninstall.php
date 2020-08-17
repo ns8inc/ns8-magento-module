@@ -54,7 +54,7 @@ class Uninstall implements UninstallInterface
             $setup->startSetup();
             $metadatas = $this->config->getStoreMetadatas();
             foreach ($metadatas as $id => $metadata) {
-                $this->setupHelper->disableShop((int) $id, $metadata);
+                $this->setupHelper->deactivateShop((int) $id);
             }
         } catch (Throwable $e) {
             $this->loggingClient->error('Protect uninstall failed', $e);
