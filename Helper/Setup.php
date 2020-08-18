@@ -1,11 +1,14 @@
 <?php
 namespace NS8\Protect\Helper;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\CustomStatus;
 use NS8\Protect\Helper\Order;
@@ -17,6 +20,15 @@ use NS8\ProtectSDK\Logging\Client as LoggingClient;
  */
 class Setup extends AbstractHelper
 {
+    /**
+     * Mode for installig module as passed in from Magento Set-Up Trigger
+     */
+    const INSTALL_MODE = 'install';
+
+    /**
+     * Mode for upgrading the module as passed in from Magento Set-up Trigger
+     */
+    const UPGRADE_MODE = 'upgrade';
     /**
      * The custom status helper.
      *
@@ -39,15 +51,44 @@ class Setup extends AbstractHelper
     protected $config;
 
     /**
+     * @var EncryptorInterface
+     */
+    protected $encryptor;
+
+
+    /**
+     * Scope config for accessing core config data
+     *
+     * @var ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
+    /**
+     * Store manager attribute to fetch store data
+     *
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
      * @param Config $config
      * @param CustomStatus $customStatus
+     * @param EncryptorInterface $encryptor
+     * @param ScopeConfigInterface $scopeConfig
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         Config $config,
-        CustomStatus $customStatus
+        CustomStatus $customStatus,
+        EncryptorInterface $encryptor,
+        ScopeConfigInterface $scopeConfig,
+        StoreManagerInterface $storeManager
     ) {
         $this->config = $config;
         $this->customStatus = $customStatus;
+        $this->encryptor = $encryptor;
+        $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
 
         $this->config->initSdkConfiguration();
         $this->loggingClient = new LoggingClient();
@@ -82,6 +123,15 @@ class Setup extends AbstractHelper
                         ['? IS NULL' => new \Zend_Db_Expr(sprintf('%s.%s', $tableName, $currentEq8Col))]
                     );
                 }
+            }
+
+            $previousToken = $this->encryptor->decrypt($this->scopeConfig->getValue('ns8/protect/token'));
+            $currentMetadata = $this->config->getStoreMetadatas();
+            if ($mode === self::UPGRADE_MODE && $previousToken && empty($currentMetadata)) {
+                $storeId = $this->storeManager->getStore()->getId();
+                $isActive = (bool) $this->scopeConfig->getValue(self::IS_MERCHANT_ACTIVE);
+                $this->config->setAccessToken(STORE_ID, $previousToken);
+                $this->config->setIsActive(StorE_ID, $isActive);
             }
         } catch (Throwable $e) {
             $this->loggingClient->error("Protect $mode failed", $e);
