@@ -55,7 +55,6 @@ class Setup extends AbstractHelper
      */
     protected $encryptor;
 
-
     /**
      * Scope config for accessing core config data
      *
@@ -129,9 +128,9 @@ class Setup extends AbstractHelper
             $currentMetadata = $this->config->getStoreMetadatas();
             if ($mode === self::UPGRADE_MODE && $previousToken && empty($currentMetadata)) {
                 $storeId = $this->storeManager->getStore()->getId();
-                $isActive = (bool) $this->scopeConfig->getValue(self::IS_MERCHANT_ACTIVE);
-                $this->config->setAccessToken(STORE_ID, $previousToken);
-                $this->config->setIsActive(StorE_ID, $isActive);
+                $isActive = (bool) $this->scopeConfig->getValue('ns8/protect/is_merchant_active');
+                $this->config->setAccessToken($storeId, $previousToken);
+                $this->config->setIsMerchantActive($storeId, $isActive);
             }
         } catch (Throwable $e) {
             $this->loggingClient->error("Protect $mode failed", $e);
