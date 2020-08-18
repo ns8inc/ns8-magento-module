@@ -7,6 +7,8 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Exception\InputException;
+use Magento\Framework\Message\ManagerInterface;
 use NS8\Protect\Helper\Setup;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Store;
@@ -23,6 +25,7 @@ class Manage extends Action
      * @param Config $config The config
      * @param Http $request The request object
      * @param JsonFactory $resultFactory The result factory
+     * @param ManagerInterface $messageManager
      * @param Store $storeHelper The store helper
      * @param Setup $setup The setup helper
      */
@@ -31,6 +34,7 @@ class Manage extends Action
         Config $config,
         Http $request,
         JsonFactory $resultFactory,
+        ManagerInterface $messageManager,
         Store $storeHelper,
         Setup $setup
     ) {
@@ -38,8 +42,9 @@ class Manage extends Action
         $this->context = $context;
         $this->resultFactory = $resultFactory;
         $this->config = $config;
-        $this->storeHelper = $storeHelper;
+        $this->messageManager = $messageManager;
         $this->request = $request;
+        $this->storeHelper = $storeHelper;
         $this->setup = $setup;
     }
 
@@ -56,22 +61,25 @@ class Manage extends Action
     /**
      * calls activate or deactivate shops in the setup helper
      *
-     * @return string
+     * @return object
      */
-    public function execute(): string
+    public function execute(): object
     {
         $body = $this->request->getPostValue();
+        $result = $this->resultFactory->create();
         if (isset($body['activate'])) {
             $this->setup->activateShop($body['activate']);
-        }
-        if (isset($body['deactivate'])) {
+            return $result->setData(['success' => true]);
+        } elseif (isset($body['deactivate'])) {
             $this->setup->deactivateShop($body['deactivate']);
+            return $result->setData(['success' => true]);
         }
-
-        $result = $this->resultFactory->create();
-        $response = ['success' => 'true'];
-        $result->setData($response);
-
-        return $result;
+        $errorMessage = 'The shop id is required to activate or deactivate Protect';
+        $this->messageManager->addErrorMessage($errorMessage);
+        return $result->setData([
+            'success' => false,
+            'error'=> true,
+            'message' => $errorMessage
+        ]);
     }
 }
