@@ -18,6 +18,7 @@ use Magento\Sales\Model\ResourceModel\Order\Collection;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\Protect as ProtectHelper;
+use NS8\Protect\Helper\Store;
 use NS8\Protect\Helper\Url;
 use NS8\ProtectSDK\ClientSdk\Client as ClientSdkClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
@@ -61,6 +62,11 @@ class Order extends AbstractHelper
     protected $productRepository;
 
     /**
+     * @var mixed[]
+     */
+    protected $merchantProfiles;
+
+    /**
      * @var RequestInterface
      */
     protected $request;
@@ -74,6 +80,11 @@ class Order extends AbstractHelper
      * @var SearchCriteriaBuilder
      */
     protected $searchCriteriaBuilder;
+
+    /**
+     * @var Store
+     */
+    protected $storeHelper;
 
     /**
      * @var TransactionSearchResultInterfaceFactory
@@ -122,6 +133,7 @@ class Order extends AbstractHelper
         RequestInterface $request,
         ResourceConnection $resourceConnection,
         SearchCriteriaBuilder $searchCriteriaBuilder,
+        Store $storeHelper,
         TransactionSearchResultInterfaceFactory $transactionRepository,
         Url $url
     ) {
@@ -136,6 +148,7 @@ class Order extends AbstractHelper
         $this->resourceConnection = $resourceConnection;
         $this->salesOrderGrid = $salesOrderGrid;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->storeHelper = $storeHelper;
         $this->transactionRepository = $transactionRepository;
         $this->url = $url;
     }
@@ -309,11 +322,21 @@ class Order extends AbstractHelper
      */
     public function formatEQ8ScoreLinkHtml(?string $orderId, ?int $eq8Score): string
     {
+        $high = 200;
+        $low = 600;
         if (!isset($orderId) || !isset($eq8Score)) {
             return 'NA';
         }
-
+        $scoreClass = 'ns8-risk-low';
         $order = $this->getOrder($orderId);
+        $profile = $this->getOrderMerchantProfile($order);
+        if ($eq8Score <= $profile->highRiskScoreThreshold) {
+            $scoreClass = 'ns8-risk-high';
+        } elseif ($eq8Score < $profile->lowRiskScoreThreshold &&
+            $eq8Score > $profile->highRiskScoreThreshold
+        ) {
+            $scoreClass = 'ns8-risk-med';
+        }
         $link = $this->url->getNS8IframeUrl(
             [
                 'page' => ClientSdkClient::CLIENT_PAGE_ORDER_DETAILS,
@@ -321,7 +344,7 @@ class Order extends AbstractHelper
                 'store_id' => $order->getStoreId()
             ]
         );
-        return '<a href="'.$link.'">'.$eq8Score.'</a>';
+        return '<a href="'.$link.'" class="' . $scoreClass . '">'.$eq8Score.'</a>';
     }
 
     /**
@@ -616,5 +639,22 @@ class Order extends AbstractHelper
             $completeOrder['transactions'] = $transactions;
         }
         return $completeOrder;
+    }
+
+    /**
+     * Loads Merchant profile from protect based off of the order's storeId
+     *
+     * @param OrderInterface $order
+     * @return StdClass
+     */
+    public function getOrderMerchantProfile(OrderInterface $order): \StdClass
+    {
+        $storeId = $order->getStoreId();
+        if (isset($this->merchantProfiles[$storeId])) {
+            return $this->merchantProfiles[$storeId];
+        }
+        $merchant = $this->storeHelper->getMerchantRecord($storeId);
+        $this->merchantProfiles[$storeId] = $merchant->profile;
+        return $merchant->profile;
     }
 }

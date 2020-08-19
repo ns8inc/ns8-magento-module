@@ -49,3 +49,32 @@ iframe.ns8-protect-client-iframe {
   height: 100%;
   border: 0;
 }
+
+.ns8-risk-high, .ns8-risk-med, .ns8-risk-low {
+  color: white;
+  border: 6px solid;
+  border-radius: 5px;
+}
+
+.ns8-risk-high:hover, .ns8-risk-med:hover, .ns8-risk-low:hover {
+  color: white;
+}
+
+.ns8-risk-high {
+  background-color: #ef442e;
+  border-color: #ef442e;
+}
+
+.ns8-risk-med {
+  background-color: #f8991d;
+  border-color: #f8991d;
+}
+
+.ns8-risk-low {
+  background-color: #78c143;
+  border-color: #78c143;
+}
+
+.ns8 div.data-grid-cell-content {
+  overflow: visible;
+}
