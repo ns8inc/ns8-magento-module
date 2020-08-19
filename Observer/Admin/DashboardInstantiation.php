@@ -24,7 +24,12 @@ class DashboardInstantiation implements ObserverInterface
      * @var StoreManagerInterface
      */
     protected $storeManager;
-
+    /**
+     * Setup Helper attribute to activate a shop
+     *
+     * @var Setup
+     */
+    protected $setupHelper;
     /**
      * Default constructor
      *
@@ -39,6 +44,7 @@ class DashboardInstantiation implements ObserverInterface
     ) {
         $this->config = $config;
         $this->storeManager = $storeManager;
+        $this->setupHelper = $setupHelper;
         $this->config->initSdkConfiguration();
     }
 
