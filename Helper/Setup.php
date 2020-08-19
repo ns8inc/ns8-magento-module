@@ -3,17 +3,24 @@ namespace NS8\Protect\Helper;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Encryption\EncryptorInterface;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Module\ModuleListInterface;
+use Magento\Framework\Registry;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use NS8\Protect\Exception\InstallException;
 use NS8\Protect\Helper\Config;
 use NS8\Protect\Helper\CustomStatus;
 use NS8\Protect\Helper\Order;
 use NS8\ProtectSDK\Installer\Client as InstallerClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
+use NS8\ProtectSDK\Uninstaller\Client as UninstallerClient;
 
 /**
  * Execute the install/upgrade logic for the Protect extension
@@ -73,6 +80,10 @@ class Setup extends AbstractHelper
      * @param Config $config
      * @param CustomStatus $customStatus
      * @param EncryptorInterface $encryptor
+     * @param ManagerInterface $messageManager
+     * @param ModuleListInterface $moduleList
+     * @param ProductMetadataInterface $productMetadata
+     * @param Registry $registry
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
      */
@@ -80,17 +91,86 @@ class Setup extends AbstractHelper
         Config $config,
         CustomStatus $customStatus,
         EncryptorInterface $encryptor,
+        ManagerInterface $messageManager,
+        ModuleListInterface $moduleList,
+        ProductMetadataInterface $productMetadata,
+        Registry $registry,
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager
     ) {
         $this->config = $config;
         $this->customStatus = $customStatus;
         $this->encryptor = $encryptor;
+        $this->messageManager = $messageManager;
+        $this->moduleList = $moduleList;
+        $this->productMetadata = $productMetadata;
+        $this->registry = $registry;
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
-
         $this->config->initSdkConfiguration();
         $this->loggingClient = new LoggingClient();
+    }
+
+    /**
+     * activate a single shop
+     *
+     * @param $storeId - the id of the individual store getting activated
+     */
+    public function activateShop(int $storeId)
+    {
+        try {
+            $store = $this->storeManager->getStore($storeId);
+            $moduleData = $this->moduleList->getOne('NS8_Protect');
+            $moduleVersion = $moduleData['setup_version'] ?? '';
+            $storeEmail = $this->scopeConfig->getValue('trans_email/ident_sales/email') ?? '';
+            $storeUrl = rtrim($store->getBaseUrl(UrlInterface::URL_TYPE_WEB, true), '/');
+            $merchantId = $this->config->getMerchantId();
+            $merchantId = empty($merchantId) ? $this->config->generateMerchantId() : $merchantId;
+            $this->config->initSdkConfiguration(true, $storeId);
+            $installRequestData = [
+                'storeUrl' => $storeUrl,
+                'email' => $storeEmail,
+                'multistoreMerchantId' => $merchantId,
+                'moduleVersion' => $moduleVersion,
+                'platformVersion' => (string) $this->productMetadata->getVersion()
+            ];
+
+            // phpcs:ignore
+            $devToken = getenv('NS8_ACCESS_TOKEN');
+            $installResult = [ 'accessToken' => $devToken ];
+            if (!$devToken) {
+                $installResult = InstallerClient::install('magento', $installRequestData);
+            }
+
+            if (!isset($installResult['accessToken'])) {
+                throw new InstallException(
+                    'This store\'s domain has already been registered and cannot be reused with NS8 Protect. ' .
+                    'If this is an error, please contact support@ns8.com.'
+                );
+            }
+
+            $this->config->setAccessToken($store->getStoreId(), $installResult['accessToken']);
+            $this->config->setIsMerchantActive($store->getStoreId(), true);
+        } catch (\Throwable $t) {
+            $this->messageManager->addErrorMessage($t->getMessage());
+            $this->loggingClient->error(sprintf('Install failed: %s', $t->getMessage()));
+        }
+    }
+
+    /**
+     * Deactivate a single shop
+     *
+     * @param int $storeId - the id of the individual store getting de-activated
+     */
+    public function deactivateShop(int $storeId): void
+    {
+        $meta = $this->config->getStoreMetadata($storeId);
+        if ($meta && !$meta->isActive) {
+            return;
+        }
+        $this->config->initSdkConfiguration(true, $storeId);
+        UninstallerClient::uninstall();
+        $this->config->setIsMerchantActive($storeId, false);
     }
 
     /**
