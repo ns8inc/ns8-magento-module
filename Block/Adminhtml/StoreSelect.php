@@ -70,13 +70,7 @@ class StoreSelect extends Template
       */
     public function getRequestedStore(): int
     {
-        $storeArray = $this->getStores();
-        $availableStoreIds = array_map(function ($store) {
-            return (int) $store['id'];
-        }, $storeArray);
-        $requestedStoreId = (int) $this->request->getParam('store_id');
-
-        return in_array($requestedStoreId, $availableStoreIds) ? $requestedStoreId : $availableStoreIds[0];
+        return $this->storeHelper->getRequestedStoreId();
     }
 
     /**
@@ -86,16 +80,6 @@ class StoreSelect extends Template
      */
     public function getStores(): array
     {
-        $stores = $this->storeHelper->getUserStores();
-        return array_map(function ($store) {
-            return [
-                'id' => $store['id'],
-                'active' => $this->config->isMerchantActive((int) $store['id']),
-                'name' => $store['name'],
-                'token' => $this->config->getAccessToken((int) $store['id']),
-            ];
-        }, array_filter($stores, function ($store) {
-            return $store['active'];
-        }));
+        return $this->storeHelper->getDisplayStores();
     }
 }
