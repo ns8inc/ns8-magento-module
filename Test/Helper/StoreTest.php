@@ -7,9 +7,11 @@ namespace NS8\Protect\Test;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\ResourceModel\Store\Collection;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\Request\Http;
 use Magento\Store\Model\StoreFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\Store;
+use NS8\Protect\Helper\Config as Config;
 use NS8\Protect\Helper\Store as StoreHelper;
 use PHPUnit\Framework\TestCase;
 use Zend\Uri\Uri;
@@ -89,11 +91,16 @@ class StoreTest extends TestCase
         $storeFactoryTemp->method('create')->willReturn($storeMock);
         $storeFactory = $storeFactoryTemp;
 
+        $configHelper = $this->createMock(Config::class);
+        $request = $this->createMock(Http::class);
+
         $this->store1 = $store1;
         $this->store2 = $store2;
 
         $this->store = new StoreHelper(
             $context,
+            $configHelper,
+            $request,
             $storeFactory,
             $storeManager
         );
