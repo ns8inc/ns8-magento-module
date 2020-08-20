@@ -208,7 +208,7 @@ class Order extends AbstractHelper
         $eq8Score = array_reduce(
             $orderData->fraudAssessments,
             function (?int $foundScore, \stdClass $fraudAssessment): ?int {
-                if (!empty($foundScore)) {
+                if ($foundScore !== null) {
                     return $foundScore;
                 }
                 return $fraudAssessment->providerType === 'EQ8' ? $fraudAssessment->score : null;
