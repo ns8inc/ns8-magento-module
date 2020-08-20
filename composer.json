@@ -19,7 +19,7 @@
   "name": "ns8/protect-magento",
   "require": {
     "php": "^7.1.3",
-    "ns8/protect-sdk": "^0.0.42",
+    "ns8/protect-sdk": "^0.0.43",
     "kodus/uuid-v4": "^1.1"
   },
   "require-dev": {
