@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2fbd5db733d18461a6bab2476bd870f8",
+    "content-hash": "d60f9df179dbbc0039ff02cc6aa549a0",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -791,23 +791,23 @@
         },
         {
             "name": "allure-framework/allure-phpunit",
-            "version": "1.2.3",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/allure-framework/allure-phpunit.git",
-                "reference": "45504aeba41304cf155a898fa9ac1aae79f4a089"
+                "reference": "9859583a9ff50038ab3d03879be13af64cb5348f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/allure-framework/allure-phpunit/zipball/45504aeba41304cf155a898fa9ac1aae79f4a089",
-                "reference": "45504aeba41304cf155a898fa9ac1aae79f4a089",
+                "url": "https://api.github.com/repos/allure-framework/allure-phpunit/zipball/9859583a9ff50038ab3d03879be13af64cb5348f",
+                "reference": "9859583a9ff50038ab3d03879be13af64cb5348f",
                 "shasum": ""
             },
             "require": {
                 "allure-framework/allure-php-api": "~1.1.0",
                 "mikey179/vfsstream": "1.*",
-                "php": ">=7.0.0",
-                "phpunit/phpunit": ">=6.0.0"
+                "php": ">=5.4.0",
+                "phpunit/phpunit": ">=4.0.0"
             },
             "type": "library",
             "autoload": {
@@ -837,7 +837,7 @@
                 "steps",
                 "testing"
             ],
-            "time": "2017-11-03T13:08:21+00:00"
+            "time": "2015-07-27T14:40:26+00:00"
         },
         {
             "name": "braintree/braintree_php",
