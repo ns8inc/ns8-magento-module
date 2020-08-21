@@ -25,7 +25,10 @@ use Zend\Uri\Uri;
  */
 class ConfigTest extends TestCase
 {
-    /** @var Config */
+    /**
+     * Exported for ease of use in other tests.
+     * @var Config
+     * */
     public $config;
 
     /** @var ScopeConfigInterface */

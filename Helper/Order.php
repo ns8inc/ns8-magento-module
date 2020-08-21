@@ -98,9 +98,10 @@ class Order extends AbstractHelper
      * @param GridInterface $salesOrderGrid
      * @param OrderRepositoryInterface $orderRepository
      * @param RequestInterface $request
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder;
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param TransactionSearchResultInterfaceFactory $transactionRepository
      * @param Url $url
+     * @param ProtectHelper $protect
      */
     public function __construct(
         CollectionFactory $orderCollectionFactory,
