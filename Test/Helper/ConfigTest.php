@@ -25,7 +25,10 @@ use Zend\Uri\Uri;
  */
 class ConfigTest extends TestCase
 {
-    /** @var Config */
+    /**
+     * Exported for ease of use in other tests.
+     * @var Config
+     * */
     public $config;
 
     /** @var ScopeConfigInterface */
@@ -95,7 +98,7 @@ class ConfigTest extends TestCase
     }
 
     /** Reset the config store before each test */
-    public function setUp()
+    public function setUp(): void
     {
         $this->scopeConfigStore = [];
     }
