@@ -296,15 +296,7 @@ workflows:
               only: /^\d+\.\d+\.\d+$/
   test_and_deploy:
     jobs:
-      - test_latest
       - approve:
-          type: approval
-          filters:
-            branches:
-              only: version-debug
-          requires:
-            - test_latest
-      - approve2:
           type: approval
           filters:
             branches:
