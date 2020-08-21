@@ -5,13 +5,13 @@ use Magento\Framework\DB\Adapter\AdapterInterface;
 
 class MockConnection
 {
-  public function quoteTableAs($tableName): ?string
-  {
-    return $tableName;
-  }
+    public function quoteTableAs($tableName): ?string
+    {
+        return $tableName;
+    }
 
-  public function query($query, $params): void
-  {
-    // no-op
-  }
+    public function query($query, $params): void
+    {
+      // no-op
+    }
 }
