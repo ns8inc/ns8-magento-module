@@ -15,9 +15,6 @@ commands:
           command: service mysql start
           name: Start MySQL
       - run:
-          command: service elasticsearch start
-          name: Start Elasticsearch
-      - run:
           command: |
             cp -Rp /var/www/html /var/www/html-backup
             mysqldump magento2 > /tmp/magento2-backup.sql
@@ -48,6 +45,9 @@ commands:
             chmod 755 vendor/phpunit/phpunit/phpunit
             vendor/phpunit/phpunit/phpunit -c dev/tests/unit/phpunit.xml.dist vendor/ns8/protect-magento/Test
           name: Run Unit Tests
+      - run:
+          command: service elasticsearch start
+          name: Start Elasticsearch
       - run:
           command: |
             cd /var/www/html
