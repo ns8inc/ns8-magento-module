@@ -30,7 +30,7 @@ class StoreTest extends TestCase
     /** @var array */
     private $store2;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 

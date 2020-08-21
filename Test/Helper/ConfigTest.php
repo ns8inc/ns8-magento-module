@@ -95,7 +95,7 @@ class ConfigTest extends TestCase
     }
 
     /** Reset the config store before each test */
-    public function setUp()
+    protected function setUp()
     {
         $this->scopeConfigStore = [];
     }
