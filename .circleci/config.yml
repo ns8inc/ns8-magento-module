@@ -301,7 +301,14 @@ workflows:
           type: approval
           filters:
             branches:
-              only: master
+              only: version-debug
+          requires:
+            - test_latest
+      - approve2:
+          type: approval
+          filters:
+            branches:
+              only: version-debug
           requires:
             - test_latest
       - test_7-1_2-3-0:
@@ -366,3 +373,4 @@ workflows:
             #- test_7-3_2-3-5-p2
             - test_7-3_2-4-0
             - test_7-4_2-4-0
+            - approve2
