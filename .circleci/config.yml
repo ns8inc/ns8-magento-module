@@ -301,8 +301,6 @@ workflows:
           filters:
             branches:
               only: version-debug
-          requires:
-            - test_latest
       - test_7-1_2-3-0:
           requires:
             - approve
