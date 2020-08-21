@@ -17,4 +17,9 @@ class MockOrderClient extends OrderClient
         }
         throw new \Error("not found");
     }
+
+    public static function setOrders(array $orders): void
+    {
+        MockOrderClient::$orders = json_decode(json_encode($orders));
+    }
 }

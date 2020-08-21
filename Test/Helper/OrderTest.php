@@ -102,7 +102,7 @@ class OrderTest extends TestCase
      */
     public function testGetEQ8ScoreReturnsFetchedValue()
     {
-        $this->setProtectOrders([ [
+        MockOrderClient::setOrders([ [
             "name" => "1",
             "fraudAssessments" => [ [
                 "providerType" => "EQ8",
@@ -121,7 +121,7 @@ class OrderTest extends TestCase
      */
     public function testGetEQ8ScoreReturnsZero()
     {
-        $this->setProtectOrders([ [
+        MockOrderClient::setOrders([ [
             "name" => "1",
             "fraudAssessments" => [ [
                 "providerType" => "EQ8",
@@ -142,11 +142,5 @@ class OrderTest extends TestCase
             MockOrder::STORE_ID => $storeId,
             OrderHelper::EQ8_SCORE_COL => $eq8Score
         ]);
-    }
-
-    private function setProtectOrders(array $orders): void
-    {
-        // dirty way to deep-convert array to object
-        MockOrderClient::$orders = json_decode(json_encode($orders));
     }
 }
