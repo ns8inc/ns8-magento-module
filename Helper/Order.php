@@ -16,10 +16,10 @@ use Magento\Sales\Model\ResourceModel\GridInterface;
 use Magento\Sales\Model\ResourceModel\Order\Collection;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use NS8\Protect\Helper\Config;
+use NS8\Protect\Helper\Protect as ProtectHelper;
 use NS8\Protect\Helper\Url;
 use NS8\ProtectSDK\ClientSdk\Client as ClientSdkClient;
 use NS8\ProtectSDK\Logging\Client as LoggingClient;
-use NS8\ProtectSDK\Order\Client as OrderClient;
 use UnexpectedValueException;
 
 /**
@@ -85,6 +85,11 @@ class Order extends AbstractHelper
     protected $url;
 
     /**
+     * @var ProtectHelper
+     */
+    protected $protect;
+
+    /**
      * Default constructor
      *
      * @param CollectionFactory $orderCollectionFactory
@@ -107,7 +112,8 @@ class Order extends AbstractHelper
         RequestInterface $request,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         TransactionSearchResultInterfaceFactory $transactionRepository,
-        Url $url
+        Url $url,
+        ProtectHelper $protect
     ) {
         $this->config = $config;
         $this->countryFactory = $countryFactory;
@@ -120,6 +126,7 @@ class Order extends AbstractHelper
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->transactionRepository = $transactionRepository;
         $this->url = $url;
+        $this->protect = $protect;
     }
 
     /**
@@ -198,7 +205,7 @@ class Order extends AbstractHelper
         $this->config->initSdkConfiguration(true, (int) $order->getStoreId());
 
         $orderIncId = $order->getIncrementId();
-        $orderData = OrderClient::getOrderByName($orderIncId);
+        $orderData = $this->protect->getOrderClient()::getOrderByName($orderIncId);
 
         if (!isset($orderData->fraudAssessments)) {
             return null;
