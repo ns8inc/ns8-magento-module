@@ -274,6 +274,7 @@ class Order extends AbstractHelper
         $tableName = $connection->quoteTableAs($this->resourceConnection->getTableName('sales_order'));
         $idColumn = OrderInterface::ENTITY_ID;
         $scoreColumn = Order::EQ8_SCORE_COL;
+        // phpcs:ignore
         $query = "UPDATE $tableName SET `$scoreColumn` = ? WHERE `$idColumn` = ?";
         $connection->query($query, [$eq8Score, $orderId]);
 
