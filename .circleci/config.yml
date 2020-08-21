@@ -15,6 +15,9 @@ commands:
           command: service mysql start
           name: Start MySQL
       - run:
+          command: service elasticsearch start
+          name: Start Elasticsearch
+      - run:
           command: |
             cp -Rp /var/www/html /var/www/html-backup
             mysqldump magento2 > /tmp/magento2-backup.sql
@@ -45,9 +48,6 @@ commands:
             chmod 755 vendor/phpunit/phpunit/phpunit
             vendor/phpunit/phpunit/phpunit -c dev/tests/unit/phpunit.xml.dist vendor/ns8/protect-magento/Test
           name: Run Unit Tests
-      - run:
-          command: service elasticsearch start
-          name: Start Elasticsearch
       - run:
           command: |
             cd /var/www/html
@@ -202,6 +202,11 @@ jobs:
             UPLOAD_URL=$(echo $UPLOAD_URL_TEMPLATE | sed "s/{?name,label}/?name=$FILENAME/g"| tr -d '"')
             curl --data-binary @"$FILENAME" -H "Authorization: token $GITHUB_ACCESS_TOKEN" -H "Content-Type: application/octet-stream" $UPLOAD_URL
           name: Attach Zip File To Release
+  test_7-1_2-3-0:
+    docker:
+      - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.0
+    steps:
+      - test
   test_7-1_2-3-1:
     docker:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.1
@@ -215,6 +220,11 @@ jobs:
   test_7-1_2-3-3:
     docker:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.3
+    steps:
+      - test
+  test_7-2_2-3-0:
+    docker:
+      - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.2-2.3.0
     steps:
       - test
   test_7-2_2-3-1:
@@ -291,7 +301,12 @@ workflows:
           type: approval
           filters:
             branches:
-              only: version-debug
+              only: master
+          requires:
+            - test_latest
+      - test_7-1_2-3-0:
+          requires:
+            - approve
       - test_7-1_2-3-1:
           requires:
             - approve
@@ -299,6 +314,9 @@ workflows:
           requires:
             - approve
       - test_7-1_2-3-3:
+          requires:
+            - approve
+      - test_7-2_2-3-0:
           requires:
             - approve
       - test_7-2_2-3-1:
@@ -331,3 +349,20 @@ workflows:
       - test_7-4_2-4-0:
           requires:
             - approve
+      - deploy:
+          requires:
+            #- test_7-1_2-3-0
+            - test_7-1_2-3-1
+            - test_7-1_2-3-2-p2
+            - test_7-1_2-3-3
+            #- test_7-2_2-3-0
+            - test_7-2_2-3-1
+            - test_7-2_2-3-2-p2
+            - test_7-2_2-3-3
+            - test_7-2_2-3-4-p2
+            - test_7-2_2-3-5-p2
+            - test_7-3_2-3-3
+            - test_7-3_2-3-4-p2
+            #- test_7-3_2-3-5-p2
+            #- test_7-3_2-4-0
+            #- test_7-4_2-4-0
