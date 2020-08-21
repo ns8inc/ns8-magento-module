@@ -77,9 +77,9 @@ class StoreTest extends TestCase
         $storeCollectionMock->method('addWebsiteFilter')->willReturn([$store1Mock]);
 
         $storeMock = $this->getMockBuilder(Store::class)
-        ->setMethods(['getCollection'])
-        ->disableOriginalConstructor()
-        ->getMock();
+            ->setMethods(['getCollection'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $storeMock->method('getCollection')->willReturn($storeCollectionMock);
 
         $storeManagerTemp = $this->createMock(StoreManagerInterface::class);
@@ -89,6 +89,7 @@ class StoreTest extends TestCase
 
         $storeFactoryTemp = $this->createMock(StoreFactory::class);
         $storeFactoryTemp->method('create')->willReturn($storeMock);
+        /** @var StoreFactory */
         $storeFactory = $storeFactoryTemp;
 
         $configHelper = $this->createMock(Config::class);

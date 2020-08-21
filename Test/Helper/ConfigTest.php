@@ -26,7 +26,7 @@ use Zend\Uri\Uri;
 class ConfigTest extends TestCase
 {
     /** @var Config */
-    private $config;
+    public $config;
 
     /** @var ScopeConfigInterface */
     private $scopeConfig;
