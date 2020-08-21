@@ -1,6 +1,8 @@
 <?php
 namespace NS8\Protect\Setup;
 
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -17,12 +19,20 @@ class UpgradeData implements UpgradeDataInterface
     protected $setupHelper;
 
     /**
+     * @var State
+     */
+    protected $state;
+
+    /**
      * @param Setup $setupHelper
+     * @param State $state
      */
     public function __construct(
-        Setup $setupHelper
+        Setup $setupHelper,
+        State $state
     ) {
         $this->setupHelper = $setupHelper;
+        $this->state = $state;
     }
 
     /**
@@ -30,6 +40,12 @@ class UpgradeData implements UpgradeDataInterface
      */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
+        try{
+            $this->state->getAreaCode();
+        }catch (\Throwable $t){
+            $this->state->setAreaCode('adminhtml');
+        }
+
         $this->setupHelper->upgradeData('upgrade', $setup, $context);
     }
 }
