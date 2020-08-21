@@ -202,11 +202,6 @@ jobs:
             UPLOAD_URL=$(echo $UPLOAD_URL_TEMPLATE | sed "s/{?name,label}/?name=$FILENAME/g"| tr -d '"')
             curl --data-binary @"$FILENAME" -H "Authorization: token $GITHUB_ACCESS_TOKEN" -H "Content-Type: application/octet-stream" $UPLOAD_URL
           name: Attach Zip File To Release
-  test_7-1_2-3-0:
-    docker:
-      - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.0
-    steps:
-      - test
   test_7-1_2-3-1:
     docker:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.1
@@ -220,11 +215,6 @@ jobs:
   test_7-1_2-3-3:
     docker:
       - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.1-2.3.3
-    steps:
-      - test
-  test_7-2_2-3-0:
-    docker:
-      - image: 244249143763.dkr.ecr.us-west-2.amazonaws.com/ns8-magento:7.2-2.3.0
     steps:
       - test
   test_7-2_2-3-1:
@@ -296,14 +286,12 @@ workflows:
               only: /^\d+\.\d+\.\d+$/
   test_and_deploy:
     jobs:
+      - test_latest
       - approve:
           type: approval
           filters:
             branches:
               only: version-debug
-      - test_7-1_2-3-0:
-          requires:
-            - approve
       - test_7-1_2-3-1:
           requires:
             - approve
@@ -311,9 +299,6 @@ workflows:
           requires:
             - approve
       - test_7-1_2-3-3:
-          requires:
-            - approve
-      - test_7-2_2-3-0:
           requires:
             - approve
       - test_7-2_2-3-1:
