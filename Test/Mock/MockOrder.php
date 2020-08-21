@@ -10,14 +10,12 @@ class MockOrder extends Order
         $this->_data = $data;
     }
 
-    public function setData($key, $value = null): MockOrder
+    public function setHasDataChanges($flag): MockOrder
     {
-        $this->_data[$key] = $value;
-
         return $this;
     }
 
-    public function save()
+    public function save(): void
     {
         // no-op
     }

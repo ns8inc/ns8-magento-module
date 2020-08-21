@@ -11,6 +11,7 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\TransactionSearchResultInterfaceFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Sales\Model\Order as MagentoOrder;
 use Magento\Sales\Model\ResourceModel\GridInterface;
 use Magento\Sales\Model\ResourceModel\Order\Collection;
@@ -90,6 +91,11 @@ class Order extends AbstractHelper
     protected $protect;
 
     /**
+     * @var ResourceConnection
+     */
+    protected $resourceConnection;
+
+    /**
      * Default constructor
      *
      * @param CollectionFactory $orderCollectionFactory
@@ -97,11 +103,13 @@ class Order extends AbstractHelper
      * @param CountryFactory $countryFactory
      * @param GridInterface $salesOrderGrid
      * @param OrderRepositoryInterface $orderRepository
+     * @param ProductRepository $productRepository
+     * @param ProtectHelper $protect
      * @param RequestInterface $request
+     * @param ResourceConnection $resourceConnection
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param TransactionSearchResultInterfaceFactory $transactionRepository
      * @param Url $url
-     * @param ProtectHelper $protect
      */
     public function __construct(
         CollectionFactory $orderCollectionFactory,
@@ -110,11 +118,12 @@ class Order extends AbstractHelper
         GridInterface $salesOrderGrid,
         OrderRepositoryInterface $orderRepository,
         ProductRepositoryInterface $productRepository,
+        ProtectHelper $protect,
         RequestInterface $request,
+        ResourceConnection $resourceConnection,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         TransactionSearchResultInterfaceFactory $transactionRepository,
-        Url $url,
-        ProtectHelper $protect
+        Url $url
     ) {
         $this->config = $config;
         $this->countryFactory = $countryFactory;
@@ -122,12 +131,13 @@ class Order extends AbstractHelper
         $this->orderCollectionFactory = $orderCollectionFactory;
         $this->orderRepository = $orderRepository;
         $this->productRepository = $productRepository;
+        $this->protect = $protect;
         $this->request = $request;
+        $this->resourceConnection = $resourceConnection;
         $this->salesOrderGrid = $salesOrderGrid;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->transactionRepository = $transactionRepository;
         $this->url = $url;
-        $this->protect = $protect;
     }
 
     /**
@@ -253,11 +263,25 @@ class Order extends AbstractHelper
      */
     public function setEQ8Score(int $eq8Score, OrderInterface $order) : int
     {
-        $order
-            ->setData(self::EQ8_SCORE_COL, $eq8Score)
-            ->save();
+        $orderId = $order->getId();
 
-        $this->salesOrderGrid->refresh($order->getId());
+        /*
+         * This is the result of a bug in Magento's value serialization causing int 0 to
+         * be saved as NULL. Obviously we want 0 scores to be saved as such, so we bypass
+         * Magento's ORM in order to set the score correctly.
+         */
+        $connection = $this->resourceConnection->getConnection();
+        $tableName = $connection->quoteTableAs($this->resourceConnection->getTableName('sales_order'));
+        $idColumn = OrderInterface::ENTITY_ID;
+        $scoreColumn = Order::EQ8_SCORE_COL;
+        $query = "UPDATE $tableName SET `$scoreColumn` = ? WHERE `$idColumn` = ?";
+        $connection->query($query, [$eq8Score, $orderId]);
+
+        // We then save the order using the ORM, in order to notify appropriate Observers
+        $order->setHasDataChanges(true);
+        $order->save();
+
+        $this->salesOrderGrid->refresh($orderId);
         return $eq8Score;
     }
 

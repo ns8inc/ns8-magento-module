@@ -8,11 +8,13 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\TransactionSearchResultInterfaceFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Sales\Model\ResourceModel\GridInterface;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use NS8\Protect\Helper\Order as OrderHelper;
 use NS8\Protect\Helper\Protect as ProtectHelper;
 use NS8\Protect\Helper\Url as UrlHelper;
+use NS8\Protect\Test\Mock\MockConnection;
 use NS8\Protect\Test\Mock\MockOrder;
 use NS8\Protect\Test\Mock\MockOrderClient;
 use PHPUnit\Framework\TestCase;
@@ -55,6 +57,11 @@ class OrderTest extends TestCase
         /** @var RequestInterface */
         $request = $this->createMock(RequestInterface::class);
 
+        $resourceConnectionMock = $this->createMock(ResourceConnection::class);
+        $resourceConnectionMock->method("getConnection")->willReturn(new MockConnection());
+        /** @var ResourceConnection */
+        $resourceConnection = $resourceConnectionMock;
+
         /** @var SearchCriteriaBuilder */
         $searchCriteriaBuilder = $this->createMock(SearchCriteriaBuilder::class);
 
@@ -77,11 +84,12 @@ class OrderTest extends TestCase
             $salesOrderGrid,
             $orderRepository,
             $productRepository,
+            $protectHelper,
             $request,
+            $resourceConnection,
             $searchCriteriaBuilder,
             $transactionRepository,
             $urlHelper,
-            $protectHelper
         );
     }
 
