@@ -40,10 +40,10 @@ class UpgradeData implements UpgradeDataInterface
      */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        try{
+        try {
             $this->state->getAreaCode();
-        }catch (\Throwable $t){
-            $this->state->setAreaCode('adminhtml');
+        } catch (\Throwable $t) {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
         }
 
         $this->setupHelper->upgradeData('upgrade', $setup, $context);
