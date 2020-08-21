@@ -1,8 +1,6 @@
 <?php
 namespace NS8\Protect\Console\Command;
 
-use Magento\Framework\App\Area;
-use Magento\Framework\App\State;
 use NS8\Protect\Helper\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,24 +20,11 @@ class SetAccessToken extends Command
     const ACTIVE = 'active';
 
     /**
-     * @var State
-     */
-    protected $state;
-
-    /**
      * @inheritDoc
      */
-    public function __construct(Config $config, State $state)
+    public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->state = $state;
-        
-        try {
-            $this->state->getAreaCode();
-        } catch (\Throwable $t) {
-            $this->state->setAreaCode('adminhtml');
-        }
-
         parent::__construct();
     }
 

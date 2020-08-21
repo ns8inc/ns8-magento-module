@@ -1,8 +1,6 @@
 <?php
 namespace NS8\Protect\Setup;
 
-use Magento\Framework\App\Area;
-use Magento\Framework\App\State;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -19,20 +17,12 @@ class UpgradeData implements UpgradeDataInterface
     protected $setupHelper;
 
     /**
-     * @var State
-     */
-    protected $state;
-
-    /**
      * @param Setup $setupHelper
-     * @param State $state
      */
     public function __construct(
-        Setup $setupHelper,
-        State $state
+        Setup $setupHelper
     ) {
         $this->setupHelper = $setupHelper;
-        $this->state = $state;
     }
 
     /**
