@@ -89,7 +89,7 @@ class OrderTest extends TestCase
             $resourceConnection,
             $searchCriteriaBuilder,
             $transactionRepository,
-            $urlHelper,
+            $urlHelper
         );
     }
 
