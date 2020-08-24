@@ -23,7 +23,7 @@
     "kodus/uuid-v4": "^1.1"
   },
   "require-dev": {
-    "allure-framework/allure-php-api": "1.1.5",
+    "allure-framework/allure-php-api": "1.1.8",
     "allure-framework/allure-phpunit": "1.2.2",
     "magento/community-edition": "^2.3",
     "magento/magento-coding-standard": "^5",
