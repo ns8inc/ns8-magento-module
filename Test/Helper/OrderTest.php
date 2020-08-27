@@ -13,6 +13,7 @@ use Magento\Sales\Model\ResourceModel\GridInterface;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use NS8\Protect\Helper\Order as OrderHelper;
 use NS8\Protect\Helper\Protect as ProtectHelper;
+use NS8\Protect\Helper\Store as StoreHelper;
 use NS8\Protect\Helper\Url as UrlHelper;
 use NS8\Protect\Test\Mock\MockConnection;
 use NS8\Protect\Test\Mock\MockOrder;
@@ -77,6 +78,9 @@ class OrderTest extends TestCase
         /** @var ProtectHelper */
         $protectHelper = $protectHelperTemp;
 
+         /** @var StoreHelper */
+         $storeHelper = $this->createMock(StoreHelper::class);
+
         $this->orderHelper = new OrderHelper(
             $orderCollectionFactory,
             $config,
@@ -88,6 +92,7 @@ class OrderTest extends TestCase
             $request,
             $resourceConnection,
             $searchCriteriaBuilder,
+            $storeHelper,
             $transactionRepository,
             $urlHelper
         );
