@@ -13,6 +13,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\Store;
 use NS8\Protect\Helper\Config as Config;
 use NS8\Protect\Helper\Store as StoreHelper;
+use NS8\ProtectSDK\Merchants\Client as MerchantClient;
 use PHPUnit\Framework\TestCase;
 use Zend\Uri\Uri;
 
@@ -95,6 +96,8 @@ class StoreTest extends TestCase
         $configHelper = $this->createMock(Config::class);
         $request = $this->createMock(Http::class);
 
+        $merchantClient = $this->createMock(MerchantClient::class);
+
         $this->store1 = $store1;
         $this->store2 = $store2;
 
@@ -103,7 +106,8 @@ class StoreTest extends TestCase
             $configHelper,
             $request,
             $storeFactory,
-            $storeManager
+            $storeManager,
+            $merchantClient
         );
     }
 

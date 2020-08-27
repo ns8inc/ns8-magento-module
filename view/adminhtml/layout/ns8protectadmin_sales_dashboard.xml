@@ -6,7 +6,7 @@
     <title>NS8 Protect</title>
     <link src="requirejs/require.js"/>
     <css src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" src_type="url" />
-    <css src="NS8_Protect::css/dashboard_styles.css" />
+
   </head>
   <body>
     <referenceContainer name="content">

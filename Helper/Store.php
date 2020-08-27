@@ -7,6 +7,7 @@ use Magento\Framework\App\Request\Http;
 use Magento\Store\Model\StoreFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use NS8\Protect\Helper\Config;
+use NS8\ProtectSDK\Merchants\Client as MerchantClient;
 
 class Store extends AbstractHelper
 {
@@ -44,12 +45,15 @@ class Store extends AbstractHelper
         Config $configHelper,
         Http $request,
         StoreFactory $storeFactory,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        MerchantClient $merchantClient
     ) {
         $this->configHelper = $configHelper;
         $this->request = $request;
         $this->storeFactory = $storeFactory;
         $this->storeManager = $storeManager;
+        $this->merchantClient = $merchantClient;
+        $this->configHelper = $configHelper;
         parent::__construct($context);
     }
 
@@ -161,5 +165,18 @@ class Store extends AbstractHelper
             return $requestedStoreId;
         }
         return $availableStoreIds[0];
+    }
+
+    /**
+     * Retrieves the merchant record from Protect for a given shop
+     *
+     * @param int $storeId
+     * @return StdClass
+     */
+    public function getMerchantRecord(int $storeId): \StdClass
+    {
+        $this->configHelper->initSdkConfiguration(true, $storeId);
+        $ns8Merchant = $this->merchantClient->getCurrent();
+        return $ns8Merchant;
     }
 }
